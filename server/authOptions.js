@@ -291,6 +291,7 @@ export const authOptions = {
         session.user.eventsTagsNotification = result.eventsTagsNotification
         session.user.registrationType = result.registrationType
         session.user.referrerId = result.referrerId
+        session.user.consentToMailing = result.consentToMailing
         session.user.createdAt = result.createdAt
         session.user.updatedAt = result.updatedAt
       }
