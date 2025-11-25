@@ -157,6 +157,10 @@ const usersSchema = {
     of: Schema.Types.Mixed,
     default: DEFAULT_USERS_NOTIFICATIONS,
   },
+  consentToMailing: {
+    type: Boolean,
+    default: false,
+  },
   soctag: {
     type: String,
     default: null,

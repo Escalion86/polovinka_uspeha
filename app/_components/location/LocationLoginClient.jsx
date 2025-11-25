@@ -386,6 +386,19 @@ const LoginPage = (props) => {
   const [checkHave18Years, setCheckHave18Years] = useState(false)
   const [checkHaveNoAccounts, setCheckHaveNoAccounts] = useState(false)
   const [checkAgreement, setCheckAgreement] = useState(false)
+  const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
+  const [registrationAgreementsConfirmed, setRegistrationAgreementsConfirmed] =
+    useState(false)
+
+  const handleToggleHave18Years = () => {
+    setCheckHave18Years((state) => !state)
+    setRegistrationAgreementsConfirmed(false)
+  }
+
+  const handleToggleAgreement = () => {
+    setCheckAgreement((state) => !state)
+    setRegistrationAgreementsConfirmed(false)
+  }
   const [showAgreement, setShowAgreement] = useState(false)
   const [showPhoneRecovery, setShowPhoneRecovery] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
@@ -397,6 +410,12 @@ const LoginPage = (props) => {
     () => process === 'forgotPassword',
     [process]
   )
+
+  useEffect(() => {
+    if (!isRegistration || registrationLevel !== 1) {
+      setRegistrationAgreementsConfirmed(false)
+    }
+  }, [isRegistration, registrationLevel])
 
   const telegramBotName = props.telegramBotName
 
@@ -435,6 +454,7 @@ const LoginPage = (props) => {
           registration: forceReg || isRegistration ? 'true' : 'false',
           location,
           referrerId: referralId,
+          consentToMailing: checkConsentToMailing ? 'true' : 'false',
           ...(inputPhone ? { phone: String(inputPhone) } : {}),
         }).then((res) => {
           if (res?.error === 'CredentialsSignin') {
@@ -471,6 +491,10 @@ const LoginPage = (props) => {
       setInputPassword,
       referralId,
       inputPhone,
+      checkConsentToMailing,
+      isRegistration,
+      location,
+      router,
     ]
   )
 
@@ -811,6 +835,7 @@ const LoginPage = (props) => {
             soctag,
             custag,
             referrerId: referralId,
+            consentToMailing: checkConsentToMailing,
           },
           (res) => {
             if (res.error) {
@@ -1199,14 +1224,19 @@ const LoginPage = (props) => {
               {!type &&
                 isRegistration &&
                 registrationLevel === 1 &&
-                (!checkHave18Years || !checkAgreement) && (
+                !registrationAgreementsConfirmed && (
                   <>
                     <Divider2 title="Подтвердите поставив галочки" />
                     <CheckBox
                       checked={checkHave18Years}
                       labelPos="right"
-                      onChange={(e) => setCheckHave18Years(!checkHave18Years)}
-                      label="Мне исполнилось 18 лет"
+                      onChange={handleToggleHave18Years}
+                      label={
+                        <div className="text-left">
+                          <span className="mr-1 text-danger">*</span>
+                          Мне исполнилось 18 лет
+                        </div>
+                      }
                       wrapperClassName={cn(
                         'overflow-hidden',
                         isRegistration && registrationLevel === 1
@@ -1217,9 +1247,10 @@ const LoginPage = (props) => {
                     />
                     <CheckBox
                       checked={checkAgreement}
-                      onChange={(e) => setCheckAgreement(!checkAgreement)}
+                      onChange={handleToggleAgreement}
                       label={
                         <div className="text-left">
+                          <span className="mr-1 text-danger">*</span>
                           <span>Согласен на </span>
                           <span
                             onClick={() => setShowAgreement(true)}
@@ -1237,10 +1268,41 @@ const LoginPage = (props) => {
                       )}
                       // hidden={process !== 'registration' || registrationLevel !== 1}
                     />
+                    <CheckBox
+                      checked={checkConsentToMailing}
+                      onChange={() =>
+                        setCheckConsentToMailing(!checkConsentToMailing)
+                      }
+                      label={
+                        <div className="text-left">
+                          Согласен на{' '}
+                          <a
+                            href="/docs/Soglasie_na_poluchenie_rassylki.docx"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="italic font-bold underline text-general hover:text-success"
+                          >
+                            получение рассылки о мероприятиях
+                          </a>
+                        </div>
+                      }
+                      wrapperClassName={cn(
+                        'overflow-hidden',
+                        isRegistration && registrationLevel === 1
+                          ? 'max-h-15 mt-1 py-1 mb-4'
+                          : ''
+                      )}
+                    />
+                    <Button
+                      name="Приступить к регистрации"
+                      className="w-full"
+                      onClick={() => setRegistrationAgreementsConfirmed(true)}
+                      disabled={!checkHave18Years || !checkAgreement}
+                    />
                   </>
                 )}
               {(isRegistration
-                ? !type && checkAgreement && checkHave18Years
+                ? !type && registrationAgreementsConfirmed
                 : !type) && (
                 <>
                   {isRegistration && (
@@ -1256,17 +1318,15 @@ const LoginPage = (props) => {
                         key={telegramBotName}
                         className={cn(
                           'relative',
-                          isRegistration &&
-                            (!checkAgreement || !checkHave18Years)
+                          isRegistration && !registrationAgreementsConfirmed
                             ? 'grayscale cursor-not-allowed'
                             : ''
                         )}
                       >
                         {/* <Button name="test" onClick={test} preventDefault /> */}
-                        {isRegistration &&
-                          (!checkAgreement || !checkHave18Years) && (
-                            <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
-                          )}
+                        {isRegistration && !registrationAgreementsConfirmed && (
+                          <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
+                        )}
                         <TelegramLoginButton
                           dataOnauth={handleTelegramResponse}
                           botName={telegramBotName}
@@ -1332,7 +1392,7 @@ const LoginPage = (props) => {
                 ))}
 
               {(isRegistration
-                ? !type && checkAgreement && checkHave18Years
+                ? !type && registrationAgreementsConfirmed
                 : !type) && (
                 <>
                   <Divider2 title="или" />
@@ -1346,7 +1406,7 @@ const LoginPage = (props) => {
                       clearErrors()
                     }}
                     disabled={
-                      isRegistration && (!checkAgreement || !checkHave18Years)
+                      isRegistration && !registrationAgreementsConfirmed
                     }
                   />
                 </>
@@ -1423,6 +1483,7 @@ const LoginPage = (props) => {
                     )
                     setRegistrationLevel(1)
                     setType()
+                    setRegistrationAgreementsConfirmed(false)
                   }}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
                 >
@@ -1457,6 +1518,7 @@ const LoginPage = (props) => {
             setCheckHave18Years(false)
             setCheckAgreement(false)
             setCheckHaveNoAccounts(false)
+            setRegistrationAgreementsConfirmed(false)
           }}
         >
           <div className="flex flex-col items-center gap-y-2">
@@ -1483,14 +1545,20 @@ const LoginPage = (props) => {
                   <CheckBox
                     checked={checkHave18Years}
                     labelPos="right"
-                    onChange={(e) => setCheckHave18Years(!checkHave18Years)}
-                    label="Мне исполнилось 18 лет"
+                    onChange={handleToggleHave18Years}
+                    label={
+                      <div className="text-left">
+                        <span className="mr-1 text-danger">*</span>
+                        Мне исполнилось 18 лет
+                      </div>
+                    }
                   />
                   <CheckBox
                     checked={checkAgreement}
-                    onChange={(e) => setCheckAgreement(!checkAgreement)}
+                    onChange={handleToggleAgreement}
                     label={
                       <div className="text-left">
+                        <span className="mr-1 text-danger">*</span>
                         Согласен на{' '}
                         <span
                           onClick={() => setShowAgreement(true)}
@@ -1539,6 +1607,7 @@ const LoginPage = (props) => {
                   setCheckHave18Years(false)
                   setCheckAgreement(false)
                   setCheckHaveNoAccounts(false)
+                  setRegistrationAgreementsConfirmed(false)
                 }}
               />
             </div>

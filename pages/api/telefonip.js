@@ -7,6 +7,8 @@ import userRegisterTelegramNotification from '@server/userRegisterTelegramNotifi
 import createReferralRegistrationCoupon from '@server/createReferralRegistrationCoupon'
 import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
+import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
+import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 
 const token = process.env.TELEFONIP
 
@@ -90,11 +92,14 @@ export default async function handler(req, res) {
         checkBackCallId,
         location,
         referrerId,
+        consentToMailing: consentToMailingRaw,
       } = body
+      const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
 
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
+      await ensureConsentToMailingField(db, location)
 
       if (checkBackCallId) {
         const response = await fetch(
@@ -330,6 +335,9 @@ export default async function handler(req, res) {
           if (resolvedReferrerId && !existingUser.referrerId) {
             updateData.referrerId = resolvedReferrerId
           }
+          if (!forgotPassword) {
+            updateData.consentToMailing = consentToMailing
+          }
           const updatedUser = await db
             .model('Users')
             .findOneAndUpdate({ phone }, updateData, { new: true })
@@ -354,6 +362,7 @@ export default async function handler(req, res) {
             phone,
             password: hashedPassword,
             referrerId: resolvedReferrerId,
+            consentToMailing,
           })
 
           try {
