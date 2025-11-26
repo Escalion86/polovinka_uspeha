@@ -321,7 +321,7 @@ const Modal = ({
       <m.div
         className={
           cn(
-            'flex flex-col tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+            'flex flex-col tablet:h-auto tablet:max-h-full relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
             titleState ? 'pt-3' : 'pt-12',
             widthNum <= 2 ? 'real-screen-height' : ''
           )

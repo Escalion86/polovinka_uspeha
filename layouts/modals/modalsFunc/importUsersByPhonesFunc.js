@@ -24,125 +24,152 @@ const extractPhonesFromText = (text) => {
   return Array.from(new Set(normalized))
 }
 
-const ImportUsersByPhonesModal = ({
-  closeModal,
-  setOnConfirmFunc,
-  setDisableConfirm,
-  onImportConfirm,
-  usersSource = [],
-}) => {
-  const [rawValue, setRawValue] = useState('')
-  const [checked, setChecked] = useState(false)
-  const [foundUsersState, setFoundUsersState] = useState([])
-  const [notFoundPhones, setNotFoundPhones] = useState([])
+const PHONE_FIELDS = ['phone', 'whatsapp', 'viber']
 
-  const phonesIndex = useMemo(() => {
-    const index = new Map()
-    ;(usersSource || []).forEach((user) => {
-      ;['phone', 'whatsapp', 'viber'].forEach((field) => {
-        const normalized = normalizePhoneNumber(user[field])
-        if (!normalized) return
-        if (!index.has(normalized)) index.set(normalized, [])
-        index.get(normalized).push(user)
+const importUsersByPhonesFunc = ({ usersSource, onConfirm }) => {
+  const ImportUsersByPhonesModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+    setTopLeftComponent,
+  }) => {
+    const [rawValue, setRawValue] = useState('')
+    const [checked, setChecked] = useState(false)
+    const [foundUsersState, setFoundUsersState] = useState([])
+    const [notFoundPhones, setNotFoundPhones] = useState([])
+    const phonesIndex = useMemo(() => {
+      const index = new Map()
+      ;(usersSource || []).forEach((user) => {
+        PHONE_FIELDS.forEach((field) => {
+          const normalized = normalizePhoneNumber(user?.[field])
+          if (!normalized) return
+          if (!index.has(normalized)) index.set(normalized, [])
+          index.get(normalized).push(user)
+        })
       })
-    })
-    return index
-  }, [usersSource])
+      return index
+    }, [usersSource])
 
-  const handleCheckPhones = useCallback(() => {
-    const normalizedPhones = extractPhonesFromText(rawValue)
-    const matchedUsers = []
-    const matchedIds = new Set()
-    const unmatchedPhones = []
-    normalizedPhones.forEach((phone) => {
-      const usersByPhone = phonesIndex.get(phone)
-      if (usersByPhone?.length) {
-        usersByPhone.forEach((user) => {
-          if (!matchedIds.has(user._id)) {
+    const matchPhonesLocally = useCallback(
+      (phones) => {
+        const matchedUsers = []
+        const matchedIds = new Set()
+        const matchedPhonesSet = new Set()
+        phones.forEach((phone) => {
+          const usersByPhone = phonesIndex.get(phone)
+          if (!usersByPhone?.length) return
+          matchedPhonesSet.add(phone)
+          usersByPhone.forEach((user) => {
+            if (matchedIds.has(user._id)) return
             matchedIds.add(user._id)
             matchedUsers.push(user)
-          }
+          })
         })
-      } else {
-        unmatchedPhones.push(phone)
-      }
-    })
-    setChecked(true)
-    setFoundUsersState(matchedUsers)
-    setNotFoundPhones(unmatchedPhones)
-  }, [phonesIndex, rawValue])
+        const unmatchedPhones = phones.filter(
+          (phone) => !matchedPhonesSet.has(phone)
+        )
+        return { matchedUsers, unmatchedPhones }
+      },
+      [phonesIndex]
+    )
 
-  useEffect(() => {
-    if (!foundUsersState.length) {
+    useEffect(() => {
       setDisableConfirm(true)
       setOnConfirmFunc()
-      return
-    }
-    setDisableConfirm(false)
-    setOnConfirmFunc(() => () => {
-      if (foundUsersState.length) {
-        onImportConfirm && onImportConfirm(foundUsersState)
-      }
-      closeModal()
-    })
-  }, [
-    closeModal,
-    foundUsersState,
-    onImportConfirm,
-    setDisableConfirm,
-    setOnConfirmFunc,
-  ])
+    }, [setDisableConfirm, setOnConfirmFunc])
 
-  return (
-    <div className="flex flex-col gap-3">
-      <textarea
-        className="w-full p-2 border rounded resize-y min-h-[120px]"
-        placeholder="Вставьте телефоны через запятую или перенос строки"
-        value={rawValue}
-        onChange={(event) => setRawValue(event.target.value)}
-      />
-      <div className="flex justify-end">
-        <Button
-          name="Проверить"
-          onClick={handleCheckPhones}
-          disabled={!rawValue.trim()}
+    const handleCheckPhones = useCallback(() => {
+      const normalizedPhones = extractPhonesFromText(rawValue)
+      if (!normalizedPhones.length) {
+        setChecked(true)
+        setFoundUsersState([])
+        setNotFoundPhones([])
+        setDisableConfirm(true)
+        setOnConfirmFunc()
+        return
+      }
+      const localResult = matchPhonesLocally(normalizedPhones)
+      setChecked(true)
+      setFoundUsersState(localResult.matchedUsers)
+      setNotFoundPhones(localResult.unmatchedPhones)
+      if (localResult.matchedUsers.length) {
+        setDisableConfirm(false)
+        setOnConfirmFunc(() => {
+          onConfirm && onConfirm(localResult.matchedUsers)
+          closeModal()
+        })
+      } else {
+        setDisableConfirm(true)
+        setOnConfirmFunc()
+      }
+    }, [
+      closeModal,
+      matchPhonesLocally,
+      onConfirm,
+      setDisableConfirm,
+      setOnConfirmFunc,
+      rawValue,
+    ])
+
+    return (
+      <div className="flex flex-col gap-3">
+        <textarea
+          className="placeholder:text-gray-400 w-full p-2 border rounded resize-y min-h-[120px]"
+          placeholder="Вставьте телефоны через запятую или перенос строки"
+          value={rawValue}
+          onChange={(event) => setRawValue(event.target.value)}
         />
-      </div>
-      {checked && (
-        <div className="flex flex-col gap-2">
-          <div className="font-semibold">
-            Найдено пользователей: {foundUsersState.length}
-          </div>
-          {foundUsersState.length > 0 && (
-            <div className="p-2 overflow-y-auto border rounded max-h-48">
-              {foundUsersState.map((user) => (
-                <div key={user._id} className="text-sm">
-                  {`${user.firstName || ''} ${user.secondName || ''}`.trim() ||
-                    user.phone ||
-                    user._id}
-                </div>
-              ))}
-            </div>
-          )}
-          {notFoundPhones.length > 0 && (
-            <div>
-              <div className="font-semibold">
-                Не найдены номера ({notFoundPhones.length}):
-              </div>
-              <div className="text-sm text-gray-600">
-                {notFoundPhones.join(', ')}
-              </div>
-            </div>
-          )}
-          {foundUsersState.length === 0 && (
-            <div className="text-sm text-gray-600">
-              Ни один пользователь не найден.
-            </div>
-          )}
+        <div className="flex justify-end">
+          <Button
+            name="Проверить"
+            onClick={handleCheckPhones}
+            disabled={!rawValue.trim()}
+          />
         </div>
-      )}
-    </div>
-  )
+        {checked && (
+          <div className="flex flex-col gap-2">
+            <div className="font-semibold">
+              Найдено пользователей: {foundUsersState.length}
+            </div>
+            {foundUsersState.length > 0 && (
+              <div className="p-2 overflow-y-auto border rounded max-h-48">
+                {foundUsersState.map((user) => (
+                  <div key={user._id} className="text-sm">
+                    {`${user.firstName || ''} ${user.secondName || ''}`.trim() ||
+                      user.phone ||
+                      user._id}
+                  </div>
+                ))}
+              </div>
+            )}
+            {notFoundPhones.length > 0 && (
+              <div>
+                <div className="font-semibold">
+                  Не найдены номера ({notFoundPhones.length}):
+                </div>
+                <div className="text-sm text-gray-600">
+                  {notFoundPhones.join(', ')}
+                </div>
+              </div>
+            )}
+            {foundUsersState.length === 0 && (
+              <div className="text-sm text-gray-600">
+                Ни один пользователь не найден.
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+  return {
+    title: `Добавление пользователей по телефонам`,
+    confirmButtonName: 'Добавить',
+    Children: ImportUsersByPhonesModal,
+  }
 }
 
-export default ImportUsersByPhonesModal
+export default importUsersByPhonesFunc

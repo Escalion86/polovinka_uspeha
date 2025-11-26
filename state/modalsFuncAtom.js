@@ -159,23 +159,29 @@ const modalsFuncGenerator = (get, set) => {
           getFullUsers
         )
       ),
-    importUsersByPhones: (usersSource = [], onConfirm) => {
-      const ImportUsersByPhonesModal =
-        require('../layouts/modals/modalsFunc/importUsersByPhonesFunc').default
+    importUsersByPhones: (usersSource = [], onConfirm) =>
+      addModal(
+        require('../layouts/modals/modalsFunc/importUsersByPhonesFunc').default(
+          { usersSource, onConfirm }
+        )
+      ),
+    // {
+    // const ImportUsersByPhonesModal =
+    //   require('../layouts/modals/modalsFunc/importUsersByPhonesFunc').default
 
-      return addModal({
-        title: 'Добавление по телефонам',
-        confirmButtonName: 'Добавить',
-        closeButtonName: 'Отмена',
-        Children: (props) => (
-          <ImportUsersByPhonesModal
-            {...props}
-            usersSource={usersSource}
-            onImportConfirm={onConfirm}
-          />
-        ),
-      })
-    },
+    // return addModal({
+    //   title: 'Добавление по телефонам',
+    //   confirmButtonName: 'Добавить',
+    //   closeButtonName: 'Отмена',
+    //   Children: (props) => (
+    //     <ImportUsersByPhonesModal
+    //       {...props}
+    //       usersSource={usersSource}
+    //       onImportConfirm={onConfirm}
+    //     />
+    //   ),
+    // })
+    // },
     selectUsersByStatusesFromEvent: (eventId, onSelect) =>
       addModal(
         require('../layouts/modals/modalsFunc/selectUsersByFilterFromSelectedEventFunc').default(
@@ -934,4 +940,3 @@ const modalsFuncAtom = withAtomEffect(atom(null), (get, set) => {
 })
 
 export default modalsFuncAtom
-
