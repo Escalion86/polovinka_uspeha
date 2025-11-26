@@ -238,9 +238,7 @@ const ToolsNewsletterContent = () => {
   )
 
   const displayMessagesCount =
-    messagesCount === null || messagesCount === undefined
-      ? '-'
-      : messagesCount
+    messagesCount === null || messagesCount === undefined ? '-' : messagesCount
 
   const STATE_LABELS = {
     notAuthorized: 'Не авторизован',
@@ -287,9 +285,7 @@ const ToolsNewsletterContent = () => {
               {isAuthorized && (
                 <span className="flex items-center gap-1 font-semibold text-black">
                   Отправляется:{' '}
-                  <span>
-                    {isCountLoading ? '...' : displayMessagesCount}
-                  </span>
+                  <span>{isCountLoading ? '...' : displayMessagesCount}</span>
                 </span>
               )}
               {isAuthorized && (
@@ -318,8 +314,14 @@ const ToolsNewsletterContent = () => {
               onChange={setSort}
               sortKeys={['createdAt']}
             />
-            {addButton && isAuthorized && (
-              <AddButton onClick={() => modalsFunc.newsletter.add()} />
+            {addButton && (
+              <AddButton
+                onClick={() =>
+                  modalsFunc.newsletter.add(undefined, {
+                    whatsappAuthorized: isAuthorized,
+                  })
+                }
+              />
             )}
           </div>
         </div>
@@ -644,9 +646,3 @@ const ToolsNewsletterContent = () => {
 }
 
 export default ToolsNewsletterContent
-
-
-
-
-
-
