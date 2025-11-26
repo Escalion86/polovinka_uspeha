@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
@@ -13,7 +15,9 @@ import { EVENT_STATUSES_WITH_TIME, GENDERS, SECTORS } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
+import isUserAdmin from '@helpers/isUserAdmin'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
@@ -122,6 +126,9 @@ export const UserItem = ({
 }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRoleName = useAtomValue(
+    loggedUserActiveRoleNameAtom
+  )
 
   if (!item) return null
 
@@ -135,6 +142,11 @@ export const UserItem = ({
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
+
+  const canSeeConsentIcon =
+    loggedUserActiveRole?.dev ||
+    isUserAdmin(loggedUserActiveRoleName) ||
+    loggedUserActiveRoleName === 'moderator'
 
   return (
     <ItemContainer
@@ -197,6 +209,22 @@ export const UserItem = ({
             size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
             showHavePartnerOnly
           />
+          {canSeeConsentIcon && (
+            <FontAwesomeIcon
+              icon={
+                item.consentToMailing ? faCircleCheck : faCircleXmark
+              }
+              className={cn(
+                'w-4 h-4 mx-1',
+                item.consentToMailing ? 'text-green-600' : 'text-red-700'
+              )}
+              title={
+                item.consentToMailing
+                  ? 'Пользователь дал согласие на рассылку'
+                  : 'Пользователь не дал согласие на рассылку'
+              }
+            />
+          )}
           <UserStatusIcon
             status={item.status}
             size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}

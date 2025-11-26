@@ -2,6 +2,7 @@ import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButto
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 import CheckedUserToggleButtons from '@components/IconToggleButtons/CheckedUserToggleButtons'
+import ConsentUserToggleButtons from '@components/IconToggleButtons/ConsentUserToggleButtons'
 import Slider from '@components/Slider'
 
 const UsersFilter = ({
@@ -44,6 +45,14 @@ const UsersFilter = ({
           value={value.checked}
           onChange={(value) =>
             onChange((state) => ({ ...state, checked: value }))
+          }
+        />
+      )}
+      {value?.consent && (
+        <ConsentUserToggleButtons
+          value={value.consent}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, consent: value }))
           }
         />
       )}

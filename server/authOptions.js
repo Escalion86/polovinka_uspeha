@@ -8,6 +8,8 @@ import {
   shouldRehashPassword,
   verifyPassword,
 } from '@helpers/passwordUtils'
+import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
+import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 
 const parsePhoneNumber = (value) => {
   if (typeof value === 'number') {
@@ -53,6 +55,7 @@ export const authOptions = {
         if (phone && password && location) {
           const db = await dbConnect(location)
           if (!db) return null
+          await ensureConsentToMailingField(db, location)
 
           const fetchedUser = await db
             .model('Users')
@@ -105,6 +108,11 @@ export const authOptions = {
         },
         location: { label: 'Location', type: 'text' },
         referrerId: { label: 'ReferrerId', type: 'text' },
+        consentToMailing: {
+          label: 'consentToMailing',
+          type: 'text',
+          placeholder: 'false',
+        },
       },
       authorize: async (credentials) => {
         const {
@@ -117,6 +125,7 @@ export const authOptions = {
           registration,
           location,
           referrerId,
+          consentToMailing: consentToMailingRaw,
         } = credentials ?? {}
 
         if (!telegramId) {
@@ -129,8 +138,10 @@ export const authOptions = {
         }
 
         const phoneNumber = parsePhoneNumber(phone)
+        const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
         const db = await dbConnect(location)
         if (!db) return null
+        await ensureConsentToMailingField(db, location)
 
         const usersModel = db.model('Users')
 
@@ -205,6 +216,7 @@ export const authOptions = {
             registrationType: 'telegram',
             ...(phoneNumber ? { phone: phoneNumber } : {}),
             referrerId: resolvedReferrerId,
+            consentToMailing,
           })
           await db.model('Histories').create({
             schema: 'users',
@@ -242,6 +254,7 @@ export const authOptions = {
 
       const db = await dbConnect(location)
       if (!db) return null
+      await ensureConsentToMailingField(db, location)
 
       const result = await db.model('Users').findById(userId)
 
@@ -278,6 +291,7 @@ export const authOptions = {
         session.user.eventsTagsNotification = result.eventsTagsNotification
         session.user.registrationType = result.registrationType
         session.user.referrerId = result.referrerId
+        session.user.consentToMailing = result.consentToMailing
         session.user.createdAt = result.createdAt
         session.user.updatedAt = result.updatedAt
       }

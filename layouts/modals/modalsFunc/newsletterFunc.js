@@ -86,7 +86,10 @@ const getUsersData = (users) => {
   }
 }
 
-const newsletterFunc = (newsletterId, { name, users, event, message }) => {
+const newsletterFunc = (
+  newsletterId,
+  { name, users, event, message, whatsappAuthorized = true } = {}
+) => {
   const NewsletterModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -111,6 +114,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
 
     const whatsappActivated = siteSettings?.newsletter?.whatsappActivated
+    const isWhatsappReady = whatsappActivated && whatsappAuthorized
 
     const blackList = siteSettings?.newsletter?.blackList || []
 
@@ -183,7 +187,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterImage, setNewsletterImage] = useState(defaultImageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
-      whatsappActivated ? newsletter?.sendType || 'both' : 'telegram-only'
+      isWhatsappReady ? newsletter?.sendType || 'both' : 'telegram-only'
     )
     const [rerender, setRerender] = useState(false)
 
@@ -191,12 +195,12 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     useEffect(() => {
       if (
-        !whatsappActivated &&
+        !isWhatsappReady &&
         ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
       ) {
         setNewsletterSendType('telegram-only')
       }
-    }, [newsletterSendType, whatsappActivated])
+    }, [newsletterSendType, isWhatsappReady])
 
     useEffect(() => {
       if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
@@ -237,10 +241,10 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         },
       ]
 
-      if (whatsappActivated) return options
+      if (isWhatsappReady) return options
 
       return options.filter(({ requiresWhatsapp }) => !requiresWhatsapp)
-    }, [whatsappActivated])
+    }, [isWhatsappReady])
 
     const sendTypeTitles = useMemo(
       () =>
@@ -830,7 +834,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         !messageState ||
         !filteredSelectedUsers?.length ||
         !loggedUserActiveRole?.newsletters?.add ||
-        (isWhatsappRequired && !whatsappActivated)
+        (isWhatsappRequired && !isWhatsappReady)
       ) {
         setOnConfirmFunc()
       } else {
@@ -868,7 +872,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       loggedUserActiveRole,
       newsletterSendType,
       sendTypeTitles,
-      whatsappActivated,
+      isWhatsappReady,
     ])
 
     if (!loggedUserActiveRole?.newsletters?.add)
@@ -1123,7 +1127,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
           <div className="flex flex-col gap-y-1">
             {sendTypeOptions.map((option) => {
-              const disabled = option.requiresWhatsapp && !whatsappActivated
+              const disabled = option.requiresWhatsapp && !isWhatsappReady
               return (
                 <RadioBox
                   key={option.value}
@@ -1138,7 +1142,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                 />
               )
             })}
-            {!whatsappActivated && (
+            {!isWhatsappReady && (
               <div className="text-sm text-gray-500">
                 Отправка в Whatsapp сейчас недоступна.
               </div>

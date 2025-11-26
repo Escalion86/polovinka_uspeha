@@ -63,6 +63,9 @@ const LoggedUserNotificationsContent = (props) => {
   const [notifications, setNotifications] = useState(() =>
     prepareNotifications(loggedUserActive?.notifications)
   )
+  const [consentToMailing, setConsentToMailing] = useState(
+    !!loggedUserActive?.consentToMailing
+  )
 
   const handleTelegramResponse = ({
     id,
@@ -102,7 +105,12 @@ const LoggedUserNotificationsContent = (props) => {
 
   useEffect(() => {
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
-  }, [loggedUserActive?.notifications, prepareNotifications])
+    setConsentToMailing(!!loggedUserActive?.consentToMailing)
+  }, [
+    loggedUserActive?.consentToMailing,
+    loggedUserActive?.notifications,
+    prepareNotifications,
+  ])
 
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
@@ -110,6 +118,7 @@ const LoggedUserNotificationsContent = (props) => {
       `/api/${location}/users/${loggedUserActive._id}`,
       {
         notifications,
+        consentToMailing,
       },
       (data) => {
         setLoggedUserActive(data)
@@ -133,10 +142,9 @@ const LoggedUserNotificationsContent = (props) => {
     }
   }, [props])
 
-  const formChanged = !compareObjects(
-    loggedUserActive?.notifications,
-    notifications
-  )
+  const formChanged =
+    loggedUserActive?.consentToMailing !== consentToMailing ||
+    !compareObjects(loggedUserActive?.notifications, notifications)
 
   const buttonDisabled = !formChanged
 
@@ -158,7 +166,24 @@ const LoggedUserNotificationsContent = (props) => {
         />
       </div>
       <div className="p-2">
-        {!notifications?.telegram?.id && (
+        <CheckBox
+          label={
+            <div className="text-left">
+              Согласен на{' '}
+              <a
+                href="/docs/Soglasie_na_poluchenie_rassylki.docx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="italic font-bold underline text-general hover:text-success"
+              >
+                получение рассылки о мероприятиях
+              </a>
+            </div>
+          }
+          checked={consentToMailing}
+          onChange={() => setConsentToMailing((state) => !state)}
+        />
+        {consentToMailing && !notifications?.telegram?.id && (
           <div className="flex flex-col">
             <Note>
               Для подключения оповещений через Телеграм - нажмите на кнопку ниже
@@ -171,24 +196,26 @@ const LoggedUserNotificationsContent = (props) => {
             />
           </div>
         )}
-        <div className="flex flex-wrap items-center gap-x-2">
-          {notifications?.telegram?.id && (
-            <YesNoPicker
-              label="Оповещения в Telegram"
-              value={!!notifications?.telegram?.active}
-              onChange={() => {
-                setNotifications((state) => ({
-                  ...state,
-                  telegram: {
-                    ...state?.telegram,
-                    active: !state?.telegram?.active,
-                  },
-                }))
-              }}
-            />
-          )}
-        </div>
-        {isNotificationActivated && (
+        {consentToMailing && (
+          <div className="flex flex-wrap items-center gap-x-2">
+            {notifications?.telegram?.id && (
+              <YesNoPicker
+                label="Оповещения в Telegram"
+                value={!!notifications?.telegram?.active}
+                onChange={() => {
+                  setNotifications((state) => ({
+                    ...state,
+                    telegram: {
+                      ...state?.telegram,
+                      active: !state?.telegram?.active,
+                    },
+                  }))
+                }}
+              />
+            )}
+          </div>
+        )}
+        {consentToMailing && isNotificationActivated && (
           <>
             {(birthdays || remindDates) && (
               <InputWrapper label="Ежедневные уведомления" className="">

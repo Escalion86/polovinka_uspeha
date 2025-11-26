@@ -4,7 +4,7 @@ import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import usersAtomAsync from '@state/async/usersAtomAsync'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import { fetchUser } from '@helpers/fetchers'
@@ -16,8 +16,10 @@ import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
 import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
 import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
+import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons/faFileCirclePlus'
 import compareObjects from '@helpers/compareObjects'
 import birthDateToAge from '@helpers/birthDateToAge'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 
 const selectUsersFunc = (
   selectedUsersState,
@@ -41,6 +43,7 @@ const selectUsersFunc = (
     setTopLeftComponent,
     TopLeftComponent,
   }) => {
+    const modalsFunc = useAtomValue(modalsFuncAtom)
     const location = useAtomValue(locationAtom)
     const users = useAtomValue(usersAtomAsync)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -112,6 +115,10 @@ const selectUsersFunc = (
         checked: true,
         unchecked: true,
       },
+      consent: {
+        consented: true,
+        notConsented: true,
+      },
       ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
 
@@ -162,6 +169,8 @@ const selectUsersFunc = (
                 !selectedUsersIds.includes(user._id)) &&
                 filter.checked.unchecked) ||
                 selectedUsersIds.includes(user._id)) &&
+              ((filter.consent.consented && user.consentToMailing) ||
+                (filter.consent.notConsented && !user.consentToMailing)) &&
               (!filter.ages ||
                 (user.age >= (filter.ages.min || 18) &&
                   user.age <= (filter.ages.max || 70)))
@@ -224,14 +233,22 @@ const selectUsersFunc = (
       }
     }
 
+    const handleImportByPhones = useCallback(() => {
+      if (!modalsFunc) return
+      modalsFunc.importUsersByPhones(acceptedUsers || [], (usersToAdd) => {
+        if (!usersToAdd?.length) return
+        setSelectedUsers((prev) => {
+          const existingIds = new Set(prev.map((user) => user._id))
+          const appended = usersToAdd.filter(
+            (user) => !existingIds.has(user._id)
+          )
+          if (!appended.length) return prev
+          return [...prev, ...appended]
+        })
+      })
+    }, [acceptedUsers, modalsFunc])
+
     useEffect(() => {
-      // const isFormChanged =
-      //   assistantsIds !== eventAssistantsIds ||
-      //   mansIds !== eventMansIds ||
-      //   womansIds !== eventWomansIds ||
-      //   reservedParticipantsIds !== eventReservedParticipantsIds ||
-      //   bannedParticipantsIds !== eventBannedParticipantsIds
-      // maxUsers !== 1 &&
       setComponentInFooter(
         <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
           <span>Выбрано:</span>
@@ -245,6 +262,16 @@ const selectUsersFunc = (
           <span>чел.</span>
         </div>
       )
+    }, [selectedUsers.length, maxUsers, setComponentInFooter])
+
+    useEffect(() => {
+      // const isFormChanged =
+      //   assistantsIds !== eventAssistantsIds ||
+      //   mansIds !== eventMansIds ||
+      //   womansIds !== eventWomansIds ||
+      //   reservedParticipantsIds !== eventReservedParticipantsIds ||
+      //   bannedParticipantsIds !== eventBannedParticipantsIds
+      // maxUsers !== 1 &&
       const isFormChanged = !compareObjects(selectedUsers, defaultUsersState)
       setOnConfirmFunc(
         isFormChanged
@@ -284,6 +311,19 @@ const selectUsersFunc = (
     useEffect(() => {
       if (!canSelectNone) setDisableConfirm(selectedUsers.length === 0)
     }, [canSelectNone, selectedUsers])
+
+    useEffect(() => {
+      if (!setTopLeftComponent || !modalsFunc) return
+      setTopLeftComponent(
+        <Button
+          thin
+          icon={faFileCirclePlus}
+          name="По телефонам"
+          onClick={handleImportByPhones}
+        />
+      )
+      return () => setTopLeftComponent()
+    }, [handleImportByPhones, modalsFunc, setTopLeftComponent])
 
     // useEffect(() => {
     //   if (

@@ -60,7 +60,7 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
 const BirthdaysContentComponent = () => {
   const users = useAtomValue(usersAtomAsync)
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
-  const [periodDays, setPeriodDays] = useState(90)
+  const [periodDays, setPeriodDays] = useState(7)
 
   // const usersBirthday = users.map((user) => ({
   //   user,
@@ -92,8 +92,8 @@ const BirthdaysContentComponent = () => {
               value={String(periodDays)}
               onChange={(value) => setPeriodDays(Number(value))}
               items={[
+                { name: '1 неделю (7 дней)', value: 7 },
                 { name: '1 месяц (30 дней)', value: 30 },
-                { name: '2 месяца (60 дней)', value: 60 },
                 { name: '3 месяца (90 дней)', value: 90 },
                 { name: 'Пол года (180 дней)', value: 180 },
                 { name: 'Год (365 дней)', value: 365 },
