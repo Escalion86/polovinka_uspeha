@@ -117,7 +117,7 @@ const importUsersByPhonesFunc = ({ usersSource, onConfirm }) => {
     return (
       <div className="flex flex-col gap-3">
         <textarea
-          className="w-full p-2 border rounded resize-y min-h-[120px]"
+          className="placeholder:text-gray-400 w-full p-2 border rounded resize-y min-h-[120px]"
           placeholder="Вставьте телефоны через запятую или перенос строки"
           value={rawValue}
           onChange={(event) => setRawValue(event.target.value)}
