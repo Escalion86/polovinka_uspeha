@@ -56,6 +56,20 @@ export default async function handler(req, res) {
         },
       })
     } catch (error) {
+      const message = error?.message || ''
+      const isPaymentRequired = message.includes(
+        'Instance account is expired. Renew your instance from personal area.'
+      )
+      if (isPaymentRequired) {
+        return res.status(200).json({
+          success: true,
+          data: {
+            stateInstance: 'needPayment',
+            statusInstance: 'expired',
+            message,
+          },
+        })
+      }
       return res.status(500).json({
         success: false,
         error: error.message || 'State request error',

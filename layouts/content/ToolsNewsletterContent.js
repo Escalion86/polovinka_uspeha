@@ -111,8 +111,6 @@ const ToolsNewsletterContent = () => {
     }
   }, [location, notifyError])
 
-  const stateErrorNotifiedRef = useRef(false)
-
   const fetchInstanceState = useCallback(async () => {
     if (!location) return
     setIsStateLoading(true)
@@ -122,17 +120,13 @@ const ToolsNewsletterContent = () => {
       if (!response.ok || !result?.success) {
         throw new Error(result?.error || 'Ошибка получения статуса')
       }
-      stateErrorNotifiedRef.current = false
       setInstanceState(result?.data?.stateInstance || null)
     } catch (error) {
-      if (!stateErrorNotifiedRef.current) {
-        notifyError('Не удалось получить статус рассылки')
-        stateErrorNotifiedRef.current = true
-      }
+      setInstanceState('needPaymentOrServer')
     } finally {
       setIsStateLoading(false)
     }
-  }, [location, notifyError])
+  }, [location])
 
   const handleStopNewsletter = useCallback(async () => {
     if (!location || isStopping) return
@@ -206,6 +200,13 @@ const ToolsNewsletterContent = () => {
     notifySuccess,
   ])
 
+  const handleRefreshNewslettersData = useCallback(() => {
+    fetchInstanceState()
+    if (isAuthorized) {
+      fetchMessagesCount()
+    }
+  }, [fetchInstanceState, fetchMessagesCount, isAuthorized])
+
   const fetchedStateLocationRef = useRef(null)
   useEffect(() => {
     if (!location) return
@@ -213,6 +214,7 @@ const ToolsNewsletterContent = () => {
     fetchedStateLocationRef.current = location
     fetchInstanceState()
   }, [fetchInstanceState, location])
+
 
   useEffect(() => {
     if (isAuthorized) {
@@ -241,6 +243,8 @@ const ToolsNewsletterContent = () => {
     messagesCount === null || messagesCount === undefined ? '-' : messagesCount
 
   const STATE_LABELS = {
+    needPaymentOrServer: 'Не оплачен, либо нет связи с сервером рассылки',
+    needPayment: 'Необходимо оплатить',
     notAuthorized: 'Не авторизован',
     authorized: 'Авторизован',
     blocked: 'Блокировка',
@@ -288,15 +292,13 @@ const ToolsNewsletterContent = () => {
                   <span>{isCountLoading ? '...' : displayMessagesCount}</span>
                 </span>
               )}
-              {isAuthorized && (
-                <Button
-                  name="Обновить"
-                  onClick={fetchMessagesCount}
-                  loading={isCountLoading}
-                  thin
-                  icon={faRotateRight}
-                />
-              )}
+              <Button
+                name="Обновить"
+                onClick={handleRefreshNewslettersData}
+                loading={isCountLoading || isStateLoading}
+                thin
+                icon={faRotateRight}
+              />
               <span className="flex items-center gap-1 text-black">
                 Статус:{' '}
                 <span className="font-semibold">

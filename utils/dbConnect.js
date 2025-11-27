@@ -27,6 +27,8 @@ import usersSchema from '@schemas/usersSchema'
 import checkLocationValid from '@server/checkLocationValid'
 import newsLettersSchema from '@schemas/newsLettersSchema'
 import individualWeddingsSchema from '@schemas/individualWeddingsSchema'
+import scheduledMessagesSchema from '@schemas/scheduledMessagesSchema'
+import scheduledChannelsSchema from '@schemas/scheduledChannelsSchema'
 
 // var tunnel = require('tunnel-ssh')
 
@@ -295,6 +297,14 @@ async function dbConnect(location) {
     connections[location].model(
       'IndividualWeddings',
       mongoose.Schema(individualWeddingsSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'ScheduledMessages',
+      mongoose.Schema(scheduledMessagesSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'ScheduledChannels',
+      mongoose.Schema(scheduledChannelsSchema, { timestamps: true })
     )
   }
 

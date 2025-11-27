@@ -10,6 +10,7 @@ const sendMessageToTelegramId = async ({
   images,
   inline_keyboard,
   location,
+  topicId,
 }) => {
   const telegramToken = getTelegramTokenByLocation(location)
   if (!telegramToken) return
@@ -28,6 +29,7 @@ const sendMessageToTelegramId = async ({
       {
         chat_id: telegramId,
         media,
+        message_thread_id: topicId,
       },
       null,
       // (data) => console.log('data', data),
@@ -52,6 +54,7 @@ const sendMessageToTelegramId = async ({
           chat_id: telegramId,
           text: preparedText[i],
           parse_mode: 'html',
+          message_thread_id: topicId,
           reply_markup:
             i === preparedText.length - 1 ? reply_markup : undefined,
         },
@@ -104,6 +107,7 @@ const sendTelegramMessage = async ({
   images,
   inline_keyboard,
   location,
+  topicId,
 }) => {
   // const db = await dbConnect(location)
   // if (!db) return
@@ -130,6 +134,7 @@ const sendTelegramMessage = async ({
       images,
       inline_keyboard,
       location,
+      topicId,
     })
     error = res.error
     if (res.error) {
@@ -163,6 +168,7 @@ const sendTelegramMessage = async ({
         images,
         inline_keyboard,
         location,
+        topicId,
       })
       if (res.error) {
         if (!error) error = res.error

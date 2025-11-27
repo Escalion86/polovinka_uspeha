@@ -13,7 +13,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
-import 'react-latex-next/node_modules/katex/dist/katex.min.css'
+import '../styles/katex.min.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
 export const metadata = {

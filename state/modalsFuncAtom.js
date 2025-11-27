@@ -196,6 +196,20 @@ const modalsFuncGenerator = (get, set) => {
           onSelect
         )
       ),
+    scheduledMessage: {
+      edit: (message) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/scheduledMessageFunc').default(
+            message
+          )
+        ),
+    },
+    scheduledChannel: {
+      manage: () =>
+        addModal(
+          require('../layouts/modals/modalsFunc/scheduledChannelsManageFunc').default()
+        ),
+    },
     selectDirections: (
       itemsId,
       filterRules,

@@ -142,6 +142,7 @@ const ToolsNewsletterContent = dynamic(
 const LoggedUserNotificationsContent = dynamic(
   () => import('@layouts/content/LoggedUserNotificationsContent')
 )
+const TestingContent = dynamic(() => import('@layouts/content/TestingContent'))
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
 )
@@ -162,6 +163,9 @@ const HeaderInfoContactsContent = dynamic(
 )
 const ToolsImageConstructorContent = dynamic(
   () => import('@layouts/content/ToolsImageConstructorContent')
+)
+const ToolsScheduledMessagesContent = dynamic(
+  () => import('@layouts/content/ToolsScheduledMessagesContent')
 )
 const ToolsEventAnonsVkContent = dynamic(
   () => import('@layouts/content/ToolsEventAnonsVkContent')
@@ -1983,6 +1987,11 @@ export const CONTENTS = Object.freeze({
     name: 'Разработчик',
     roleAccess: (role) => role?.dev,
   },
+  testing: {
+    Component: TestingContent,
+    name: 'Тестирование',
+    roleAccess: (role) => role?.dev,
+  },
   whatsappMessaging: {
     Component: WhatsappMessagesContent,
     name: 'Рассылка WhatsApp',
@@ -2012,6 +2021,11 @@ export const CONTENTS = Object.freeze({
     Component: ToolsImageConstructorContent,
     name: 'Инструменты / Конструктор картинок',
     roleAccess: (role) => role?.instruments?.imageConstructor,
+  },
+  toolsScheduledMessages: {
+    Component: ToolsScheduledMessagesContent,
+    name: 'Сообщения по расписанию',
+    roleAccess: (role) => role?.newsletters?.see,
   },
   toolsExport: {
     Component: ToolsExportContent,
@@ -2464,6 +2478,15 @@ export const pages = [
   },
 
   {
+    id: 78,
+    group: 10,
+    name: 'Сообщения по расписанию',
+    href: 'toolsScheduledMessages',
+    icon: faClock,
+    roleAccess: CONTENTS['toolsScheduledMessages'].roleAccess,
+  },
+
+  {
     id: 80,
     group: 11,
     name: 'Сервис подтверждения номера',
@@ -2553,6 +2576,14 @@ export const pages = [
     icon: faBug,
     // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
+  },
+  {
+    id: 100,
+    group: 99,
+    name: 'Тестирование',
+    href: 'testing',
+    icon: faBug,
+    roleAccess: CONTENTS['testing'].roleAccess,
   },
   {
     id: 99,
