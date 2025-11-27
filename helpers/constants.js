@@ -164,6 +164,9 @@ const HeaderInfoContactsContent = dynamic(
 const ToolsImageConstructorContent = dynamic(
   () => import('@layouts/content/ToolsImageConstructorContent')
 )
+const ToolsScheduledMessagesContent = dynamic(
+  () => import('@layouts/content/ToolsScheduledMessagesContent')
+)
 const ToolsEventAnonsVkContent = dynamic(
   () => import('@layouts/content/ToolsEventAnonsVkContent')
 )
@@ -2019,6 +2022,11 @@ export const CONTENTS = Object.freeze({
     name: 'Инструменты / Конструктор картинок',
     roleAccess: (role) => role?.instruments?.imageConstructor,
   },
+  toolsScheduledMessages: {
+    Component: ToolsScheduledMessagesContent,
+    name: 'Сообщения по расписанию',
+    roleAccess: (role) => role?.newsletters?.see,
+  },
   toolsExport: {
     Component: ToolsExportContent,
     name: 'Инструменты / Экспорт данных',
@@ -2467,6 +2475,15 @@ export const pages = [
     icon: faImage,
     // accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
     roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
+  },
+
+  {
+    id: 78,
+    group: 10,
+    name: 'Сообщения по расписанию',
+    href: 'toolsScheduledMessages',
+    icon: faClock,
+    roleAccess: CONTENTS['toolsScheduledMessages'].roleAccess,
   },
 
   {
