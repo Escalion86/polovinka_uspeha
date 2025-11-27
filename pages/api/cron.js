@@ -7,6 +7,81 @@ import textAge from '@helpers/textAge'
 
 import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
+import convertHtmlToTelegramText from '@helpers/convertHtmlToTelegramText'
+import {
+  SCHEDULED_MESSAGE_STATUSES,
+} from '@helpers/constantsScheduledMessages'
+
+const buildScheduledMessageText = (message) => {
+  const preparedText = convertHtmlToTelegramText(message?.text || '')
+  if (message?.name) {
+    const title = `<b>${message.name}</b>`
+    return preparedText ? `${title}\n\n${preparedText}` : title
+  }
+  return preparedText
+}
+
+const processScheduledMessages = async ({
+  db,
+  location,
+  strTimeNow,
+  strDateNow,
+  dateTimeNow,
+}) => {
+  const scheduledMessages = await db
+    .model('ScheduledMessages')
+    .find({
+      status: SCHEDULED_MESSAGE_STATUSES.READY,
+      sendTime: strTimeNow,
+      'channel.telegramId': { $exists: true, $ne: '' },
+      $or: [
+        { sendDate: { $exists: false } },
+        { sendDate: '' },
+        { sendDate: strDateNow },
+      ],
+    })
+    .lean()
+
+  if (scheduledMessages.length === 0) return
+
+  for (const scheduledMessage of scheduledMessages) {
+    try {
+      const text = buildScheduledMessageText(scheduledMessage)
+      if (!text) continue
+      const telegramId = scheduledMessage?.channel?.telegramId
+      if (!telegramId) continue
+
+      const result = await sendMessageWithRepeats({
+        telegramId,
+        text,
+        location,
+      })
+
+      if (!result.error) {
+        await db.model('ScheduledMessages').findByIdAndUpdate(
+          scheduledMessage._id,
+          {
+            status: SCHEDULED_MESSAGE_STATUSES.SENT,
+            sentAt: dateTimeNow,
+          }
+        )
+      } else {
+        console.log('scheduledMessage send error', {
+          messageId: scheduledMessage._id,
+          location,
+          telegramId,
+        })
+      }
+    } catch (error) {
+      console.log('scheduledMessage error :>> ', {
+        error,
+        messageId: scheduledMessage._id,
+        location,
+          telegramId: scheduledMessage?.channel?.telegramId,
+      })
+    }
+  }
+}
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   if (!birthday) return undefined
@@ -49,6 +124,7 @@ export default async function handler(req, res) {
         const hoursNow = padNum(dateTimeNow.getHours(), 2)
 
         const strTimeNow = `${hoursNow}:${minutesNow}`
+        const strDateNow = `${dateTimeNow.getFullYear()}-${padNum(dateTimeNow.getMonth() + 1, 2)}-${padNum(dateTimeNow.getDate(), 2)}`
 
         // locations.forEach(async (location) =>
 
@@ -223,6 +299,14 @@ export default async function handler(req, res) {
             //   inline_keyboard,
             // })
           }
+
+          await processScheduledMessages({
+            db,
+            location,
+            strTimeNow,
+            strDateNow,
+            dateTimeNow,
+          })
         }
 
         return res?.status(200).json({ success: true })
