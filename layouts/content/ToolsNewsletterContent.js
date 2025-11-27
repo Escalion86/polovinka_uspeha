@@ -215,6 +215,7 @@ const ToolsNewsletterContent = () => {
     fetchInstanceState()
   }, [fetchInstanceState, location])
 
+
   useEffect(() => {
     if (isAuthorized) {
       fetchMessagesCount()

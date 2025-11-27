@@ -142,6 +142,7 @@ const ToolsNewsletterContent = dynamic(
 const LoggedUserNotificationsContent = dynamic(
   () => import('@layouts/content/LoggedUserNotificationsContent')
 )
+const TestingContent = dynamic(() => import('@layouts/content/TestingContent'))
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
 )
@@ -1983,6 +1984,11 @@ export const CONTENTS = Object.freeze({
     name: 'Разработчик',
     roleAccess: (role) => role?.dev,
   },
+  testing: {
+    Component: TestingContent,
+    name: 'Тестирование',
+    roleAccess: (role) => role?.dev,
+  },
   whatsappMessaging: {
     Component: WhatsappMessagesContent,
     name: 'Рассылка WhatsApp',
@@ -2553,6 +2559,14 @@ export const pages = [
     icon: faBug,
     // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
+  },
+  {
+    id: 100,
+    group: 99,
+    name: 'Тестирование',
+    href: 'testing',
+    icon: faBug,
+    roleAccess: CONTENTS['testing'].roleAccess,
   },
   {
     id: 99,
