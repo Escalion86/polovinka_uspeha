@@ -12,14 +12,8 @@ import {
   SCHEDULED_MESSAGE_STATUSES,
 } from '@helpers/constantsScheduledMessages'
 
-const buildScheduledMessageText = (message) => {
-  const preparedText = convertHtmlToTelegramText(message?.text || '')
-  if (message?.name) {
-    const title = `<b>${message.name}</b>`
-    return preparedText ? `${title}\n\n${preparedText}` : title
-  }
-  return preparedText
-}
+const buildScheduledMessageText = (message) =>
+  convertHtmlToTelegramText(message?.text || '')
 
 const processScheduledMessages = async ({
   db,

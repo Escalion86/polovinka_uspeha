@@ -3,20 +3,19 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import Button from '@components/Button'
 import ContentHeader from '@components/ContentHeader'
 import AddButton from '@components/IconToggleButtons/AddButton'
-import ComboBox from '@components/ComboBox'
-import { putData, deleteData } from '@helpers/CRUD'
+import CardButton from '@components/CardButton'
+import CardWrapper from '@components/CardWrapper'
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/faTrashAlt'
+import { deleteData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import scheduledMessagesAtomAsync from '@state/async/scheduledMessagesAtomAsync'
 import useSnackbar from '@helpers/useSnackbar'
-import formatDateTime from '@helpers/formatDateTime'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import {
   SCHEDULED_MESSAGE_STATUSES,
-  SCHEDULED_MESSAGE_STATUS_OPTIONS,
   SCHEDULED_MESSAGE_STATUS_NAME,
 } from '@helpers/constantsScheduledMessages'
 
@@ -37,6 +36,16 @@ const getTextPreview = (html) =>
         .trim()
     : ''
 
+const PREVIEW_MAX_LINES = 3
+
+const getLimitedTextPreview = (html) => {
+  const preview = getTextPreview(html)
+  if (!preview) return ''
+  const lines = preview.split('\n')
+  if (lines.length <= PREVIEW_MAX_LINES) return preview
+  return `${lines.slice(0, PREVIEW_MAX_LINES).join('\n')}...`
+}
+
 const ToolsScheduledMessagesContent = () => {
   const location = useAtomValue(locationAtom)
   const loggedUser = useAtomValue(loggedUserActiveAtom)
@@ -45,7 +54,6 @@ const ToolsScheduledMessagesContent = () => {
   const setScheduledMessages = useSetAtom(scheduledMessagesAtomAsync)
   const { success: notifySuccess, error: notifyError } = useSnackbar()
 
-  const [statusUpdatingId, setStatusUpdatingId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
   const sortedScheduledMessages = useMemo(() => {
@@ -87,37 +95,6 @@ const ToolsScheduledMessagesContent = () => {
       }
     },
     [scheduledMessages, setScheduledMessages]
-  )
-
-  const handleStatusChange = useCallback(
-    async (message, newStatus) => {
-      if (!message || !newStatus || message.status === newStatus) return
-      try {
-        setStatusUpdatingId(message._id)
-        const updated = await putData(
-          `/api/${location}/scheduled-messages/${message._id}`,
-          { status: newStatus },
-          null,
-          null,
-          false,
-          loggedUser?._id
-        )
-        if (!updated) throw new Error('update')
-        updateScheduledMessagesList(updated)
-        notifySuccess('Статус обновлён')
-      } catch (error) {
-        notifyError('Не удалось обновить статус')
-      } finally {
-        setStatusUpdatingId(null)
-      }
-    },
-    [
-      location,
-      loggedUser?._id,
-      notifyError,
-      notifySuccess,
-      updateScheduledMessagesList,
-    ]
   )
 
   const handleDelete = useCallback(
@@ -216,91 +193,77 @@ const ToolsScheduledMessagesContent = () => {
           </div>
         ) : (
           sortedScheduledMessages.map((message) => (
-            <div
+            <CardWrapper
               key={message._id}
-              className="flex flex-col gap-4 p-4 bg-white border rounded-lg shadow-sm"
+              onClick={() => handleOpenModal(message)}
+              flex={false}
+              gap={false}
+              className="cursor-pointer"
             >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="flex-1 min-w-[16rem]">
-                  <div className="text-lg font-semibold text-black">
-                    {message.name || 'Без названия'}
-                  </div>
-                  {message.text && (
-                    <div className="mt-2 text-sm text-general whitespace-pre-line">
-                      {getTextPreview(message.text)}
+              <div
+                role="button"
+                tabIndex={0}
+                className="w-full p-4 focus:outline-none"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    handleOpenModal(message)
+                  }
+                }}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex-1 min-w-[16rem] pr-6">
+                    <div className="text-lg font-semibold text-black">
+                      {message.name || 'Без названия'}
                     </div>
-                  )}
-                </div>
-                <div className="flex flex-col items-end gap-2 text-sm text-general">
-                  <div
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      STATUS_BADGE_STYLES[message.status] ||
-                      'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    {SCHEDULED_MESSAGE_STATUS_NAME[message.status] || '-'}
+                    {message.text && (
+                      <div className="mt-2 text-sm text-general whitespace-pre-line">
+                        {getLimitedTextPreview(message.text)}
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    Дата отправки:{' '}
-                    <span className="font-semibold">
-                      {message.sendDate || '-'}
-                    </span>
+                  <div className="flex flex-col items-end gap-2 text-sm text-general min-w-[12rem]">
+                    <div className="flex items-start justify-end w-full gap-2">
+                      <div
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          STATUS_BADGE_STYLES[message.status] ||
+                          'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {SCHEDULED_MESSAGE_STATUS_NAME[message.status] || '-'}
+                      </div>
+                      <div data-prevent-parent-click>
+                        <CardButton
+                          icon={faTrashAlt}
+                          color="red"
+                          tooltipText={
+                            deletingId === message._id
+                              ? 'Удаление...'
+                              : 'Удалить'
+                          }
+                          onClick={() => {
+                            if (deletingId === message._id) return
+                            handleDelete(message)
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      Дата отправки:{' '}
+                      <span className="font-semibold">
+                        {message.sendDate || '-'}
+                      </span>
+                    </div>
+                    <div>
+                      Время отправки:{' '}
+                      <span className="font-semibold">
+                        {message.sendTime || '-'}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    Время отправки:{' '}
-                    <span className="font-semibold">
-                      {message.sendTime || '-'}
-                    </span>
-                  </div>
-                  <div>
-                    Отправлено:{' '}
-                    <span className="font-semibold">
-                      {message.sentAt
-                        ? formatDateTime(
-                            message.sentAt,
-                            false,
-                            false,
-                            true,
-                            false,
-                            false,
-                            true,
-                            true
-                          )
-                        : '—'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="w-full max-w-xs">
-                  <ComboBox
-                    label="Статус"
-                    value={message.status}
-                    onChange={(value) =>
-                      handleStatusChange(message, value || message.status)
-                    }
-                    items={SCHEDULED_MESSAGE_STATUS_OPTIONS}
-                    disabled={statusUpdatingId === message._id}
-                  />
-                </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  <Button
-                    name="Редактировать"
-                    thin
-                    onClick={() => handleOpenModal(message)}
-                  />
-                  <Button
-                    name="Удалить"
-                    thin
-                    classBgColor="bg-red-500"
-                    classHoverBgColor="hover:bg-red-600"
-                    onClick={() => handleDelete(message)}
-                    disabled={deletingId === message._id}
-                  />
                 </div>
               </div>
-            </div>
+            </CardWrapper>
           ))
         )}
       </div>

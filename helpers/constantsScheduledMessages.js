@@ -4,14 +4,20 @@ export const SCHEDULED_MESSAGE_STATUSES = {
   SENT: 'sent',
 }
 
-export const SCHEDULED_MESSAGE_STATUS_OPTIONS = [
-  { value: SCHEDULED_MESSAGE_STATUSES.NEED_CHECK, name: 'Надо проверить' },
-  { value: SCHEDULED_MESSAGE_STATUSES.READY, name: 'Готово к отправке' },
-  { value: SCHEDULED_MESSAGE_STATUSES.SENT, name: 'Отправлено' },
-]
-
-export const SCHEDULED_MESSAGE_STATUS_NAME = {
-  [SCHEDULED_MESSAGE_STATUSES.NEED_CHECK]: 'Надо проверить',
-  [SCHEDULED_MESSAGE_STATUSES.READY]: 'Готово к отправке',
+const SCHEDULED_MESSAGE_STATUS_LABELS = {
+  [SCHEDULED_MESSAGE_STATUSES.NEED_CHECK]: 'Нужно одобрить',
+  [SCHEDULED_MESSAGE_STATUSES.READY]: 'Готов к отправке',
   [SCHEDULED_MESSAGE_STATUSES.SENT]: 'Отправлено',
 }
+
+export const SCHEDULED_MESSAGE_STATUS_OPTIONS = Object.entries(
+  SCHEDULED_MESSAGE_STATUS_LABELS
+).map(([value, name]) => ({ value, name }))
+
+export const SCHEDULED_MESSAGE_STATUS_OPTIONS_EDITABLE =
+  SCHEDULED_MESSAGE_STATUS_OPTIONS.filter(
+    ({ value }) => value !== SCHEDULED_MESSAGE_STATUSES.SENT
+  )
+
+export const SCHEDULED_MESSAGE_STATUS_NAME =
+  SCHEDULED_MESSAGE_STATUS_LABELS

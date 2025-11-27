@@ -18,6 +18,7 @@ import scheduledMessagesAtomAsync from '@state/async/scheduledMessagesAtomAsync'
 import {
   SCHEDULED_MESSAGE_STATUSES,
   SCHEDULED_MESSAGE_STATUS_OPTIONS,
+  SCHEDULED_MESSAGE_STATUS_OPTIONS_EDITABLE,
 } from '@helpers/constantsScheduledMessages'
 
 const TIME_OPTIONS = Array.from({ length: 48 }).map((_, index) => {
@@ -226,6 +227,17 @@ const scheduledMessageFunc = (message = null) => {
       modalsFunc?.scheduledChannel?.manage?.()
     }, [modalsFunc])
 
+    const isStatusReadOnly =
+      message?.status === SCHEDULED_MESSAGE_STATUSES.SENT
+
+    const statusOptions = useMemo(
+      () =>
+        isStatusReadOnly
+          ? SCHEDULED_MESSAGE_STATUS_OPTIONS
+          : SCHEDULED_MESSAGE_STATUS_OPTIONS_EDITABLE,
+      [isStatusReadOnly]
+    )
+
     return (
       <div className="flex flex-col gap-4">
         <Input
@@ -304,7 +316,8 @@ const scheduledMessageFunc = (message = null) => {
             onChange={(value) =>
               setFormStatus(value || SCHEDULED_MESSAGE_STATUSES.READY)
             }
-            items={SCHEDULED_MESSAGE_STATUS_OPTIONS}
+            items={statusOptions}
+            disabled={isStatusReadOnly}
           />
         </div>
       </div>
@@ -320,3 +333,4 @@ const scheduledMessageFunc = (message = null) => {
 }
 
 export default scheduledMessageFunc
+
