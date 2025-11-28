@@ -18,6 +18,8 @@ import {
   SCHEDULED_MESSAGE_STATUSES,
   SCHEDULED_MESSAGE_STATUS_NAME,
 } from '@helpers/constantsScheduledMessages'
+import { getNounMessages } from '@helpers/getNoun'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const STATUS_BADGE_STYLES = {
   [SCHEDULED_MESSAGE_STATUSES.NEED_CHECK]: 'bg-yellow-100 text-yellow-800',
@@ -44,6 +46,11 @@ const getLimitedTextPreview = (html) => {
   const lines = preview.split('\n')
   if (lines.length <= PREVIEW_MAX_LINES) return preview
   return `${lines.slice(0, PREVIEW_MAX_LINES).join('\n')}...`
+}
+
+const getChannelName = (channel) => {
+  if (!channel) return '��� ��������'
+  return channel.name || channel.telegramId || '��� ��������'
 }
 
 const ToolsScheduledMessagesContent = () => {
@@ -78,24 +85,24 @@ const ToolsScheduledMessagesContent = () => {
     [modalsFunc]
   )
 
-  const updateScheduledMessagesList = useCallback(
-    (updatedMessage, shouldPrepend = false) => {
-      const currentList = scheduledMessages || []
-      const exists = currentList.some(({ _id }) => _id === updatedMessage._id)
-      if (exists) {
-        setScheduledMessages(
-          currentList.map((item) =>
-            item._id === updatedMessage._id ? updatedMessage : item
-          )
-        )
-      } else if (shouldPrepend) {
-        setScheduledMessages([updatedMessage, ...currentList])
-      } else {
-        setScheduledMessages([...currentList, updatedMessage])
-      }
-    },
-    [scheduledMessages, setScheduledMessages]
-  )
+  // const updateScheduledMessagesList = useCallback(
+  //   (updatedMessage, shouldPrepend = false) => {
+  //     const currentList = scheduledMessages || []
+  //     const exists = currentList.some(({ _id }) => _id === updatedMessage._id)
+  //     if (exists) {
+  //       setScheduledMessages(
+  //         currentList.map((item) =>
+  //           item._id === updatedMessage._id ? updatedMessage : item
+  //         )
+  //       )
+  //     } else if (shouldPrepend) {
+  //       setScheduledMessages([updatedMessage, ...currentList])
+  //     } else {
+  //       setScheduledMessages([...currentList, updatedMessage])
+  //     }
+  //   },
+  //   [scheduledMessages, setScheduledMessages]
+  // )
 
   const handleDelete = useCallback(
     (message) => {
@@ -151,48 +158,22 @@ const ToolsScheduledMessagesContent = () => {
   return (
     <>
       <ContentHeader>
-        <div className="flex flex-wrap items-center justify-between w-full gap-4">
-          <div className="flex flex-col">
-            <div className="text-xl font-bold text-black">
-              Сообщения по расписанию
-            </div>
-            <div className="text-sm text-general">
-              Готовьте тексты для Telegram-группы и автоматически отправляйте
-              их в заданное время.
-            </div>
-          </div>
+        <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
+          <div className="text-lg font-bold whitespace-nowrap">
+            {getNounMessages(scheduledMessages.length)}
+          </div>{' '}
           <AddButton onClick={() => handleOpenModal()} />
         </div>
       </ContentHeader>
-
-      <div className="p-4 mt-4 bg-white border rounded-lg shadow-sm">
-        <div className="text-base font-semibold text-black">
-          Как устроены статусы
+      {/* <div className="flex flex-col gap-4"> */}
+      {sortedScheduledMessages.length === 0 ? (
+        <div className="p-6 text-center bg-white border rounded-lg shadow-sm text-general">
+          Пока нет сообщений. Создайте первое, чтобы автоматизировать
+          коммуникацию.
         </div>
-        <div className="mt-2 text-sm text-general space-y-1">
-          <div>
-            <span className="font-semibold">«Надо проверить»</span> — текст
-            лежит в черновиках и не попадёт в рассылку.
-          </div>
-          <div>
-            <span className="font-semibold">«Готово к отправке»</span> — cron
-            сможет отправить сообщение, когда наступит время.
-          </div>
-          <div>
-            <span className="font-semibold">«Отправлено»</span> — сообщение уже
-            ушло в Telegram.
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4 mt-4">
-        {sortedScheduledMessages.length === 0 ? (
-          <div className="p-6 text-center text-general bg-white border rounded-lg shadow-sm">
-            Пока нет сообщений. Создайте первое, чтобы автоматизировать
-            коммуникацию.
-          </div>
-        ) : (
-          sortedScheduledMessages.map((message) => (
+      ) : (
+        <CardListWrapper>
+          {sortedScheduledMessages.map((message) => (
             <CardWrapper
               key={message._id}
               onClick={() => handleOpenModal(message)}
@@ -216,8 +197,14 @@ const ToolsScheduledMessagesContent = () => {
                     <div className="text-lg font-semibold text-black">
                       {message.name || 'Без названия'}
                     </div>
+                    <div className="mt-1 text-sm text-general">
+                      Канал:{' '}
+                      <span className="font-semibold">
+                        {getChannelName(message.channel)}
+                      </span>
+                    </div>
                     {message.text && (
-                      <div className="mt-2 text-sm text-general whitespace-pre-line">
+                      <div className="mt-2 text-sm whitespace-pre-line text-general">
                         {getLimitedTextPreview(message.text)}
                       </div>
                     )}
@@ -264,10 +251,10 @@ const ToolsScheduledMessagesContent = () => {
                 </div>
               </div>
             </CardWrapper>
-          ))
-        )}
-      </div>
-
+          ))}
+        </CardListWrapper>
+      )}
+      {/* </div> */}
     </>
   )
 }

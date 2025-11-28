@@ -269,7 +269,7 @@ const ToolsNewsletterContent = () => {
       <ContentHeader>
         <div className="flex flex-wrap items-center justify-between w-full gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            {isAuthorized && (
+            {isAuthorized && displayMessagesCount > 0 && (
               <Button
                 name="Остановить рассылку"
                 onClick={handleStopNewsletter}
@@ -291,15 +291,9 @@ const ToolsNewsletterContent = () => {
                 icon={faKey}
               />
             )}
-            <div className="flex flex-wrap items-center gap-2 text-sm text-general">
-              {isAuthorized && (
-                <span className="flex items-center gap-1 font-semibold text-black">
-                  Отправляется:{' '}
-                  <span>{isCountLoading ? '...' : displayMessagesCount}</span>
-                </span>
-              )}
+            <div className="flex flex-wrap items-center gap-1 text-sm text-general">
               <Button
-                name="Обновить"
+                // name="Обновить"
                 onClick={handleRefreshNewslettersData}
                 loading={isCountLoading || isStateLoading}
                 thin
@@ -311,6 +305,14 @@ const ToolsNewsletterContent = () => {
                   {isStateLoading ? '...' : stateLabel}
                 </span>
               </span>
+              {isAuthorized && (
+                <span className="flex items-center gap-1 pl-1 text-black border-l border-gray-400">
+                  Отправляется:{' '}
+                  <span className="font-semibold">
+                    {isCountLoading ? '...' : displayMessagesCount}
+                  </span>
+                </span>
+              )}
             </div>
           </div>
           <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">

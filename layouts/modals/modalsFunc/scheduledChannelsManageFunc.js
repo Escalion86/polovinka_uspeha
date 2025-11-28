@@ -10,6 +10,8 @@ import useSnackbar from '@helpers/useSnackbar'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import scheduledChannelsAtomAsync from '@state/async/scheduledChannelsAtomAsync'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 
 const scheduledChannelsManageFunc = () => {
   const ScheduledChannelsManageModal = ({
@@ -39,7 +41,12 @@ const scheduledChannelsManageFunc = () => {
       setOnShowOnCloseConfirmDialog(
         Boolean(channelName || channelTelegramId || editingId)
       )
-    }, [channelName, channelTelegramId, editingId, setOnShowOnCloseConfirmDialog])
+    }, [
+      channelName,
+      channelTelegramId,
+      editingId,
+      setOnShowOnCloseConfirmDialog,
+    ])
 
     const resetForm = useCallback(() => {
       setChannelName('')
@@ -196,7 +203,7 @@ const scheduledChannelsManageFunc = () => {
             Сохранённые каналы
           </div>
           {channels.length === 0 ? (
-            <div className="p-3 text-sm text-general border rounded">
+            <div className="p-3 text-sm border rounded text-general">
               Пока нет ни одного канала. Добавьте первый, чтобы отправлять
               сообщения по расписанию.
             </div>
@@ -211,24 +218,27 @@ const scheduledChannelsManageFunc = () => {
                     <div className="font-semibold text-black">
                       {channel.name || 'Без названия'}
                     </div>
-                    <div className="text-sm text-general break-all">
+                    <div className="text-sm break-all text-general">
+                      <span className="font-semibold">id:</span>{' '}
                       {channel.telegramId || 'ID не задан'}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
-                      name="Редактировать"
+                      // name="Редактировать"
                       thin
                       outline
                       onClick={() => handleEdit(channel)}
+                      icon={faPencil}
                     />
                     <Button
-                      name="Удалить"
+                      // name="Удалить"
                       thin
                       classBgColor="bg-red-500"
                       classHoverBgColor="hover:bg-red-600"
                       onClick={() => handleDelete(channel)}
                       loading={deletingId === channel._id}
+                      icon={faTrash}
                     />
                   </div>
                 </div>

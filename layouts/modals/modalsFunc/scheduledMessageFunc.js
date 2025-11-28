@@ -20,6 +20,7 @@ import {
   SCHEDULED_MESSAGE_STATUS_OPTIONS,
   SCHEDULED_MESSAGE_STATUS_OPTIONS_EDITABLE,
 } from '@helpers/constantsScheduledMessages'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 
 const TIME_OPTIONS = Array.from({ length: 48 }).map((_, index) => {
   const hours = String(Math.floor(index / 2)).padStart(2, '0')
@@ -73,8 +74,8 @@ const scheduledMessageFunc = (message = null) => {
         channels.map((channel) => ({
           value: channel._id,
           name: channel.name
-            ? `${channel.name}${channel.telegramId ? ` (${channel.telegramId})` : ''}`
-            : channel.telegramId || 'Без названия',
+            ? channel.name
+            : `[id: ${channel.telegramId}]` || '???',
         })),
       [channels]
     )
@@ -227,8 +228,7 @@ const scheduledMessageFunc = (message = null) => {
       modalsFunc?.scheduledChannel?.manage?.()
     }, [modalsFunc])
 
-    const isStatusReadOnly =
-      message?.status === SCHEDULED_MESSAGE_STATUSES.SENT
+    const isStatusReadOnly = message?.status === SCHEDULED_MESSAGE_STATUSES.SENT
 
     const statusOptions = useMemo(
       () =>
@@ -254,7 +254,7 @@ const scheduledMessageFunc = (message = null) => {
           required
         />
 
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-2">
           <div className="flex-1">
             <ComboBox
               label="Канал для отправки"
@@ -270,12 +270,11 @@ const scheduledMessageFunc = (message = null) => {
             />
           </div>
           <Button
-            name="Настроить"
-            thin
             outline
             collapsing
             className="mt-3"
             onClick={handleManageChannelsClick}
+            icon={faPencil}
           />
         </div>
         {!channelOptions.length && (
@@ -333,4 +332,3 @@ const scheduledMessageFunc = (message = null) => {
 }
 
 export default scheduledMessageFunc
-

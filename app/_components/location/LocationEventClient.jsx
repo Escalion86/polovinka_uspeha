@@ -77,6 +77,7 @@ const Event = ({ event }) => {
 
 const EventBlock = ({ event }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const location = useAtomValue(locationAtom)
 
   return (
     <BlockContainer small>
@@ -86,21 +87,21 @@ const EventBlock = ({ event }) => {
         <Event event={event} />
       )}
       <div className="flex flex-col items-center">
-        {loggedUserActive && (
-          <Link
-            prefetch={false}
-            className="max-w-[76%]"
-            href={{
-              pathname: '/cabinet/eventsUpcoming',
-            }}
-            shallow
-          >
-            <PulseButton
-              className="mt-4 text-white"
-              title="Посмотреть список всех мероприятий"
-            />
-          </Link>
-        )}
+        <Link
+          prefetch={false}
+          className="max-w-[76%]"
+          href={{
+            pathname: loggedUserActive
+              ? `$/${location}/cabinet/eventsUpcoming`
+              : `/${location}/events`,
+          }}
+          shallow
+        >
+          <PulseButton
+            className="mt-4 text-white"
+            title="Посмотреть список всех мероприятий"
+          />
+        </Link>
       </div>
     </BlockContainer>
   )
