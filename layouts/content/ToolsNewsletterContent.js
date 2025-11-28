@@ -81,7 +81,11 @@ const ToolsNewsletterContent = () => {
   const newsletters = useAtomValue(newslettersAtomAsync)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const location = useAtomValue(locationAtom)
-  const { success: notifySuccess, error: notifyError } = useSnackbar()
+  const {
+    success: notifySuccess,
+    info: notifyInfo,
+    error: notifyError,
+  } = useSnackbar()
   const addButton = loggedUserActiveRole?.newsletters?.add
 
   const [sort, setSort] = useState({ createdAt: 'desc' })
@@ -181,8 +185,11 @@ const ToolsNewsletterContent = () => {
       modalsFunc.add({
         title: 'Код авторизации',
         text: code ? `Код: ${code}` : 'Код не получен. Попробуйте снова.',
-        confirmButtonName: 'Понятно',
-        onConfirm: true,
+        confirmButtonName: 'Скопировать код в буфер',
+        onConfirm: () => {
+          navigator.clipboard.writeText(code)
+          notifyInfo('Код скопирован в буфер обмена')
+        },
         showDecline: false,
       })
       fetchInstanceState()
@@ -214,7 +221,6 @@ const ToolsNewsletterContent = () => {
     fetchedStateLocationRef.current = location
     fetchInstanceState()
   }, [fetchInstanceState, location])
-
 
   useEffect(() => {
     if (isAuthorized) {
