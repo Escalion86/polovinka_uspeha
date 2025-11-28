@@ -1,6 +1,7 @@
-'use client'
+﻿'use client'
 
 import Button from '@components/Button'
+import ComboBox from '@components/ComboBox'
 import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -48,6 +49,14 @@ import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownB
 import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
 import DOMPurify from 'isomorphic-dompurify'
 import InputImage from '@components/InputImage'
+import dayjs from 'dayjs'
+import {
+  NEWSLETTER_SEND_MODES,
+  NEWSLETTER_SEND_MODE_OPTIONS,
+  NEWSLETTER_SENDING_STATUSES,
+  NEWSLETTER_SENDING_STATUS_OPTIONS_EDITABLE,
+  NEWSLETTER_TIME_OPTIONS,
+} from '@helpers/constantsNewsletters'
 
 // import TurndownService from 'turndown'
 
@@ -84,6 +93,14 @@ const getUsersData = (users) => {
     member,
     total,
   }
+}
+
+const getNearestHalfHourTime = () => {
+  const now = dayjs()
+  const minutes = now.minute()
+  const remainder = minutes % 30
+  const target = remainder === 0 ? now : now.add(30 - remainder, 'minute')
+  return target.format('HH:mm')
 }
 
 const newsletterFunc = (
@@ -189,6 +206,17 @@ const newsletterFunc = (
     const [newsletterSendType, setNewsletterSendType] = useState(
       isWhatsappReady ? newsletter?.sendType || 'both' : 'telegram-only'
     )
+    const [sendMode, setSendMode] = useState(NEWSLETTER_SEND_MODES.IMMEDIATE)
+    const [plannedSendDate, setPlannedSendDate] = useState(
+      dayjs().format('YYYY-MM-DD')
+    )
+    const [plannedSendTime, setPlannedSendTime] = useState(
+      getNearestHalfHourTime()
+    )
+    const [sendingStatus, setSendingStatus] = useState(
+      NEWSLETTER_SENDING_STATUSES.WAITING
+    )
+    const [isSavingScheduled, setIsSavingScheduled] = useState(false)
     const [rerender, setRerender] = useState(false)
 
     const toggleRerender = () => setRerender((state) => !state)
@@ -536,79 +564,128 @@ const newsletterFunc = (
       [prepearedText, previewVariables]
     )
 
-    const sendMessage = async (name, message) => {
-      // const result = []
-
-      // for (let i = 0; i < filteredSelectedUsers.length; i++) {
-      //   const user = filteredSelectedUsers[i]
-
+    const buildUsersMessagesPayload = useCallback(() => {
       const variables = extractVariables(prepearedText)
-
       const variablesObject = {}
       for (let i = 0; i < variables.length; i++) {
         const varName = variables[i]
         variablesObject[varName] = true
       }
 
-      // const testUsers = filteredSelectedUsers.map((user) => ({
-      //   userId: user._id,
-      //   whatsappPhone: user.whatsapp || user.phone,
-      //   variables: {
-      //     ...(variablesObject.mуж ? { муж: user.gender === 'male' } : {}),
-      //     ...(variablesObject.клуб ? { клуб: user.status === 'member' } : {}),
-      //     ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
-      //   },
-      // }))
+      const usersMessages = filteredSelectedUsers.map((user) => ({
+        userId: user._id,
+        whatsappPhone: user.whatsapp || user.phone,
+        telegramId: user.notifications?.telegram?.id,
+        variables: {
+          ...(variablesObject.муж ? { муж: user.gender === 'male' } : {}),
+          ...(variablesObject.клуб ? { клуб: user.status === 'member' } : {}),
+          ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
+        },
+      }))
 
-      // console.log('testUsers :>> ', testUsers)
+      return usersMessages
+    }, [filteredSelectedUsers, prepearedText])
 
-      // const preview = replaceVariableInTextTemplate(
-      //   prepearedText,
-      //   variablesObject
-      // )
+    const sendMessage = useCallback(
+      async (name, message) => {
+        const usersMessages = buildUsersMessagesPayload()
+        postData(
+          `/api/${location}/newsletters/byType/sendMessage`,
+          {
+            name,
+            sendType: newsletterSendType,
+            usersMessages,
+            image: newsletterImage,
+            message,
+          },
+          (data) => {
+            setNewsletter(data)
+          },
+          (data) => {
+            error('Не получилось отправить рассылку! Детали ошибки: ' + data)
+          }
+        )
 
-      const res = postData(
-        `/api/${location}/newsletters/byType/sendMessage`,
-        {
-          // phone: user.whatsapp || user.phone,
-          name,
-          sendType: newsletterSendType,
-          usersMessages: filteredSelectedUsers.map((user) => ({
-            userId: user._id,
-            whatsappPhone: user.whatsapp || user.phone,
-            telegramId: user.notifications?.telegram?.id,
-            variables: {
-              ...(variablesObject.муж ? { муж: user.gender === 'male' } : {}),
-              ...(variablesObject.клуб
-                ? { клуб: user.status === 'member' }
-                : {}),
-              ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
-            },
-            // whatsappMessage: messageState,
-          })),
+        closeModal()
+        info('Рассылка отправлена и далее сообщения попадут в очередь отправки')
+      },
+      [
+        buildUsersMessagesPayload,
+        closeModal,
+        error,
+        info,
+        location,
+        newsletterImage,
+        newsletterSendType,
+        setNewsletter,
+      ]
+    )
+
+    const handleSaveScheduledNewsletter = useCallback(async () => {
+      if (!plannedSendDate) {
+        error('Укажите дату отправки рассылки')
+        return
+      }
+      if (!plannedSendTime) {
+        error('Укажите время отправки рассылки')
+        return
+      }
+
+      try {
+        setIsSavingScheduled(true)
+        const usersMessages = buildUsersMessagesPayload()
+        const payload = {
+          name: newsletterName?.trim() || '',
+          newsletters: usersMessages,
+          message: messageState,
           image: newsletterImage,
-          message,
-        },
-        (data) => {
-          // success('Рассылка отправлена успешно')
-          setNewsletter(data)
-        },
-        (data) => {
-          error('Ошибка отправки рассылки! Ответ сервиса: ' + data)
+          sendType: newsletterSendType,
+          sendMode,
+          sendingStatus,
+          plannedSendDate,
+          plannedSendTime,
         }
-      )
 
-      closeModal()
-      info(
-        'Рассылка отправлена и после обработки запроса появится в списке рассылок'
-      )
-      //   const idMessage = res?.idMessage
-      //   result.push({ userId: user._id, messageState, idMessage })
-      // }
-      // console.log('res :>> ', res)
-      // return res
-    }
+        const created = await postData(
+          `/api/${location}/newsletters`,
+          payload,
+          (data) => {
+            setNewsletter(data)
+          },
+          null,
+          false,
+          loggedUserActive?._id
+        )
 
+        if (!created) {
+          throw new Error('create-newsletter')
+        }
+
+        success('Рассылка сохранена')
+        closeModal()
+      } catch (scheduleError) {
+        console.log('handleSaveScheduledNewsletter error', scheduleError)
+        error('Не получилось сохранить рассылку')
+      } finally {
+        setIsSavingScheduled(false)
+      }
+    }, [
+      buildUsersMessagesPayload,
+      closeModal,
+      error,
+      location,
+      loggedUserActive?._id,
+      messageState,
+      newsletterImage,
+      newsletterName,
+      newsletterSendType,
+      plannedSendDate,
+      plannedSendTime,
+      sendMode,
+      sendingStatus,
+      setNewsletter,
+      success,
+    ])
     const Component = useCallback(
       (props) => <EditableTextarea {...props} />,
       [rerender]
@@ -827,54 +904,78 @@ const newsletterFunc = (
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
+      if (!setDisableConfirm) return
+      setDisableConfirm(
+        sendMode === NEWSLETTER_SEND_MODES.SCHEDULED && isSavingScheduled
+      )
+    }, [isSavingScheduled, sendMode, setDisableConfirm])
 
-      if (
-        !newsletterName ||
-        !messageState ||
-        !filteredSelectedUsers?.length ||
-        !loggedUserActiveRole?.newsletters?.add ||
-        (isWhatsappRequired && !isWhatsappReady)
-      ) {
+    useEffect(() => {
+      const hasAccess = !!loggedUserActiveRole?.newsletters?.add
+      const hasBaseData =
+        hasAccess &&
+        newsletterName &&
+        messageState &&
+        filteredSelectedUsers?.length
+
+      if (!hasBaseData) {
         setOnConfirmFunc()
-      } else {
-        // const prepearedText = DOMPurify.sanitize(
-        //   convertHtmlToText(messageState, 'whatsapp'),
-        //   {
-        //     ALLOWED_TAGS: [],
-        //     ALLOWED_ATTR: [],
-        //   }
-        // )
-
-        if (!messageState) {
-          setOnConfirmFunc()
-        } else {
-          setOnConfirmFunc(() =>
-            modalsFunc.confirm({
-              title: 'Отправка сообщений пользователям',
-              text: `Вы уверены, что хотите отправить сообщение ${getNoun(
-                filteredSelectedUsers?.length,
-                'пользователю',
-                'пользователям',
-                'пользователям'
-              )} (${sendTypeTitles[newsletterSendType]})?`,
-              onConfirm: () => {
-                sendMessage(newsletterName, messageState)
-              },
-            })
-          )
-        }
+        return
       }
-    }, [
-      newsletterName,
-      messageState,
-      filteredSelectedUsers?.length,
-      loggedUserActiveRole,
-      newsletterSendType,
-      sendTypeTitles,
-      isWhatsappReady,
-    ])
 
+      if (sendMode === NEWSLETTER_SEND_MODES.SCHEDULED) {
+        const canScheduleSave =
+          plannedSendDate &&
+          plannedSendTime &&
+          sendingStatus &&
+          !isSavingScheduled
+
+        if (!canScheduleSave) {
+          setOnConfirmFunc()
+          return
+        }
+
+        setOnConfirmFunc(() => handleSaveScheduledNewsletter())
+        return
+      }
+
+      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
+      if (isWhatsappRequired && !isWhatsappReady) {
+        setOnConfirmFunc()
+        return
+      }
+
+      setOnConfirmFunc(() =>
+        modalsFunc.confirm({
+          title: 'Отправить сообщения пользователям',
+          text: `Вы уверены, что хотите отправить сообщения ${getNoun(
+            filteredSelectedUsers?.length,
+            'пользователю',
+            'пользователям',
+            'пользователям'
+          )} (${sendTypeTitles[newsletterSendType]})?`,
+          onConfirm: () => {
+            sendMessage(newsletterName, messageState)
+          },
+        })
+      )
+    }, [
+      filteredSelectedUsers?.length,
+      handleSaveScheduledNewsletter,
+      isSavingScheduled,
+      isWhatsappReady,
+      loggedUserActiveRole?.newsletters?.add,
+      messageState,
+      modalsFunc,
+      newsletterName,
+      newsletterSendType,
+      plannedSendDate,
+      plannedSendTime,
+      sendMessage,
+      sendMode,
+      sendTypeTitles,
+      sendingStatus,
+    ])
     if (!loggedUserActiveRole?.newsletters?.add)
       return <div>Рассылка недоступна</div>
 
@@ -1149,6 +1250,55 @@ const newsletterFunc = (
             )}
           </div>
         </InputWrapper>
+        <InputWrapper
+          label="Когда отправлять"
+          wrapperClassName="flex-col gap-y-1"
+        >
+          <div className="flex flex-col gap-y-1">
+            {NEWSLETTER_SEND_MODE_OPTIONS.map((option) => (
+              <RadioBox
+                key={option.value}
+                label={option.name}
+                checked={sendMode === option.value}
+                onChange={() => setSendMode(option.value)}
+                noMargin
+              />
+            ))}
+          </div>
+        </InputWrapper>
+        {sendMode === NEWSLETTER_SEND_MODES.SCHEDULED && (
+          <>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Input
+                label="Дата отправки"
+                type="date"
+                value={plannedSendDate}
+                onChange={setPlannedSendDate}
+                required
+              />
+              <ComboBox
+                label="Время отправки"
+                value={plannedSendTime}
+                onChange={(value) => setPlannedSendTime(value || '')}
+                items={NEWSLETTER_TIME_OPTIONS}
+                placeholder="Выберите время"
+                activePlaceholder
+                required
+              />
+            </div>
+            <ComboBox
+              label="Статус рассылки"
+              value={sendingStatus}
+              onChange={(value) =>
+                setSendingStatus(value || NEWSLETTER_SENDING_STATUSES.WAITING)
+              }
+              items={NEWSLETTER_SENDING_STATUS_OPTIONS_EDITABLE}
+              placeholder="Выберите статус"
+              activePlaceholder
+              required
+            />
+          </>
+        )}
         <InputImage
           label="Картинка для рассылки"
           directory="newsletters"
