@@ -89,7 +89,7 @@ export default async function handler(req, res) {
         `${config.urlWithInstance}/getAuthorizationCode/${config.token}`,
         {
           method: 'POST',
-          body: JSON.stringify({ phoneNumber }),
+          body: JSON.stringify({ phoneNumber: Number(phoneNumber) }),
         }
       )
       return res.status(200).json({ success: true, data })
