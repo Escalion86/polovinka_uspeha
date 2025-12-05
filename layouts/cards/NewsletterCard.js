@@ -47,13 +47,17 @@ const NewsletterCard = ({ newsletter, style }) => {
     'telegram-only': 'Только Telegram',
   }
 
+  const sendType = newsletter.sendType || 'whatsapp-only'
+
   const statuses = useMemo(() => {
     const temp = {}
-    newsletter.newsletters.forEach(({ whatsappStatus }) => {
-      if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
-        temp[whatsappStatus] = temp[whatsappStatus]
-          ? temp[whatsappStatus] + 1
-          : 1
+    newsletter.newsletters.forEach(({ whatsappStatus, telegramSuccess }) => {
+      if (sendType !== 'whatsapp-only' && telegramSuccess) {
+        temp.read = temp.read ? temp.read + 1 : 1
+      } else if (
+        ['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)
+      ) {
+        temp[whatsappStatus] ? temp[whatsappStatus] + 1 : 1
       } else if (!whatsappStatus) {
         temp.pending = temp.pending ? temp.pending + 1 : 1
       } else {
@@ -63,18 +67,13 @@ const NewsletterCard = ({ newsletter, style }) => {
     return temp
   }, [newsletter.newsletters])
 
-  const sendType = newsletter.sendType || 'whatsapp-only'
   const sendingStatusValue =
     newsletter.sendingStatus ||
-    (newsletter.status === 'active'
-      ? NEWSLETTER_SENDING_STATUSES.SENT
-      : null)
+    (newsletter.status === 'active' ? NEWSLETTER_SENDING_STATUSES.SENT : null)
   const sendingStatusLabel =
-    sendingStatusValue &&
-    NEWSLETTER_SENDING_STATUS_LABELS[sendingStatusValue]
+    sendingStatusValue && NEWSLETTER_SENDING_STATUS_LABELS[sendingStatusValue]
   const sendingStatusClass =
-    STATUS_BADGE_CLASSES[sendingStatusValue] ||
-    'bg-gray-100 text-gray-600'
+    STATUS_BADGE_CLASSES[sendingStatusValue] || 'bg-gray-100 text-gray-600'
 
   return (
     <CardWrapper

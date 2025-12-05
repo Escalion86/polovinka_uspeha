@@ -23,7 +23,7 @@ const DropdownButton = ({
             ? 'bg-gray-300 cursor-not-allowed opacity-100'
             : 'bg-general cursor-pointer'
         )}
-        style={{ cursor: 'not-allowed' }}
+        // style={{ cursor: 'not-allowed' }}
         label={
           <div className="flex items-center justify-center gap-x-2 whitespace-nowrap">
             {icon && (
@@ -38,21 +38,22 @@ const DropdownButton = ({
         disabled={disabled}
         // dismissOnClick={false}
       >
-        {items.map((item) => (
-          <DropdownItem
-            key={item.name}
-            className="flex items-center justify-start text-base text-white gap-x-2 whitespace-nowrap bg-general hover:bg-white hover:text-general"
-            onClick={item.onClick}
-          >
-            {item.icon && (
-              <FontAwesomeIcon
-                icon={item.icon}
-                className="w-5 h-5 min-w-5 min-h-5"
-              />
-            )}
-            {item.name}
-          </DropdownItem>
-        ))}
+        {!disabled &&
+          items.map((item) => (
+            <DropdownItem
+              key={item.name}
+              className="flex items-center justify-start text-base text-white gap-x-2 whitespace-nowrap bg-general hover:bg-white hover:text-general"
+              onClick={item.onClick}
+            >
+              {item.icon && (
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  className="w-5 h-5 min-w-5 min-h-5"
+                />
+              )}
+              {item.name}
+            </DropdownItem>
+          ))}
       </Dropdown>
     </div>
   )

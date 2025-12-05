@@ -120,7 +120,9 @@ const WhatsAppStatus = ({
         </Tooltip>
       )}
       {normalizedStatus &&
-        !['read', 'sent', 'delivered', 'pending'].includes(normalizedStatus) && (
+        !['read', 'sent', 'delivered', 'pending'].includes(
+          normalizedStatus
+        ) && (
           <Tooltip
             title={
               typeof normalizedStatus === 'string'
@@ -181,7 +183,9 @@ const TelegramStatus = ({
         </Tooltip>
       )}
       {normalizedStatus &&
-        !['read', 'sent', 'delivered', 'pending'].includes(normalizedStatus) && (
+        !['read', 'sent', 'delivered', 'pending'].includes(
+          normalizedStatus
+        ) && (
           <Tooltip
             title={
               typeof normalizedStatus === 'string'
@@ -331,6 +335,7 @@ const newsletterUsersViewFunc = (newsletterId) => {
                   // }
                   noBorder
                   onClick={() => modalsFunc.user.view(usersIds[index])}
+                  showConsentIcon
                 />
                 <div className="flex">
                   <WhatsAppStatus
