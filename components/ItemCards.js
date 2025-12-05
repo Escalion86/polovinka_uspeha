@@ -1,6 +1,5 @@
 import { useAtomValue } from 'jotai'
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
@@ -36,65 +35,19 @@ import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
 import eventSelector from '@state/selectors/eventSelector'
-import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
-import { faCheckSquare } from '@fortawesome/free-regular-svg-icons/faCheckSquare'
+import { Suspense } from 'react'
+import UserItemSkeleton from '@layouts/cards/Skeletons/UserItemSkeleton'
+import ItemContainer from './ItemContainer'
 
-const ItemContainer = ({
-  onClick,
-  active,
-  children,
-  noPadding = false,
-  className,
-  noBorder = false,
-  style,
-}) => (
-  <div
-    className={cn(
-      'relative flex w-full max-w-full',
-      { 'hover:bg-blue-200 cursor-pointer': onClick },
-      { 'bg-general/20': active },
-      { 'py-0.5 px-1': !noPadding },
-      { 'border-b border-gray-700 last:border-0': !noBorder },
-      className
-    )}
-    style={style}
-    onClick={
-      onClick
-        ? (e) => {
-            e.stopPropagation()
-            onClick()
-          }
-        : null
-    }
-  >
-    {typeof active === 'boolean' && (
-      <div
-        className={cn(
-          'transition-all flex items-center overflow-hidden duration-300 min-w-6',
-          // active ? 'w-7' : 'w-0'
-          active ? 'bg-general' : 'bg-gray-400'
-        )}
-      >
-        {/* {typeof active === 'boolean' ? ( */}
-        <FontAwesomeIcon
-          icon={active ? faCheckSquare : faSquare}
-          className={cn(
-            'w-5 h-5 min-w-5 mx-0.5 min-h-5',
-            faCheck ? 'text-white' : 'text-gray-400'
-          )}
-        />
-        {/* ) : (
-          <div className="w-6 h-6 text-lg flex items-center justify-center ml-0.5 text-white">
-            {active}
-          </div>
-        )} */}
-      </div>
-    )}
-    {children}
-  </div>
-)
+export const UserItemFromId = (props) => {
+  return (
+    <Suspense fallback={<UserItemSkeleton {...props} />}>
+      <UserItemFromIdComponent {...props} />
+    </Suspense>
+  )
+}
 
-export const UserItemFromId = ({
+const UserItemFromIdComponent = ({
   userId,
   onClick = null,
   active,
@@ -123,12 +76,11 @@ export const UserItem = ({
   hideGender,
   children,
   nameFieldWrapperClassName,
+  showConsentIcon = false,
 }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveRoleName = useAtomValue(
-    loggedUserActiveRoleNameAtom
-  )
+  const loggedUserActiveRoleName = useAtomValue(loggedUserActiveRoleNameAtom)
 
   if (!item) return null
 
@@ -144,9 +96,10 @@ export const UserItem = ({
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
 
   const canSeeConsentIcon =
-    loggedUserActiveRole?.dev ||
-    isUserAdmin(loggedUserActiveRoleName) ||
-    loggedUserActiveRoleName === 'moderator'
+    showConsentIcon &&
+    (loggedUserActiveRole?.dev ||
+      isUserAdmin(loggedUserActiveRoleName) ||
+      loggedUserActiveRoleName === 'moderator')
 
   return (
     <ItemContainer
@@ -211,9 +164,7 @@ export const UserItem = ({
           />
           {canSeeConsentIcon && (
             <FontAwesomeIcon
-              icon={
-                item.consentToMailing ? faCircleCheck : faCircleXmark
-              }
+              icon={item.consentToMailing ? faCircleCheck : faCircleXmark}
               className={cn(
                 'w-4 h-4 mx-1',
                 item.consentToMailing ? 'text-green-600' : 'text-red-700'
@@ -287,7 +238,7 @@ export const EventItem = ({
       <div className="flex items-center justify-between flex-1 px-1 leading-4">
         <div className="flex flex-col h-full justify-evenly">
           <TextLinesLimiter
-            className="font-bold text-general -mb-px"
+            className="-mb-px font-bold text-general"
             textCenter={false}
             lines={1}
           >

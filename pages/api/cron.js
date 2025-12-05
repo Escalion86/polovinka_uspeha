@@ -11,6 +11,11 @@ import convertHtmlToTelegramText from '@helpers/convertHtmlToTelegramText'
 import {
   SCHEDULED_MESSAGE_STATUSES,
 } from '@helpers/constantsScheduledMessages'
+import {
+  NEWSLETTER_SEND_MODES,
+  NEWSLETTER_SENDING_STATUSES,
+} from '@helpers/constantsNewsletters'
+import sendNewsletterMessages from '@server/sendNewsletterMessages'
 
 const buildScheduledMessageText = (message) =>
   convertHtmlToTelegramText(message?.text || '')
@@ -72,6 +77,60 @@ const processScheduledMessages = async ({
         messageId: scheduledMessage._id,
         location,
           telegramId: scheduledMessage?.channel?.telegramId,
+      })
+    }
+  }
+}
+
+const processScheduledNewsletters = async ({
+  db,
+  location,
+  strTimeNow,
+  strDateNow,
+}) => {
+  const newsletters = await db
+    .model('Newsletters')
+    .find({
+      sendMode: NEWSLETTER_SEND_MODES.SCHEDULED,
+      sendingStatus: NEWSLETTER_SENDING_STATUSES.WAITING,
+      plannedSendDate: { $exists: true, $ne: '' },
+      plannedSendTime: { $exists: true, $ne: '' },
+      $or: [
+        { plannedSendDate: { $lt: strDateNow } },
+        {
+          plannedSendDate: strDateNow,
+          plannedSendTime: { $lte: strTimeNow },
+        },
+      ],
+    })
+    .lean()
+
+  if (!newsletters.length) return
+
+  for (const newsletter of newsletters) {
+    try {
+      const { result, normalizedSendType } = await sendNewsletterMessages({
+        location,
+        name: newsletter.name,
+        usersMessages: newsletter.newsletters,
+        message: newsletter.message,
+        sendType: newsletter.sendType,
+        image: newsletter.image,
+        db,
+      })
+
+      await db.model('Newsletters').findByIdAndUpdate(newsletter._id, {
+        newsletters: result,
+        sendType: normalizedSendType,
+        sendingStatus: NEWSLETTER_SENDING_STATUSES.SENT,
+        status: 'active',
+        sendMode: NEWSLETTER_SEND_MODES.SCHEDULED,
+      })
+    } catch (error) {
+      console.log('scheduled newsletter error :>> ', {
+        newsletterId: newsletter._id,
+        location,
+        error,
       })
     }
   }
@@ -300,6 +359,12 @@ export default async function handler(req, res) {
             strTimeNow,
             strDateNow,
             dateTimeNow,
+          })
+          await processScheduledNewsletters({
+            db,
+            location,
+            strTimeNow,
+            strDateNow,
           })
         }
 

@@ -20,9 +20,10 @@ import {
 } from '@helpers/constantsScheduledMessages'
 import { getNounMessages } from '@helpers/getNoun'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
+import formatDateTime from '@helpers/formatDateTime'
 
 const STATUS_BADGE_STYLES = {
-  [SCHEDULED_MESSAGE_STATUSES.NEED_CHECK]: 'bg-yellow-100 text-yellow-800',
+  [SCHEDULED_MESSAGE_STATUSES.DRAFT]: 'bg-yellow-100 text-yellow-800',
   [SCHEDULED_MESSAGE_STATUSES.READY]: 'bg-blue-100 text-blue-800',
   [SCHEDULED_MESSAGE_STATUSES.SENT]: 'bg-green-100 text-green-800',
 }
@@ -65,7 +66,7 @@ const ToolsScheduledMessagesContent = () => {
 
   const sortedScheduledMessages = useMemo(() => {
     const order = {
-      [SCHEDULED_MESSAGE_STATUSES.NEED_CHECK]: 0,
+      [SCHEDULED_MESSAGE_STATUSES.DRAFT]: 0,
       [SCHEDULED_MESSAGE_STATUSES.READY]: 1,
       [SCHEDULED_MESSAGE_STATUSES.SENT]: 2,
     }
@@ -238,13 +239,9 @@ const ToolsScheduledMessagesContent = () => {
                     <div>
                       Дата отправки:{' '}
                       <span className="font-semibold">
-                        {message.sendDate || '-'}
-                      </span>
-                    </div>
-                    <div>
-                      Время отправки:{' '}
-                      <span className="font-semibold">
-                        {message.sendTime || '-'}
+                        {formatDateTime(
+                          message.sendDate + ' ' + message.sendTime
+                        )}
                       </span>
                     </div>
                   </div>

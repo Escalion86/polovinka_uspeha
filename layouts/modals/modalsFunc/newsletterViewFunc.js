@@ -12,6 +12,11 @@ import Button from '@components/Button'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
 import DOMPurify from 'isomorphic-dompurify'
+import {
+  NEWSLETTER_SEND_MODE_LABELS,
+  NEWSLETTER_SEND_MODES,
+  NEWSLETTER_SENDING_STATUS_LABELS,
+} from '@helpers/constantsNewsletters'
 // import { SelectUserList } from '@components/SelectItemList'
 
 // const CardButtonsComponent = ({ newsletter }) => (
@@ -49,6 +54,14 @@ const newsletterViewFunc = (newsletterId) => {
     }
 
     const sendType = newsletter?.sendType || 'whatsapp-only'
+    const sendingStatusLabel = newsletter?.sendingStatus
+      ? NEWSLETTER_SENDING_STATUS_LABELS[newsletter.sendingStatus] ||
+        newsletter.sendingStatus
+      : '-'
+    const sendModeLabel = newsletter?.sendMode
+      ? NEWSLETTER_SEND_MODE_LABELS[newsletter.sendMode] || newsletter.sendMode
+      : '-'
+    const isScheduled = newsletter?.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED
 
     useEffect(() => {
       if (!newsletter) closeModal()
@@ -91,7 +104,16 @@ const newsletterViewFunc = (newsletterId) => {
           <TextLine label="Тип рассылки">
             {sendTypeTitles[sendType] || 'Не указан'}
           </TextLine>
-          <TextLine label="Дата рассылки">
+          <TextLine label="Статус отправки">{sendingStatusLabel}</TextLine>
+          <TextLine label="Режим отправки">{sendModeLabel}</TextLine>
+          {isScheduled && (
+            <TextLine label="Плановая дата">
+              {formatDateTime(
+                newsletter.plannedSendDate + ' ' + newsletter.plannedSendTime
+              )}
+            </TextLine>
+          )}
+          <TextLine label="Дата создания">
             {formatDateTime(newsletter?.createdAt)}
           </TextLine>
           <TextLine label="Количество сообщений">

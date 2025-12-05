@@ -14,10 +14,21 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import SvgSigma from '@svg/SvgSigma'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { useMemo } from 'react'
+import {
+  NEWSLETTER_SEND_MODES,
+  NEWSLETTER_SENDING_STATUS_LABELS,
+  NEWSLETTER_SENDING_STATUSES,
+} from '@helpers/constantsNewsletters'
 // import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import { useAtomValue } from 'jotai'
 // import { Suspense } from 'react'
 // import UserCardSkeleton from './Skeletons/UserCardSkeleton'
+
+const STATUS_BADGE_CLASSES = {
+  [NEWSLETTER_SENDING_STATUSES.DRAFT]: 'bg-yellow-100 text-yellow-800',
+  [NEWSLETTER_SENDING_STATUSES.WAITING]: 'bg-blue-100 text-blue-800',
+  [NEWSLETTER_SENDING_STATUSES.SENT]: 'bg-green-100 text-green-800',
+}
 
 const NewsletterCard = ({ newsletter, style }) => {
   // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
@@ -37,13 +48,17 @@ const NewsletterCard = ({ newsletter, style }) => {
     'telegram-only': 'Только Telegram',
   }
 
+  const sendType = newsletter.sendType || 'whatsapp-only'
+
   const statuses = useMemo(() => {
     const temp = {}
-    newsletter.newsletters.forEach(({ whatsappStatus }) => {
-      if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
-        temp[whatsappStatus] = temp[whatsappStatus]
-          ? temp[whatsappStatus] + 1
-          : 1
+    newsletter.newsletters.forEach(({ whatsappStatus, telegramSuccess }) => {
+      if (sendType !== 'whatsapp-only' && telegramSuccess) {
+        temp.read = temp.read ? temp.read + 1 : 1
+      } else if (
+        ['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)
+      ) {
+        temp[whatsappStatus] ? temp[whatsappStatus] + 1 : 1
       } else if (!whatsappStatus) {
         temp.pending = temp.pending ? temp.pending + 1 : 1
       } else {
@@ -53,7 +68,13 @@ const NewsletterCard = ({ newsletter, style }) => {
     return temp
   }, [newsletter.newsletters])
 
-  const sendType = newsletter.sendType || 'whatsapp-only'
+  const sendingStatusValue =
+    newsletter.sendingStatus ||
+    (newsletter.status === 'active' ? NEWSLETTER_SENDING_STATUSES.SENT : null)
+  const sendingStatusLabel =
+    sendingStatusValue && NEWSLETTER_SENDING_STATUS_LABELS[sendingStatusValue]
+  const sendingStatusClass =
+    STATUS_BADGE_CLASSES[sendingStatusValue] || 'bg-gray-100 text-gray-600'
 
   return (
     <CardWrapper
@@ -65,21 +86,31 @@ const NewsletterCard = ({ newsletter, style }) => {
       flex={false}
     >
       <div className="flex-1 flex flex-col gap-y-0.5">
-        <div className="flex items-center justify-between w-full min-w-full">
+        <div className="flex items-center justify-between w-full min-w-full gap-2">
           <TextLinesLimiter
-            className="flex w-full font-bold text-general"
+            className="flex flex-1 font-bold text-general"
             textCenter={false}
           >
             {newsletter.name || '[без названия]'}
           </TextLinesLimiter>
+          {sendingStatusLabel && (
+            <span
+              className={`px-2 py-0.5 text-xs font-semibold rounded-full whitespace-nowrap ${sendingStatusClass}`}
+            >
+              {sendingStatusLabel}
+            </span>
+          )}
         </div>
         <div className="flex items-center justify-between w-full min-w-full">
           <div className="text-sm text-gray-600">
             {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
           <div className="text-sm leading-4 whitespace-nowrap">
+            <span className="text-gray-600">Дата отправки: </span>
             {formatDateTime(
-              newsletter.createdAt,
+              newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED
+                ? newsletter.plannedSendDate + ' ' + newsletter.plannedSendTime
+                : newsletter.createdAt,
               false,
               false,
               true,
@@ -90,6 +121,12 @@ const NewsletterCard = ({ newsletter, style }) => {
             )}
           </div>
         </div>
+        {/* {newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED && (
+          <div className="text-xs text-gray-500">
+            План: {newsletter.plannedSendDate || '-'}{' '}
+            {newsletter.plannedSendTime || ''}
+          </div>
+        )} */}
         <div className="flex flex-wrap items-center gap-x-5">
           <div className="flex items-center gap-x-1">
             <FontAwesomeIcon className="w-5 h-5 text-success" icon={faCheck} />
