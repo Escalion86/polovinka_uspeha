@@ -15,6 +15,7 @@ import SvgSigma from '@svg/SvgSigma'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { useMemo } from 'react'
 import {
+  NEWSLETTER_SEND_MODES,
   NEWSLETTER_SENDING_STATUS_LABELS,
   NEWSLETTER_SENDING_STATUSES,
 } from '@helpers/constantsNewsletters'
@@ -105,8 +106,11 @@ const NewsletterCard = ({ newsletter, style }) => {
             {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
           <div className="text-sm leading-4 whitespace-nowrap">
+            <span className="text-gray-600">Дата отправки: </span>
             {formatDateTime(
-              newsletter.createdAt,
+              newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED
+                ? newsletter.plannedSendDate + ' ' + newsletter.plannedSendTime
+                : newsletter.createdAt,
               false,
               false,
               true,
@@ -117,6 +121,12 @@ const NewsletterCard = ({ newsletter, style }) => {
             )}
           </div>
         </div>
+        {/* {newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED && (
+          <div className="text-xs text-gray-500">
+            План: {newsletter.plannedSendDate || '-'}{' '}
+            {newsletter.plannedSendTime || ''}
+          </div>
+        )} */}
         <div className="flex flex-wrap items-center gap-x-5">
           <div className="flex items-center gap-x-1">
             <FontAwesomeIcon className="w-5 h-5 text-success" icon={faCheck} />
