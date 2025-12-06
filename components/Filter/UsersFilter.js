@@ -79,7 +79,7 @@ const UsersFilter = ({
                   icon={faTelegram}
                   className="w-6 h-6 text-gray-500 min-h-6"
                 />
-                <span className="absolute w-8 h-[2px] bg-red-500 rotate-45" />
+                <span className="absolute w-8 h-0.5 bg-red-500 rotate-45" />
               </span>
             ),
           }}

@@ -127,19 +127,19 @@ const UserMenu = () => {
             <span>{loggedUserActive.secondName}</span>
           </div>
           <div
-            className="relative bg-white border-b-2 cursor-pointer group border-general min-h-[3rem]"
+            className="relative bg-white border-b-2 cursor-pointer group border-general min-h-12"
             onClick={() =>
               modalsFunc.user.editPersonalStatus(loggedUserActive._id)
             }
           >
             {loggedUserActive.personalStatus ? (
               <>
-                <div className="relative flex items-center justify-center px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general min-h-[3rem]">
+                <div className="relative flex items-center justify-center px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general min-h-12">
                   <SvgKavichki className="absolute w-3 h-3 bottom-1 left-1 fill-general" />
                   {loggedUserActive.personalStatus}
                   <SvgKavichki className="absolute w-3 h-3 rotate-180 top-1 right-1 fill-general" />
                 </div>
-                <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center duration-300 group-hover:text-general/100 text-general/0">
+                <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center duration-300 group-hover:text-general text-general/0">
                   Изменить статус
                 </div>
               </>
