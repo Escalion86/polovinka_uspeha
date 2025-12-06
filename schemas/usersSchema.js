@@ -157,6 +157,16 @@ const usersSchema = {
     of: Schema.Types.Mixed,
     default: DEFAULT_USERS_NOTIFICATIONS,
   },
+  eventAchievements: {
+    type: [
+      {
+        key: { type: String, required: true },
+        value: { type: Number, default: 0 },
+        updatedAt: { type: Date, default: () => Date.now() },
+      },
+    ],
+    default: [],
+  },
   consentToMailing: {
     type: Boolean,
     default: false,

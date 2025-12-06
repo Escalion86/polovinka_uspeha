@@ -7,6 +7,10 @@ import formatDate from '@helpers/formatDate'
 import formatDateTime from '@helpers/formatDateTime'
 import getDataStringBetweenDates from '@helpers/getDataStringBetweenDates'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import {
+  EVENT_ACHIEVEMENTS_CONFIG,
+  calculateEventAchievementPlace,
+} from '@helpers/eventAchievementsConfig'
 import { putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
@@ -16,28 +20,12 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useAtomValue, useSetAtom } from 'jotai'
 import Tilt from 'react-parallax-tilt'
-
-const place = (count, places) => {
-  if (
-    places === null ||
-    typeof places !== 'object' ||
-    !count ||
-    typeof count !== 'number'
-  )
-    return
-  for (let i = 0; i < places.length; i++) {
-    const num = places[i]
-    if (num <= count) return i
-  }
-  return
-}
 
 const Cup = ({ place, className, image }) => {
   if (image)
@@ -270,11 +258,9 @@ const UserStatisticsContent = () => {
     asyncEventsUsersByUserIdAtom(loggedUserActive._id)
   )
   const location = useAtomValue(locationAtom)
-  const siteSettings = useAtomValue(siteSettingsAtom)
   const snackbar = useSnackbar()
   const pendingViewIdsRef = useRef(new Set())
   const loggedUserId = loggedUserActive?._id
-  const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser
     .filter(({ status }) => !['ban', 'reserve'].includes(status))
     .map((eventUser) => eventUser.eventId)
@@ -286,23 +272,7 @@ const UserStatisticsContent = () => {
       events.filter(
         (event) => isEventClosedFunc(event) && userEventsIds.includes(event._id)
       ),
-    [events]
-  )
-
-  const eventsTagsWithCount = eventsTags.map(
-    ({
-      text,
-      // , color
-    }) => {
-      const filteredEventsWithTag = filteredEvents.filter(
-        (event) => event.tags && event.tags.includes(text)
-      )
-      return {
-        text,
-        //  color,
-        count: filteredEventsWithTag.length,
-      }
-    }
+    [events, userEventsIds]
   )
 
   const assignedAchievements = useMemo(() => {
@@ -451,159 +421,35 @@ const UserStatisticsContent = () => {
     }
   })
 
-  const rare = [
-    [20, 12, 7, 4, 2],
-    [40, 25, 14, 8, 4],
-    [50, 30, 18, 10, 5],
-    [60, 35, 20, 12, 6],
-    [80, 50, 28, 16, 8],
-    [100, 60, 35, 20, 10],
-  ]
+  const storedEventAchievementsMap = useMemo(() => {
+    const records = Array.isArray(loggedUserActive?.eventAchievements)
+      ? loggedUserActive.eventAchievements
+      : []
+    return records.reduce((map, record) => {
+      if (record?.key) {
+        const value =
+          typeof record.value === 'number' && Number.isFinite(record.value)
+            ? record.value
+            : 0
+        map.set(record.key, value)
+      }
+      return map
+    }, new Map())
+  }, [loggedUserActive?.eventAchievements])
 
-  const tagEventsCount = (tag) =>
-    eventsTagsWithCount.find(({ text }) => text === tag)?.count
-
-  const metricAchievements = [
-    {
-      name: 'Активист',
-      cause: 'Количество посещенных мероприятий',
-      counts: rare[5],
-      num: filteredEvents.length,
-    },
-    {
-      name: 'Лудоман',
-      cause: 'Количество посещенных мероприятий с тэгом "Азарт"',
-      counts: rare[2],
-      num: tagEventsCount('азарт'),
-    },
-    {
-      name: 'Путешественник',
-      cause: 'Количество посещенных мероприятий с тэгом "Путешествие"',
-      counts: rare[0],
-      num: tagEventsCount('путешествие'),
-    },
-    {
-      name: 'Турист',
-      cause: 'Количество посещенных мероприятий с тэгом "Поход"',
-      counts: rare[0],
-      num: tagEventsCount('поход'),
-    },
-    {
-      name: 'ЗОЖник',
-      cause: 'Количество посещенных мероприятий с тэгом "Здоровье"',
-      counts: rare[2],
-      num: tagEventsCount('здоровье'),
-    },
-    {
-      name: 'Настольщик',
-      cause: 'Количество посещенных мероприятий с тэгом "Настолки"',
-      counts: rare[2],
-      num: tagEventsCount('настолки'),
-    },
-    {
-      name: 'Эволюционер',
-      cause: 'Количество посещенных мероприятий с тэгом "Развитие"',
-      counts: rare[0],
-      num: tagEventsCount('развитие'),
-    },
-    {
-      name: 'Урбанист',
-      cause: 'Количество посещенных мероприятий с тэгом "Город"',
-      counts: rare[3],
-      num: tagEventsCount('город'),
-    },
-    {
-      name: 'Рандевушник',
-      cause: 'Количество посещенных мероприятий с тэгом "Свидание"',
-      counts: rare[0],
-      num: tagEventsCount('свидание'),
-    },
-    {
-      name: 'Загадочник',
-      cause: 'Количество посещенных мероприятий с тэгом "Квест"',
-      counts: rare[0],
-      num: tagEventsCount('квест'),
-    },
-    {
-      name: 'Спортсмен',
-      cause: 'Количество посещенных мероприятий с тэгом "Спорт"',
-      counts: rare[1],
-      num: tagEventsCount('спорт'),
-    },
-    {
-      name: 'Тусовщик',
-      cause: 'Количество посещенных мероприятий с тэгом "Вечеринка"',
-      counts: rare[0],
-      num: tagEventsCount('вечеринка'),
-    },
-    {
-      name: 'Парильщик',
-      cause: 'Количество посещенных мероприятий с тэгом "Баня"',
-      counts: rare[1],
-      num: tagEventsCount('баня'),
-    },
-    {
-      name: 'Гулёна',
-      cause: 'Количество посещенных мероприятий с тэгом "Прогулка"',
-      counts: rare[1],
-      num: tagEventsCount('прогулка'),
-    },
-    {
-      name: 'Леший',
-      cause: 'Количество посещенных мероприятий с тэгом "Природа"',
-      counts: rare[3],
-      num: tagEventsCount('природа'),
-    },
-    {
-      name: 'Экстрасенс',
-      cause: 'Количество посещенных мероприятий с тэгом "Эзотерика"',
-      counts: rare[0],
-      num: tagEventsCount('эзотерика'),
-    },
-    {
-      name: 'Кинокритик',
-      cause: 'Количество посещенных мероприятий с тэгом "Кино"',
-      counts: rare[0],
-      num: tagEventsCount('кино'),
-    },
-    {
-      name: 'АРТист',
-      cause: 'Количество посещенных мероприятий с тэгом "Искусство"',
-      counts: rare[0],
-      num: tagEventsCount('искусство'),
-    },
-    {
-      name: 'Пирушник',
-      cause: 'Количество посещенных мероприятий с тэгом "Застолье"',
-      counts: rare[1],
-      num: tagEventsCount('застолье'),
-    },
-    {
-      name: 'Мать Тереза',
-      cause: 'Количество посещенных мероприятий с тэгом "Благотворительность"',
-      counts: rare[0],
-      num: eventsTagsWithCount.find(
-        ({ text }) => text === 'благотворительность'
-      ),
-    },
-    {
-      name: 'Зигмунд Фрейд',
-      cause: 'Количество посещенных мероприятий с тэгом "Психология"',
-      counts: rare[0],
-      num: tagEventsCount('психология'),
-    },
-    {
-      name: 'Гений',
-      cause: 'Количество посещенных мероприятий с тэгом "Квиз"',
-      counts: rare[1],
-      num: eventsTagsWithCount.find(({ text }) => text === 'квиз'),
-    },
-  ]
-
-  const metricAchievementsWithPlace = metricAchievements.map((achive) => ({
-    ...achive,
-    place: place(achive.num, achive.counts),
-  }))
+  const metricAchievementsWithPlace = EVENT_ACHIEVEMENTS_CONFIG.map(
+    ({ key, name, cause, thresholds }) => {
+      const num = storedEventAchievementsMap.get(key) ?? 0
+      return {
+        key,
+        name,
+        cause,
+        counts: thresholds,
+        num,
+        place: calculateEventAchievementPlace(num, thresholds),
+      }
+    }
+  )
 
   const sortedAchievementsWithPlace = [
     ...metricAchievementsWithPlace.filter(
@@ -628,10 +474,8 @@ const UserStatisticsContent = () => {
     })
   )
 
-  const achievementsCards = [
-    ...assignedAchievementCards,
-    ...metricAchievementCards,
-  ]
+  const hasAnyAchievements =
+    assignedAchievementCards.length > 0 || metricAchievementCards.length > 0
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto gap-y-5">
@@ -654,17 +498,35 @@ const UserStatisticsContent = () => {
           onChange={() => setShowAllAchivement((state) => !state)}
         />
         <div className="flex flex-wrap justify-center gap-2">
-          {achievementsCards.length > 0 ? (
-            achievementsCards.map(
-              ({
-                key,
-                name,
-                place,
-                tooltipText,
-                image,
-                assignmentId,
-                isViewed,
-              }) => (
+          {metricAchievementCards.length > 0 ? (
+            metricAchievementCards.map(
+              ({ key, name, place, tooltipText, image, assignmentId }) => (
+                <Achivement
+                  key={key}
+                  name={name}
+                  place={place}
+                  tooltipText={tooltipText}
+                  image={image}
+                  isUnviewed={false}
+                  onClick={
+                    assignmentId
+                      ? () => handleAchievementCardClick(assignmentId)
+                      : undefined
+                  }
+                />
+              )
+            )
+          ) : !hasAnyAchievements ? (
+            <div>У вас пока нет достижений</div>
+          ) : null}
+        </div>
+      </div>
+      {assignedAchievementCards.length > 0 && (
+        <div className="flex flex-col items-center w-full gap-y-1">
+          <H3>Уникальные достижения</H3>
+          <div className="flex flex-wrap justify-center gap-2">
+            {assignedAchievementCards.map(
+              ({ key, name, place, tooltipText, image, assignmentId, isViewed }) => (
                 <Achivement
                   key={key}
                   name={name}
@@ -679,12 +541,10 @@ const UserStatisticsContent = () => {
                   }
                 />
               )
-            )
-          ) : (
-            <div>У вас пока нет достижений</div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <PieChart
         data={eventsByDirectionsData}
         title={`Посетил мероприятия по направлениям`}

@@ -49,6 +49,8 @@ const sortParams = [
   { key: 'birthday', title: 'по возрасту', type: 'number' },
   { key: 'createdAt', title: 'по дате создания', type: 'number' },
   { key: 'payAt', title: 'по дате события', type: 'number' },
+  { key: 'sendDate', title: 'по дате отправки', type: 'number' },
+  { key: 'newsletterSendDate', title: 'по дате отправки', type: 'number' },
   {
     key: 'signedUpEventsCount',
     title: 'по кол-ву записей',

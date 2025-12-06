@@ -2024,7 +2024,7 @@ export const CONTENTS = Object.freeze({
   },
   toolsScheduledMessages: {
     Component: ToolsScheduledMessagesContent,
-    name: 'Сообщения по расписанию',
+    name: 'Сообщения в канал Telegram',
     roleAccess: (role) => role?.newsletters?.see,
   },
   toolsExport: {
@@ -2480,7 +2480,7 @@ export const pages = [
   {
     id: 78,
     group: 10,
-    name: 'Сообщения по расписанию',
+      name: 'Сообщения в канал Telegram',
     href: 'toolsScheduledMessages',
     icon: faClock,
     roleAccess: CONTENTS['toolsScheduledMessages'].roleAccess,

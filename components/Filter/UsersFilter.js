@@ -3,7 +3,10 @@ import RelationshipUserToggleButtons from '@components/IconToggleButtons/Relatio
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 import CheckedUserToggleButtons from '@components/IconToggleButtons/CheckedUserToggleButtons'
 import ConsentUserToggleButtons from '@components/IconToggleButtons/ConsentUserToggleButtons'
+import ToggleButtons from '@components/IconToggleButtons/ToggleButtons'
 import Slider from '@components/Slider'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 
 const UsersFilter = ({
   value,
@@ -54,6 +57,33 @@ const UsersFilter = ({
           onChange={(value) =>
             onChange((state) => ({ ...state, consent: value }))
           }
+        />
+      )}
+      {value?.telegram && (
+        <ToggleButtons
+          value={value.telegram}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, telegram: value }))
+          }
+          buttonsConfig={[
+            { value: 'withId', color: 'green' },
+            { value: 'withoutId', color: 'secondary' },
+          ]}
+          names={{
+            withId: (
+              <FontAwesomeIcon icon={faTelegram} className="w-6 h-6 min-h-6" />
+            ),
+            withoutId: (
+              <span className="relative flex items-center justify-center">
+                <FontAwesomeIcon
+                  icon={faTelegram}
+                  className="w-6 h-6 text-gray-500 min-h-6"
+                />
+                <span className="absolute w-8 h-[2px] bg-red-500 rotate-45" />
+              </span>
+            ),
+          }}
+          iconsOnly
         />
       )}
       {value?.ages && (

@@ -144,7 +144,8 @@ const modalsFuncGenerator = (get, set) => {
       maxUsers,
       canSelectNone,
       modalTitle,
-      getFullUsers
+      getFullUsers,
+      showConsentIcon
     ) =>
       addModal(
         require('../layouts/modals/modalsFunc/selectUsersFunc').default(
@@ -156,7 +157,8 @@ const modalsFuncGenerator = (get, set) => {
           maxUsers,
           canSelectNone,
           modalTitle,
-          getFullUsers
+          getFullUsers,
+          showConsentIcon
         )
       ),
     importUsersByPhones: (usersSource = [], onConfirm) =>
