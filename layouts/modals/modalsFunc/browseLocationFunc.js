@@ -15,7 +15,7 @@ const Item = ({ towns = [], checked, location, isRegister }) => {
         checked
           ? 'border-success bg-green-300/50'
           : 'bg-gray-200/50 border-gray-500',
-        'min-h-[3rem] flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer hover:shadow-active'
+        'min-h-12 flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer hover:shadow-active'
       )}
     >
       <div className="flex flex-wrap gap-x-1 gap-y-1">

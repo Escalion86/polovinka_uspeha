@@ -40,6 +40,11 @@ import { faStop } from '@fortawesome/free-solid-svg-icons/faStop'
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight'
 import { faKey } from '@fortawesome/free-solid-svg-icons/faKey'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import ToggleButtons from '@components/IconToggleButtons/ToggleButtons'
+import {
+  NEWSLETTER_SENDING_STATUS_LABELS,
+  NEWSLETTER_SENDING_STATUSES,
+} from '@helpers/constantsNewsletters'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -88,7 +93,41 @@ const ToolsNewsletterContent = () => {
   } = useSnackbar()
   const addButton = loggedUserActiveRole?.newsletters?.add
 
-  const [sort, setSort] = useState({ createdAt: 'desc' })
+  const statusButtonsConfig = useMemo(
+    () => [
+      {
+        value: NEWSLETTER_SENDING_STATUSES.DRAFT,
+        name: NEWSLETTER_SENDING_STATUS_LABELS[
+          NEWSLETTER_SENDING_STATUSES.DRAFT
+        ],
+        color: 'warning',
+      },
+      {
+        value: NEWSLETTER_SENDING_STATUSES.WAITING,
+        name: NEWSLETTER_SENDING_STATUS_LABELS[
+          NEWSLETTER_SENDING_STATUSES.WAITING
+        ],
+        color: 'primary',
+      },
+      {
+        value: NEWSLETTER_SENDING_STATUSES.SENT,
+        name: NEWSLETTER_SENDING_STATUS_LABELS[
+          NEWSLETTER_SENDING_STATUSES.SENT
+        ],
+        color: 'success',
+      },
+    ],
+    []
+  )
+
+  const [statusFilter, setStatusFilter] = useState(() =>
+    statusButtonsConfig.reduce(
+      (acc, cfg) => ({ ...acc, [cfg.value]: true }),
+      {}
+    )
+  )
+
+  const [sort, setSort] = useState({ newsletterSendDate: 'desc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
   const [messagesCount, setMessagesCount] = useState(null)
   const [isCountLoading, setIsCountLoading] = useState(false)
@@ -240,10 +279,30 @@ const ToolsNewsletterContent = () => {
     prevLengthRef.current = newslettersLength
   }, [fetchInstanceState, fetchMessagesCount, isAuthorized, newslettersLength])
 
-  const sortedNewsletters = useMemo(
-    () => [...(newsletters || [])].sort(sortFunc),
-    [newsletters, sort]
+  const getSendingStatusValue = useCallback(
+    (newsletter) =>
+      newsletter?.sendingStatus ||
+      (newsletter?.status === 'active'
+        ? NEWSLETTER_SENDING_STATUSES.SENT
+        : null),
+    []
   )
+
+  const filteredNewsletters = useMemo(
+    () =>
+      (newsletters || []).filter((newsletter) => {
+        const status = getSendingStatusValue(newsletter)
+        if (!status) return true
+        return statusFilter[status] ?? true
+      }),
+    [getSendingStatusValue, newsletters, statusFilter]
+  )
+
+  const sortedNewsletters = useMemo(() => {
+    const list = [...filteredNewsletters]
+    if (!sortFunc) return list
+    return list.sort(sortFunc)
+  }, [filteredNewsletters, sortFunc])
 
   const displayMessagesCount =
     messagesCount === null || messagesCount === undefined ? '-' : messagesCount
@@ -267,72 +326,80 @@ const ToolsNewsletterContent = () => {
   return (
     <>
       <ContentHeader>
-        <div className="flex flex-wrap items-center justify-between w-full gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            {isAuthorized && displayMessagesCount > 0 && (
-              <Button
-                name="Остановить рассылку"
-                onClick={handleStopNewsletter}
-                loading={isStopping}
-                disabled={!location}
-                thin
-                icon={faStop}
-              />
-            )}
-            {instanceState === 'notAuthorized' && (
-              <Button
-                name="Авторизация"
-                onClick={handleRequestAuthorization}
-                loading={isAuthorizationLoading}
-                disabled={!location}
-                thin
-                classBgColor="bg-blue-600"
-                classHoverBgColor="hover:bg-blue-700"
-                icon={faKey}
-              />
-            )}
-            <div className="flex flex-wrap items-center gap-1 text-sm text-general">
-              <Button
-                // name="Обновить"
-                onClick={handleRefreshNewslettersData}
-                loading={isCountLoading || isStateLoading}
-                thin
-                icon={faRotateRight}
-              />
-              <span className="flex items-center gap-1 text-black">
-                Статус:{' '}
-                <span className="font-semibold">
-                  {isStateLoading ? '...' : stateLabel}
-                </span>
-              </span>
-              {isAuthorized && (
-                <span className="flex items-center gap-1 pl-1 text-black border-l border-gray-400">
-                  Отправляется:{' '}
+        <div className="flex flex-col w-full gap-3">
+          <div className="flex flex-wrap items-center justify-between w-full gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {isAuthorized && displayMessagesCount > 0 && (
+                <Button
+                  name="Остановить рассылку"
+                  onClick={handleStopNewsletter}
+                  loading={isStopping}
+                  disabled={!location}
+                  thin
+                  icon={faStop}
+                />
+              )}
+              {instanceState === 'notAuthorized' && (
+                <Button
+                  name="Авторизация"
+                  onClick={handleRequestAuthorization}
+                  loading={isAuthorizationLoading}
+                  disabled={!location}
+                  thin
+                  classBgColor="bg-blue-600"
+                  classHoverBgColor="hover:bg-blue-700"
+                  icon={faKey}
+                />
+              )}
+              <div className="flex flex-wrap items-center gap-1 text-sm text-general">
+                <Button
+                  onClick={handleRefreshNewslettersData}
+                  loading={isCountLoading || isStateLoading}
+                  thin
+                  icon={faRotateRight}
+                />
+                <span className="flex items-center gap-1 text-black">
+                  Статус WA:{' '}
                   <span className="font-semibold">
-                    {isCountLoading ? '...' : displayMessagesCount}
+                    {isStateLoading ? '...' : stateLabel}
                   </span>
                 </span>
-              )}
+                {isAuthorized && (
+                  <span className="flex items-center gap-1 pl-1 text-black border-l border-gray-400">
+                    Отправляется:{' '}
+                    <span className="font-semibold">
+                      {isCountLoading ? '...' : displayMessagesCount}
+                    </span>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
-            <div className="text-lg font-bold whitespace-nowrap">
-              {getNounNewsletters(newsletters?.length)}
-            </div>
-            <SortingButtonMenu
-              sort={sort}
-              onChange={setSort}
-              sortKeys={['createdAt']}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <ToggleButtons
+              value={statusFilter}
+              onChange={setStatusFilter}
+              buttonsConfig={statusButtonsConfig}
             />
-            {addButton && (
-              <AddButton
-                onClick={() =>
-                  modalsFunc.newsletter.add(undefined, {
-                    whatsappAuthorized: isAuthorized,
-                  })
-                }
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="text-lg font-bold whitespace-nowrap">
+                {getNounNewsletters(sortedNewsletters.length)}
+              </div>
+              <SortingButtonMenu
+                sort={sort}
+                onChange={setSort}
+                sortKeys={['newsletterSendDate', 'createdAt']}
               />
-            )}
+              {addButton && (
+                <AddButton
+                  onClick={() =>
+                    modalsFunc.newsletter.add(undefined, {
+                      whatsappAuthorized: isAuthorized,
+                    })
+                  }
+                />
+              )}
+            </div>
           </div>
         </div>
       </ContentHeader>

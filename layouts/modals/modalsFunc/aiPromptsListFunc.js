@@ -118,7 +118,9 @@ const aiPromptsListFunc = ({ section, onSelect, userId }) => {
               className="p-3 space-y-2 border rounded-md bg-general-ultralight"
             >
               <div className="flex items-start justify-between gap-2">
-                <div className="font-semibold break-words">{prompt.title}</div>
+                <div className="font-semibold wrap-break-word">
+                  {prompt.title}
+                </div>
                 <button
                   type="button"
                   className="text-red-600 transition-transform duration-150 cursor-pointer hover:scale-110"
@@ -129,7 +131,7 @@ const aiPromptsListFunc = ({ section, onSelect, userId }) => {
                 </button>
               </div>
               {prompt.prompt && (
-                <div className="text-sm text-gray-700 break-words whitespace-pre-line">
+                <div className="text-sm text-gray-700 wrap-break-word whitespace-pre-line">
                   {prompt.prompt}
                 </div>
               )}

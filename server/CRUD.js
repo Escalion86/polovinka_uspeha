@@ -19,6 +19,7 @@ import getTimeZoneByLocation from './getTimeZoneByLocation'
 import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsByLocation'
 import checkLocationValid from './checkLocationValid'
 import refreshSignedUpEventsCount from './refreshSignedUpEventsCount'
+import recalculateEventAchievements from './recalculateEventAchievements'
 // import { telegramCmdToIndex } from './telegramCmd'
 import processReferralRewards from './processReferralRewards'
 
@@ -727,6 +728,14 @@ export default async function handler(Schema, req, res, props = {}) {
               await processReferralRewards({ db, event: data })
             } catch (rewardError) {
               console.log('processReferralRewards error :>> ', rewardError)
+            }
+            try {
+              await recalculateEventAchievements({ db, eventId: id })
+            } catch (achievementsError) {
+              console.log(
+                'recalculateEventAchievements error :>> ',
+                achievementsError
+              )
             }
           }
 

@@ -1040,7 +1040,7 @@ const LoginPage = (props) => {
                 Смена пароля
               </p>
               <p
-                className={cn('leading-[14px] duration-300 text-base', {
+                className={cn('leading-3.5 duration-300 text-base', {
                   'opacity-0 h-0': !type,
                 })}
               >

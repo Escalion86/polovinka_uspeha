@@ -30,7 +30,8 @@ const selectUsersFunc = (
   maxUsers,
   canSelectNone = true,
   title,
-  getFullUsers = false
+  getFullUsers = false,
+  showConsentIcon = false
 ) => {
   const SelectUsersModal = ({
     closeModal,
@@ -119,6 +120,10 @@ const selectUsersFunc = (
         consented: true,
         notConsented: true,
       },
+      telegram: {
+        withId: true,
+        withoutId: true,
+      },
       ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
 
@@ -170,7 +175,11 @@ const selectUsersFunc = (
                 filter.checked.unchecked) ||
                 selectedUsersIds.includes(user._id)) &&
               ((filter.consent.consented && user.consentToMailing) ||
-                (filter.consent.notConsented && !user.consentToMailing)) &&
+              (filter.consent.notConsented && !user.consentToMailing)) &&
+              ((filter.telegram.withId &&
+                user?.notifications?.telegram?.id) ||
+                (filter.telegram.withoutId &&
+                  !user?.notifications?.telegram?.id)) &&
               (!filter.ages ||
                 (user.age >= (filter.ages.min || 18) &&
                   user.age <= (filter.ages.max || 70)))
@@ -410,6 +419,7 @@ const selectUsersFunc = (
                     )
                   }
                   onClick={() => onClick(sortedUsers[index])}
+                  showConsentIcon={showConsentIcon}
                 />
               </div>
             )}

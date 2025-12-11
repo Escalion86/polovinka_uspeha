@@ -2024,7 +2024,7 @@ export const CONTENTS = Object.freeze({
   },
   toolsScheduledMessages: {
     Component: ToolsScheduledMessagesContent,
-    name: 'Сообщения по расписанию',
+    name: 'Сообщения в канал Telegram',
     roleAccess: (role) => role?.newsletters?.see,
   },
   toolsExport: {
@@ -2461,6 +2461,14 @@ export const pages = [
   {
     id: 76,
     group: 10,
+    name: 'Сообщения в канал Telegram',
+    href: 'toolsScheduledMessages',
+    icon: faTelegram,
+    roleAccess: CONTENTS['toolsScheduledMessages'].roleAccess,
+  },
+  {
+    id: 77,
+    group: 10,
     name: 'Индивидуальные свидания',
     href: 'toolsIndividualWeddings',
     icon: faHeartCircleCheck,
@@ -2468,7 +2476,7 @@ export const pages = [
     roleAccess: CONTENTS['toolsIndividualWeddings'].roleAccess,
   },
   {
-    id: 77,
+    id: 78,
     group: 10,
     name: 'Конструктор картинок',
     href: 'toolsImageConstructor',
@@ -2476,16 +2484,6 @@ export const pages = [
     // accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
     roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
   },
-
-  {
-    id: 78,
-    group: 10,
-    name: 'Сообщения по расписанию',
-    href: 'toolsScheduledMessages',
-    icon: faClock,
-    roleAccess: CONTENTS['toolsScheduledMessages'].roleAccess,
-  },
-
   {
     id: 80,
     group: 11,

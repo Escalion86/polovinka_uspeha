@@ -288,6 +288,7 @@ export const authOptions = {
         session.user.haveKids = result.haveKids
         session.user.security = result.security
         session.user.notifications = result.notifications
+        session.user.eventAchievements = result.eventAchievements
         session.user.eventsTagsNotification = result.eventsTagsNotification
         session.user.registrationType = result.registrationType
         session.user.referrerId = result.referrerId

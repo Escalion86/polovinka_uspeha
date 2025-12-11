@@ -324,7 +324,8 @@ const newsletterFunc = (
           undefined,
           true,
           title,
-          false
+          false,
+          true
         )
         return true
       },
@@ -343,7 +344,8 @@ const newsletterFunc = (
           undefined,
           true,
           title,
-          false
+          false,
+          true
         )
         return true
       },
@@ -1005,12 +1007,13 @@ const newsletterFunc = (
                     selectedUsers,
                     {},
                     setSelectedUsers,
-                    [] //exceptedIds,
-                    //acceptedIds,
-                    // maxUsers,
-                    // canSelectNone,
-                    // modalTitle,
-                    // showCountNumber
+                    [],
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    true
                   )
                 }
               />

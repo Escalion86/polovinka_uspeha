@@ -51,7 +51,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const statusTrigger = (
     <button
       type="button"
-      className="flex items-center justify-center w-6 h-6 cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
+      className="flex items-center justify-center w-6 h-6 cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-white/80"
       aria-label="Открыть информацию о статусе"
     >
       <UserStatusIcon status={loggedUserActiveStatus} />
@@ -69,7 +69,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             prefetch={false}
             href="/"
             shallow
-            className="hidden tablet:block h-[56px] w-[44px] aspect-1 relative"
+            className="hidden tablet:block h-14 w-11 aspect-1 relative"
             // as="image"
             // rel="preload"
           >
@@ -150,7 +150,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             prefetch={false}
             href={`/${location}/cabinet/notifications`}
             shallow
-            className="flex items-center justify-center w-6 h-6 text-white cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
+            className="flex items-center justify-center w-6 h-6 text-white cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-white/80"
           >
             <span className="sr-only">Настройка уведомлений</span>
             <FontAwesomeIcon icon={faBell} className="w-5 h-5 min-h-5" />

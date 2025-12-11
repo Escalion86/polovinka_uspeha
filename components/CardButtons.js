@@ -43,13 +43,25 @@ import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
 
-const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
+const MenuItem = ({
+  active,
+  icon,
+  onClick,
+  color = 'red',
+  tooltipText,
+  disabled,
+}) => (
   <div
     className={cn(
       `cursor-pointer text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-9 hover:bg-${color}-600 hover:text-white`,
-      active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
+      active
+        ? `bg-${color}-500 text-white`
+        : `bg-white text-${color}-500 ${
+            disabled ? 'pointer-events-none opacity-60' : ''
+          }`
     )}
     onClick={(e) => {
+      if (disabled) return
       onClick && onClick()
     }}
   >
@@ -79,6 +91,8 @@ const CardButtons = ({
   showDeleteButton = true,
   showCloneButton = true,
   onEditQuestionnaire,
+  customButtons = [],
+  customOnly = false,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const itemsFunc = useAtomValue(itemsFuncAtom)
@@ -139,64 +153,63 @@ const CardButtons = ({
     loggedUserActiveRole?.newsletters?.add &&
     item.showOnSite
 
-  // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
-  // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
-  // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
-  // (typeOfItem === 'serviceUser' && loggedUserActiveRole.servicesUsers.edit) ||
-  // (typeOfItem === 'product' && loggedUserActiveRole.products.edit) ||
-  // (typeOfItem === 'productUser' && loggedUserActiveRole.productsUsers.edit) ||
-  // (typeOfItem === 'payment' && loggedUserActiveRole.payments.edit) ||
-  // (typeOfItem === 'additionalBlock' &&
-  // loggedUserActiveRole.generalPage.additionalBlocks) ||
-  // (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions) ||
-  // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
+  const customButtonsArray = Array.isArray(customButtons)
+    ? customButtons.filter(Boolean)
+    : []
 
-  const show = {
-    likes:
-      typeOfItem === 'event' &&
-      item.likes &&
-      loggedUserActiveRole?.events?.editLikes,
-    copyId: isLoggedUserDev,
-    history: seeHistory,
-    userActionsHistory:
-      !isMorePrivelegetUser &&
-      typeOfItem === 'user' &&
-      loggedUserActiveRole?.users?.seeActionsHistory,
-    editQuestionnaire: !!onEditQuestionnaire,
-    setPasswordBtn: !isMorePrivelegetUser && rule?.setPassword,
-    shareBtn:
-      window?.location?.origin &&
-      ['event', 'service', 'user', 'product'].includes(typeOfItem),
-    addToCalendar: typeOfItem === 'event',
-    eventUsersBtn:
-      (loggedUserActiveRole?.eventsUsers?.see || isLoggedUserMember) &&
-      typeOfItem === 'event',
-    upBtn: onUpClick && upDownSee,
-    downBtn: onDownClick && upDownSee,
-    editBtn: showEditButton && editSee,
-    cloneBtn:
-      showCloneButton && !['user', 'review'].includes(typeOfItem) && rule?.add,
-    showOnSiteBtn:
-      showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
-    statusBtn: rule?.statusEdit,
-    deleteBtn:
-      !isMorePrivelegetUser &&
-      showDeleteButton &&
-      item.status !== 'closed' &&
-      (rule?.delete || rule === true),
-    paymentsUsersBtn: rule?.paymentsEdit,
-    userEvents: rule?.seeUserEvents,
-    userPaymentsBtn: rule?.seeUserPayments,
-    loginHistory: isLoggedUserDev && typeOfItem === 'user',
-    sendNotifications,
-    updateNewslettersStatuses:
-      isLoggedUserPresident && typeOfItem === 'newsletter',
+  let numberOfButtons = customButtonsArray.length
+  let show = null
+
+  if (!customOnly) {
+    show = {
+      likes:
+        typeOfItem === 'event' &&
+        item.likes &&
+        loggedUserActiveRole?.events?.editLikes,
+      copyId: isLoggedUserDev,
+      history: seeHistory,
+      userActionsHistory:
+        !isMorePrivelegetUser &&
+        typeOfItem === 'user' &&
+        loggedUserActiveRole?.users?.seeActionsHistory,
+      editQuestionnaire: !!onEditQuestionnaire,
+      setPasswordBtn: !isMorePrivelegetUser && rule?.setPassword,
+      shareBtn:
+        window?.location?.origin &&
+        ['event', 'service', 'user', 'product'].includes(typeOfItem),
+      addToCalendar: typeOfItem === 'event',
+      eventUsersBtn:
+        (loggedUserActiveRole?.eventsUsers?.see || isLoggedUserMember) &&
+        typeOfItem === 'event',
+      upBtn: onUpClick && upDownSee,
+      downBtn: onDownClick && upDownSee,
+      editBtn: showEditButton && editSee,
+      cloneBtn:
+        showCloneButton &&
+        !['user', 'review'].includes(typeOfItem) &&
+        rule?.add,
+      showOnSiteBtn:
+        showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
+      statusBtn: rule?.statusEdit,
+      deleteBtn:
+        !isMorePrivelegetUser &&
+        showDeleteButton &&
+        item.status !== 'closed' &&
+        (rule?.delete || rule === true),
+      paymentsUsersBtn: rule?.paymentsEdit,
+      userEvents: rule?.seeUserEvents,
+      userPaymentsBtn: rule?.seeUserPayments,
+      loginHistory: isLoggedUserDev && typeOfItem === 'user',
+      sendNotifications,
+      updateNewslettersStatuses:
+        isLoggedUserPresident && typeOfItem === 'newsletter',
+    }
+
+    numberOfButtons += Object.keys(show).reduce(
+      (p, c) => p + (show[c] ? 1 : 0),
+      0
+    )
   }
-
-  const numberOfButtons = Object.keys(show).reduce(
-    (p, c) => p + (show[c] ? 1 : 0),
-    0
-  )
 
   if (numberOfButtons === 0) return null
 
@@ -207,262 +220,290 @@ const CardButtons = ({
 
   const ItemComponent = isCompact ? MenuItem : CardButton
 
-  const items = (
-    <>
-      {show.copyId && (
-        <ItemComponent
-          icon={faCode}
-          onClick={() => copyId(item._id)}
-          color="blue"
-          tooltipText="Скопировать ID"
-        />
-      )}
-      {show.shareBtn && (
-        <ItemComponent
-          icon={faShareAlt}
-          onClick={() => {
-            if (copyLink) copyLink()
-          }}
-          color="blue"
-          tooltipText={`Скопировать ссылку на ${
-            typeOfItem === 'event'
-              ? 'мероприятие'
-              : typeOfItem === 'user'
-                ? 'пользователя'
-                : typeOfItem === 'service'
-                  ? 'услугу'
-                  : 'продукт'
-          }`}
-        />
-      )}
-      {show.userActionsHistory && (
-        <ItemComponent
-          icon={faHistory}
-          onClick={() => modalsFunc[typeOfItem].historyActions(item._id)}
-          color="orange"
-          tooltipText="Посмотреть историю действий пользователя"
-        />
-      )}
-      {show.history && (
-        <ItemComponent
-          icon={faHistory}
-          onClick={() => modalsFunc[typeOfItem].history(item._id)}
-          color="orange"
-          tooltipText="Посмотреть историю изменений"
-        />
-      )}
-      {show.addToCalendar && (
-        <ItemComponent
-          icon={faCalendarPlus}
-          onClick={async () => {
-            const event = await getEventById(item._id, location)
-            goToUrlForAddEventToCalendar(event)
-          }}
-          color="purple"
-          tooltipText="Добавить в Google календарь"
-        />
-      )}
-      {show.sendNotifications && (
-        <ItemComponent
-          icon={faBullhorn}
-          onClick={() => {
-            modalsFunc.selectUsersByStatusesFromEvent(
-              item._id,
-              (users, event) =>
-                modalsFunc.newsletter.add(undefined, { users, event })
-            )
-          }}
-          color="blue"
-          tooltipText="Рассылка"
-        />
-      )}
-      {/* {show.sendNotifications && (
-        <ItemComponent
-          icon={faTelegram}
-          onClick={() => modalsFunc[typeOfItem].notificateAboutEvent(item._id)}
-          color="blue"
-          tooltipText="Уведомление пользователей о мероприятии"
-        />
-      )} */}
-      {show.eventUsersBtn && (
-        <ItemComponent
-          icon={faUsers}
-          onClick={() => {
-            modalsFunc.event.users(item._id)
-          }}
-          color="green"
-          tooltipText="Участники мероприятия"
-        />
-      )}
-      {show.likes && (
-        <ItemComponent
-          icon={faHeartCirclePlus}
-          onClick={() => modalsFunc.event.viewLikes(item._id)}
-          color="pink"
-          tooltipText="Лайки участников"
-        />
-      )}
-      {show.loginHistory && (
-        <ItemComponent
-          icon={faSignIn}
-          onClick={() => {
-            modalsFunc.loginHistory.user(item._id)
-          }}
-          color="purple"
-          tooltipText="История авторизаций пользователя"
-        />
-      )}
-      {show.paymentsUsersBtn && (
-        <ItemComponent
-          icon={faMoneyBill}
-          onClick={() => {
-            modalsFunc.event.payments(item._id)
-          }}
-          color="amber"
-          tooltipText="Финансы"
-        />
-      )}
-      {show.userPaymentsBtn && (
-        <ItemComponent
-          icon={faMoneyBill}
-          onClick={() => {
-            modalsFunc.user.payments(item._id)
-          }}
-          color="amber"
-          tooltipText="Финансы"
-        />
-      )}
-      {show.upBtn && (
-        <ItemComponent
-          icon={faArrowUp}
-          onClick={() => {
-            onUpClick()
-          }}
-          color="gray"
-          tooltipText="Переместить выше"
-        />
-      )}
-      {show.downBtn && (
-        <ItemComponent
-          icon={faArrowDown}
-          onClick={() => {
-            onDownClick()
-          }}
-          color="gray"
-          tooltipText="Переместить ниже"
-        />
-      )}
-      {show.userEvents && (
-        <ItemComponent
-          icon={faCalendarAlt}
-          onClick={() => {
-            modalsFunc[typeOfItem].events(item._id)
-          }}
-          color="blue"
-          tooltipText="Мероприятия с пользователем"
-        />
-      )}
-      {show.editBtn && (
-        <ItemComponent
-          icon={faPencilAlt}
-          onClick={() => {
-            modalsFunc[typeOfItem].edit(item._id)
-          }}
-          color="orange"
-          tooltipText="Редактировать"
-        />
-      )}
-      {show.setPasswordBtn && (
-        <ItemComponent
-          icon={faKey}
-          onClick={() => modalsFunc.user.setPassword(item._id)}
-          color="red"
-          tooltipText="Изменить пароль"
-        />
-      )}
-      {show.editQuestionnaire && (
-        <ItemComponent
-          icon={faIdCard}
-          onClick={onEditQuestionnaire}
-          color="purple"
-          tooltipText="Редактировать анкету"
-        />
-      )}
-      {show.cloneBtn && (
-        <ItemComponent
-          icon={faCopy}
-          onClick={() => {
-            modalsFunc[typeOfItem].add(item._id, itemProps)
-          }}
-          color="blue"
-          tooltipText="Клонировать"
-        />
-      )}
-      {show.showOnSiteBtn && (
-        <ItemComponent
-          active={!item.showOnSite}
-          icon={item.showOnSite ? faEye : faEyeSlash}
-          onClick={() => {
-            showOnSiteOnClick()
-          }}
-          color="purple"
-          tooltipText="Показывать на сайте"
-        />
-      )}
-      {show.updateNewslettersStatuses && (
-        <>
+  const renderDefaultButtons =
+    !customOnly && show ? (
+      <>
+        {show.copyId && (
           <ItemComponent
-            icon={faRefresh}
+            icon={faCode}
+            onClick={() => copyId(item._id)}
+            color="blue"
+            tooltipText="Скопировать ID"
+          />
+        )}
+        {show.shareBtn && (
+          <ItemComponent
+            icon={faShareAlt}
             onClick={() => {
-              itemsFunc.newsletter.refresh(item._id)
+              if (copyLink) copyLink()
+            }}
+            color="blue"
+            tooltipText={`Скопировать ссылку на ${
+              typeOfItem === 'event'
+                ? 'мероприятие'
+                : typeOfItem === 'user'
+                  ? 'пользователя'
+                  : typeOfItem === 'service'
+                    ? 'услугу'
+                    : 'продукт'
+            }`}
+          />
+        )}
+        {show.userActionsHistory && (
+          <ItemComponent
+            icon={faHistory}
+            onClick={() => modalsFunc[typeOfItem].historyActions(item._id)}
+            color="orange"
+            tooltipText="Посмотреть историю действий пользователя"
+          />
+        )}
+        {show.history && (
+          <ItemComponent
+            icon={faHistory}
+            onClick={() => modalsFunc[typeOfItem].history(item._id)}
+            color="orange"
+            tooltipText="Посмотреть историю изменений"
+          />
+        )}
+        {show.addToCalendar && (
+          <ItemComponent
+            icon={faCalendarPlus}
+            onClick={async () => {
+              const event = await getEventById(item._id, location)
+              goToUrlForAddEventToCalendar(event)
             }}
             color="purple"
-            tooltipText="Обновить статус отправленных сообщений"
+            tooltipText="Добавить в Google календарь"
           />
+        )}
+        {show.sendNotifications && (
+          <ItemComponent
+            icon={faBullhorn}
+            onClick={() => {
+              modalsFunc.selectUsersByStatusesFromEvent(
+                item._id,
+                (users, event) =>
+                  modalsFunc.newsletter.add(undefined, { users, event })
+              )
+            }}
+            color="blue"
+            tooltipText="Рассылка"
+          />
+        )}
+        {show.eventUsersBtn && (
           <ItemComponent
             icon={faUsers}
             onClick={() => {
-              modalsFunc.newsletter.usersView(item._id)
+              modalsFunc.event.users(item._id)
             }}
             color="green"
-            tooltipText="Посмотреть получателей"
+            tooltipText="Участники мероприятия"
           />
-        </>
-      )}
-      {show.statusBtn
-        ? (() => {
-            const status = item.status ?? 'active'
-            const { icon, color, name } = (
-              typeOfItem === 'serviceUser'
-                ? SERVICE_USER_STATUSES
-                : EVENT_STATUSES
-            ).find(({ value }) => value === status)
-            return (
-              <ItemComponent
-                icon={icon}
-                onClick={() => {
-                  modalsFunc[typeOfItem].statusEdit(item._id)
-                }}
-                color={
-                  color.indexOf('-') > 0
-                    ? color.slice(0, color.indexOf('-'))
-                    : color
-                }
-                tooltipText={`${name} (изменить статус)`}
-              />
-            )
-          })()
-        : null}
-      {show.deleteBtn && (
-        <ItemComponent
-          icon={faTrashAlt}
-          onClick={() => {
-            modalsFunc[typeOfItem].delete(item._id)
-          }}
-          color="red"
-          tooltipText="Удалить"
-        />
-      )}
+        )}
+        {show.likes && (
+          <ItemComponent
+            icon={faHeartCirclePlus}
+            onClick={() => modalsFunc.event.viewLikes(item._id)}
+            color="pink"
+            tooltipText="Лайки участников"
+          />
+        )}
+        {show.loginHistory && (
+          <ItemComponent
+            icon={faSignIn}
+            onClick={() => {
+              modalsFunc.loginHistory.user(item._id)
+            }}
+            color="purple"
+            tooltipText="История авторизаций пользователя"
+          />
+        )}
+        {show.paymentsUsersBtn && (
+          <ItemComponent
+            icon={faMoneyBill}
+            onClick={() => {
+              modalsFunc.event.payments(item._id)
+            }}
+            color="amber"
+            tooltipText="Финансы"
+          />
+        )}
+        {show.userPaymentsBtn && (
+          <ItemComponent
+            icon={faMoneyBill}
+            onClick={() => {
+              modalsFunc.user.payments(item._id)
+            }}
+            color="amber"
+            tooltipText="Финансы"
+          />
+        )}
+        {show.upBtn && (
+          <ItemComponent
+            icon={faArrowUp}
+            onClick={() => {
+              onUpClick()
+            }}
+            color="gray"
+            tooltipText="Переместить выше"
+          />
+        )}
+        {show.downBtn && (
+          <ItemComponent
+            icon={faArrowDown}
+            onClick={() => {
+              onDownClick()
+            }}
+            color="gray"
+            tooltipText="Переместить ниже"
+          />
+        )}
+        {show.userEvents && (
+          <ItemComponent
+            icon={faCalendarAlt}
+            onClick={() => {
+              modalsFunc[typeOfItem].events(item._id)
+            }}
+            color="blue"
+            tooltipText="Мероприятия с пользователем"
+          />
+        )}
+        {show.editBtn && (
+          <ItemComponent
+            icon={faPencilAlt}
+            onClick={() => {
+              modalsFunc[typeOfItem].edit(item._id)
+            }}
+            color="orange"
+            tooltipText="Редактировать"
+          />
+        )}
+        {show.setPasswordBtn && (
+          <ItemComponent
+            icon={faKey}
+            onClick={() => modalsFunc.user.setPassword(item._id)}
+            color="red"
+            tooltipText="Изменить пароль"
+          />
+        )}
+        {show.editQuestionnaire && (
+          <ItemComponent
+            icon={faIdCard}
+            onClick={onEditQuestionnaire}
+            color="purple"
+            tooltipText="Редактировать анкету"
+          />
+        )}
+        {show.cloneBtn && (
+          <ItemComponent
+            icon={faCopy}
+            onClick={() => {
+              modalsFunc[typeOfItem].add(item._id, itemProps)
+            }}
+            color="blue"
+            tooltipText="Клонировать"
+          />
+        )}
+        {show.showOnSiteBtn && (
+          <ItemComponent
+            active={!item.showOnSite}
+            icon={item.showOnSite ? faEye : faEyeSlash}
+            onClick={() => {
+              showOnSiteOnClick()
+            }}
+            color="purple"
+            tooltipText="Показывать на сайте"
+          />
+        )}
+        {show.updateNewslettersStatuses && (
+          <>
+            <ItemComponent
+              icon={faRefresh}
+              onClick={() => {
+                itemsFunc.newsletter.refresh(item._id)
+              }}
+              color="purple"
+              tooltipText="Обновить статус отправленных сообщений"
+            />
+            <ItemComponent
+              icon={faUsers}
+              onClick={() => {
+                modalsFunc.newsletter.usersView(item._id)
+              }}
+              color="green"
+              tooltipText="Посмотреть получателей"
+            />
+          </>
+        )}
+        {show.statusBtn
+          ? (() => {
+              const status = item.status ?? 'active'
+              const { icon, color, name } = (
+                typeOfItem === 'serviceUser'
+                  ? SERVICE_USER_STATUSES
+                  : EVENT_STATUSES
+              ).find(({ value }) => value === status)
+              return (
+                <ItemComponent
+                  icon={icon}
+                  onClick={() => {
+                    modalsFunc[typeOfItem].statusEdit(item._id)
+                  }}
+                  color={
+                    color.indexOf('-') > 0
+                      ? color.slice(0, color.indexOf('-'))
+                      : color
+                  }
+                  tooltipText={`${name} (изменить статус)`}
+                />
+              )
+            })()
+          : null}
+        {show.deleteBtn && (
+          <ItemComponent
+            icon={faTrashAlt}
+            onClick={() => {
+              modalsFunc[typeOfItem].delete(item._id)
+            }}
+            color="red"
+            tooltipText="Удалить"
+          />
+        )}
+      </>
+    ) : null
+
+  const renderCustomButtons = customButtonsArray.map(
+    (
+      {
+        key: customKey,
+        icon,
+        onClick,
+        color = 'red',
+        tooltipText,
+        active,
+        disabled,
+      },
+      index
+    ) => (
+      <ItemComponent
+        key={customKey || `custom-${index}`}
+        icon={icon}
+        onClick={() => {
+          if (disabled) return
+          onClick && onClick()
+        }}
+        color={color}
+        tooltipText={tooltipText}
+        active={active}
+        disabled={disabled}
+      />
+    )
+  )
+
+  const items = (
+    <>
+      {renderDefaultButtons}
+      {renderCustomButtons}
     </>
   )
 

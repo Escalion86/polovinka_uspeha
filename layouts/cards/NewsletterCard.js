@@ -52,21 +52,30 @@ const NewsletterCard = ({ newsletter, style }) => {
 
   const statuses = useMemo(() => {
     const temp = {}
-    newsletter.newsletters.forEach(({ whatsappStatus, telegramSuccess }) => {
-      if (sendType !== 'whatsapp-only' && telegramSuccess) {
-        temp.read = temp.read ? temp.read + 1 : 1
-      } else if (
-        ['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)
-      ) {
-        temp[whatsappStatus] ? temp[whatsappStatus] + 1 : 1
-      } else if (!whatsappStatus) {
-        temp.pending = temp.pending ? temp.pending + 1 : 1
-      } else {
-        temp.other = temp.other ? temp.other + 1 : 1
+    newsletter.newsletters.forEach(
+      ({ whatsappStatus, telegramSuccess, telegramId }) => {
+        const usesTelegram = sendType !== 'whatsapp-only'
+        if (usesTelegram) {
+          if (!telegramId) {
+            temp.other = temp.other ? temp.other + 1 : 1
+            return
+          }
+          if (telegramSuccess) {
+            temp.read = temp.read ? temp.read + 1 : 1
+            return
+          }
+        }
+        if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
+          temp[whatsappStatus] ? temp[whatsappStatus] + 1 : 1
+        } else if (!whatsappStatus) {
+          temp.pending = temp.pending ? temp.pending + 1 : 1
+        } else {
+          temp.other = temp.other ? temp.other + 1 : 1
+        }
       }
-    })
+    )
     return temp
-  }, [newsletter.newsletters])
+  }, [newsletter.newsletters, sendType])
 
   const sendingStatusValue =
     newsletter.sendingStatus ||
@@ -106,7 +115,7 @@ const NewsletterCard = ({ newsletter, style }) => {
             {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
           <div className="text-sm leading-4 whitespace-nowrap">
-            <span className="text-gray-600">Дата отправки: </span>
+            <span className="text-gray-600">Отправка: </span>
             {formatDateTime(
               newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED
                 ? newsletter.plannedSendDate + ' ' + newsletter.plannedSendTime
