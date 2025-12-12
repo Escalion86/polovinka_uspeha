@@ -26,20 +26,31 @@ const ListWrapper = ({
 
   const Row = useCallback(
     ({ index, style, data }) => {
-      const renderedChild = children({ index, style, data })
-      if (itemKey && isValidElement(renderedChild)) {
-        const key = itemKey(index, data)
-        return renderedChild.key === key
-          ? renderedChild
-          : cloneElement(renderedChild, { key })
+      const baseStyle = {
+        ...style,
+        zIndex: itemCount - index,
+        overflow: 'visible',
       }
-      return renderedChild
+      const renderedChild = children({ index, style, data })
+      if (!isValidElement(renderedChild)) return renderedChild
+
+      const mergedStyle = {
+        ...baseStyle,
+        ...(renderedChild.props?.style ?? {}),
+      }
+
+      if (itemKey) {
+        const key = itemKey(index, data)
+        return cloneElement(renderedChild, { key, style: mergedStyle })
+      }
+
+      return cloneElement(renderedChild, { style: mergedStyle })
     },
-    [children, itemKey]
+    [children, itemCount, itemKey]
   )
 
   return (
-    <div className={cn('flex-1 w-full h-full min-h-0', className)}>
+    <div className={cn('flex-1 w-full h-full min-h-0 relative z-0', className)}>
       <List
         rowComponent={Row}
         rowCount={itemCount}
