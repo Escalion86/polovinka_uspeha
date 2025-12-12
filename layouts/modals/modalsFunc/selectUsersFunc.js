@@ -363,7 +363,7 @@ const selectUsersFunc = (
     // ])
 
     return (
-      <div className="flex flex-col items-stretch w-full h-full max-h-full gap-y-0.5">
+      <div className="flex flex-col items-stretch w-full h-full max-h-full min-h-0 gap-y-0.5">
         <ContentHeader noBorder>
           <UsersFilter
             value={filter}
@@ -402,10 +402,7 @@ const selectUsersFunc = (
             }
           />
         </div> */}
-        <div
-          style={{ height: sortedUsers.length * 41 + 2 }}
-          className={`flex-1 tablet:flex-none border-gray-700 border-t tablet:max-h-[calc(100vh-270px)]`}
-        >
+        <div className="flex-1 min-h-0 border-gray-700 border-t overflow-hidden">
           <ListWrapper itemCount={sortedUsers.length} itemSize={41}>
             {({ index, style }) => (
               <div style={style} className="border-b border-gray-700">
