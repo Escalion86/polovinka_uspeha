@@ -310,6 +310,12 @@ const modalsFuncGenerator = (get, set) => {
             params || {}
           )
         ),
+      referrersList: (params) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/referralReferrersListFunc').default(
+            params || {}
+          )
+        ),
     },
     direction: {
       add: (directionId) =>
