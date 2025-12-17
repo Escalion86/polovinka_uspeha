@@ -3,6 +3,7 @@
 import LoadingSpinner from '@components/LoadingSpinner'
 import Note from '@components/Note'
 import UserName from '@components/UserName'
+import Button from '@components/Button'
 import formatDate from '@helpers/formatDate'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -10,9 +11,6 @@ import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
@@ -21,7 +19,9 @@ const pickLatestByDate = (existing, candidate) => {
   if (!existing) return candidate
 
   const existingTime = existing?.payAt ? new Date(existing.payAt).getTime() : 0
-  const candidateTime = candidate?.payAt ? new Date(candidate.payAt).getTime() : 0
+  const candidateTime = candidate?.payAt
+    ? new Date(candidate.payAt).getTime()
+    : 0
 
   return candidateTime >= existingTime ? candidate : existing
 }
@@ -50,7 +50,8 @@ const getCouponStatus = (coupon, eventsById) => {
 
   const { issued = null, used = null } = coupon
   const amount = used?.sum ?? issued?.sum ?? null
-  const amountText = typeof amount === 'number' ? formatCurrencyValue(amount) : null
+  const amountText =
+    typeof amount === 'number' ? formatCurrencyValue(amount) : null
 
   if (used) {
     const eventId = used?.usageEventId ?? used?.eventId ?? null
@@ -58,16 +59,16 @@ const getCouponStatus = (coupon, eventsById) => {
     const eventDate = event?.dateStart
       ? formatDate(event.dateStart)
       : event?.date
-      ? formatDate(event.date)
-      : used?.payAt
-      ? formatDate(used.payAt)
-      : null
+        ? formatDate(event.date)
+        : used?.payAt
+          ? formatDate(used.payAt)
+          : null
     const eventTitle = event?.title ?? null
     const eventSuffix = eventTitle
       ? ` на мероприятии "${eventTitle}"${eventDate ? ` ${eventDate}` : ''}`
       : eventDate
-      ? ` ${eventDate}`
-      : ''
+        ? ` ${eventDate}`
+        : ''
 
     const prefix = amountText ? `Купон ${amountText}` : 'Купон'
     return {
@@ -168,62 +169,62 @@ const ReferralsAdminContent = () => {
     return map
   }, [eventsUsers])
 
-const conditionStatusByUser = useMemo(() => {
-  const map = new Map()
-  if (participantsByUser.size === 0) return map
+  const conditionStatusByUser = useMemo(() => {
+    const map = new Map()
+    if (participantsByUser.size === 0) return map
 
-  const pickLatestEventDetail = (existing, candidate) => {
-    if (!candidate) return existing ?? null
-    if (!existing) return candidate
+    const pickLatestEventDetail = (existing, candidate) => {
+      if (!candidate) return existing ?? null
+      if (!existing) return candidate
 
-    const existingTime =
-      typeof existing.timestamp === 'number' ? existing.timestamp : 0
-    const candidateTime =
-      typeof candidate.timestamp === 'number' ? candidate.timestamp : 0
+      const existingTime =
+        typeof existing.timestamp === 'number' ? existing.timestamp : 0
+      const candidateTime =
+        typeof candidate.timestamp === 'number' ? candidate.timestamp : 0
 
-    return candidateTime >= existingTime ? candidate : existing
-  }
+      return candidateTime >= existingTime ? candidate : existing
+    }
 
-  participantsByUser.forEach((userEvents, userId) => {
-    let qualifyingEventDetail = null
+    participantsByUser.forEach((userEvents, userId) => {
+      let qualifyingEventDetail = null
 
-    userEvents.forEach((eventUser) => {
-      const event = eventsById.get(String(eventUser.eventId))
-      if (!event || event.status !== 'closed') return
+      userEvents.forEach((eventUser) => {
+        const event = eventsById.get(String(eventUser.eventId))
+        if (!event || event.status !== 'closed') return
 
-      if (requirePaidEvent) {
-        const isPaidEvent =
-          Array.isArray(event.subEvents) &&
-          event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
-        if (!isPaidEvent) return
+        if (requirePaidEvent) {
+          const isPaidEvent =
+            Array.isArray(event.subEvents) &&
+            event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
+          if (!isPaidEvent) return
+        }
+
+        const rawDate =
+          event?.dateStart ?? event?.date ?? eventUser?.createdAt ?? null
+        const timestamp = rawDate ? new Date(rawDate).getTime() : 0
+
+        const detail = {
+          eventId: event?._id ? String(event._id) : String(eventUser.eventId),
+          eventTitle: event?.title ?? null,
+          eventDate: rawDate,
+          timestamp,
+        }
+
+        qualifyingEventDetail = pickLatestEventDetail(
+          qualifyingEventDetail,
+          detail
+        )
+      })
+
+      if (qualifyingEventDetail) {
+        map.set(userId, { met: true, event: qualifyingEventDetail })
+      } else {
+        map.set(userId, { met: false, event: null })
       }
-
-      const rawDate =
-        event?.dateStart ?? event?.date ?? eventUser?.createdAt ?? null
-      const timestamp = rawDate ? new Date(rawDate).getTime() : 0
-
-      const detail = {
-        eventId: event?._id ? String(event._id) : String(eventUser.eventId),
-        eventTitle: event?.title ?? null,
-        eventDate: rawDate,
-        timestamp,
-      }
-
-      qualifyingEventDetail = pickLatestEventDetail(
-        qualifyingEventDetail,
-        detail
-      )
     })
 
-    if (qualifyingEventDetail) {
-      map.set(userId, { met: true, event: qualifyingEventDetail })
-    } else {
-      map.set(userId, { met: false, event: null })
-    }
-  })
-
-  return map
-}, [participantsByUser, eventsById, requirePaidEvent])
+    return map
+  }, [participantsByUser, eventsById, requirePaidEvent])
 
   const couponsByPair = useMemo(() => {
     const map = new Map()
@@ -244,10 +245,8 @@ const conditionStatusByUser = useMemo(() => {
       const detail = {
         sum: typeof payment?.sum === 'number' ? payment.sum : null,
         payAt: payment?.payAt ?? null,
-        rewardEventId:
-          reward?.eventId != null ? String(reward.eventId) : null,
-        usageEventId:
-          payment?.eventId != null ? String(payment.eventId) : null,
+        rewardEventId: reward?.eventId != null ? String(reward.eventId) : null,
+        usageEventId: payment?.eventId != null ? String(payment.eventId) : null,
         comment: payment?.comment ?? '',
       }
 
@@ -260,13 +259,19 @@ const conditionStatusByUser = useMemo(() => {
         if (detail.usageEventId) {
           entry.referrer.used = pickLatestByDate(entry.referrer.used, detail)
         } else {
-          entry.referrer.issued = pickLatestByDate(entry.referrer.issued, detail)
+          entry.referrer.issued = pickLatestByDate(
+            entry.referrer.issued,
+            detail
+          )
         }
       } else if (reward?.rewardFor === 'referral') {
         if (detail.usageEventId) {
           entry.referral.used = pickLatestByDate(entry.referral.used, detail)
         } else {
-          entry.referral.issued = pickLatestByDate(entry.referral.issued, detail)
+          entry.referral.issued = pickLatestByDate(
+            entry.referral.issued,
+            detail
+          )
         }
       }
 
@@ -335,15 +340,6 @@ const conditionStatusByUser = useMemo(() => {
     }
   }, [referralsByReferrer, conditionStatusByUser])
 
-  const handleOpenUser = useCallback(
-    (userId) => {
-      if (userId && modalsFunc?.user?.view) {
-        modalsFunc.user.view(userId)
-      }
-    },
-    [modalsFunc]
-  )
-
   const renderUserName = useCallback((user, fallback) => {
     if (user && typeof user === 'object') {
       return <UserName user={user} />
@@ -351,6 +347,25 @@ const conditionStatusByUser = useMemo(() => {
 
     return <span className="text-sm text-gray-500">{fallback}</span>
   }, [])
+
+  const handleOpenReferrersList = useCallback(() => {
+    if (!modalsFunc?.referral?.referrersList) return
+
+    modalsFunc.referral.referrersList({
+      referrerEntries,
+      couponsByPair,
+      conditionStatusByUser,
+      eventsById,
+      renderUserName,
+    })
+  }, [
+    conditionStatusByUser,
+    couponsByPair,
+    eventsById,
+    modalsFunc,
+    referrerEntries,
+    renderUserName,
+  ])
 
   if (
     !Array.isArray(users) ||
@@ -414,167 +429,19 @@ const conditionStatusByUser = useMemo(() => {
           </div>
         </div>
       ) : (
-        referrerEntries.map(({ referrerId, referrer, referrals }) => {
-          const referrerLabel = referrer
-            ? renderUserName(referrer)
-            : null
-
-          return (
-            <div
-              key={referrerId}
-              className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
-            >
-              <div className="flex flex-col gap-1 phoneH:flex-row phoneH:items-center phoneH:justify-between">
-                <div className="text-lg font-semibold text-general flex flex-wrap items-center gap-2">
-                  <span>Реферер:</span>
-                  {referrerLabel || (
-                    <span className="text-sm text-gray-500">
-                      Пользователь не найден (ID: {referrerId})
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {referrals.length}{' '}
-                  {referrals.length === 1
-                    ? 'реферал'
-                    : referrals.length < 5
-                    ? 'реферала'
-                    : 'рефералов'}
-                </div>
-              </div>
-
-              <div className="mt-4 overflow-x-auto">
-                <table className="min-w-full text-left border border-gray-200 divide-y divide-gray-200 rounded-lg">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Реферал
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Дата регистрации
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Статус условия
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Купон реферера
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Купон реферала
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {referrals.map((referral) => {
-                      const referralId = referral?._id ? String(referral._id) : null
-                      if (!referralId) return null
-
-                      const mapKey = `${referrerId}|${referralId}`
-                      const coupons = couponsByPair.get(mapKey) ?? null
-                      const referrerCoupon = coupons?.referrer ?? null
-                      const referralCoupon = coupons?.referral ?? null
-
-                      const conditionStatus =
-                        conditionStatusByUser.get(referralId) ?? {
-                          met: false,
-                          event: null,
-                        }
-                      const conditionMet = conditionStatus.met === true
-                      const visitedEvent = conditionStatus.event
-
-                      const visitedEventDate = visitedEvent?.eventDate
-                        ? formatDate(visitedEvent.eventDate)
-                        : null
-
-                      const conditionDescription = conditionMet
-                        ? visitedEvent?.eventTitle
-                          ? `Посещено мероприятие "${visitedEvent.eventTitle}"${
-                              visitedEventDate ? ` ${visitedEventDate}` : ''
-                            }`
-                          : 'Посещено подходящее мероприятие'
-                        : 'Посещений подходящих мероприятий пока нет'
-
-                      const referrerCouponStatus = getCouponStatus(
-                        referrerCoupon,
-                        eventsById
-                      )
-                      const referralCouponStatus = getCouponStatus(
-                        referralCoupon,
-                        eventsById
-                      )
-
-                      const conditionIcon = conditionMet
-                        ? faCheckCircle
-                        : faTimesCircle
-
-                      const conditionColor = conditionMet
-                        ? 'text-success'
-                        : 'text-danger'
-
-                      const referrerCouponClass =
-                        referrerCouponStatus.status === 'used'
-                          ? 'text-success'
-                          : referrerCouponStatus.status === 'issued'
-                          ? 'text-general'
-                          : 'text-gray-500'
-
-                      const referralCouponClass =
-                        referralCouponStatus.status === 'used'
-                          ? 'text-success'
-                          : referralCouponStatus.status === 'issued'
-                          ? 'text-general'
-                          : 'text-gray-500'
-
-                      return (
-                        <tr
-                          key={referralId}
-                          className="transition-colors cursor-pointer hover:bg-gray-50"
-                          onClick={() => handleOpenUser(referralId)}
-                        >
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            {renderUserName(
-                              referral,
-                              `Пользователь не найден (ID: ${referralId})`
-                            )}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            {referral?.createdAt
-                              ? formatDate(referral.createdAt)
-                              : '—'}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            <div className="flex flex-col gap-1 leading-[14px] phoneH:leading-[18px]">
-                              <div className="flex items-center gap-2">
-                                <FontAwesomeIcon
-                                  icon={conditionIcon}
-                                  className={`h-5 w-5 flex-shrink-0 ${conditionColor}`}
-                                />
-                                <span>
-                                  {conditionMet
-                                    ? 'Условие посещения выполнено'
-                                    : 'Условие посещения не выполнено'}
-                                </span>
-                              </div>
-                              <div className="text-xs text-gray-600">
-                                {conditionDescription}
-                              </div>
-                            </div>
-                          </td>
-                          <td className={`px-4 py-2 text-sm ${referrerCouponClass}`}>
-                            {referrerCouponStatus.text}
-                          </td>
-                          <td className={`px-4 py-2 text-sm ${referralCouponClass}`}>
-                            {referralCouponStatus.text}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+        <div className="flex flex-col gap-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex flex-col gap-2 phoneH:flex-row phoneH:items-center phoneH:justify-between">
+            <div className="text-sm text-gray-700">
+              Всего рефереров: {referrerEntries.length}
             </div>
-          )
-        })
+            <Button
+              name="Открыть список рефереров"
+              outline
+              className="w-full phoneH:w-auto"
+              onClick={handleOpenReferrersList}
+            />
+          </div>
+        </div>
       )}
     </div>
   )
