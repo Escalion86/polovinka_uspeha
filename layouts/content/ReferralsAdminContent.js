@@ -3,6 +3,7 @@
 import LoadingSpinner from '@components/LoadingSpinner'
 import Note from '@components/Note'
 import UserName from '@components/UserName'
+import Button from '@components/Button'
 import formatDate from '@helpers/formatDate'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -335,11 +336,16 @@ const conditionStatusByUser = useMemo(() => {
     }
   }, [referralsByReferrer, conditionStatusByUser])
 
-  const handleOpenUser = useCallback(
-    (userId) => {
-      if (userId && modalsFunc?.user?.view) {
-        modalsFunc.user.view(userId)
-      }
+  const handleOpenReferralCards = useCallback(
+    (referrals, startReferralId) => {
+      if (!modalsFunc?.referral?.cardsView) return
+      if (!Array.isArray(referrals) || referrals.length === 0) return
+
+      modalsFunc.referral.cardsView({
+        referrals,
+        startUserId: startReferralId,
+        title: 'Карточки рефералов',
+      })
     },
     [modalsFunc]
   )
@@ -433,13 +439,21 @@ const conditionStatusByUser = useMemo(() => {
                     </span>
                   )}
                 </div>
-                <div className="text-sm text-gray-600">
-                  {referrals.length}{' '}
-                  {referrals.length === 1
-                    ? 'реферал'
-                    : referrals.length < 5
-                    ? 'реферала'
-                    : 'рефералов'}
+                <div className="flex flex-col items-start gap-2 text-sm text-gray-600 phoneH:items-end">
+                  <div>
+                    {referrals.length}{' '}
+                    {referrals.length === 1
+                      ? 'реферал'
+                      : referrals.length < 5
+                      ? 'реферала'
+                      : 'рефералов'}
+                  </div>
+                  <Button
+                    name="Карточки"
+                    className="w-full phoneH:w-auto"
+                    outline
+                    onClick={() => handleOpenReferralCards(referrals)}
+                  />
                 </div>
               </div>
 
@@ -529,7 +543,9 @@ const conditionStatusByUser = useMemo(() => {
                         <tr
                           key={referralId}
                           className="transition-colors cursor-pointer hover:bg-gray-50"
-                          onClick={() => handleOpenUser(referralId)}
+                          onClick={() =>
+                            handleOpenReferralCards(referrals, referralId)
+                          }
                         >
                           <td className="px-4 py-2 text-sm text-gray-700">
                             {renderUserName(
