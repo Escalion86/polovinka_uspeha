@@ -304,12 +304,6 @@ const modalsFuncGenerator = (get, set) => {
         }),
     },
     referral: {
-      cardsView: (params) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/referralCardsViewFunc').default(
-            params || {}
-          )
-        ),
       referrersList: (params) =>
         addModal(
           require('../layouts/modals/modalsFunc/referralReferrersListFunc').default(
