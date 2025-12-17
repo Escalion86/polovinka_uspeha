@@ -3,6 +3,7 @@
 import LoadingSpinner from '@components/LoadingSpinner'
 import Note from '@components/Note'
 import UserName from '@components/UserName'
+import Button from '@components/Button'
 import formatDate from '@helpers/formatDate'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -10,9 +11,6 @@ import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
@@ -335,14 +333,40 @@ const conditionStatusByUser = useMemo(() => {
     }
   }, [referralsByReferrer, conditionStatusByUser])
 
-  const handleOpenUser = useCallback(
-    (userId) => {
-      if (userId && modalsFunc?.user?.view) {
-        modalsFunc.user.view(userId)
-      }
+  const handleOpenReferralCards = useCallback(
+    (referrals, startReferralId) => {
+      if (!modalsFunc?.referral?.cardsView) return
+      if (!Array.isArray(referrals) || referrals.length === 0) return
+
+      modalsFunc.referral.cardsView({
+        referrals,
+        startUserId: startReferralId,
+        title: 'Карточки рефералов',
+      })
     },
     [modalsFunc]
   )
+
+  const handleOpenReferrersList = useCallback(() => {
+    if (!modalsFunc?.referral?.referrersList) return
+
+    modalsFunc.referral.referrersList({
+      referrerEntries,
+      couponsByPair,
+      conditionStatusByUser,
+      eventsById,
+      renderUserName,
+      onOpenReferralCards: handleOpenReferralCards,
+    })
+  }, [
+    conditionStatusByUser,
+    couponsByPair,
+    eventsById,
+    handleOpenReferralCards,
+    modalsFunc,
+    referrerEntries,
+    renderUserName,
+  ])
 
   const renderUserName = useCallback((user, fallback) => {
     if (user && typeof user === 'object') {
@@ -414,167 +438,22 @@ const conditionStatusByUser = useMemo(() => {
           </div>
         </div>
       ) : (
-        referrerEntries.map(({ referrerId, referrer, referrals }) => {
-          const referrerLabel = referrer
-            ? renderUserName(referrer)
-            : null
-
-          return (
-            <div
-              key={referrerId}
-              className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
-            >
-              <div className="flex flex-col gap-1 phoneH:flex-row phoneH:items-center phoneH:justify-between">
-                <div className="text-lg font-semibold text-general flex flex-wrap items-center gap-2">
-                  <span>Реферер:</span>
-                  {referrerLabel || (
-                    <span className="text-sm text-gray-500">
-                      Пользователь не найден (ID: {referrerId})
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {referrals.length}{' '}
-                  {referrals.length === 1
-                    ? 'реферал'
-                    : referrals.length < 5
-                    ? 'реферала'
-                    : 'рефералов'}
-                </div>
-              </div>
-
-              <div className="mt-4 overflow-x-auto">
-                <table className="min-w-full text-left border border-gray-200 divide-y divide-gray-200 rounded-lg">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Реферал
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Дата регистрации
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Статус условия
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Купон реферера
-                      </th>
-                      <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                        Купон реферала
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {referrals.map((referral) => {
-                      const referralId = referral?._id ? String(referral._id) : null
-                      if (!referralId) return null
-
-                      const mapKey = `${referrerId}|${referralId}`
-                      const coupons = couponsByPair.get(mapKey) ?? null
-                      const referrerCoupon = coupons?.referrer ?? null
-                      const referralCoupon = coupons?.referral ?? null
-
-                      const conditionStatus =
-                        conditionStatusByUser.get(referralId) ?? {
-                          met: false,
-                          event: null,
-                        }
-                      const conditionMet = conditionStatus.met === true
-                      const visitedEvent = conditionStatus.event
-
-                      const visitedEventDate = visitedEvent?.eventDate
-                        ? formatDate(visitedEvent.eventDate)
-                        : null
-
-                      const conditionDescription = conditionMet
-                        ? visitedEvent?.eventTitle
-                          ? `Посещено мероприятие "${visitedEvent.eventTitle}"${
-                              visitedEventDate ? ` ${visitedEventDate}` : ''
-                            }`
-                          : 'Посещено подходящее мероприятие'
-                        : 'Посещений подходящих мероприятий пока нет'
-
-                      const referrerCouponStatus = getCouponStatus(
-                        referrerCoupon,
-                        eventsById
-                      )
-                      const referralCouponStatus = getCouponStatus(
-                        referralCoupon,
-                        eventsById
-                      )
-
-                      const conditionIcon = conditionMet
-                        ? faCheckCircle
-                        : faTimesCircle
-
-                      const conditionColor = conditionMet
-                        ? 'text-success'
-                        : 'text-danger'
-
-                      const referrerCouponClass =
-                        referrerCouponStatus.status === 'used'
-                          ? 'text-success'
-                          : referrerCouponStatus.status === 'issued'
-                          ? 'text-general'
-                          : 'text-gray-500'
-
-                      const referralCouponClass =
-                        referralCouponStatus.status === 'used'
-                          ? 'text-success'
-                          : referralCouponStatus.status === 'issued'
-                          ? 'text-general'
-                          : 'text-gray-500'
-
-                      return (
-                        <tr
-                          key={referralId}
-                          className="transition-colors cursor-pointer hover:bg-gray-50"
-                          onClick={() => handleOpenUser(referralId)}
-                        >
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            {renderUserName(
-                              referral,
-                              `Пользователь не найден (ID: ${referralId})`
-                            )}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            {referral?.createdAt
-                              ? formatDate(referral.createdAt)
-                              : '—'}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-gray-700">
-                            <div className="flex flex-col gap-1 leading-[14px] phoneH:leading-[18px]">
-                              <div className="flex items-center gap-2">
-                                <FontAwesomeIcon
-                                  icon={conditionIcon}
-                                  className={`h-5 w-5 flex-shrink-0 ${conditionColor}`}
-                                />
-                                <span>
-                                  {conditionMet
-                                    ? 'Условие посещения выполнено'
-                                    : 'Условие посещения не выполнено'}
-                                </span>
-                              </div>
-                              <div className="text-xs text-gray-600">
-                                {conditionDescription}
-                              </div>
-                            </div>
-                          </td>
-                          <td className={`px-4 py-2 text-sm ${referrerCouponClass}`}>
-                            {referrerCouponStatus.text}
-                          </td>
-                          <td className={`px-4 py-2 text-sm ${referralCouponClass}`}>
-                            {referralCouponStatus.text}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+        <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col gap-3">
+          <div className="flex flex-col gap-2 phoneH:flex-row phoneH:items-center phoneH:justify-between">
+            <div className="text-sm text-gray-700">
+              Всего рефереров: {referrerEntries.length}
             </div>
-          )
-        })
+            <Button
+              name="Открыть список рефереров"
+              outline
+              className="w-full phoneH:w-auto"
+              onClick={handleOpenReferrersList}
+            />
+          </div>
+          <div className="text-xs text-gray-500">
+            Карточки рефереров теперь доступны в отдельном окне.
+          </div>
+        </div>
       )}
     </div>
   )

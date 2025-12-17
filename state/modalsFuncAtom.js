@@ -303,6 +303,20 @@ const modalsFuncGenerator = (get, set) => {
           onConfirm: async () => itemsFunc.review.delete(reviewId),
         }),
     },
+    referral: {
+      cardsView: (params) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/referralCardsViewFunc').default(
+            params || {}
+          )
+        ),
+      referrersList: (params) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/referralReferrersListFunc').default(
+            params || {}
+          )
+        ),
+    },
     direction: {
       add: (directionId) =>
         addModal(
