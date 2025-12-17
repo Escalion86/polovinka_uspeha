@@ -6,6 +6,7 @@ import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
+import { SelectUser } from '@components/SelectItem'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
@@ -41,6 +42,9 @@ const userFunc = (userId, clone = false) => {
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canSetRole = loggedUserActiveRole?.users?.setRole
     const canSetStatus = loggedUserActiveRole?.users?.setStatus
+    const canEditReferrer = ['admin', 'moder', 'dev'].includes(
+      loggedUserActive?.role
+    )
 
     const user = useAtomValue(userSelector(userId))
     const setUser = useAtomValue(itemsFuncAtom).user.set
@@ -89,6 +93,7 @@ const userFunc = (userId, clone = false) => {
     )
     const [status, setStatus] = useState(user?.status ?? DEFAULT_USER.status)
     const [role, setRole] = useState(user?.role ?? DEFAULT_USER.role)
+    const [referrerId, setReferrerId] = useState(user?.referrerId ?? null)
 
     const [haveKids, setHaveKids] = useState(
       user?.haveKids ?? DEFAULT_USER.haveKids
@@ -154,6 +159,7 @@ const userFunc = (userId, clone = false) => {
             status,
             role,
             haveKids,
+            referrerId,
           },
           clone
         )
@@ -236,7 +242,8 @@ const userFunc = (userId, clone = false) => {
         (user?.birthday ?? DEFAULT_USER.birthday) !== birthday ||
         (user?.haveKids ?? DEFAULT_USER.haveKids) !== haveKids ||
         (user?.status ?? DEFAULT_USER.status) !== status ||
-        (user?.role ?? DEFAULT_USER.role) !== role
+        (user?.role ?? DEFAULT_USER.role) !== role ||
+        (user?.referrerId ?? null) !== referrerId
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -265,6 +272,7 @@ const userFunc = (userId, clone = false) => {
       status,
       role,
       haveKids,
+      referrerId,
     ])
 
     useEffect(() => {
@@ -477,6 +485,16 @@ const userFunc = (userId, clone = false) => {
             error={errors.role}
             noPresident={!isLoggedUserPresident}
             noDev={!isLoggedUserDev}
+          />
+        )}
+        {canEditReferrer && (
+          <SelectUser
+            label="Реферер"
+            selectedId={referrerId}
+            onChange={setReferrerId}
+            exceptedIds={user?._id ? [user._id] : []}
+            clearButton
+            modalTitle="Выбор реферера"
           />
         )}
         <ErrorsList errors={errors} />
