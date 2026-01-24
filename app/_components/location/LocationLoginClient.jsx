@@ -27,7 +27,7 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
-import MaskedInput from 'react-text-mask'
+import { InputMask, format, unformat } from '@react-input/mask'
 import { useAtomValue } from 'jotai'
 import SvgLove from '@svg/SvgLove'
 import SvgWave from '@svg/SvgWave'
@@ -117,6 +117,28 @@ const Input = ({
   const onFocus = () => setFocused(true)
   const onBlur = () => setFocused(false)
 
+  const phoneMask = '+_ (A__) ___-____'
+  const phoneReplacement = { A: /[1-9]/, _: /\d/ }
+  const normalizePhoneValue = (rawValue) => {
+    if (!rawValue) return ''
+    let digits = rawValue.replace(/\D/g, '')
+    if (!digits) return ''
+    if (digits.length > 11) digits = digits.slice(-11)
+    if (digits[0] === '8') return `7${digits.slice(1)}`
+    if (digits[0] === '7') return digits
+    if (digits.length === 10) return `7${digits}`
+    return `7${digits}`
+  }
+  const rawPhoneValue = value ? value.toString() : ''
+  const displayDigits = rawPhoneValue || (focused ? '7' : '')
+  const maskedPhoneValue = displayDigits
+    ? format(displayDigits, {
+        mask: phoneMask,
+        replacement: phoneReplacement,
+      })
+    : ''
+  const phoneDisplayValue = maskedPhoneValue
+
   return (
     <div
       className={cn(
@@ -181,43 +203,24 @@ const Input = ({
                 ))}
             </select>
           ) : type === 'phone' ? (
-            <MaskedInput
+            <InputMask
               name={name}
               disabled={readOnly}
-              ref={inputRef}
-              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
-              showMask={value == '7'}
+              mask={phoneMask}
+              replacement={phoneReplacement}
+              showMask={focused}
               onFocus={onFocus}
               onBlur={onBlur}
-              onChange={onChange}
-              // keepCharPositions
-              mask={[
-                '+',
-                '7',
-                ' ',
-                '(',
-                /[1-9]/,
-                /\d/,
-                /\d/,
-                ')',
-                ' ',
-                /\d/,
-                /\d/,
-                /\d/,
-                '-',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
-              value={
-                value
-                  ? value.toString().substr(0, 1) == '7'
-                    ? value.toString().substring(1)
-                    : value.toString()
-                  : ''
-              }
+              onChange={(event) => {
+                if (!onChange) return
+                const digits = event.target.value.replace(/\D/g, '')
+                const fullValue = normalizePhoneValue(digits)
+                onChange(fullValue)
+              }}
+              value={phoneDisplayValue}
               onKeyDown={onKeyDown}
+              ref={inputRef}
+              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
             />
           ) : (
             <input
@@ -437,6 +440,7 @@ const LoginPage = (props) => {
       last_name,
       photo_url,
       username,
+      phone,
       forceReg = false,
     }) => {
       if (typeof id === 'number') {
@@ -455,7 +459,11 @@ const LoginPage = (props) => {
           location,
           referrerId: referralId,
           consentToMailing: checkConsentToMailing ? 'true' : 'false',
-          ...(inputPhone ? { phone: String(inputPhone) } : {}),
+          ...(phone
+            ? { phone: String(phone) }
+            : inputPhone
+              ? { phone: String(inputPhone) }
+              : {}),
         }).then((res) => {
           if (res?.error === 'CredentialsSignin') {
             setWaitingResponse(false)
@@ -470,6 +478,7 @@ const LoginPage = (props) => {
               last_name: last_name === 'undefined' ? undefined : last_name,
               photo_url,
               username: username === 'undefined' ? undefined : username,
+              phone,
             })
           } else {
             routeAfterLogin(router, location)
@@ -1092,17 +1101,19 @@ const LoginPage = (props) => {
                 label="Телефон"
                 name="phone"
                 icon={faUser}
-                onChange={(event) => {
+                onChange={(eventOrValue) => {
                   removeError('phone')
-
-                  const value = event.target.value.replace(/[^0-9]/g, '')
-
+                  const value =
+                    typeof eventOrValue === 'string'
+                      ? eventOrValue
+                      : eventOrValue?.target?.value
+                  const digits = (value || '').toString().replace(/[^0-9]/g, '')
                   setInputPhone(
-                    !value
+                    !digits
                       ? '7'
-                      : value == '77' || value == '78'
+                      : digits == '77' || digits == '78'
                         ? '7'
-                        : Number(value)
+                        : Number(digits)
                   )
                 }}
                 value={inputPhone}

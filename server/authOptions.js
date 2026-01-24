@@ -18,9 +18,11 @@ const parsePhoneNumber = (value) => {
 
   if (typeof value === 'string') {
     const trimmed = value.trim()
-    if (!trimmed || !/^\d+$/.test(trimmed)) return null
+    if (!trimmed) return null
+    const digitsOnly = trimmed.replace(/\D/g, '')
+    if (!digitsOnly) return null
 
-    const parsed = Number(trimmed)
+    const parsed = Number(digitsOnly)
     return Number.isFinite(parsed) ? parsed : null
   }
 

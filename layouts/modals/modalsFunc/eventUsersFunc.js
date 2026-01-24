@@ -125,6 +125,10 @@ const EventUsers2 = ({
               user.eventUserCreatedAt ? 'pb-2' : undefined
             }
             noBorder
+            birthdayCheck={{
+              fromDate: event?.dateStart,
+              toDate: event?.dateEnd,
+            }}
             // {...props}
           >
             {!readOnly &&

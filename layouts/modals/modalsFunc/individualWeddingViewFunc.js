@@ -3,7 +3,6 @@ import { useAtomValue } from 'jotai'
 import servicesUsersFullByServiceIdSelector from '@state/selectors/servicesUsersFullByServiceIdSelector'
 // import userSelector from '@state/selectors/userSelector'
 import getUserFullName from '@helpers/getUserFullName'
-import Latex from 'react-latex-next'
 import InputWrapper from '@components/InputWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { SelectUserList } from '@components/SelectItemList'
@@ -19,6 +18,7 @@ import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import { SelectUser } from '@components/SelectItem'
 import { useEffect } from 'react'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import HtmlWithLatex from '@components/HtmlWithLatex'
 
 const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
   const IndividualWeddingViewModal = ({
@@ -233,7 +233,7 @@ const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
             wrapperClassName="flex-col"
           >
             <div className="w-full max-h-full">
-              <Latex displayMode={true}>{individualWedding.aiResponse}</Latex>
+              <HtmlWithLatex html={individualWedding.aiResponse} />
             </div>
           </InputWrapper>
         )}

@@ -1,11 +1,11 @@
 import Button from '@components/Button'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
+import HtmlWithLatex from '@components/HtmlWithLatex'
 import copyToClipboard from '@helpers/copyToClipboard'
 import { getData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import { useState } from 'react'
-import Latex from 'react-latex-next'
 
 const sendQuastion = async (quastion) => {
   // const response = await fetch('/api/deepseek', {
@@ -96,7 +96,7 @@ const aiFunc = () => {
         <Input label="Вопрос" value={quastion} onChange={setQuastion} />
         <Button loading={waitForResponse} name="Отправить" onClick={send} />
         <InputWrapper label="Ответ">
-          <Latex displayMode={true}>{response}</Latex>
+          <HtmlWithLatex html={response} />
         </InputWrapper>
         <div>Использовано токенов: {tokensUsed}</div>
 
