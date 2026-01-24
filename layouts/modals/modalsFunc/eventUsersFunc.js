@@ -373,6 +373,9 @@ const eventUsersFunc = (eventId) => {
     const [dataChanged, setDataChanged] = useState(isDataChanged)
     const [isSortingByGenderAndName, setIsSortingByGenderAndName] =
       useState(true)
+    useEffect(() => {
+      if (isDataChanged) setDataChanged(true)
+    }, [isDataChanged])
     // const [sortType, setSortType] = useState('name')
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
@@ -604,6 +607,7 @@ const eventUsersFunc = (eventId) => {
     const [reserve, setReserve] = useState(objReserve)
     const [assistants, setAssistants] = useState(arrayAssistants)
     const [banned, setBanned] = useState(arrayBanned)
+    const [isInitialized, setIsInitialized] = useState(false)
 
     useEffect(() => {
       if (!compareObjects(participants, objParticipants))
@@ -613,6 +617,10 @@ const eventUsersFunc = (eventId) => {
     useEffect(() => {
       if (!compareObjects(reserve, objReserve)) setReserve(objReserve)
     }, [objReserve])
+
+    useEffect(() => {
+      setIsInitialized(false)
+    }, [objParticipants, objReserve, arrayAssistants, arrayBanned])
 
     useEffect(() => {
         if (
@@ -756,11 +764,27 @@ const eventUsersFunc = (eventId) => {
         }
       }
 
+      const assistantsCheck = compareObjects(assistants, arrayAssistants, {
+        byIDs: true,
+      })
+      const bannedCheck = compareObjects(banned, arrayBanned, { byIDs: true })
+      const isSynced =
+        participantsCheck && reserveCheck && assistantsCheck && bannedCheck
+
+      if (!isInitialized) {
+        if (isSynced) setIsInitialized(true)
+        setOnConfirmFunc(undefined)
+        setOnShowOnCloseConfirmDialog(false)
+        setDisableConfirm(true)
+        setOnlyCloseButtonShow(!canEdit || isEventClosed)
+        return
+      }
+
       const isFormChanged =
         !reserveCheck ||
         !participantsCheck ||
-        !compareObjects(assistants, arrayAssistants, { byIDs: true }) ||
-        !compareObjects(banned, arrayBanned, { byIDs: true })
+        !assistantsCheck ||
+        !bannedCheck
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
