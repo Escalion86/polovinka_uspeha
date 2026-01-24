@@ -1,6 +1,6 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { atom } from 'jotai'
 import usersAtomAsync from '@state/async/usersAtomAsync'
@@ -15,3 +15,4 @@ const userCutedSelector = atomFamily((id) =>
 )
 
 export default userCutedSelector
+

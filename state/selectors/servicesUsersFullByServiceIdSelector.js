@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import userSelector from './userSelector'
 import serviceSelector from './serviceSelector'
@@ -32,3 +32,4 @@ const servicesUsersFullByServiceIdSelector = atomFamily((id) =>
 )
 
 export default servicesUsersFullByServiceIdSelector
+

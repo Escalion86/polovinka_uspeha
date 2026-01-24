@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { DEFAULT_PAYMENT } from '@helpers/constants'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
@@ -15,3 +15,4 @@ const paymentSelector = atomFamily((id) =>
 )
 
 export default paymentSelector
+

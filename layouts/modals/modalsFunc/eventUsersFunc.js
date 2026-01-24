@@ -24,7 +24,7 @@ import itemsFuncAtom from '@state/itemsFuncAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
@@ -38,7 +38,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 import Tooltip from '@components/Tooltip'
 import Note from '@components/Note'
-import { RESET } from 'jotai/utils'
+import { RESET, loadable } from 'jotai/utils'
 
 const ItemButton = ({
   onClick,
@@ -377,19 +377,45 @@ const eventUsersFunc = (eventId) => {
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const event = useAtomValue(eventSelector(eventId))
+    const eventLoadable = useAtomValue(loadable(eventSelector(eventId)))
     const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
     // const users = useAtomValue(usersAtomAsync)
-    const isEventClosed = isEventClosedFunc(event)
+    const eventUsersLoadable = useAtomValue(
+      loadable(eventsUsersFullByEventIdSelector(eventId))
+    )
+    const [eventCached, setEventCached] = useState(null)
+    const [eventUsersCached, setEventUsersCached] = useState([])
 
-    const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
+    useEffect(() => {
+      if (eventLoadable.state === 'hasData') {
+        setEventCached(eventLoadable.data)
+      }
+    }, [eventLoadable])
+
+    useEffect(() => {
+      if (eventUsersLoadable.state === 'hasData') {
+        setEventUsersCached(eventUsersLoadable.data ?? [])
+      }
+    }, [eventUsersLoadable])
+
+    const event =
+      eventLoadable.state === 'hasData' ? eventLoadable.data : eventCached
+    const eventUsers =
+      eventUsersLoadable.state === 'hasData'
+        ? eventUsersLoadable.data ?? []
+        : eventUsersCached
+    const eventIdValue = event?._id ?? eventId
+    const subEvents = event?.subEvents ?? []
+
+    const isEventClosed = event ? isEventClosedFunc(event) : false
+
+    const showLikes = loggedUserActiveRole?.events?.editLikes && event?.likes
 
     // const sortedUsers = useMemo(
     //   () => [...users].sort(sortFunctions.genderAndFirstName.asc),
     //   [users]
     // )
 
-    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUsersCreatedAtObject = useMemo(
       () =>
         eventUsers.reduce((acc, { createdAt, userId }) => {
@@ -556,7 +582,7 @@ const eventUsersFunc = (eventId) => {
           sortedEventUsersParticipants,
           'subEventId',
           true,
-          event._id,
+          eventIdValue,
           ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersParticipants]
@@ -568,7 +594,7 @@ const eventUsersFunc = (eventId) => {
           sortedEventUsersReserve,
           'subEventId',
           true,
-          event._id,
+          eventIdValue,
           ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersReserve]
@@ -589,7 +615,11 @@ const eventUsersFunc = (eventId) => {
     }, [objReserve])
 
     useEffect(() => {
-      if ((statusEdit || copyListToClipboard) && setTopLeftComponent)
+        if (
+          (statusEdit || copyListToClipboard) &&
+          setTopLeftComponent &&
+          event
+        )
         setTopLeftComponent(() => (
           <div className="flex">
             {statusEdit &&
@@ -661,10 +691,14 @@ const eventUsersFunc = (eventId) => {
     ])
 
     const onClickConfirm = async () => {
+      if (!event) {
+        closeModal()
+        return
+      }
       closeModal()
 
       const usersStatuses = []
-      event.subEvents.forEach(({ id }) => {
+      subEvents.forEach(({ id }) => {
         if (participants[id])
           participants[id].forEach((user) =>
             usersStatuses.push({
@@ -791,7 +825,7 @@ const eventUsersFunc = (eventId) => {
     const bannedIds = banned.map(({ _id }) => _id)
     const eventUsersToUse = {}
 
-    event.subEvents.forEach(({ id }) => {
+    subEvents.forEach(({ id }) => {
       const participantsSubEvent = participants[id] ?? []
       const reserveSubEvent = reserve[id] ?? []
 
@@ -818,7 +852,7 @@ const eventUsersFunc = (eventId) => {
 
     const Wrapper = useMemo(
       () =>
-        event.subEvents.length > 1
+        subEvents.length > 1
           ? ({ children, label }) => (
               <InputWrapper
                 label={label}
@@ -835,7 +869,7 @@ const eventUsersFunc = (eventId) => {
                 {children}
               </div>
             ),
-      [event]
+      [subEvents]
     )
 
     const readOnly = !canEdit || isEventClosed
@@ -850,7 +884,12 @@ const eventUsersFunc = (eventId) => {
             showTitle
           />
         </div> */}
-        {canEdit && (
+        {!event && (
+          <div className="py-4 text-center text-gray-500">
+            Загрузка данных мероприятия...
+          </div>
+        )}
+        {event && canEdit && (
           <CheckBox
             label="Сортировать по дате создания записи"
             checked={!isSortingByGenderAndName}
@@ -860,13 +899,13 @@ const eventUsersFunc = (eventId) => {
             }}
           />
         )}
-        {canEdit && isEventClosed && (
+        {event && canEdit && isEventClosed && (
           <Note type="warning">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
           </Note>
         )}
-        {canEdit && dataChanged && (
+        {event && canEdit && dataChanged && (
           <div
             className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
             onClick={() => setDataChanged(false)}
@@ -881,15 +920,15 @@ const eventUsersFunc = (eventId) => {
             />
           </div>
         )}
-        <TabContext value="Участники">
+        {event && <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
             tabAddToLabel={`(${participantsCount})`}
             className="flex flex-col mt-1 gap-y-5"
           >
-            {event.subEvents.map((subEvent) => {
+            {subEvents.map((subEvent) => {
               const { id, title } = subEvent
-              const otherSubEventsPartisipantsIds = event.subEvents.reduce(
+              const otherSubEventsPartisipantsIds = subEvents.reduce(
                 (sum, { id }) => {
                   if (id !== subEvent.id)
                     return [...sum, ...participantsIds[id]]
@@ -964,16 +1003,16 @@ const eventUsersFunc = (eventId) => {
               )
             })}
           </TabPanel>
-          {canEdit && subEventsSummator(event.subEvents)?.isReserveActive && (
+          {canEdit && subEventsSummator(subEvents)?.isReserveActive && (
             <TabPanel
               tabName="Резерв"
               tabAddToLabel={`(${reserveCount})`}
               className="flex flex-col gap-y-5"
             >
-              {event.subEvents.map((subEvent) => {
+              {subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
-                const otherSubEventsReserveIds = event.subEvents.reduce(
+                const otherSubEventsReserveIds = subEvents.reduce(
                   (sum, { id }) => {
                     if (id !== subEvent.id) return [...sum, ...reserveIds[id]]
                     return sum
@@ -1113,17 +1152,21 @@ const eventUsersFunc = (eventId) => {
               /> */}
             </TabPanel>
           )}
-        </TabContext>
+        </TabContext>}
       </>
     )
   }
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const [data, refreshEventState] = useAtom(
+    const dataLoadable = useAtomValue(
+      loadable(asyncEventsUsersByEventIdAtom(eventId))
+    )
+    const refreshEventState = useSetAtom(
       asyncEventsUsersByEventIdAtom(eventId)
     )
-    const [prevData, setPravData] = useState(data)
+    const [prevData, setPrevData] = useState(null)
+    const [currentData, setCurrentData] = useState(null)
     // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
@@ -1135,7 +1178,17 @@ const eventUsersFunc = (eventId) => {
       refreshFunc()
     }, [])
 
-    const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
+    useEffect(() => {
+      if (dataLoadable.state === 'hasData') {
+        if (prevData === null) setPrevData(dataLoadable.data)
+        setCurrentData(dataLoadable.data)
+      }
+    }, [dataLoadable, prevData])
+
+    const isDataChanged =
+      prevData && currentData
+        ? JSON.stringify(prevData) !== JSON.stringify(currentData)
+        : false
     return isRefreshed ? (
       <EventUsersModal {...props} isDataChanged={isDataChanged} />
     ) : null

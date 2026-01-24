@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import directionsAtom from '@state/atoms/directionsAtom'
 
@@ -13,3 +13,4 @@ const directionSelector = atomFamily((id) =>
 )
 
 export default directionSelector
+

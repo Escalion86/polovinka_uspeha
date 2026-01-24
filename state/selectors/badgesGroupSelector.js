@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { pages } from '@helpers/constants'
 
@@ -69,3 +69,4 @@ const badgesGroupSelector = atomFamily((groupId) =>
 )
 
 export default badgesGroupSelector
+

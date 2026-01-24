@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import compareArrays from '@helpers/compareArraysWithDif'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
@@ -30,3 +30,4 @@ const eventNotParticipantsWithPaymentsSelector = atomFamily((id) =>
 )
 
 export default eventNotParticipantsWithPaymentsSelector
+

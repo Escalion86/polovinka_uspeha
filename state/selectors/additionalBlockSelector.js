@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
@@ -16,3 +16,4 @@ const additionalBlockSelector = atomFamily((id) =>
 )
 
 export default additionalBlockSelector
+

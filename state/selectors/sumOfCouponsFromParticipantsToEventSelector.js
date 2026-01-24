@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import couponsOfEventFromUsersSelector from './couponsOfEventFromUsersSelector'
 import eventParticipantsIdsSelector from './eventParticipantsIdsSelector'
@@ -26,3 +26,4 @@ const sumOfCouponsFromParticipantsToEventSelector = atomFamily((id) =>
 )
 
 export default sumOfCouponsFromParticipantsToEventSelector
+

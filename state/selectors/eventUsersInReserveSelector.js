@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
@@ -18,3 +18,4 @@ const eventUsersInReserveSelector = atomFamily((id) =>
 )
 
 export default eventUsersInReserveSelector
+

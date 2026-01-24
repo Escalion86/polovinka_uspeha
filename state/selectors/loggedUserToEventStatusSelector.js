@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import userToEventStatus from '@helpers/userToEventStatus'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
@@ -30,3 +30,4 @@ const loggedUserToEventStatusSelector = atomFamily((id) =>
 )
 
 export default loggedUserToEventStatusSelector
+

@@ -1,6 +1,7 @@
 'use client'
 
-import { atomFamily, selectAtom } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
+import { selectAtom } from 'jotai/utils'
 
 import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
 
@@ -11,3 +12,4 @@ const newsletterCutedSelector = atomFamily((id) =>
 )
 
 export default newsletterCutedSelector
+

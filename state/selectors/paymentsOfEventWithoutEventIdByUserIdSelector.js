@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import paymentsOfEventWithoutEventIdSelector from './paymentsOfEventWithoutEventIdSelector'
 
@@ -13,3 +13,4 @@ const paymentsOfEventWithoutEventIdByUserIdSelector = atomFamily((id) =>
 )
 
 export default paymentsOfEventWithoutEventIdByUserIdSelector
+

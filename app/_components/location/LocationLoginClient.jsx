@@ -392,6 +392,10 @@ const LoginPage = (props) => {
   const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
   const [registrationAgreementsConfirmed, setRegistrationAgreementsConfirmed] =
     useState(false)
+  const isDevMode =
+    (typeof process !== 'undefined' &&
+      process.env?.NODE_ENV === 'development') ||
+    (typeof window !== 'undefined' && window.location.hostname === 'localhost')
 
   const handleToggleHave18Years = () => {
     setCheckHave18Years((state) => !state)
@@ -516,6 +520,19 @@ const LoginPage = (props) => {
       router,
     ]
   )
+
+  const handleTelegramTestAuth = useCallback(() => {
+    handleTelegramResponse({
+      id: 261102161,
+      first_name: 'Алексей',
+      last_name: 'Белинский Иллюзионист',
+      photo_url:
+        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+      username: 'Escalion',
+      auth_date: 1769258925,
+      hash: 'bb2858ab1ada97cbc7e232dcb3e3d4cc131a06da1859ea46c3f75fcbc16a717e',
+    })
+  }, [handleTelegramResponse])
 
   // const test = () => {
   //   handleTelegramResponse({
@@ -1353,6 +1370,15 @@ const LoginPage = (props) => {
                           botName={telegramBotName}
                           lang="ru"
                         />
+                        {isDevMode && (
+                          <div className="flex justify-center mt-2">
+                            <Button
+                              name="Telegram test auth"
+                              classBgColor="bg-blue-600"
+                              onClick={handleTelegramTestAuth}
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1547,21 +1573,52 @@ const LoginPage = (props) => {
               {telegramRegistrationConfirm ? (
                 //  === 'shure'
                 <>
+                  <div className="w-full text-2xl text-center">
+                    <b>!!! ВНИМАНИЕ !!!</b>
+                  </div>
                   <span>
-                    Если у Вас уже есть аккаунт <i>"Половинки успеха"</i>{' '}
-                    созданный по номеру телефона, то создание нового аккаунта
-                    приведет к задвоению!
                     <br />
-                    Вы <b>точно уверены</b> что у Вас нет аккаунта{' '}
-                    <i>"Половинки успеха"</i> и вы хотите создать новый?
+                    <b>Если Вы уже регистрировались</b> на сайте "Половинка
+                    успеха" ранее, но не помните пароль -{' '}
+                    <b>воспользуйтесь восстановлением</b> и нажмите кнопку ниже.
                   </span>
+                  <div className="w-full pt-2">
+                    <Button
+                      name="У меня есть аккаунт, но я не помню пароль"
+                      icon={faLock}
+                      classBgColor="bg-general"
+                      onClick={() => {
+                        setTelegramRegistrationConfirm(false)
+                        setCheckHave18Years(false)
+                        setCheckAgreement(false)
+                        setCheckHaveNoAccounts(false)
+                        setRegistrationAgreementsConfirmed(false)
+                        clearErrors()
+                        setProcess('forgotPassword')
+                        setRegistrationLevel(1)
+                        setType('phone')
+                        setSubmitAfterRerender(true)
+                      }}
+                    />
+                  </div>
+                  <div className="pt-8">
+                    Вы <b>точно уверены</b>, что Вы{' '}
+                    <b>ранее не регистрировались</b> на сайте{' '}
+                    <i>"Половинки успеха"</i> и вы хотите{' '}
+                    <b>создать новый аккаунт</b>?
+                  </div>
                   <CheckBox
                     checked={checkHaveNoAccounts}
                     labelPos="right"
                     onChange={(e) =>
                       setCheckHaveNoAccounts(!checkHaveNoAccounts)
                     }
-                    label={'У меня нет других аккаунтов "Половинки успеха"'}
+                    label={
+                      <div className="text-left">
+                        <span className="mr-1 text-danger">*</span>У меня нет
+                        других аккаунтов "Половинки успеха"
+                      </div>
+                    }
                   />
                   <CheckBox
                     checked={checkHave18Years}
@@ -1589,6 +1646,31 @@ const LoginPage = (props) => {
                         </span>
                       </div>
                     }
+                  />
+                  <CheckBox
+                    checked={checkConsentToMailing}
+                    onChange={() =>
+                      setCheckConsentToMailing(!checkConsentToMailing)
+                    }
+                    label={
+                      <div className="text-left">
+                        Согласен на{' '}
+                        <a
+                          href="/docs/Soglasie_na_poluchenie_rassylki.docx"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="italic font-bold underline text-general hover:text-success"
+                        >
+                          получение рассылки о мероприятиях
+                        </a>
+                      </div>
+                    }
+                    wrapperClassName={cn(
+                      'overflow-hidden',
+                      isRegistration && registrationLevel === 1
+                        ? 'max-h-15 mt-1 py-1 mb-4'
+                        : ''
+                    )}
                   />
                 </>
               ) : (

@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import userSelector from './userSelector'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
@@ -32,3 +32,4 @@ const eventsUsersFullByEventIdSelector = atomFamily((id) =>
 )
 
 export default eventsUsersFullByEventIdSelector
+
