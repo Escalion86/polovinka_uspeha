@@ -442,7 +442,17 @@ const LoginPage = (props) => {
       username,
       phone,
       forceReg = false,
+      ...rest
     }) => {
+      console.log('Telegram auth payload:', {
+        id,
+        first_name,
+        last_name,
+        photo_url,
+        username,
+        phone,
+        ...rest,
+      })
       if (typeof id === 'number') {
         // console.log(response)
         // if (isAuthorization) {

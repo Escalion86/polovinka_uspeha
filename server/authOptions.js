@@ -29,6 +29,18 @@ const parsePhoneNumber = (value) => {
   return null
 }
 
+const normalizePhoneDigits = (value) => {
+  if (!value) return null
+  const digitsOnly = String(value).replace(/\D/g, '')
+  if (!digitsOnly) return null
+  if (digitsOnly.length === 10) return `7${digitsOnly}`
+  if (digitsOnly.length === 11) {
+    if (digitsOnly[0] === '8') return `7${digitsOnly.slice(1)}`
+    if (digitsOnly[0] === '7') return digitsOnly
+  }
+  return digitsOnly
+}
+
 const resolveReferrerId = async (db, referrerId) => {
   if (!referrerId || !mongoose.Types.ObjectId.isValid(referrerId)) return null
 
@@ -140,6 +152,8 @@ export const authOptions = {
         }
 
         const phoneNumber = parsePhoneNumber(phone)
+        const phoneDigits = normalizePhoneDigits(phoneNumber ?? phone)
+        const phoneNumberNormalized = phoneDigits ? Number(phoneDigits) : null
         const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
         const db = await dbConnect(location)
         if (!db) return null
@@ -165,9 +179,13 @@ export const authOptions = {
           }
         }
 
-        if (phoneNumber) {
+        if (phoneDigits) {
           const userByPhone = await usersModel
-            .findOne({ phone: phoneNumber })
+            .findOne({
+              phone: {
+                $in: [phoneNumberNormalized, phoneDigits],
+              },
+            })
             .lean()
 
           if (userByPhone?._id) {
@@ -187,8 +205,8 @@ export const authOptions = {
               telegramUpdate['notifications.telegram.userName'] = username
             }
 
-            if (!userByPhone.phone) {
-              telegramUpdate.phone = phoneNumber
+            if (!userByPhone.phone && phoneNumberNormalized) {
+              telegramUpdate.phone = phoneNumberNormalized
             }
 
             await usersModel.findByIdAndUpdate(userByPhone._id, {
@@ -216,7 +234,7 @@ export const authOptions = {
             secondName: last_name === 'undefined' ? undefined : last_name,
             images: [photo_url],
             registrationType: 'telegram',
-            ...(phoneNumber ? { phone: phoneNumber } : {}),
+            ...(phoneNumberNormalized ? { phone: phoneNumberNormalized } : {}),
             referrerId: resolvedReferrerId,
             consentToMailing,
           })
