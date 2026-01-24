@@ -89,6 +89,7 @@
     "tailwindcss": "^4.1.18"
   },
   "overrides": {
-    "react-json-tree": "^0.20.0"
+    "react-json-tree": "^0.20.0",
+    "jsondiffpatch": "^0.7.2"
   }
 }
