@@ -618,6 +618,7 @@ const eventUsersFunc = (eventId) => {
     const [assistants, setAssistants] = useState(arrayAssistants)
     const [banned, setBanned] = useState(arrayBanned)
     const [isInitialized, setIsInitialized] = useState(false)
+    const [hasUserEdited, setHasUserEdited] = useState(false)
 
     useEffect(() => {
       if (!compareObjects(participants, objParticipants))
@@ -800,11 +801,21 @@ const eventUsersFunc = (eventId) => {
         !assistantsCheck ||
         !bannedCheck
 
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
-      setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!isFormChanged)
+      const shouldShowConfirm = hasUserEdited && isFormChanged
+
+      setOnConfirmFunc(shouldShowConfirm ? onClickConfirm : undefined)
+      setOnShowOnCloseConfirmDialog(shouldShowConfirm)
+      setDisableConfirm(!shouldShowConfirm)
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
-    }, [participants, assistants, reserve, banned, canEdit, isEventClosed])
+    }, [
+      participants,
+      assistants,
+      reserve,
+      banned,
+      canEdit,
+      isEventClosed,
+      hasUserEdited,
+    ])
 
     // const setParticipantsState = (subEventId, ids) => {
     //   setParticipants((state) => ({
@@ -821,6 +832,7 @@ const eventUsersFunc = (eventId) => {
     // }
 
     const setParticipantsStateFull = (subEventId, users) => {
+      setHasUserEdited(true)
       setParticipants((state) => ({
         ...state,
         [subEventId]: sortFuncFull(users),
@@ -828,6 +840,7 @@ const eventUsersFunc = (eventId) => {
     }
 
     const setReserveStateFull = (subEventId, users) => {
+      setHasUserEdited(true)
       setReserve((state) => ({
         ...state,
         [subEventId]: sortFuncFull(users),
@@ -836,11 +849,17 @@ const eventUsersFunc = (eventId) => {
 
     // const setAssistantsState = (ids) => setAssistants(sortFunc(ids))
 
-    const setAssistantsStateFull = (users) => setAssistants(sortFuncFull(users))
+    const setAssistantsStateFull = (users) => {
+      setHasUserEdited(true)
+      setAssistants(sortFuncFull(users))
+    }
 
     // const setBannedState = (ids) => setBanned(sortFunc(ids))
 
-    const setBannedStateFull = (users) => setBanned(sortFuncFull(users))
+    const setBannedStateFull = (users) => {
+      setHasUserEdited(true)
+      setBanned(sortFuncFull(users))
+    }
 
     const participantsCount = Object.keys(participants).reduce(
       (sum, subEventId) => sum + participants[subEventId]?.length ?? 0,
