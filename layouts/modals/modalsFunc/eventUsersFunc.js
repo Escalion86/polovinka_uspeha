@@ -781,13 +781,17 @@ const eventUsersFunc = (eventId) => {
       const isSynced =
         participantsCheck && reserveCheck && assistantsCheck && bannedCheck
 
-      if (!isInitialized) {
-        if (isSynced) setIsInitialized(true)
+      if (!isInitialized && isSynced) {
+        setIsInitialized(true)
         setOnConfirmFunc(undefined)
         setOnShowOnCloseConfirmDialog(false)
         setDisableConfirm(true)
         setOnlyCloseButtonShow(!canEdit || isEventClosed)
         return
+      }
+
+      if (!isInitialized && !isSynced) {
+        setIsInitialized(true)
       }
 
       const isFormChanged =
