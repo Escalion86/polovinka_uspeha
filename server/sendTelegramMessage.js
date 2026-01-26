@@ -87,18 +87,48 @@ const sendMessageToTelegramId = async ({
   }
 }
 
-export const sendMessageWithRepeats = async (body, repeats = 5) => {
+const getTelegramResultStatus = (res) => {
+  if (!res) return 'unknown'
+  if (Array.isArray(res)) {
+    let hasSuccess = false
+    let hasError = false
+    let hasAny = false
+    for (const item of res) {
+      if (!item) continue
+      hasAny = true
+      if (item.ok === true) hasSuccess = true
+      if (item.ok === false) hasError = true
+    }
+    if (hasSuccess) return 'success'
+    if (hasError || hasAny) return 'error'
+    return 'unknown'
+  }
+  if (res.ok === true) return 'success'
+  if (res.ok === false) return 'error'
+  return 'unknown'
+}
+
+export const sendMessageWithRepeats = async (
+  body,
+  repeats = 5,
+  { retryOnUnknown = true } = {}
+) => {
   let result = []
   let error = false
+  let status = 'unknown'
   let i = 0
   let res
   do {
     i = i + 1
     res = await sendMessageToTelegramId(body)
-  } while (!res && i < repeats)
-  if (i >= repeats) error = true
+    status = getTelegramResultStatus(res)
+  } while (
+    (status === 'error' || (retryOnUnknown && status === 'unknown')) &&
+    i < repeats
+  )
+  if (status !== 'success') error = true
   result.push(res)
-  return { result, error }
+  return { result, error, status }
 }
 
 const sendTelegramMessage = async ({
@@ -108,6 +138,8 @@ const sendTelegramMessage = async ({
   inline_keyboard,
   location,
   topicId,
+  repeats = 5,
+  retryOnUnknown = true,
 }) => {
   // const db = await dbConnect(location)
   // if (!db) return
@@ -128,14 +160,18 @@ const sendTelegramMessage = async ({
   let errorCount = 0
   let successCount = 0
   if (['string', 'number'].includes(typeof telegramIds)) {
-    const res = await sendMessageWithRepeats({
-      telegramId: telegramIds,
-      text,
-      images,
-      inline_keyboard,
-      location,
-      topicId,
-    })
+    const res = await sendMessageWithRepeats(
+      {
+        telegramId: telegramIds,
+        text,
+        images,
+        inline_keyboard,
+        location,
+        topicId,
+      },
+      repeats,
+      { retryOnUnknown }
+    )
     error = res.error
     if (res.error) {
       errors.push({
@@ -162,14 +198,18 @@ const sendTelegramMessage = async ({
     }
   } else {
     for (const telegramId of telegramIds) {
-      const res = await sendMessageWithRepeats({
-        telegramId,
-        text,
-        images,
-        inline_keyboard,
-        location,
-        topicId,
-      })
+      const res = await sendMessageWithRepeats(
+        {
+          telegramId,
+          text,
+          images,
+          inline_keyboard,
+          location,
+          topicId,
+        },
+        repeats,
+        { retryOnUnknown }
+      )
       if (res.error) {
         if (!error) error = res.error
         errors.push({

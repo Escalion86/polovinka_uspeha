@@ -134,6 +134,8 @@ const sendNewsletterMessages = async ({
       text: messageToSend,
       images: imageUrl ? [imageUrl] : undefined,
       location,
+      repeats: 1,
+      retryOnUnknown: false,
     })
 
     const success = telegramResult?.successCount > 0

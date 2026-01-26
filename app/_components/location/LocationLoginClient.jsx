@@ -392,10 +392,7 @@ const LoginPage = (props) => {
   const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
   const [registrationAgreementsConfirmed, setRegistrationAgreementsConfirmed] =
     useState(false)
-  const isDevMode =
-    (typeof process !== 'undefined' &&
-      process.env?.NODE_ENV === 'development') ||
-    (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+  const [isDevMode, setIsDevMode] = useState(false)
 
   const handleToggleHave18Years = () => {
     setCheckHave18Years((state) => !state)
@@ -417,6 +414,13 @@ const LoginPage = (props) => {
     () => process === 'forgotPassword',
     [process]
   )
+
+  useEffect(() => {
+    const isDevEnv = globalThis?.process?.env?.NODE_ENV === 'development'
+    const isLocalhost =
+      typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    setIsDevMode(Boolean(isDevEnv || isLocalhost))
+  }, [])
 
   useEffect(() => {
     if (!isRegistration || registrationLevel !== 1) {

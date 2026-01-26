@@ -2,7 +2,6 @@
 
 // import itemsFuncGenerator from '@state/itemsFuncGenerator'
 // import { atom } from 'jotai'
-import { withAtomEffect } from 'jotai-effect'
 
 import { postData, putData, deleteData } from '@helpers/CRUD'
 
@@ -45,6 +44,7 @@ import loggedUserActiveAtom from './atoms/loggedUserActiveAtom'
 import snackbarAtom from './atoms/snackbarAtom'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 import { atom } from 'jotai'
+import store from './store'
 import newsletterEditSelector from './selectors/newsletterEditSelector'
 import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
 import individualWeddingEditSelector from './selectors/individualWeddingEditSelector'
@@ -853,9 +853,6 @@ const itemsFuncGenerator = (get, set) => {
   // }
 }
 
-const itemsFuncAtom = withAtomEffect(atom(null), (get, set) => {
-  const func = itemsFuncGenerator(get, set)
-  set(itemsFuncAtom, func)
-})
+const itemsFuncAtom = atom((get) => itemsFuncGenerator(get, store.set))
 
 export default itemsFuncAtom

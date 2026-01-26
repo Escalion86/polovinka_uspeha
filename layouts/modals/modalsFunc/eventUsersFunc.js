@@ -20,7 +20,7 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
-// import usersAtomAsync from '@state/async/usersAtomAsync'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -361,6 +361,7 @@ const eventUsersFunc = (eventId) => {
     setOnlyCloseButtonShow,
     setTopLeftComponent,
     isDataChanged,
+    dataChanges,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -373,6 +374,7 @@ const eventUsersFunc = (eventId) => {
     const [dataChanged, setDataChanged] = useState(isDataChanged)
     const [isSortingByGenderAndName, setIsSortingByGenderAndName] =
       useState(true)
+    const users = useAtomValue(usersAtomAsync)
     useEffect(() => {
       if (isDataChanged) setDataChanged(true)
     }, [isDataChanged])
@@ -458,23 +460,31 @@ const eventUsersFunc = (eventId) => {
     //   [users]
     // )
 
-    const sortUsersByGenderAndFirstNameFull = useCallback((selectedUsers) => {
-      // const filteredUsers = users.filter((user) => ids.includes(user._id))
-      const updatedUsers = selectedUsers.map((user) => ({
-        ...user,
-        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-      }))
-      return updatedUsers.toSorted(sortFunctions.genderAndFirstName.asc)
-    }, [])
+    const sortUsersByGenderAndFirstNameFull = useCallback(
+      (selectedUsers) => {
+        // const filteredUsers = users.filter((user) => ids.includes(user._id))
+        const updatedUsers = selectedUsers.map((user) => ({
+          ...user,
+          eventUserCreatedAt:
+            eventUsersCreatedAtObject[user._id] ?? user.eventUserCreatedAt,
+        }))
+        return updatedUsers.toSorted(sortFunctions.genderAndFirstName.asc)
+      },
+      [eventUsersCreatedAtObject]
+    )
 
-    const sortUsersByCreatedAtFull = useCallback((selectedUsers) => {
-      // const filteredUsers = users.filter((user) => ids.includes(user._id))
-      const updatedUsers = selectedUsers.map((user) => ({
-        ...user,
-        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-      }))
-      return updatedUsers.toSorted(sortFunctions.eventUserCreatedAt.asc)
-    }, [])
+    const sortUsersByCreatedAtFull = useCallback(
+      (selectedUsers) => {
+        // const filteredUsers = users.filter((user) => ids.includes(user._id))
+        const updatedUsers = selectedUsers.map((user) => ({
+          ...user,
+          eventUserCreatedAt:
+            eventUsersCreatedAtObject[user._id] ?? user.eventUserCreatedAt,
+        }))
+        return updatedUsers.toSorted(sortFunctions.eventUserCreatedAt.asc)
+      },
+      [eventUsersCreatedAtObject]
+    )
 
     // const sortFunc = useMemo(
     //   () => (isSortingByGenderAndName ? sortUsersByIds : sortUsersByCreatedAt),
@@ -898,6 +908,42 @@ const eventUsersFunc = (eventId) => {
 
     const readOnly = !canEdit || isEventClosed
 
+    const usersById = useMemo(() => {
+      const map = {}
+      if (Array.isArray(users)) {
+        users.forEach((user) => {
+          map[user._id] = user
+        })
+      }
+      return map
+    }, [users])
+
+    const formatUserName = useCallback(
+      (userId) => {
+        const user = usersById[userId]
+        if (!user) return userId
+        return [user.secondName, user.firstName, user.thirdName]
+          .filter(Boolean)
+          .join(' ')
+      },
+      [usersById]
+    )
+
+    const addedNames = useMemo(
+      () => (dataChanges?.addedIds ?? []).map(formatUserName).filter(Boolean),
+      [dataChanges, formatUserName]
+    )
+
+    const removedNames = useMemo(
+      () => (dataChanges?.removedIds ?? []).map(formatUserName).filter(Boolean),
+      [dataChanges, formatUserName]
+    )
+
+    const changedNames = useMemo(
+      () => (dataChanges?.changedIds ?? []).map(formatUserName).filter(Boolean),
+      [dataChanges, formatUserName]
+    )
+
     return (
       <>
         {/* <div className="absolute z-50 top-1 right-11">
@@ -937,6 +983,15 @@ const eventUsersFunc = (eventId) => {
             <Note type="warning">
               Обратите внимание! Данные были изменены с момента предыдущей
               загрузки. Отображены актуальные данные.
+              {!!addedNames.length && (
+                <div>Добавлены: {addedNames.join(', ')}</div>
+              )}
+              {!!removedNames.length && (
+                <div>Удалены: {removedNames.join(', ')}</div>
+              )}
+              {!!changedNames.length && (
+                <div>Изменены: {changedNames.join(', ')}</div>
+              )}
             </Note>
             <FontAwesomeIcon
               className="w-4 h-4 min-w-4 min-h-4"
@@ -1196,6 +1251,12 @@ const eventUsersFunc = (eventId) => {
 
     useEffect(() => {
       const refreshFunc = async () => {
+        setIsRefreshed(false)
+        setPrevData(null)
+        setCurrentData(null)
+        if (dataLoadable.state === 'hasData') {
+          setPrevData(dataLoadable.data ?? [])
+        }
         await refreshEventState(RESET)
         setIsRefreshed(true)
       }
@@ -1203,18 +1264,77 @@ const eventUsersFunc = (eventId) => {
     }, [])
 
     useEffect(() => {
-      if (dataLoadable.state === 'hasData') {
-        if (prevData === null) setPrevData(dataLoadable.data)
-        setCurrentData(dataLoadable.data)
-      }
-    }, [dataLoadable, prevData])
+      if (!isRefreshed || dataLoadable.state !== 'hasData') return
+      const data = dataLoadable.data ?? []
+      if (prevData === null) setPrevData(data)
+      setCurrentData(data)
+    }, [dataLoadable, isRefreshed, prevData])
+
+    const normalizeEventUsers = useCallback((list) => {
+      if (!Array.isArray(list)) return []
+      return list
+        .map(({ userId, status, subEventId }) => ({
+          userId,
+          status: status ?? null,
+          subEventId: subEventId ?? null,
+        }))
+        .sort((a, b) => {
+          const aId = a.userId ?? ''
+          const bId = b.userId ?? ''
+          if (aId !== bId) return aId < bId ? -1 : 1
+          if (a.status !== b.status) return a.status < b.status ? -1 : 1
+          const aSub = a.subEventId ?? ''
+          const bSub = b.subEventId ?? ''
+          return aSub < bSub ? -1 : 1
+        })
+    }, [])
 
     const isDataChanged =
       prevData && currentData
-        ? JSON.stringify(prevData) !== JSON.stringify(currentData)
+        ? JSON.stringify(normalizeEventUsers(prevData)) !==
+          JSON.stringify(normalizeEventUsers(currentData))
         : false
+
+    const dataChanges = useMemo(() => {
+      if (!prevData || !currentData) {
+        return { addedIds: [], removedIds: [], changedIds: [] }
+      }
+      const prevIds = new Set(
+        prevData.map(({ userId }) => userId).filter(Boolean)
+      )
+      const currentIds = new Set(
+        currentData.map(({ userId }) => userId).filter(Boolean)
+      )
+      const addedIds = Array.from(currentIds).filter((id) => !prevIds.has(id))
+      const removedIds = Array.from(prevIds).filter(
+        (id) => !currentIds.has(id)
+      )
+      const prevStatusMap = new Map(
+        prevData.map(({ userId, status, subEventId }) => [
+          userId,
+          `${status ?? ''}:${subEventId ?? ''}`,
+        ])
+      )
+      const currentStatusMap = new Map(
+        currentData.map(({ userId, status, subEventId }) => [
+          userId,
+          `${status ?? ''}:${subEventId ?? ''}`,
+        ])
+      )
+      const changedIds = []
+      for (const [userId, signature] of currentStatusMap.entries()) {
+        if (prevStatusMap.has(userId) && prevStatusMap.get(userId) !== signature)
+          changedIds.push(userId)
+      }
+      return { addedIds, removedIds, changedIds }
+    }, [prevData, currentData])
+
     return isRefreshed ? (
-      <EventUsersModal {...props} isDataChanged={isDataChanged} />
+      <EventUsersModal
+        {...props}
+        isDataChanged={isDataChanged}
+        dataChanges={dataChanges}
+      />
     ) : null
   }
 

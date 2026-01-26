@@ -115,7 +115,9 @@ const NewsletterCard = ({ newsletter, style }) => {
             {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
           <div className="text-sm leading-4 whitespace-nowrap">
-            <span className="text-gray-600">Отправка: </span>
+            <span className="hidden text-gray-600 tablet:block">
+              Отправка:{' '}
+            </span>
             {formatDateTime(
               newsletter.sendMode === NEWSLETTER_SEND_MODES.SCHEDULED
                 ? newsletter.plannedSendDate + ' ' + newsletter.plannedSendTime

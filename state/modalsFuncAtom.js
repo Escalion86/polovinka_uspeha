@@ -2,13 +2,13 @@
 
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 import { atom } from 'jotai'
-import { withAtomEffect } from 'jotai-effect'
 
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import routerAtom from './atoms/routerAtom'
+import store from './store'
 
 const modalsFuncGenerator = (get, set) => {
   const itemsFunc = get(itemsFuncAtom)
@@ -958,9 +958,6 @@ const modalsFuncGenerator = (get, set) => {
   }
 }
 
-const modalsFuncAtom = withAtomEffect(atom(null), (get, set) => {
-  const func = modalsFuncGenerator(get, set)
-  set(modalsFuncAtom, func)
-})
+const modalsFuncAtom = atom((get) => modalsFuncGenerator(get, store.set))
 
 export default modalsFuncAtom

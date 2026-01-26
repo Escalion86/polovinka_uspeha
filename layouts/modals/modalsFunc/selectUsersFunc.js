@@ -175,9 +175,8 @@ const selectUsersFunc = (
                 filter.checked.unchecked) ||
                 selectedUsersIds.includes(user._id)) &&
               ((filter.consent.consented && user.consentToMailing) ||
-              (filter.consent.notConsented && !user.consentToMailing)) &&
-              ((filter.telegram.withId &&
-                user?.notifications?.telegram?.id) ||
+                (filter.consent.notConsented && !user.consentToMailing)) &&
+              ((filter.telegram.withId && user?.notifications?.telegram?.id) ||
                 (filter.telegram.withoutId &&
                   !user?.notifications?.telegram?.id)) &&
               (!filter.ages ||
@@ -402,8 +401,12 @@ const selectUsersFunc = (
             }
           />
         </div> */}
-        <div className="flex-1 min-h-0 border-gray-700 border-t overflow-hidden">
-          <ListWrapper itemCount={sortedUsers.length} itemSize={41}>
+        <div className="flex-1 min-h-0 border-gray-700 border-t overflow-hidden max-h-[calc(100vh-400px)]">
+          <ListWrapper
+            itemCount={sortedUsers.length}
+            itemSize={41}
+            maxHeight="calc(100vh - 400px)"
+          >
             {({ index, style }) => (
               <div style={style} className="border-b border-gray-700">
                 <UserItem
