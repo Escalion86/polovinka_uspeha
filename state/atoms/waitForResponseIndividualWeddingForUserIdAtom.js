@@ -4,7 +4,7 @@ import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
 
 const waitForResponseIndividualWeddingForUserIdAtom = atomFamily((params) =>
-  atom(false)
+  atom({ loading: false, stage: null })
 )
 
 export default waitForResponseIndividualWeddingForUserIdAtom

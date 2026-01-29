@@ -16,27 +16,49 @@ export default async function handler(req, res) {
         ?.status(400)
         .json({ success: false, error: 'Invalid location' })
 
-    const { userId, content, usersFilter, allCandidatesIds } = body
+    const {
+      userId,
+      content,
+      usersFilter,
+      allCandidatesIds,
+      chosenCandidatesIds,
+      aiResponseRaw,
+    } = body
 
     const db = await dbConnect(location)
     if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
-    const baseUrl = getBaseUrl(req).href
+    let formattedContent = null
+    let finalChosenCandidatesIds = null
 
-    const result = await fetch(baseUrl + 'api/deepseek', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content,
-        deep: true,
-      }),
-    })
+    if (aiResponseRaw && Array.isArray(chosenCandidatesIds)) {
+      formattedContent = aiResponseRaw
+        .trim('\n')
+        .trim(' ')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/__(.*?)__/g, '<u>$1</u>')
+        .replace(/~~(.*?)~~/g, '<i>$1</i>')
+        .replace(/--(.*?)--/g, '<del>$1</del>')
+        .replace(/<<(.*?)>>/g, "<a href='$1'>Link</a>")
+        .replace(/\n/g, '<br>')
+      finalChosenCandidatesIds = chosenCandidatesIds
+    } else {
+      const baseUrl = getBaseUrl(req).href
 
-    const json = await result.json()
+      const result = await fetch(baseUrl + 'api/deepseek', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          deep: true,
+        }),
+      })
 
-    // const result = {
+      const json = await result.json()
+
+      // const result = {
     //   success: true,
     //   data: {
     //     id: '4c5aad67-0f66-40d9-9df1-23143b6c2f11',
@@ -69,38 +91,39 @@ export default async function handler(req, res) {
     //   },
     // }
 
-    // console.log('json :>> ', json)
+      // console.log('json :>> ', json)
 
-    if (!json?.success) {
-      return res?.status(400).json({ success: false, error: 'result error' })
-    } else {
-      const content = json.data.choices[0].message.content.split('candidates=')
-      const chosenCandidatesIdsString = content[1]
-      const formatedContent = content[0]
-        .trim('\n')
-        .trim(' ')
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-        .replace(/__(.*?)__/g, '<u>$1</u>')
-        .replace(/~~(.*?)~~/g, '<i>$1</i>')
-        .replace(/--(.*?)--/g, '<del>$1</del>')
-        .replace(/<<(.*?)>>/g, "<a href='$1'>Link</a>")
-        .replace(/\n/g, '<br>')
-      // setResponse(formatedContent)
-      const chosenCandidatesIds = chosenCandidatesIdsString
-        ? JSON.parse(chosenCandidatesIdsString)
-        : []
-      // setCandidates(parsedCandidates)
-      const newIndividualWedding = await db.model('IndividualWeddings').create({
-        userId,
-        aiResponse: formatedContent,
-        usersFilter,
-        allCandidatesIds,
-        chosenCandidatesIds,
-      })
-      return res
-        ?.status(200)
-        .json({ success: true, data: newIndividualWedding })
+      if (!json?.success) {
+        return res?.status(400).json({ success: false, error: 'result error' })
+      } else {
+        const content = json.data.choices[0].message.content.split('candidates=')
+        const chosenCandidatesIdsString = content[1]
+        formattedContent = content[0]
+          .trim('\n')
+          .trim(' ')
+          .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+          .replace(/__(.*?)__/g, '<u>$1</u>')
+          .replace(/~~(.*?)~~/g, '<i>$1</i>')
+          .replace(/--(.*?)--/g, '<del>$1</del>')
+          .replace(/<<(.*?)>>/g, "<a href='$1'>Link</a>")
+          .replace(/\n/g, '<br>')
+        // setResponse(formatedContent)
+        finalChosenCandidatesIds = chosenCandidatesIdsString
+          ? JSON.parse(chosenCandidatesIdsString)
+          : []
+      }
     }
+
+    const newIndividualWedding = await db.model('IndividualWeddings').create({
+      userId,
+      aiResponse: formattedContent,
+      usersFilter,
+      allCandidatesIds,
+      chosenCandidatesIds: finalChosenCandidatesIds ?? [],
+    })
+    return res
+      ?.status(200)
+      .json({ success: true, data: newIndividualWedding })
   }
 
   return await CRUD('IndividualWeddings', req, res)
