@@ -178,6 +178,17 @@ const newsletterFunc = (
     )
 
     const [selectedUsers, setSelectedUsers] = useState(initialSelectedUsers)
+    const selectedUserIdsSet = useMemo(
+      () => new Set(selectedUsers.map((user) => user?._id).filter(Boolean)),
+      [selectedUsers]
+    )
+    const availableUsersForNewsletter = useMemo(
+      () =>
+        (usersAll || []).filter(
+          (user) => user?._id && !selectedUserIdsSet.has(user._id)
+        ),
+      [selectedUserIdsSet, usersAll]
+    )
 
     const defaultMessageState = useMemo(() => {
       if (newsletter?.message) return newsletter.message
@@ -413,6 +424,87 @@ const newsletterFunc = (
         info('Черный список обновлен')
       }
     }, [blackList, blacklistUsers, info, openBlacklistSelector, setBlackList])
+
+    const handleUsersEdit = useCallback(() => {
+      modalsFunc.selectUsers(
+        selectedUsers,
+        {},
+        (usersSelected) => {
+          if (!usersSelected) return
+          setSelectedUsers(usersSelected)
+        },
+        [],
+        undefined,
+        undefined,
+        true,
+        'Редактирование списка пользователей',
+        false,
+        true
+      )
+    }, [modalsFunc, selectedUsers])
+
+    const handleUsersAdd = useCallback(() => {
+      if (!availableUsersForNewsletter.length) {
+        info('Нет пользователей для добавления')
+        return
+      }
+      modalsFunc.selectUsers(
+        availableUsersForNewsletter,
+        {},
+        (usersSelected) => {
+          if (!usersSelected?.length) return
+          const merged = [
+            ...selectedUsers,
+            ...usersSelected.filter(
+              (user) => user?._id && !selectedUserIdsSet.has(user._id)
+            ),
+          ]
+          setSelectedUsers(merged)
+        },
+        [],
+        undefined,
+        undefined,
+        true,
+        'Добавление пользователей в рассылку',
+        false,
+        true
+      )
+    }, [
+      availableUsersForNewsletter,
+      info,
+      modalsFunc,
+      selectedUserIdsSet,
+      selectedUsers,
+    ])
+
+    const handleUsersRemove = useCallback(() => {
+      if (!selectedUsers.length) {
+        info('Список пользователей пуст')
+        return
+      }
+      modalsFunc.selectUsers(
+        selectedUsers,
+        {},
+        (usersSelected) => {
+          if (!usersSelected?.length) return
+          const idsToRemove = new Set(
+            usersSelected.map((user) => user?._id).filter(Boolean)
+          )
+          if (!idsToRemove.size) return
+          info(`Удалено: ${getNounUsers(idsToRemove.size)}`)
+          setSelectedUsers(
+            selectedUsers.filter((user) => !idsToRemove.has(user?._id))
+          )
+        },
+        [],
+        undefined,
+        undefined,
+        true,
+        'Удаление пользователей из рассылки',
+        false,
+        true
+      )
+    }, [info, modalsFunc, selectedUsers])
 
     const prepearedText = useMemo(() => {
       // var turndownService = new TurndownService()
@@ -999,24 +1091,25 @@ const newsletterFunc = (
         <InputWrapper label="Список пользователей">
           <div className="flex flex-wrap gap-x-1 gap-y-1">
             <div className="flex flex-col gap-y-1">
-              <Button
-                name="Редактировать список пользователей"
-                icon={faPencil}
-                onClick={() =>
-                  modalsFunc.selectUsers(
-                    selectedUsers,
-                    {},
-                    setSelectedUsers,
-                    [],
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    true
-                  )
-                }
-              />
+              <div className="flex flex-wrap gap-1">
+                <Button
+                  name="Редактировать"
+                  icon={faPencil}
+                  onClick={handleUsersEdit}
+                />
+                <Button
+                  name="Добавить"
+                  icon={faUserPlus}
+                  onClick={handleUsersAdd}
+                  disabled={!availableUsersForNewsletter.length}
+                />
+                <Button
+                  name="Удалить"
+                  icon={faUserMinus}
+                  onClick={handleUsersRemove}
+                  disabled={!selectedUsers.length}
+                />
+              </div>
               <Button
                 name="Выбрать данные из мероприятия"
                 icon={faCalendarAlt}
