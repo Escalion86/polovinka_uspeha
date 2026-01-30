@@ -41,14 +41,6 @@ import UserItemSkeleton from '@layouts/cards/Skeletons/UserItemSkeleton'
 import ItemContainer from './ItemContainer'
 import daysBeforeBirthday from '@helpers/daysBeforeBirthday'
 
-export const UserItemFromId = (props) => {
-  return (
-    <Suspense fallback={<UserItemSkeleton {...props} />}>
-      <UserItemFromIdComponent {...props} />
-    </Suspense>
-  )
-}
-
 const UserItemFromIdComponent = ({
   userId,
   onClick = null,
@@ -58,13 +50,21 @@ const UserItemFromIdComponent = ({
 }) => {
   const user = useAtomValue(userSelector(userId))
   return (
-    <UserItem
+    <UserItemBase
       item={user}
       active={active}
       onClick={onClick}
       noBorder={noBorder}
       {...props}
     />
+  )
+}
+
+export const UserItemFromId = (props) => {
+  return (
+    <Suspense fallback={<UserItemSkeleton {...props} />}>
+      <UserItemFromIdComponent {...props} />
+    </Suspense>
   )
 }
 
@@ -104,7 +104,7 @@ const isBirthdayInRange = (birthday, fromDate, toDate) => {
   )
 }
 
-export const UserItem = ({
+const UserItemBase = ({
   item,
   onClick = null,
   active,
@@ -240,6 +240,17 @@ export const UserItem = ({
       </div>
     </ItemContainer>
   )
+}
+
+export const UserItem = ({ item, userId, ...props }) => {
+  if (!item && userId) {
+    return (
+      <Suspense fallback={<UserItemSkeleton {...props} />}>
+        <UserItemFromIdComponent userId={userId} {...props} />
+      </Suspense>
+    )
+  }
+  return <UserItemBase item={item} {...props} />
 }
 
 export const EventItemFromId = ({ eventId, ...props }) => {

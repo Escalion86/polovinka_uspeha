@@ -17,7 +17,9 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 
-const ServiceUserCard = ({
+const ServiceUserCardView = ({
+  serviceUser,
+  user,
   serviceUserId,
   hidden = false,
   style,
@@ -30,13 +32,11 @@ const ServiceUserCard = ({
 
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
 
-  const serviceUser = useAtomValue(servicesUsersSelector(serviceUserId))
   if (!serviceUser) return null
 
   const loading = useAtomValue(loadingAtom('serviceUser' + serviceUserId))
   const error = useAtomValue(errorAtom('serviceUser' + serviceUserId))
   const itemsFunc = useAtomValue(itemsFuncAtom)
-  const user = useAtomValue(userSelector(serviceUser.userId))
   const service = useAtomValue(serviceSelector(serviceUser.serviceId))
 
   return (
@@ -44,7 +44,6 @@ const ServiceUserCard = ({
       loading={loading}
       error={error}
       onClick={() => !loading && modalsFunc.serviceUser.view(serviceUserId)}
-      // showOnSite={event.showOnSite}
       gap={false}
       hidden={hidden}
       style={style}
@@ -58,9 +57,6 @@ const ServiceUserCard = ({
           >
             {service?.title ?? '[неизвестная услуга]'}
           </TextLinesLimiter>
-          {/* <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
-            {service?.title ?? '[услуга не найдена]'}
-          </div> */}
           <CardButtons
             item={serviceUser}
             typeOfItem="serviceUser"
@@ -87,7 +83,7 @@ const ServiceUserCard = ({
 
         {showUser && (
           <div className="flex-1 border-t border-gray-400">
-            <UserItem item={user} />
+            <UserItem item={user} userId={serviceUser.userId} />
           </div>
         )}
         <div className="flex gap-x-2 items-center py-0.5 px-1 h-10 border-t border-gray-400">
@@ -107,13 +103,36 @@ const ServiceUserCard = ({
               ) : (
                 <div className="font-bold text-danger">ОТМЕНЕНО</div>
               )}
-              <PriceDiscount item={service} priceForStatus={user.status} />
+              {user && (
+                <PriceDiscount item={service} priceForStatus={user.status} />
+              )}
             </>
           )}
         </div>
       </div>
     </CardWrapper>
   )
+}
+
+const ServiceUserCardFromStore = (props) => {
+  const serviceUser = useAtomValue(servicesUsersSelector(props.serviceUserId))
+  if (!serviceUser) return null
+  const user = useAtomValue(userSelector(serviceUser.userId))
+  return <ServiceUserCardView {...props} serviceUser={serviceUser} user={user} />
+}
+
+const ServiceUserCard = ({ serviceUser, user, ...props }) => {
+  if (serviceUser) {
+    return (
+      <ServiceUserCardView
+        {...props}
+        serviceUser={serviceUser}
+        serviceUserId={serviceUser._id}
+        user={user ?? serviceUser.user}
+      />
+    )
+  }
+  return <ServiceUserCardFromStore {...props} />
 }
 
 export default ServiceUserCard

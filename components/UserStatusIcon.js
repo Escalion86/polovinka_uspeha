@@ -86,6 +86,7 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
               } w-${numSize + 1} h-${numSize + 1}`}
             >
               <Image
+                alt="ban"
                 src="/img/svg_icons/ban.svg"
                 width={numSize * 4}
                 height={numSize * 4}
