@@ -630,6 +630,16 @@ const eventUsersFunc = (eventId) => {
     }, [objReserve])
 
     useEffect(() => {
+      if (!compareObjects(assistants, arrayAssistants, { byIDs: true }))
+        setAssistants(arrayAssistants)
+    }, [arrayAssistants])
+
+    useEffect(() => {
+      if (!compareObjects(banned, arrayBanned, { byIDs: true }))
+        setBanned(arrayBanned)
+    }, [arrayBanned])
+
+    useEffect(() => {
       setIsInitialized(false)
     }, [objParticipants, objReserve, arrayAssistants, arrayBanned])
 
@@ -942,23 +952,31 @@ const eventUsersFunc = (eventId) => {
     }, [users])
 
     const formatUserName = useCallback(
-      (userId) => {
+      (userId, status) => {
         const user = usersById[userId]
-        if (!user) return userId
-        return [user.secondName, user.firstName, user.thirdName]
-          .filter(Boolean)
-          .join(' ')
+        const name = user
+          ? [user.secondName, user.firstName, user.thirdName]
+              .filter(Boolean)
+              .join(' ')
+          : userId
+        return status ? `${name} (${status})` : name
       },
       [usersById]
     )
 
     const addedNames = useMemo(
-      () => (dataChanges?.addedIds ?? []).map(formatUserName).filter(Boolean),
+      () =>
+        (dataChanges?.addedItems ?? [])
+          .map(({ userId, status }) => formatUserName(userId, status))
+          .filter(Boolean),
       [dataChanges, formatUserName]
     )
 
     const removedNames = useMemo(
-      () => (dataChanges?.removedIds ?? []).map(formatUserName).filter(Boolean),
+      () =>
+        (dataChanges?.removedItems ?? [])
+          .map(({ userId, status }) => formatUserName(userId, status))
+          .filter(Boolean),
       [dataChanges, formatUserName]
     )
 
@@ -1261,6 +1279,7 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(true)
     const dataLoadable = useAtomValue(
       loadable(asyncEventsUsersByEventIdAtom(eventId))
     )
@@ -1273,7 +1292,9 @@ const eventUsersFunc = (eventId) => {
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
     useEffect(() => {
+      let isMounted = true
       const refreshFunc = async () => {
+        setIsRefreshing(true)
         setIsRefreshed(false)
         setPrevData(null)
         setCurrentData(null)
@@ -1281,17 +1302,23 @@ const eventUsersFunc = (eventId) => {
           setPrevData(dataLoadable.data ?? [])
         }
         await refreshEventState(RESET)
-        setIsRefreshed(true)
+        if (isMounted) {
+          setIsRefreshing(false)
+        }
       }
       refreshFunc()
+      return () => {
+        isMounted = false
+      }
     }, [])
 
     useEffect(() => {
-      if (!isRefreshed || dataLoadable.state !== 'hasData') return
+      if (isRefreshing || dataLoadable.state !== 'hasData') return
       const data = dataLoadable.data ?? []
       if (prevData === null) setPrevData(data)
       setCurrentData(data)
-    }, [dataLoadable, isRefreshed, prevData])
+      setIsRefreshed(true)
+    }, [dataLoadable, isRefreshing, prevData])
 
     const normalizeEventUsers = useCallback((list) => {
       if (!Array.isArray(list)) return []
@@ -1320,7 +1347,11 @@ const eventUsersFunc = (eventId) => {
 
     const dataChanges = useMemo(() => {
       if (!prevData || !currentData) {
-        return { addedIds: [], removedIds: [], changedIds: [] }
+        return {
+          addedItems: [],
+          removedItems: [],
+          changedIds: [],
+        }
       }
       const prevIds = new Set(
         prevData.map(({ userId }) => userId).filter(Boolean)
@@ -1328,10 +1359,14 @@ const eventUsersFunc = (eventId) => {
       const currentIds = new Set(
         currentData.map(({ userId }) => userId).filter(Boolean)
       )
-      const addedIds = Array.from(currentIds).filter((id) => !prevIds.has(id))
-      const removedIds = Array.from(prevIds).filter(
-        (id) => !currentIds.has(id)
-      )
+      const statusLabel = (status) => {
+        if (status === 'participant') return 'участник'
+        if (status === 'reserve') return 'резерв'
+        if (status === 'assistant') return 'ведущий'
+        if (status === 'ban') return 'бан'
+        return status || 'статус не указан'
+      }
+
       const prevStatusMap = new Map(
         prevData.map(({ userId, status, subEventId }) => [
           userId,
@@ -1344,12 +1379,25 @@ const eventUsersFunc = (eventId) => {
           `${status ?? ''}:${subEventId ?? ''}`,
         ])
       )
+
+      const addedItems = Array.from(currentIds)
+        .filter((id) => !prevIds.has(id))
+        .map((id) => {
+          const [status] = (currentStatusMap.get(id) || '').split(':')
+          return { userId: id, status: statusLabel(status) }
+        })
+      const removedItems = Array.from(prevIds)
+        .filter((id) => !currentIds.has(id))
+        .map((id) => {
+          const [status] = (prevStatusMap.get(id) || '').split(':')
+          return { userId: id, status: statusLabel(status) }
+        })
       const changedIds = []
       for (const [userId, signature] of currentStatusMap.entries()) {
         if (prevStatusMap.has(userId) && prevStatusMap.get(userId) !== signature)
           changedIds.push(userId)
       }
-      return { addedIds, removedIds, changedIds }
+      return { addedItems, removedItems, changedIds }
     }, [prevData, currentData])
 
     return isRefreshed ? (
@@ -1358,7 +1406,11 @@ const eventUsersFunc = (eventId) => {
         isDataChanged={isDataChanged}
         dataChanges={dataChanges}
       />
-    ) : null
+    ) : (
+      <div className="py-4 text-center text-gray-500">
+        Проверка обновлений...
+      </div>
+    )
   }
 
   return {
