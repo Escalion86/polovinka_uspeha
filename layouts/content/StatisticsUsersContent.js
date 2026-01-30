@@ -9,14 +9,15 @@ import getDaysBetween from '@helpers/getDaysBetween'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import DatePicker from '@components/DatePicker'
 import ListWrapper from '@layouts/lists/ListWrapper'
-import { UserItemFromId } from '@components/ItemCards'
+import { UserItem } from '@components/ItemCards'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import eventsUsersFullAllSelector from '@state/selectors/eventsUsersFullAllSelector'
 import ContentHeader from '@components/ContentHeader'
+import locationAtom from '@state/atoms/locationAtom'
+import { getData } from '@helpers/CRUD'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -95,7 +96,7 @@ const StatisticsUsersContent = () => {
 
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const users = useAtomValue(usersAtomAsync)
-  const eventsUsers = useAtomValue(eventsUsersFullAllSelector)
+  const location = useAtomValue(locationAtom)
 
   const [periodStart, setPeriodStart] = useState(addDaysToDate(serverDate, -90))
   const [periodEnd, setPeriodEnd] = useState(serverDate)
@@ -116,45 +117,45 @@ const StatisticsUsersContent = () => {
     },
   })
 
-  const filteredEventsUsers = useMemo(
-    () =>
-      eventsUsers.filter((eventUser) => {
-        if (!eventUser.event || !eventUser.user) return false
-        if (
-          !(
-            (filterUsers2.gender[String(eventUser.user.gender)] ||
-              (filterUsers2.gender.null &&
-                eventUser.user.gender !== 'male' &&
-                eventUser.user.gender !== 'famale')) &&
-            filterUsers2.status[eventUser.user?.status ?? 'novice'] &&
-            (eventUser.user.relationship
-              ? filterUsers2.relationship.havePartner
-              : filterUsers2.relationship.noPartner)
-          )
-        )
-          return false
+  const [usersVisitsData, setUsersVisitsData] = useState([])
+  const [isVisitsLoading, setIsVisitsLoading] = useState(false)
 
-        return (
-          getDiffBetweenDates(periodStart, eventUser.event.dateStart) > 0 &&
-          getDiffBetweenDates(periodEnd, eventUser.event.dateEnd) < 0
-        )
-      }),
-    [eventsUsers, periodStart, periodEnd, filterUsers2]
-  )
+  useEffect(() => {
+    let isMounted = true
+    const loadVisits = async () => {
+      if (!location || !periodStart || !periodEnd) return
+      setIsVisitsLoading(true)
+      const data = await getData(
+        `/api/${location}/eventsusers/visits`,
+        {
+          periodStart: periodStart.toISOString(),
+          periodEnd: periodEnd.toISOString(),
+          filters: filterUsers2,
+        },
+        null,
+        null,
+        false
+      )
+      if (isMounted) {
+        setUsersVisitsData(Array.isArray(data) ? data : [])
+        setIsVisitsLoading(false)
+      }
+    }
+    loadVisits()
+    return () => {
+      isMounted = false
+    }
+  }, [location, periodStart, periodEnd, filterUsers2])
 
-  const usersIdsFromFilteredEventUsers = useMemo(() => {
-    const usersIds = []
-    const usersEventsCount = {}
-    filteredEventsUsers.forEach((eventUser) => {
-      usersIds.includes(eventUser.userId) || usersIds.push(eventUser.userId)
-      usersEventsCount[eventUser.userId] =
-        (usersEventsCount[eventUser.userId] || 0) + 1
-    })
-    const sortedUsersIds = usersIds.sort(
-      (a, b) => usersEventsCount[b] - usersEventsCount[a]
-    )
-    return sortedUsersIds
-  }, [filteredEventsUsers])
+  const usersById = useMemo(() => {
+    const map = new Map()
+    if (Array.isArray(users)) {
+      users.forEach((user) => {
+        map.set(user._id, user)
+      })
+    }
+    return map
+  }, [users])
 
   const [filterUsers, setFilterUsers] = useState({
     status: {
@@ -264,36 +265,33 @@ const StatisticsUsersContent = () => {
         <ContentHeader>
           <UsersFilter value={filterUsers2} onChange={setFilterUsers2} />
         </ContentHeader>
+        <div className="flex items-center justify-end w-full px-2 text-lg font-bold">
+          {isVisitsLoading
+            ? 'Загрузка...'
+            : `Количество пользователей: ${usersVisitsData.length}`}
+        </div>
         <div className="flex w-full max-h-100 min-h-100 justify-stretch">
           <ListWrapper
             // className="h-full"
-            itemCount={usersIdsFromFilteredEventUsers.length}
+            itemCount={usersVisitsData.length}
             itemSize={43}
           >
             {({ index, style }) => (
               <div style={style} className="flex border-b border-gray-700">
-                <UserItemFromId
-                  key={usersIdsFromFilteredEventUsers[index]}
-                  userId={usersIdsFromFilteredEventUsers[index]}
+                <UserItem
+                  key={usersVisitsData[index].userId}
+                  item={
+                    usersById.get(usersVisitsData[index].userId) ??
+                    usersVisitsData[index].user
+                  }
+                  userId={usersVisitsData[index].userId}
                   noBorder
                   onClick={() => {
-                    console.log(
-                      'object :>> ',
-                      filteredEventsUsers.filter(
-                        ({ userId }) =>
-                          usersIdsFromFilteredEventUsers[index] === userId
-                      )
-                    )
-                    modalsFunc.user.view(usersIdsFromFilteredEventUsers[index])
+                    modalsFunc.user.view(usersVisitsData[index].userId)
                   }}
                 />
                 <div className="flex items-center justify-center w-10 text-lg font-bold">
-                  {
-                    filteredEventsUsers.filter(
-                      ({ userId }) =>
-                        usersIdsFromFilteredEventUsers[index] === userId
-                    ).length
-                  }
+                  {usersVisitsData[index].count}
                 </div>
               </div>
             )}
