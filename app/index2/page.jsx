@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
-import styles from './index2.module.css'
 
 const heroImages = [
   '/img/other/0eoqjwuzhUU.webp',
@@ -34,15 +33,13 @@ const spaces = [
   {
     id: 'workshop',
     title: 'МАСТЕР-КЛАССЫ',
-    description:
-      'Творческие форматы: от кулинарных вечеров до арт-практик.',
+    description: 'Творческие форматы: от кулинарных вечеров до арт-практик.',
     tags: ['творчество', 'новые навыки', 'легкость'],
   },
   {
     id: 'games',
     title: 'ИГРОВЫЕ ВСТРЕЧИ',
-    description:
-      'Настолки, городские игры и динамичные командные форматы.',
+    description: 'Настолки, городские игры и динамичные командные форматы.',
     tags: ['игры', 'движение', 'команда'],
   },
   {
@@ -128,8 +125,11 @@ const stats = [
   },
   {
     number: '10+',
-    text:
-      'благотворительных мероприятий направленных на помощь животным, детям и домам престарелых',
+    text: 'благотворительных мероприятий направленных на помощь животным, детям и домам престарелых',
+  },
+  {
+    number: '20+',
+    text: 'туров и поездок было организовано и проведено',
   },
 ]
 
@@ -196,14 +196,17 @@ const eventsByDay = {
 }
 
 const navItems = [
-  { id: 'about', label: 'О нашем пространстве!' },
-  { id: 'team', label: 'Наша команда!' },
+  { id: 'about', label: 'О нас' },
+  { id: 'team', label: 'Команда' },
+  { id: 'announcements', label: 'Анонс мероприятий' },
+  { id: 'reviews', label: 'Отзывы' },
+  { id: 'contacts', label: 'Контакты' },
+]
+
+const spacesNavItems = [
   { id: 'spaces', label: 'Пространство мероприятий' },
   { id: 'services', label: 'Пространство товаров и услуг' },
   { id: 'closed', label: 'Закрытое пространство' },
-  { id: 'announcements', label: 'Анонс наших мероприятий' },
-  { id: 'reviews', label: 'Наши отзывы' },
-  { id: 'contacts', label: 'Наши контакты и соц. Сети' },
 ]
 
 export default function Index2Page() {
@@ -221,131 +224,157 @@ export default function Index2Page() {
   const eventsForDay = eventsByDay[activeDay] || []
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <div className={styles.brand}>
+    <div className="bg-[#f6f3f1] text-[#1d1b1f]">
+      <header className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur">
+        <div className="relative flex items-center gap-6 px-[4vw] py-2">
+          <div className="flex items-center gap-3">
             <img
               src="/img/logo_horizontal.png"
               alt="Логотип Половинка успеха"
-              className={styles.brandLogo}
+              className="h-[92px] w-[160px] min-w-[120px] object-contain"
             />
-            <span className={styles.brandText}>ПОЛОВИНКА УСПЕХА</span>
+            {/* <span className="font-adlery text-[18px] tracking-[0.06em] text-[#6b1f2a]">
+              ПОЛОВИНКА УСПЕХА
+            </span> */}
           </div>
+
           <button
             type="button"
-            className={styles.burger}
+            className="ml-auto flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-[rgba(107,31,42,0.3)] bg-white lg:hidden"
             aria-label="Открыть меню"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((prev) => !prev)}
           >
-            <span />
-            <span />
-            <span />
+            <span className="block h-[2px] w-5 rounded-full bg-[#6b1f2a]" />
+            <span className="block h-[2px] w-5 rounded-full bg-[#6b1f2a]" />
+            <span className="block h-[2px] w-5 rounded-full bg-[#6b1f2a]" />
           </button>
-          <nav className={styles.nav} data-open={menuOpen}>
+
+          <nav
+            className={`ml-auto ${
+              menuOpen ? 'flex' : 'hidden'
+            } flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-2xl transition duration-200 absolute top-[72px] left-[5vw] right-[5vw] z-50 lg:static lg:flex lg:flex-row lg:items-center lg:gap-2 lg:bg-transparent lg:p-0 lg:shadow-none lg:rounded-none`}
+          >
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className={styles.navLink}
+                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500"
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
+            <details className="relative lg:w-full">
+              <summary className="whitespace-nowrap flex cursor-pointer list-none items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white">
+                Наши пространства
+                <span className="text-[10px] leading-none">▾</span>
+              </summary>
+              <div className="static mt-2 grid min-w-0 gap-1 rounded-xl bg-white p-0 shadow-none lg:absolute lg:left-0 lg:top-[calc(100%+8px)] lg:min-w-[240px] lg:gap-1 lg:rounded-xl lg:bg-white lg:p-2 lg:shadow-2xl">
+                {spacesNavItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="rounded-lg px-2.5 py-2 text-[12px] uppercase tracking-[0.06em] text-[#4b0f1c] transition hover:bg-[rgba(107,31,42,0.12)]"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </details>
             <Link
               href="/login"
-              className={styles.navCta}
+              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
               onClick={() => setMenuOpen(false)}
             >
               Войти в пространство!
             </Link>
           </nav>
-          <button
-            type="button"
-            className={styles.menuOverlay}
-            data-open={menuOpen}
-            aria-hidden={!menuOpen}
-            onClick={() => setMenuOpen(false)}
-          />
+
         </div>
       </header>
+      <button
+        type="button"
+        className={`fixed inset-0 z-20 bg-black/40 transition lg:hidden ${
+          menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        aria-hidden={!menuOpen}
+        onClick={() => setMenuOpen(false)}
+      />
 
       <main>
-        <section className={styles.hero}>
-          <div className={styles.heroSplit}>
-            <div className={styles.heroLeft}>
-              <div className={styles.heroAccent} />
-              <div className={styles.heroTag}>ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ</div>
-              <h1 className={styles.heroTitle}>
+        <section className="bg-[linear-gradient(135deg,rgba(107,31,42,0.05),transparent_60%)] px-[6vw] pb-16 pt-6">
+          <div className="grid min-h-[60vh] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+            <div className="order-last flex flex-col justify-center overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-10 text-white lg:order-none">
+              <div className="absolute -left-20 -top-20 h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(79,176,232,0.5),transparent_70%)]" />
+              <div className="mb-4 text-[12px] uppercase tracking-[0.2em] text-[#9ad9ff]">
+                ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ
+              </div>
+              <h1 className="font-lora text-[clamp(28px,3vw,44px)] leading-tight">
                 ПРОСТРАНСТВО ЛЁГКОСТИ И ЖИВОГО ОБЩЕНИЯ
               </h1>
-              <p className={styles.heroSubtitle}>
+              <p className="mt-4 text-[16px] leading-relaxed text-white/85">
                 Здесь можно быть собой, отдыхать от суеты и дел, наслаждаться
                 общением и открывать новых людей естественно, без ожиданий и
                 масок.
               </p>
             </div>
-            <div className={styles.heroRight}>
-              <div className={styles.marquee} aria-hidden="true">
-                <div className={styles.marqueeTrack}>
+
+            <div className="relative order-first overflow-hidden rounded-[28px] bg-black lg:order-none">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="flex h-full w-max animate-[marquee_40s_linear_infinite]">
                   {[...heroImages, ...heroImages].map((src, index) => (
                     <img
                       key={`${src}-${index}`}
                       src={src}
                       alt=""
-                      className={styles.marqueeImage}
+                      className="h-full w-80 object-cover brightness-[0.55]"
                     />
                   ))}
                 </div>
               </div>
-              <div className={styles.heroLogoWrap}>
+              <div className="relative z-10 grid h-full place-items-center">
                 <img
                   src="/img/logo.png"
                   alt="Половинка успеха"
-                  className={styles.heroLogo}
+                  className="w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
                 />
               </div>
             </div>
           </div>
-          <div className={styles.heroText}>
-            <p className={styles.heroLead}>
-              <strong>
-                ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»
-              </strong>{' '}
-              - это пространство лёгкости и живого общения. Мы создаём
-              атмосферу, где можно просто быть собой, отдыхать от суеты и дел,
-              наслаждаться общением и открывать для себя новых людей естественно,
-              без ожиданий и масок.
-            </p>
-            <Link href="/login" className={styles.primaryButton}>
+
+          <div className="flex justify-center mt-8">
+            <Link
+              href="/login"
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+            >
               Присоединиться к нам
             </Link>
           </div>
         </section>
 
         <Section id="about" title="О нашем пространстве!">
-          <div className={styles.textBlock}>
+          <div className="rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
             <p>
               Каждый день похож на предыдущий: работа, заботы, спорт, домашние
-              дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но чего-то
-              не хватает тепла, спонтанности, человеческого контакта. Тебе
-              хочется просто расслабиться и побыть среди «своих» самим собой, где
-              не нужно играть роли и подбирать слова?
+              дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но
+              чего-то не хватает тепла, спонтанности, человеческого контакта.
+              Тебе хочется просто расслабиться и побыть среди «своих» самим
+              собой, где не нужно играть роли и подбирать слова?
             </p>
-            <p>
-              <strong>
-                ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»
-              </strong>{' '}
-              — это пространство лёгкости и живого общения.
+            <p className="mt-4">
+              <strong>ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»</strong> —
+              это пространство лёгкости и живого общения.
             </p>
           </div>
 
-          <div className={styles.gridTwo}>
-            <div className={`${styles.card} ${styles.cardBurgundy}`}>
-              <h3 className={styles.cardTitle}>
-                <strong>УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:</strong>
+          <div className="grid gap-6 mt-6 lg:grid-cols-2">
+            <div className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+              <h3 className="text-[18px] text-white">
+                <strong>
+                  УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:
+                </strong>
               </h3>
               <HeartList
                 items={[
@@ -361,8 +390,8 @@ export default function Index2Page() {
                 ]}
               />
             </div>
-            <div className={`${styles.card} ${styles.cardBlue}`}>
-              <h3 className={styles.cardTitle}>
+            <div className="rounded-3xl bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+              <h3 className="text-[18px] text-[#0b2230]">
                 <strong>НАШЕ ПРОСТРАНСТВО, ДЛЯ:</strong>
               </h3>
               <HeartList
@@ -375,36 +404,39 @@ export default function Index2Page() {
             </div>
           </div>
 
-          <div className={styles.textBlock}>
-            <h3 className={styles.sectionSubtitle}>
+          <div className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
+            <h3 className="text-[22px] text-[#4b0f1c]">
               Что такое <strong>ПРОСТРАНСТВО «ПОЛОВИНКА УСПЕХА»?</strong>
             </h3>
-            <p>
+            <p className="mt-4">
               Это пространство живых встреч - вечера, выезды, мастер-классы,
               игры, прогулки, автоквесты, путешествия. Мы объединяем людей,
-              которые хотят проводить время интересно и по-настоящему: улыбаться,
-              смеяться, открываться, вдохновляться, учиться новому и наполняться
-              энергией общения. Здесь нет цели «кого-то найти», зато часто
-              случаются новые дружбы, тёплые связи и даже истории, с которых
-              начинается что-то большее.
+              которые хотят проводить время интересно и по-настоящему:
+              улыбаться, смеяться, открываться, вдохновляться, учиться новому и
+              наполняться энергией общения. Здесь нет цели «кого-то найти», зато
+              часто случаются новые дружбы, тёплые связи и даже истории, с
+              которых начинается что-то большее.
             </p>
           </div>
 
-          <div className={styles.gridTwo}>
-            <div className={`${styles.card} ${styles.cardBurgundy}`}>
-              <h3 className={styles.cardTitle}>
+          <div className="grid gap-6 mt-6 lg:grid-cols-2">
+            <div className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+              <h3 className="text-[18px] text-white">
                 <strong>Что получает участник нашего ПРОСТРАНСТВА:</strong>
               </h3>
-              <ul className={styles.simpleList}>
-                <li>атмосферу лёгкости, принятия и живого интереса;</li>
-                <li>ощущение сопричастности и «своей стаи»;</li>
-                <li>новые впечатления, вдохновение и энергию жизни;</li>
-                <li>возможность раскрыться, почувствовать себя естественно и уверенно;</li>
-                <li>расширение круга общения - органично, без давления и формальностей.</li>
-              </ul>
+              <HeartList
+                items={[
+                  'атмосферу лёгкости, принятия и живого интереса',
+                  'ощущение сопричастности и «своей стаи»',
+                  'новые впечатления, вдохновение и энергию жизни',
+                  'возможность раскрыться, почувствовать себя естественно и уверенно',
+                  'расширение круга общения - органично, без давления и формальностей',
+                ]}
+                double
+              />
             </div>
-            <div className={`${styles.card} ${styles.cardBlue}`}>
-              <h3 className={styles.cardTitle}>
+            <div className="rounded-3xl bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+              <h3 className="text-[18px] text-[#0b2230]">
                 <strong>ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
               </h3>
               <HeartList
@@ -418,8 +450,8 @@ export default function Index2Page() {
             </div>
           </div>
 
-          <div className={styles.cardWide}>
-            <h3 className={styles.cardTitle}>
+          <div className="mt-6 rounded-3xl bg-white p-7 shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+            <h3 className="text-[18px] text-[#4b0f1c]">
               <strong>КОГДА ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
             </h3>
             <HeartList
@@ -431,37 +463,55 @@ export default function Index2Page() {
             />
           </div>
 
-          <div className={styles.statsSection}>
-            <h3 className={styles.sectionSubtitle}>
+          <div className="mt-8">
+            <h3 className="text-[22px] text-[#4b0f1c]">
               <strong>ПРОСТРАНСТВО В ЦИФРАХ ЗА 4 ГОДА:</strong>
             </h3>
-            <div className={styles.statsGrid}>
+            <div className="grid gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-3">
               {stats.map((stat) => (
-                <StatCard key={stat.number} number={stat.number} text={stat.text} />
+                <div
+                  key={stat.number}
+                  className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+                >
+                  <div className="font-adleryProSwash text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
+                    {stat.number}
+                  </div>
+                  <div className="mt-2 font-futura text-[18px] leading-relaxed">
+                    {stat.text}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </Section>
 
         <Section id="team" title="Наша команда!">
-          <div className={styles.teamGrid}>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {teamMembers.map((member) => (
-              <TeamCard
+              <div
                 key={member.name}
-                name={member.name}
-                role={member.role}
-                photo={member.photo}
-              />
+                className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-[0_14px_28px_rgba(0,0,0,0.08)]"
+              >
+                <img
+                  src={member.photo}
+                  alt={member.name}
+                  className="h-[72px] w-[72px] rounded-full border-2 border-[#4fb0e8] object-cover"
+                />
+                <div>
+                  <div className="text-[18px] font-semibold">{member.name}</div>
+                  <div className="text-[#555]">{member.role}</div>
+                </div>
+              </div>
             ))}
           </div>
         </Section>
 
         <Section id="spaces" title="Пространство мероприятий">
-          <div className={styles.sectionLead}>
+          <div className="mb-5 text-[16px] text-[#3d2a2f]">
             Выберите пространство, которое откликается именно вам, или откройте
             все сразу.
           </div>
-          <div className={styles.filterRow}>
+          <div className="flex flex-wrap gap-2 mb-6">
             <FilterButton
               active={activeSpace === 'all'}
               onClick={() => setActiveSpace('all')}
@@ -478,7 +528,7 @@ export default function Index2Page() {
               </FilterButton>
             ))}
           </div>
-          <div className={styles.spaceGrid}>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSpaces.map((space) => (
               <SpaceCard key={space.id} space={space} />
             ))}
@@ -486,7 +536,7 @@ export default function Index2Page() {
         </Section>
 
         <Section id="services" title="Пространство товаров и услуг">
-          <div className={styles.serviceGrid}>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <ServiceCard key={service.title} service={service} />
             ))}
@@ -494,30 +544,35 @@ export default function Index2Page() {
         </Section>
 
         <Section id="closed" title="Закрытое пространство">
-          <div className={styles.closedBlock}>
-            <h3 className={styles.closedTitle}>ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ</h3>
-            <p>
+          <div className="rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed">
+            <h3 className="text-[22px] text-[#6b1f2a]">
+              ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ
+            </h3>
+            <p className="mt-3">
               Это формат с камерными встречами, где мы собираем небольшие группы
               по ценностям. Здесь больше глубины, доверия и долгих разговоров.
-              Доступ открывается после знакомства с командой и участия в открытых
-              мероприятиях.
+              Доступ открывается после знакомства с командой и участия в
+              открытых мероприятиях.
             </p>
-            <Link href="/login" className={styles.secondaryButton}>
+            <Link
+              href="/login"
+              className="mt-4 inline-flex rounded-full bg-[#4fb0e8] px-6 py-2 text-white"
+            >
               Узнать условия доступа
             </Link>
           </div>
         </Section>
 
         <Section id="announcements" title="Анонс наших мероприятий">
-          <div className={styles.announcements}>
-            <div className={styles.calendar}>
-              <div className={styles.calendarHeader}>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+              <div className="mb-4 flex items-center justify-between font-semibold text-[#6b1f2a]">
                 <span>ФЕВРАЛЬ 2026</span>
-                <span className={styles.calendarHint}>
+                <span className="text-[12px] text-[#566]">
                   Активные даты выделены
                 </span>
               </div>
-              <div className={styles.calendarGrid}>
+              <div className="grid grid-cols-7 gap-2">
                 {calendarDays.map((day) => {
                   const isActive = activeDays.includes(day)
                   const isSelected = activeDay === day
@@ -525,9 +580,13 @@ export default function Index2Page() {
                     <button
                       key={day}
                       type="button"
-                      className={styles.calendarDay}
-                      data-active={isActive}
-                      data-selected={isSelected}
+                      className={`rounded-[10px] border px-0 py-2 text-[14px] ${
+                        isSelected
+                          ? 'border-transparent bg-[#6b1f2a] text-white'
+                          : isActive
+                            ? 'border-[rgba(79,176,232,0.5)] bg-[rgba(79,176,232,0.2)] text-[#245c7b]'
+                            : 'border-transparent bg-[#f1f2f4] text-[#555]'
+                      }`}
                       onClick={() => isActive && setActiveDay(day)}
                     >
                       {day}
@@ -536,57 +595,100 @@ export default function Index2Page() {
                 })}
               </div>
             </div>
-            <div className={styles.eventsList}>
-              <h3 className={styles.eventsTitle}>
-                События на {activeDay} февраля
-              </h3>
+
+            <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+              <h3 className="text-[#6b1f2a]">События на {activeDay} февраля</h3>
               {eventsForDay.length === 0 ? (
-                <p className={styles.eventsEmpty}>
+                <p className="mt-3 text-[#666]">
                   На выбранную дату нет мероприятий. Выберите активную дату.
                 </p>
               ) : (
-                eventsForDay.map((event) => (
-                  <EventCard key={event.title} event={event} />
-                ))
+                <div className="grid gap-3 mt-4">
+                  {eventsForDay.map((event) => (
+                    <div
+                      key={event.title}
+                      className="rounded-2xl bg-[rgba(79,176,232,0.12)] p-4"
+                    >
+                      <div className="font-semibold">{event.title}</div>
+                      <div className="mt-1 flex justify-between text-[#2f586f]">
+                        <span>{event.time}</span>
+                        <span>{event.place}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
         </Section>
 
         <Section id="reviews" title="Наши отзывы">
-          <div className={styles.reviewGrid}>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {reviews.map((review) => (
-              <ReviewCard key={review.name} review={review} />
+              <div
+                key={review.name}
+                className="flex gap-3 rounded-2xl bg-white p-5 shadow-[0_14px_28px_rgba(0,0,0,0.08)]"
+              >
+                <img
+                  src={review.photo}
+                  alt={review.name}
+                  className="h-16 w-16 rounded-full border-2 border-[#4fb0e8] object-cover"
+                />
+                <div>
+                  <p className="leading-relaxed">{review.text}</p>
+                  <span className="mt-2 block font-semibold text-[#4b0f1c]">
+                    {review.name}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </Section>
 
         <Section id="contacts" title="Наши контакты и соц. Сети">
-          <div className={styles.contactsGrid}>
-            <div className={styles.contactCard}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="rounded-2xl bg-white p-6 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
               <h3>Свяжитесь с нами</h3>
-              <p>Телефон: +7 (999) 123-45-67</p>
+              <p className="mt-2">Телефон: +7 (999) 123-45-67</p>
               <p>Email: hello@polovinka-uspeha.ru</p>
               <p>Город: Красноярск</p>
             </div>
-            <div className={styles.contactCard}>
+            <div className="rounded-2xl bg-white p-6 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
               <h3>Мы в соцсетях</h3>
-              <p>Instagram: @polovinka_uspeha</p>
+              <p className="mt-2">Instagram: @polovinka_uspeha</p>
               <p>Telegram: @polovinka_uspeha</p>
               <p>VK: vk.com/polovinka_uspeha</p>
             </div>
           </div>
         </Section>
       </main>
+      <style jsx global>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        html {
+          scroll-behavior: smooth;
+        }
+      `}</style>
     </div>
   )
 }
 
 function Section({ id, title, children }) {
   return (
-    <section id={id} className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>{title}</h2>
+    <section
+      id={id}
+      className="px-[6vw] py-[70px] even:bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))]"
+    >
+      <div className="mb-8">
+        <h2 className="font-lora text-[clamp(26px,3vw,38px)] text-[#6b1f2a]">
+          {title}
+        </h2>
       </div>
       {children}
     </section>
@@ -599,11 +701,25 @@ Section.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-function HeartList({ items }) {
+function HeartList({ items, double = false }) {
   return (
-    <ul className={styles.heartList}>
+    <ul className="mt-3 grid gap-3 font-futura text-[18px] leading-relaxed">
       {items.map((item) => (
-        <li key={item}>{item}</li>
+        <li key={item} className="flex items-start gap-2">
+          <img
+            src="/img/logo_heart_16x20px.png"
+            alt=""
+            className="w-5 h-5 mt-1"
+          />
+          <span className="flex-1">{item}</span>
+          {double ? (
+            <img
+              src="/img/logo_heart_16x20px.png"
+              alt=""
+              className="w-5 h-5 mt-1"
+            />
+          ) : null}
+        </li>
       ))}
     </ul>
   )
@@ -611,48 +727,20 @@ function HeartList({ items }) {
 
 HeartList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.string).isRequired,
-}
-
-function StatCard({ number, text }) {
-  return (
-    <div className={styles.statCard}>
-      <div className={styles.statNumber}>{number}</div>
-      <div className={styles.statText}>{text}</div>
-    </div>
-  )
-}
-
-StatCard.propTypes = {
-  number: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-}
-
-function TeamCard({ name, role, photo }) {
-  return (
-    <div className={styles.teamCard}>
-      <img src={photo} alt={name} className={styles.teamPhoto} />
-      <div className={styles.teamInfo}>
-        <div className={styles.teamName}>{name}</div>
-        <div className={styles.teamRole}>{role}</div>
-      </div>
-    </div>
-  )
-}
-
-TeamCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
-  photo: PropTypes.string.isRequired,
+  double: PropTypes.bool,
 }
 
 function SpaceCard({ space }) {
   return (
-    <div className={styles.spaceCard}>
-      <h3 className={styles.spaceTitle}>{space.title}</h3>
-      <p className={styles.spaceDescription}>{space.description}</p>
-      <div className={styles.spaceTags}>
+    <div className="rounded-2xl bg-white p-5 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+      <h3 className="text-[16px] text-[#6b1f2a]">{space.title}</h3>
+      <p className="mt-2 text-[#4b3a40]">{space.description}</p>
+      <div className="mt-3 flex flex-wrap gap-1.5">
         {space.tags.map((tag) => (
-          <span key={tag} className={styles.spaceTag}>
+          <span
+            key={tag}
+            className="rounded-full bg-[rgba(79,176,232,0.15)] px-2 py-1 text-[12px] text-[#256184]"
+          >
             {tag}
           </span>
         ))}
@@ -672,9 +760,15 @@ SpaceCard.propTypes = {
 
 function ServiceCard({ service }) {
   return (
-    <div className={styles.serviceCard} data-accent={service.accent || false}>
-      <h3 className={styles.serviceTitle}>{service.title}</h3>
-      <p className={styles.serviceDescription}>{service.description}</p>
+    <div
+      className={`rounded-2xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)] ${
+        service.accent
+          ? 'bg-[linear-gradient(140deg,#6b1f2a,#8e2f3a)] text-white'
+          : 'bg-white'
+      }`}
+    >
+      <h3 className="text-[18px]">{service.title}</h3>
+      <p className="mt-2">{service.description}</p>
     </div>
   )
 }
@@ -687,52 +781,15 @@ ServiceCard.propTypes = {
   }).isRequired,
 }
 
-function ReviewCard({ review }) {
-  return (
-    <div className={styles.reviewCard}>
-      <img src={review.photo} alt={review.name} className={styles.reviewPhoto} />
-      <div className={styles.reviewBody}>
-        <p className={styles.reviewText}>{review.text}</p>
-        <span className={styles.reviewName}>{review.name}</span>
-      </div>
-    </div>
-  )
-}
-
-ReviewCard.propTypes = {
-  review: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    photo: PropTypes.string.isRequired,
-  }).isRequired,
-}
-
-function EventCard({ event }) {
-  return (
-    <div className={styles.eventCard}>
-      <div className={styles.eventTitle}>{event.title}</div>
-      <div className={styles.eventMeta}>
-        <span>{event.time}</span>
-        <span>{event.place}</span>
-      </div>
-    </div>
-  )
-}
-
-EventCard.propTypes = {
-  event: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
-    place: PropTypes.string.isRequired,
-  }).isRequired,
-}
-
 function FilterButton({ active, onClick, children }) {
   return (
     <button
       type="button"
-      className={styles.filterButton}
-      data-active={active}
+      className={`rounded-full border px-3.5 py-2 text-[12px] uppercase tracking-[0.06em] transition ${
+        active
+          ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
+          : 'border-[rgba(107,31,42,0.25)] bg-white text-[#4b0f1c]'
+      }`}
       onClick={onClick}
     >
       {children}
