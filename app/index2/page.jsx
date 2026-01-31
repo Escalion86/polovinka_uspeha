@@ -133,6 +133,25 @@ const stats = [
   },
 ]
 
+const reasonsItems = [
+  {
+    label: 'Сбалансированные форматы',
+    text: 'мероприятия под настроение от камерных игр до выездов на природу',
+  },
+  {
+    label: 'Тонкая модерация',
+    text: 'ведущие создают атмосферу вовлечённости и лёгкости, помогая каждому раскрыться',
+  },
+  {
+    label: 'Аудитория по ценностям',
+    text: 'здесь собираются люди, близкие по взглядам, стилю жизни и внутренней культуре',
+  },
+  {
+    label: 'Удобное участие',
+    text: 'всё просто - выбрать событие, зарегистрироваться, прийти и быть собой',
+  },
+]
+
 const calendarDays = Array.from({ length: 28 }, (_, index) => index + 1)
 const activeDays = [2, 5, 9, 12, 14, 18, 21, 25]
 
@@ -440,12 +459,17 @@ export default function Index2Page() {
                 <strong>ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
               </h3>
               <HeartList
-                items={[
-                  'Сбалансированные форматы: мероприятия под настроение от камерных игр до выездов на природу',
-                  'Тонкая модерация: ведущие создают атмосферу вовлечённости и лёгкости, помогая каждому раскрыться',
-                  'Аудитория по ценностям: здесь собираются люди, близкие по взглядам, стилю жизни и внутренней культуре',
-                  'Удобное участие: всё просто - выбрать событие, зарегистрироваться, прийти и быть собой',
-                ]}
+                items={reasonsItems.map(
+                  (item) => `${item.label}: ${item.text}`
+                )}
+                renderItem={(item) => {
+                  const [label, ...rest] = item.split(': ')
+                  return (
+                    <>
+                      <strong>{label}</strong>: {rest.join(': ')}
+                    </>
+                  )
+                }}
               />
             </div>
           </div>
@@ -701,7 +725,7 @@ Section.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-function HeartList({ items, double = false }) {
+function HeartList({ items, double = false, renderItem }) {
   return (
     <ul className="mt-3 grid gap-3 font-futura text-[18px] leading-relaxed">
       {items.map((item) => (
@@ -711,7 +735,9 @@ function HeartList({ items, double = false }) {
             alt=""
             className="w-5 h-5 mt-1"
           />
-          <span className="flex-1">{item}</span>
+          <span className="flex-1">
+            {renderItem ? renderItem(item) : item}
+          </span>
           {double ? (
             <img
               src="/img/logo_heart_16x20px.png"
@@ -728,6 +754,7 @@ function HeartList({ items, double = false }) {
 HeartList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.string).isRequired,
   double: PropTypes.bool,
+  renderItem: PropTypes.func,
 }
 
 function SpaceCard({ space }) {
