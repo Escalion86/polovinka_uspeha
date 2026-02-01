@@ -17,37 +17,52 @@ const heroImages = [
 
 const spaces = [
   {
-    id: 'evening',
-    title: 'ВЕЧЕРА ЖИВОГО ОБЩЕНИЯ',
+    id: 'pair',
+    title: 'Пространство для двоих',
     description:
-      'Теплые камерные встречи с играми, разговорами и мягкой модерацией.',
-    tags: ['камерно', 'разговоры', 'новые знакомства'],
+      'Быстрые и индивидуальные свидания, форматы для пар и определение совместимости через физиогномику.',
   },
   {
-    id: 'trips',
-    title: 'ВЫЕЗДЫ И ПУТЕШЕСТВИЯ',
+    id: 'new-space',
+    title: 'Новое пространство',
     description:
-      'Поездки, прогулки, автоквесты и мини-приключения с общей целью.',
-    tags: ['выезды', 'природа', 'эмоции'],
+      'Каждый месяц — свежие идеи и новые форматы, чтобы пробовать что-то необычное и вдохновляющее.',
   },
   {
-    id: 'workshop',
-    title: 'МАСТЕР-КЛАССЫ',
-    description: 'Творческие форматы: от кулинарных вечеров до арт-практик.',
-    tags: ['творчество', 'новые навыки', 'легкость'],
+    id: 'travel',
+    title: 'Туристическое пространство',
+    description:
+      'Походы, сплавы, поездки и туры для тех, кто любит движение и природу.',
   },
   {
     id: 'games',
-    title: 'ИГРОВЫЕ ВСТРЕЧИ',
-    description: 'Настолки, городские игры и динамичные командные форматы.',
-    tags: ['игры', 'движение', 'команда'],
+    title: 'Игровое пространство',
+    description:
+      'Покер, вечера настольных игр и квесты для драйва и командного азарта.',
   },
   {
-    id: 'talks',
-    title: 'ТЕМАТИЧЕСКИЕ ВСТРЕЧИ',
+    id: 'closed-club',
+    title: 'Закрытое пространство',
     description:
-      'Разговорные клубы и живые беседы на важные темы без давления.',
-    tags: ['смыслы', 'поддержка', 'искренность'],
+      'События для участников закрытого клуба с бонусами и дополнительными форматами.',
+  },
+  {
+    id: 'drive',
+    title: 'Драйвовое пространство',
+    description:
+      'Автоквесты и фотоквесты для тех, кто любит скорость и новые впечатления.',
+  },
+  {
+    id: 'growth',
+    title: 'Пространство развития себя',
+    description:
+      'Трансформационные игры, тренинги, мастер-классы и консультации психолога.',
+  },
+  {
+    id: 'goods',
+    title: 'Пространство товаров',
+    description:
+      'Мерч нашего пространства: вещи и аксессуары, которые можно приобрести.',
   },
 ]
 
@@ -67,24 +82,6 @@ const services = [
     description:
       'Тёплый подарок, который дарит живые эмоции и новые знакомства.',
     accent: true,
-  },
-]
-
-const teamMembers = [
-  {
-    name: 'Елена',
-    role: 'Основатель и вдохновитель',
-    photo: '/img/users/famale.jpg',
-  },
-  {
-    name: 'Дмитрий',
-    role: 'Ведущий и модератор',
-    photo: '/img/users/male.jpg',
-  },
-  {
-    name: 'Мария',
-    role: 'Куратор программ',
-    photo: '/img/users/famale.jpg',
   },
 ]
 
@@ -216,7 +213,6 @@ const eventsByDay = {
 
 const navItems = [
   { id: 'about', label: 'О нас' },
-  { id: 'team', label: 'Команда' },
   { id: 'announcements', label: 'Анонс мероприятий' },
   { id: 'reviews', label: 'Отзывы' },
   { id: 'contacts', label: 'Контакты' },
@@ -507,26 +503,19 @@ export default function Index2Page() {
               ))}
             </div>
           </div>
-        </Section>
-
-        <Section id="team" title="Наша команда!">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {teamMembers.map((member) => (
-              <div
-                key={member.name}
-                className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-[0_14px_28px_rgba(0,0,0,0.08)]"
-              >
-                <img
-                  src={member.photo}
-                  alt={member.name}
-                  className="h-[72px] w-[72px] rounded-full border-2 border-[#4fb0e8] object-cover"
-                />
-                <div>
-                  <div className="text-[18px] font-semibold">{member.name}</div>
-                  <div className="text-[#555]">{member.role}</div>
-                </div>
-              </div>
-            ))}
+          <div className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,180px)_minmax(0,1fr)] lg:items-center">
+              <img
+                src="/img/other/gubina2.png"
+                alt="Надежда Губина"
+                className="w-full max-w-[220px] justify-self-center object-contain"
+              />
+              <p className="text-[18px] leading-relaxed">
+                <strong>Надежда</strong> – основатель пространства живых встреч,
+                идейный вдохновитель, а также организатор и ведущая основных
+                форматов пространства.
+              </p>
+            </div>
           </div>
         </Section>
 
@@ -762,16 +751,6 @@ function SpaceCard({ space }) {
     <div className="rounded-2xl bg-white p-5 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
       <h3 className="text-[16px] text-[#6b1f2a]">{space.title}</h3>
       <p className="mt-2 text-[#4b3a40]">{space.description}</p>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {space.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-[rgba(79,176,232,0.15)] px-2 py-1 text-[12px] text-[#256184]"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
     </div>
   )
 }
@@ -781,7 +760,6 @@ SpaceCard.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
 }
 
