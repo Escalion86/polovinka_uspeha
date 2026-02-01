@@ -7,6 +7,7 @@ import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import InputWrapper from '@components/InputWrapper'
 import PriceInput from '@components/PriceInput'
+import DirectionSelector from '@components/ComboBox/DirectionSelector'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import Textarea from '@components/Textarea'
@@ -121,6 +122,9 @@ const serviceFunc = (serviceId, clone = false) => {
     const [menuName, setMenuName] = useState(
       service?.menuName ?? DEFAULT_SERVICE.menuName
     )
+    const [directionId, setDirectionId] = useState(
+      service?.directionId ?? DEFAULT_SERVICE.directionId
+    )
     const [showOnSite, setShowOnSite] = useState(
       service?.showOnSite ?? DEFAULT_SERVICE.setShowOnSite
     )
@@ -167,6 +171,7 @@ const serviceFunc = (serviceId, clone = false) => {
             showOnSite,
             images,
             menuName,
+            directionId,
             index: service?.index ?? services?.length ?? 0,
             price,
             questionnaire,
@@ -186,6 +191,7 @@ const serviceFunc = (serviceId, clone = false) => {
         service?.showOnSite !== showOnSite ||
         !compareArrays(service?.images, images) ||
         service?.menuName !== menuName ||
+        service?.directionId !== directionId ||
         service?.price !== price ||
         !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
@@ -201,6 +207,7 @@ const serviceFunc = (serviceId, clone = false) => {
       showOnSite,
       images,
       menuName,
+      directionId,
       price,
       questionnaire,
       usersStatusAccess,
@@ -284,6 +291,12 @@ const serviceFunc = (serviceId, clone = false) => {
                   setMenuName(value)
                 }}
                 error={errors.menuName}
+              />
+              <DirectionSelector
+                value={directionId}
+                onChange={setDirectionId}
+                placeholder="Без направления"
+                fullWidth
               />
               <CheckBox
                 checked={showOnSite}

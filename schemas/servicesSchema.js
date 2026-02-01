@@ -4,6 +4,10 @@ import {
 } from '@helpers/constantsServer'
 
 const servicesSchema = {
+  directionId: {
+    type: String,
+    default: null,
+  },
   title: {
     type: String,
     // required: [true, 'Введите название курса. Давай включи фантазию!'],

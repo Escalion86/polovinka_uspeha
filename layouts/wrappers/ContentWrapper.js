@@ -7,7 +7,9 @@ const ContentWrapper = ({ children, page }) => {
       style={{ gridArea: 'content' }}
     >
       <SideBar page={page} />
-      <div className="flex flex-col flex-1 max-w-[100vw]">{children}</div>
+      <div className="flex flex-col flex-1 max-w-[100vw] min-h-0 overflow-y-auto">
+        {children}
+      </div>
     </div>
   )
 }

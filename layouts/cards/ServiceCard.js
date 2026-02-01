@@ -1,6 +1,7 @@
 import Button from '@components/Button'
 import CardButtons from '@components/CardButtons'
 import CardWrapper from '@components/CardWrapper'
+import DirectionTitleById from '@components/DirectionTitleById'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -128,6 +129,11 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
         <div className="flex-1 w-full max-w-full px-2 pb-1 overflow-hidden text-sm whitespace-pre-wrap">
           {service.shortDescription}
         </div>
+        {service?.directionId && (
+          <div className="px-2 pb-2 text-xs font-semibold text-gray-600">
+            <DirectionTitleById directionId={service.directionId} />
+          </div>
+        )}
         <div className="flex items-center justify-between px-2 py-1 text-lg font-bold border-t gap-x-2 flex-nowrap">
           <PriceDiscount item={service} className="flex-1" />
           <Button

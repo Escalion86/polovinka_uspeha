@@ -18,7 +18,7 @@ const heroImages = [
 const spaces = [
   {
     id: 'pair',
-    title: 'Пространство для двоих',
+    title: 'LOVE - пространство',
     description:
       'Быстрые и индивидуальные свидания, форматы для пар и определение совместимости через физиогномику.',
   },
@@ -54,7 +54,7 @@ const spaces = [
   },
   {
     id: 'growth',
-    title: 'Пространство развития себя',
+    title: 'Пространство саморазвития',
     description:
       'Трансформационные игры, тренинги, мастер-классы и консультации психолога.',
   },
@@ -306,7 +306,6 @@ export default function Index2Page() {
               Войти в пространство!
             </Link>
           </nav>
-
         </div>
       </header>
       <button
@@ -724,9 +723,7 @@ function HeartList({ items, double = false, renderItem }) {
             alt=""
             className="w-5 h-5 mt-1"
           />
-          <span className="flex-1">
-            {renderItem ? renderItem(item) : item}
-          </span>
+          <span className="flex-1">{renderItem ? renderItem(item) : item}</span>
           {double ? (
             <img
               src="/img/logo_heart_16x20px.png"
@@ -748,9 +745,11 @@ HeartList.propTypes = {
 
 function SpaceCard({ space }) {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
-      <h3 className="text-[16px] text-[#6b1f2a]">{space.title}</h3>
-      <p className="mt-2 text-[#4b3a40]">{space.description}</p>
+    <div className="rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+      <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
+        {space.title}
+      </h3>
+      <p className="text-[18px] p-5 mt-2 text-[#4b3a40]">{space.description}</p>
     </div>
   )
 }
