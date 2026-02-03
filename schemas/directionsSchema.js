@@ -17,10 +17,10 @@ const directionsSchema = {
     // ],
     default: 'Описание Пространства',
   },
-  // image: {
-  //   type: String,
-  //   default: '',
-  // },
+  images: {
+    type: [String],
+    default: [],
+  },
   index: {
     type: Number,
     default: null,

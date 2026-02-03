@@ -4,6 +4,7 @@ import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import Textarea from '@components/Textarea'
+import InputImages from '@components/InputImages'
 import { DEFAULT_DIRECTION } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/itemsFuncAtom'
@@ -14,6 +15,7 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import ComboBox from '@components/ComboBox'
 import compareObjects from '@helpers/compareObjects'
+import compareArrays from '@helpers/compareArrays'
 import CardButtons from '@components/CardButtons'
 
 const directionFunc = (directionId, clone = false) => {
@@ -38,9 +40,9 @@ const directionFunc = (directionId, clone = false) => {
     const [description, setDescription] = useState(
       direction?.description ?? DEFAULT_DIRECTION.description
     )
-    // const [image, setImage] = useState(
-    //   direction?.image ?? DEFAULT_DIRECTION.image
-    // )
+    const [images, setImages] = useState(
+      direction?.images ?? DEFAULT_DIRECTION.images
+    )
     const [showOnSite, setShowOnSite] = useState(
       direction?.showOnSite ?? DEFAULT_DIRECTION.showOnSite
     )
@@ -84,6 +86,7 @@ const directionFunc = (directionId, clone = false) => {
             title,
             description,
             shortDescription,
+            images,
             showOnSite,
             // image,
             rules,
@@ -122,6 +125,7 @@ const directionFunc = (directionId, clone = false) => {
         direction?.title !== title ||
         direction?.description !== description ||
         direction?.shortDescription !== shortDescription ||
+        !compareArrays(direction?.images ?? [], images) ||
         direction?.showOnSite !== showOnSite ||
         // || direction?.image !== image
         !compareObjects(defaultRules, rules)
@@ -134,6 +138,7 @@ const directionFunc = (directionId, clone = false) => {
       title,
       shortDescription,
       description,
+      images,
       showOnSite,
       // image,
       rules,
@@ -204,6 +209,17 @@ const directionFunc = (directionId, clone = false) => {
                 setDescription(value)
               }}
               error={errors.description}
+            />
+            <InputImages
+              label="Фотографии"
+              images={images}
+              onChange={(value) => {
+                removeError('images')
+                setImages(value)
+              }}
+              directory="directions"
+              maxImages={10}
+              error={errors.images}
             />
             <CheckBox
               checked={showOnSite}

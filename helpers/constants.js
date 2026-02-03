@@ -697,7 +697,7 @@ export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
   shortDescription: '',
   description: '',
-  image: null,
+  images: [],
   showOnSite: true,
   rules: {
     userStatus: 'select',

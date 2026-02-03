@@ -171,6 +171,7 @@ export default function Index2Page() {
   const headerRef = useRef(null)
   const [siteSettings, setSiteSettings] = useState({})
   const [activeReview, setActiveReview] = useState(null)
+  const [activeSpace, setActiveSpace] = useState(null)
   const reviewTextRefs = useRef(new Map())
   const [reviewOverflowMap, setReviewOverflowMap] = useState({})
 
@@ -221,6 +222,8 @@ export default function Index2Page() {
         id: direction._id,
         title: direction.title,
         description: direction.shortDescription || direction.description || '',
+        fullDescription: direction.description || '',
+        images: Array.isArray(direction.images) ? direction.images : [],
       }))
   }, [directionsData])
 
@@ -839,11 +842,69 @@ export default function Index2Page() {
               <SpaceCard
                 key={space.id}
                 space={space}
+                onMore={() => setActiveSpace(space)}
                 style={{ transitionDelay: `${index * 80}ms` }}
               />
             ))}
           </div>
         </Section>
+
+        {activeSpace ? (
+          <div
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 px-4"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setActiveSpace(null)
+            }}
+          >
+            <div
+              onMouseDown={(event) => event.stopPropagation()}
+              className="relative max-h-[85vh] w-full max-w-[820px] overflow-hidden rounded-[30px] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
+            >
+              <button
+                type="button"
+                aria-label="Закрыть"
+                onClick={() => setActiveSpace(null)}
+                className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#f0e5ea] bg-white text-[#6b1f2a] transition hover:bg-[#f8f2f4]"
+              >
+                ×
+              </button>
+              {activeSpace.images?.length > 0 ? (
+                <div className="relative h-48 overflow-hidden bg-black">
+                  <div className="absolute inset-0">
+                    <div className="flex h-full w-max animate-[marquee_40s_linear_infinite]">
+                      {[...activeSpace.images, ...activeSpace.images].map(
+                        (src, index) => (
+                          <img
+                            key={`${src}-${index}`}
+                            src={src}
+                            alt=""
+                            className="h-full w-80 object-cover brightness-[0.55]"
+                          />
+                        )
+                      )}
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
+                </div>
+              ) : null}
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-[#4b0f1c]">
+                  {activeSpace.title}
+                </h3>
+                <div
+                  className="mt-3 text-[16px] leading-relaxed text-[#3a2c33] whitespace-pre-line"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      activeSpace.fullDescription ||
+                        activeSpace.description ||
+                        ''
+                    ),
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <Section id="services" title="Пространство товаров">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1273,17 +1334,30 @@ HeartList.propTypes = {
   renderItem: PropTypes.func,
 }
 
-function SpaceCard({ space, style }) {
+function SpaceCard({ space, style, onMore }) {
+  const hasDetails = Boolean(space.fullDescription?.trim())
+
   return (
     <div
-      className="rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+      className="flex h-full flex-col rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
       data-reveal
       style={style}
     >
       <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
         {space.title}
       </h3>
-      <p className="text-[18px] p-5 mt-2 text-[#4b3a40]">{space.description}</p>
+      <div className="flex h-full flex-col p-5">
+        <p className="text-[18px] text-[#4b3a40]">{space.description}</p>
+        {hasDetails ? (
+          <button
+            type="button"
+            onClick={onMore}
+            className="mt-4 inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
+          >
+            Подробнее
+          </button>
+        ) : null}
+      </div>
     </div>
   )
 }
@@ -1293,8 +1367,11 @@ SpaceCard.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
+    fullDescription: PropTypes.string,
+    images: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   style: PropTypes.object,
+  onMore: PropTypes.func,
 }
 
 function ServiceCard({ service, style }) {
