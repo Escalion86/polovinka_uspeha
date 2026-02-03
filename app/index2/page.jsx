@@ -878,13 +878,13 @@ export default function Index2Page() {
                             key={`${src}-${index}`}
                             src={src}
                             alt=""
-                            className="h-full w-80 object-cover brightness-[0.55]"
+                            className="object-cover h-full w-80"
                           />
                         )
                       )}
                     </div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
+                  {/* <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" /> */}
                 </div>
               ) : null}
               <div className="flex max-h-[85vh] flex-col p-6">
