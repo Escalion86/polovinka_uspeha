@@ -8,6 +8,7 @@ import {
   LOCATIONS,
   LOCATIONS_KEYS_VISIBLE,
 } from '@helpers/constants'
+import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
   fetchingDirections,
@@ -169,6 +170,9 @@ export default function Index2Page() {
   const reviewsGapPx = 16
   const headerRef = useRef(null)
   const [siteSettings, setSiteSettings] = useState({})
+  const [activeReview, setActiveReview] = useState(null)
+  const reviewTextRefs = useRef(new Map())
+  const [reviewOverflowMap, setReviewOverflowMap] = useState({})
 
   useEffect(() => {
     let isMounted = true
@@ -323,6 +327,26 @@ export default function Index2Page() {
     window.addEventListener('resize', updatePerView)
     return () => window.removeEventListener('resize', updatePerView)
   }, [])
+
+  useEffect(() => {
+    const measureOverflow = () => {
+      const nextMap = {}
+      visibleReviews.forEach((review) => {
+        const el = reviewTextRefs.current.get(review.id ?? review.name)
+        if (el) {
+          nextMap[review.id ?? review.name] = el.scrollHeight > el.clientHeight
+        }
+      })
+      setReviewOverflowMap(nextMap)
+    }
+
+    const raf = requestAnimationFrame(measureOverflow)
+    window.addEventListener('resize', measureOverflow)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', measureOverflow)
+    }
+  }, [visibleReviews, reviewsPerView])
 
   useEffect(() => {
     const items = document.querySelectorAll('[data-reveal]')
@@ -963,13 +987,41 @@ export default function Index2Page() {
                       />
                       <span className="block font-semibold text-[#4b0f1c]">
                         {review.name}
-                        {review.age ? `, ${review.age}` : ''}
+                        {review.age ? `, ${getNounYears(review.age)}` : ''}
                       </span>
                     </div>
                     <div>
-                      <p className="leading-relaxed whitespace-pre-line">
+                      <p
+                        ref={(el) => {
+                          if (!el) {
+                            reviewTextRefs.current.delete(
+                              review.id ?? review.name
+                            )
+                            return
+                          }
+                          reviewTextRefs.current.set(
+                            review.id ?? review.name,
+                            el
+                          )
+                        }}
+                        className="leading-relaxed whitespace-pre-line line-clamp-10"
+                      >
                         {review.text}
                       </p>
+                      {reviewOverflowMap[review.id ?? review.name] ? (
+                        <div className="mt-2">
+                          <span className="block text-sm text-[#6b1f2a]">
+                            ...
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setActiveReview(review)}
+                            className="cursor-pointer mt-2 text-sm font-semibold text-[#6b1f2a] underline decoration-[#6b1f2a]/40 underline-offset-4 transition hover:text-[#4b0f1c]"
+                          >
+                            Прочитать далее
+                          </button>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -985,6 +1037,52 @@ export default function Index2Page() {
             </button>
           </div>
         </Section>
+
+        {activeReview ? (
+          <div className="fixed inset-0 z-[90] flex items-center justify-center px-4">
+            {/* <button
+              type="button"
+              aria-label="Закрыть"
+              onClick={() => setActiveReview(null)}
+              className="absolute inset-0 bg-black/40"
+            /> */}
+            <div className="relative max-h-[85vh] w-full max-w-[640px] overflow-hidden rounded-[28px] bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
+              <button
+                type="button"
+                aria-label="Закрыть"
+                onClick={() => setActiveReview(null)}
+                className="cursor-pointer absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-[#f0e5ea] text-[#6b1f2a] transition hover:bg-[#f8f2f4]"
+              >
+                ×
+              </button>
+              <div className="flex items-center gap-4">
+                <img
+                  src={activeReview.photo || '/img/users/null.jpg'}
+                  alt={activeReview.name}
+                  className="h-14 w-14 rounded-full border-2 border-[#8dcff2] object-cover"
+                />
+                <div>
+                  <div className="text-lg font-semibold text-[#4b0f1c]">
+                    {activeReview.name}
+                    {activeReview.age
+                      ? `, ${getNounYears(activeReview.age)}`
+                      : ''}
+                  </div>
+                </div>
+                {/* <button
+                  type="button"
+                  onClick={() => setActiveReview(null)}
+                  className="ml-auto rounded-full border border-[#f0e5ea] px-3 py-1 text-sm font-semibold text-[#6b1f2a] transition hover:bg-[#f8f2f4]"
+                >
+                  Закрыть
+                </button> */}
+              </div>
+              <div className="mt-4 max-h-[65vh] overflow-y-auto pr-1 text-sm leading-relaxed text-[#3a2c33] whitespace-pre-line">
+                {activeReview.text}
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <Section id="contacts" title="Наши контакты и соц. Сети">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
@@ -1106,6 +1204,12 @@ export default function Index2Page() {
         .reveal-in {
           opacity: 1;
           transform: translateY(0);
+        }
+        .line-clamp-10 {
+          display: -webkit-box;
+          -webkit-line-clamp: 10;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
         html {
           scroll-behavior: smooth;
