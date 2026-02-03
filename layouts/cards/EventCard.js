@@ -89,7 +89,7 @@ const EventCard = ({
         onClick={canEdit ? () => modalsFunc.event.edit(event._id) : undefined}
       >
         <Venzel1 className="h-10" />
-        <div className="flex items-center justify-center py-5 mx-4 text-xl font-bold leading-5 text-center text-black line-clamp-4">
+        <div className="flex items-center justify-center py-5 mx-4 text-xl font-bold leading-5 text-center text-black whitespace-pre-line">
           {/* // border-t-4 border-b-4 border-general"> */}
           {event.title}
         </div>
@@ -266,9 +266,9 @@ const EventCard = ({
               />
             )} */}
           </div>
-          <div className="flex flex-1 min-h-[32px] h-8">
+          <div className="flex flex-1 h-8 min-h-8">
             <div className="flex flex-col flex-1 laptop:flex-row">
-              <div className="flex items-center justify-center flex-1 gap-2 px-1">
+              <div className="flex items-center justify-center flex-1 px-1 gap-x-2">
                 <div
                   className={cn(
                     'flex min-h-12 flex-col items-stretch justify-center flex-1',
@@ -277,23 +277,16 @@ const EventCard = ({
                       : 'desktop:min-h-9'
                   )}
                 >
-                  <TextLinesLimiter
+                  <div
                     className={cn(
-                      'flex-1 text-xl font-bold flex items-center justify-center max-h-9',
+                      'flex-1 text-xl leading-6 font-bold flex items-center justify-center text-center whitespace-pre-line',
                       changeStyle === 'laptop'
                         ? 'laptop:text-2xl'
                         : 'desktop:text-2xl'
                     )}
-                    textClassName={cn(
-                      'leading-5',
-                      changeStyle === 'laptop'
-                        ? 'laptop:leading-5'
-                        : 'desktop:leading-5'
-                    )}
-                    lines={2}
                   >
                     {event.title}
-                  </TextLinesLimiter>
+                  </div>
                 </div>
                 <PriceDiscountByEventId
                   eventId={eventId}
@@ -304,7 +297,7 @@ const EventCard = ({
           </div>
         </div>
         <div className="flex justify-center w-full mt-1">
-          <div className="w-full py-1 pl-2 pr-1">
+          <div className="w-full py-0.5 pl-2 pr-1">
             {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
             {/* <div className="flex flex-wrap justify-between w-full"> */}
             <DateTimeEvent

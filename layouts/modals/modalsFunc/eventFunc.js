@@ -8,6 +8,7 @@ import ErrorsList from '@components/ErrorsList'
 import FormRow from '@components/FormRow'
 import IconCheckBox from '@components/IconCheckBox'
 import Input from '@components/Input'
+import Textarea from '@components/Textarea'
 import InputImages from '@components/InputImages'
 import { SelectUser } from '@components/SelectItem'
 import SubEvent from '@components/SubEvent'
@@ -500,17 +501,16 @@ const eventFunc = (eventId, clone = false, props = {}) => {
                 <WarningAccess />
               </>
             )}
-            <Input
+            <Textarea
               label="Название"
-              type="text"
               value={title}
               onChange={(value) => {
                 removeError('title')
                 setTitle(value)
               }}
-              // labelClassName="w-40"
               error={errors.title}
               required
+              rows={2}
             />
             {!blank && (
               <>

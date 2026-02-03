@@ -887,12 +887,12 @@ export default function Index2Page() {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
                 </div>
               ) : null}
-              <div className="p-6">
+              <div className="flex max-h-[85vh] flex-col p-6">
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
                   {activeSpace.title}
                 </h3>
                 <div
-                  className="mt-3 text-[16px] leading-relaxed text-[#3a2c33] whitespace-pre-line"
+                  className="mt-3 min-h-0 overflow-y-auto text-[16px] leading-relaxed text-[#3a2c33] whitespace-pre-line"
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(
                       activeSpace.fullDescription ||
@@ -1005,7 +1005,7 @@ export default function Index2Page() {
                       key={event.id ?? event.title}
                       className="rounded-2xl border border-[rgba(107,31,42,0.2)] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(141,207,242,0.18))] p-4 shadow-[0_12px_26px_rgba(0,0,0,0.08)]"
                     >
-                      <div className="font-semibold text-[#4b0f1c]">
+                      <div className="font-semibold text-[#4b0f1c] whitespace-pre-line">
                         {event.title}
                       </div>
                       <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-[#2f586f]">
@@ -1346,13 +1346,13 @@ function SpaceCard({ space, style, onMore }) {
       <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
         {space.title}
       </h3>
-      <div className="flex h-full flex-col p-5">
+      <div className="flex flex-col h-full p-5 gap-y-1">
         <p className="text-[18px] text-[#4b3a40]">{space.description}</p>
         {hasDetails ? (
           <button
             type="button"
             onClick={onMore}
-            className="mt-4 inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
+            className="mt-auto inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
           >
             Подробнее
           </button>

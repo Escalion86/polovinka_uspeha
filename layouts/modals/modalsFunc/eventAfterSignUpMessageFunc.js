@@ -36,7 +36,7 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
     return (
       <FormWrapper>
         {/* <div>{`Вы успешно записались${postfixStatus} на мероприятие`}</div> */}
-        <div className="text-lg font-bold text-center text-general">
+        <div className="text-lg font-bold text-center text-general whitespace-pre-line">
           {event.title}
         </div>
         <DateTimeEvent

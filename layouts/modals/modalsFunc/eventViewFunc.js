@@ -156,7 +156,7 @@ const EventViewModal = ({
                 showName
               />
             )}
-          <div className="flex justify-center w-full text-3xl font-bold text-center">
+          <div className="flex justify-center w-full text-3xl font-bold text-center whitespace-pre-line">
             {event?.title}
           </div>
           <div

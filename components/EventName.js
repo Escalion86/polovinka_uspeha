@@ -22,6 +22,10 @@ const EventName = ({ event, showStatus, className }) => {
     (payTypeItem) => payTypeItem.value === eventStatus
   )
 
+  const normalizedTitle = (event?.title ?? '')
+    .replace(/\s*\n+\s*/g, ' ')
+    .trim()
+
   return (
     <div className={cn('leading-[14px] flex gap-x-1 items-center', className)}>
       {showStatus && (
@@ -39,7 +43,7 @@ const EventName = ({ event, showStatus, className }) => {
           />
         </div>
       )}
-      <TextLinesLimiter lines={1}>{event?.title}</TextLinesLimiter>
+      <TextLinesLimiter lines={1}>{normalizedTitle}</TextLinesLimiter>
     </div>
   )
 }
