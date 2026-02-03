@@ -1,6 +1,6 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
@@ -25,3 +25,4 @@ const individualWeddingsByUserIdAtom = atomFamily((userId) =>
 )
 
 export default individualWeddingsByUserIdAtom
+

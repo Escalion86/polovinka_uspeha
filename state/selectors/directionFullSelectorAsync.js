@@ -1,7 +1,7 @@
 'use client'
 
 // import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { getData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
@@ -24,3 +24,4 @@ const directionFullSelectorAsync = atomFamily((id) =>
 )
 
 export default directionFullSelectorAsync
+

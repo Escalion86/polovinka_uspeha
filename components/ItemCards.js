@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark'
+import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons/faBirthdayCake'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
@@ -38,14 +39,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import { Suspense } from 'react'
 import UserItemSkeleton from '@layouts/cards/Skeletons/UserItemSkeleton'
 import ItemContainer from './ItemContainer'
-
-export const UserItemFromId = (props) => {
-  return (
-    <Suspense fallback={<UserItemSkeleton {...props} />}>
-      <UserItemFromIdComponent {...props} />
-    </Suspense>
-  )
-}
+import daysBeforeBirthday from '@helpers/daysBeforeBirthday'
 
 const UserItemFromIdComponent = ({
   userId,
@@ -56,7 +50,7 @@ const UserItemFromIdComponent = ({
 }) => {
   const user = useAtomValue(userSelector(userId))
   return (
-    <UserItem
+    <UserItemBase
       item={user}
       active={active}
       onClick={onClick}
@@ -66,7 +60,51 @@ const UserItemFromIdComponent = ({
   )
 }
 
-export const UserItem = ({
+export const UserItemFromId = (props) => {
+  return (
+    <Suspense fallback={<UserItemSkeleton {...props} />}>
+      <UserItemFromIdComponent {...props} />
+    </Suspense>
+  )
+}
+
+const isBirthdayInRange = (birthday, fromDate, toDate) => {
+  if (!birthday || !fromDate) return false
+
+  const start = new Date(fromDate)
+  const end = new Date(toDate ?? fromDate)
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()))
+    return false
+
+  const rangeStart = start <= end ? start : end
+  const rangeEnd = start <= end ? end : start
+
+  const startDay = new Date(
+    rangeStart.getFullYear(),
+    rangeStart.getMonth(),
+    rangeStart.getDate()
+  )
+  const endDay = new Date(
+    rangeEnd.getFullYear(),
+    rangeEnd.getMonth(),
+    rangeEnd.getDate()
+  )
+
+  const durationDays = Math.floor(
+    (endDay.getTime() - startDay.getTime()) / (1000 * 60 * 60 * 24)
+  )
+
+  const daysToBirthday = daysBeforeBirthday(birthday, startDay)
+
+  return (
+    typeof daysToBirthday === 'number' &&
+    daysToBirthday >= 0 &&
+    daysToBirthday <= durationDays
+  )
+}
+
+const UserItemBase = ({
   item,
   onClick = null,
   active,
@@ -77,6 +115,7 @@ export const UserItem = ({
   children,
   nameFieldWrapperClassName,
   showConsentIcon = false,
+  birthdayCheck,
 }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -89,6 +128,15 @@ export const UserItem = ({
     (loggedUserActiveRole?.users?.seeBirthday ||
       item.security?.showBirthday === true ||
       item.security?.showBirthday === 'full')
+
+  const birthdayInRange =
+    seeBirthday &&
+    birthdayCheck?.fromDate &&
+    isBirthdayInRange(
+      item.birthday,
+      birthdayCheck.fromDate,
+      birthdayCheck.toDate
+    )
 
   const device = useAtomValue(windowDimensionsTailwindSelector)
 
@@ -162,6 +210,13 @@ export const UserItem = ({
             size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
             showHavePartnerOnly
           />
+          {birthdayInRange && (
+            <IconWithTooltip
+              icon={faBirthdayCake}
+              className="mx-0.5 text-orange-500"
+              tooltip="День рождения в период мероприятия"
+            />
+          )}
           {canSeeConsentIcon && (
             <FontAwesomeIcon
               icon={item.consentToMailing ? faCircleCheck : faCircleXmark}
@@ -185,6 +240,17 @@ export const UserItem = ({
       </div>
     </ItemContainer>
   )
+}
+
+export const UserItem = ({ item, userId, ...props }) => {
+  if (!item && userId) {
+    return (
+      <Suspense fallback={<UserItemSkeleton {...props} />}>
+        <UserItemFromIdComponent userId={userId} {...props} />
+      </Suspense>
+    )
+  }
+  return <UserItemBase item={item} {...props} />
 }
 
 export const EventItemFromId = ({ eventId, ...props }) => {

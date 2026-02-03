@@ -734,6 +734,7 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
 })
 
 export const DEFAULT_SERVICE = Object.freeze({
+  directionId: null,
   title: '',
   description: '',
   shortDescription: '',

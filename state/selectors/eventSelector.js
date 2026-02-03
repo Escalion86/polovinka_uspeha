@@ -1,6 +1,7 @@
 'use client'
 
-import { atomFamily, atomWithDefault } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
+import { atomWithDefault } from 'jotai/utils'
 
 import { getData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
@@ -21,3 +22,4 @@ const eventSelector = atomFamily((id) =>
 )
 
 export default eventSelector
+

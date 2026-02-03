@@ -7,7 +7,6 @@ const reviewsSchema = {
   },
   review: {
     type: String,
-    maxlength: [600, 'Отзыв не может превышать 600 символов'],
     default: '',
   },
   authorAge: {

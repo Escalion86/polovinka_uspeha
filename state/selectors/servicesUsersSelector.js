@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 
@@ -14,3 +14,4 @@ const servicesUsersSelector = atomFamily((id) =>
 )
 
 export default servicesUsersSelector
+

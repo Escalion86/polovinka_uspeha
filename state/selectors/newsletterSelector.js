@@ -1,6 +1,6 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { getData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
@@ -29,3 +29,4 @@ const newsletterSelector = atomFamily((id) => {
 })
 
 export default newsletterSelector
+

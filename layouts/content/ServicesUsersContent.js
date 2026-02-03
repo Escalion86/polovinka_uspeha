@@ -17,8 +17,9 @@ import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import { loadable } from 'jotai/utils'
 
 const defaultFilterValue = {
   services: null,
@@ -26,12 +27,14 @@ const defaultFilterValue = {
 
 const ServicesUsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const servicesUsers = useAtomValue(asyncServicesUsersAtom)
-  const users = useAtomValue(usersAtomAsync)
+  const servicesUsersLoadable = useAtomValue(loadable(asyncServicesUsersAtom))
+  const usersLoadable = useAtomValue(loadable(usersAtomAsync))
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
+  const [servicesUsersCached, setServicesUsersCached] = useState([])
+  const [usersCached, setUsersCached] = useState([])
 
   const [filter, setFilter] = useState({
     gender: {
@@ -48,6 +51,25 @@ const ServicesUsersContent = () => {
       canceled: false,
     },
   })
+
+  useEffect(() => {
+    if (servicesUsersLoadable.state === 'hasData') {
+      setServicesUsersCached(servicesUsersLoadable.data ?? [])
+    }
+  }, [servicesUsersLoadable])
+
+  useEffect(() => {
+    if (usersLoadable.state === 'hasData') {
+      setUsersCached(usersLoadable.data ?? [])
+    }
+  }, [usersLoadable])
+
+  const servicesUsers =
+    servicesUsersLoadable.state === 'hasData'
+      ? servicesUsersLoadable.data ?? []
+      : servicesUsersCached
+  const users =
+    usersLoadable.state === 'hasData' ? usersLoadable.data ?? [] : usersCached
 
   // const usersIds = servicesUsers.map((serviceUser) => serviceUser.userId)
   // const usersWithServices = users.filter((user) => usersIds.includes(user._id))
@@ -73,6 +95,7 @@ const ServicesUsersContent = () => {
     () =>
       updatedServicesUsers.filter(
         (serviceUser) =>
+          serviceUser.user &&
           filter.gender[serviceUser.user.gender] &&
           (serviceUser.status
             ? filterService.status[serviceUser.status]

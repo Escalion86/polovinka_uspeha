@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import subEventsSummator from '@helpers/subEventsSummator'
 import { DEFAULT_SUBEVENT_GENERATOR } from '@helpers/constants'
@@ -18,3 +18,4 @@ const subEventsSumOfEventSelector = atomFamily((id) =>
 )
 
 export default subEventsSumOfEventSelector
+

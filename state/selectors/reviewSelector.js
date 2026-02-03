@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import reviewsAtom from '@state/atoms/reviewsAtom'
 
@@ -13,3 +13,4 @@ const reviewSelector = atomFamily((id) =>
 )
 
 export default reviewSelector
+

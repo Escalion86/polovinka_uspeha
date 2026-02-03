@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 
@@ -18,3 +18,4 @@ const paymentsFromAndToEventSelector = atomFamily((id) =>
 )
 
 export default paymentsFromAndToEventSelector
+

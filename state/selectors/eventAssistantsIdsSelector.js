@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import eventAssistantsSelector from './eventAssistantsSelector'
 
@@ -15,3 +15,4 @@ const eventAssistantsIdsSelector = atomFamily((id) =>
 )
 
 export default eventAssistantsIdsSelector
+

@@ -1,6 +1,6 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { atom } from 'jotai'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -15,3 +15,4 @@ const eventCutedSelector = atomFamily((id) =>
 )
 
 export default eventCutedSelector
+

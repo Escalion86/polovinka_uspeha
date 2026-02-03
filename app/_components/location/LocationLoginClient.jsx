@@ -27,7 +27,7 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
-import MaskedInput from 'react-text-mask'
+import { InputMask, format, unformat } from '@react-input/mask'
 import { useAtomValue } from 'jotai'
 import SvgLove from '@svg/SvgLove'
 import SvgWave from '@svg/SvgWave'
@@ -117,6 +117,28 @@ const Input = ({
   const onFocus = () => setFocused(true)
   const onBlur = () => setFocused(false)
 
+  const phoneMask = '+_ (A__) ___-____'
+  const phoneReplacement = { A: /[1-9]/, _: /\d/ }
+  const normalizePhoneValue = (rawValue) => {
+    if (!rawValue) return ''
+    let digits = rawValue.replace(/\D/g, '')
+    if (!digits) return ''
+    if (digits.length > 11) digits = digits.slice(-11)
+    if (digits[0] === '8') return `7${digits.slice(1)}`
+    if (digits[0] === '7') return digits
+    if (digits.length === 10) return `7${digits}`
+    return `7${digits}`
+  }
+  const rawPhoneValue = value ? value.toString() : ''
+  const displayDigits = rawPhoneValue || (focused ? '7' : '')
+  const maskedPhoneValue = displayDigits
+    ? format(displayDigits, {
+        mask: phoneMask,
+        replacement: phoneReplacement,
+      })
+    : ''
+  const phoneDisplayValue = maskedPhoneValue
+
   return (
     <div
       className={cn(
@@ -181,43 +203,24 @@ const Input = ({
                 ))}
             </select>
           ) : type === 'phone' ? (
-            <MaskedInput
+            <InputMask
               name={name}
               disabled={readOnly}
-              ref={inputRef}
-              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
-              showMask={value == '7'}
+              mask={phoneMask}
+              replacement={phoneReplacement}
+              showMask={focused}
               onFocus={onFocus}
               onBlur={onBlur}
-              onChange={onChange}
-              // keepCharPositions
-              mask={[
-                '+',
-                '7',
-                ' ',
-                '(',
-                /[1-9]/,
-                /\d/,
-                /\d/,
-                ')',
-                ' ',
-                /\d/,
-                /\d/,
-                /\d/,
-                '-',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
-              value={
-                value
-                  ? value.toString().substr(0, 1) == '7'
-                    ? value.toString().substring(1)
-                    : value.toString()
-                  : ''
-              }
+              onChange={(event) => {
+                if (!onChange) return
+                const digits = event.target.value.replace(/\D/g, '')
+                const fullValue = normalizePhoneValue(digits)
+                onChange(fullValue)
+              }}
+              value={phoneDisplayValue}
               onKeyDown={onKeyDown}
+              ref={inputRef}
+              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
             />
           ) : (
             <input
@@ -389,6 +392,7 @@ const LoginPage = (props) => {
   const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
   const [registrationAgreementsConfirmed, setRegistrationAgreementsConfirmed] =
     useState(false)
+  const [isDevMode, setIsDevMode] = useState(false)
 
   const handleToggleHave18Years = () => {
     setCheckHave18Years((state) => !state)
@@ -410,6 +414,13 @@ const LoginPage = (props) => {
     () => process === 'forgotPassword',
     [process]
   )
+
+  useEffect(() => {
+    const isDevEnv = globalThis?.process?.env?.NODE_ENV === 'development'
+    const isLocalhost =
+      typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    setIsDevMode(Boolean(isDevEnv || isLocalhost))
+  }, [])
 
   useEffect(() => {
     if (!isRegistration || registrationLevel !== 1) {
@@ -437,8 +448,19 @@ const LoginPage = (props) => {
       last_name,
       photo_url,
       username,
+      phone,
       forceReg = false,
+      ...rest
     }) => {
+      console.log('Telegram auth payload:', {
+        id,
+        first_name,
+        last_name,
+        photo_url,
+        username,
+        phone,
+        ...rest,
+      })
       if (typeof id === 'number') {
         // console.log(response)
         // if (isAuthorization) {
@@ -455,7 +477,11 @@ const LoginPage = (props) => {
           location,
           referrerId: referralId,
           consentToMailing: checkConsentToMailing ? 'true' : 'false',
-          ...(inputPhone ? { phone: String(inputPhone) } : {}),
+          ...(phone
+            ? { phone: String(phone) }
+            : inputPhone
+              ? { phone: String(inputPhone) }
+              : {}),
         }).then((res) => {
           if (res?.error === 'CredentialsSignin') {
             setWaitingResponse(false)
@@ -470,6 +496,7 @@ const LoginPage = (props) => {
               last_name: last_name === 'undefined' ? undefined : last_name,
               photo_url,
               username: username === 'undefined' ? undefined : username,
+              phone,
             })
           } else {
             routeAfterLogin(router, location)
@@ -497,6 +524,19 @@ const LoginPage = (props) => {
       router,
     ]
   )
+
+  const handleTelegramTestAuth = useCallback(() => {
+    handleTelegramResponse({
+      id: 261102161,
+      first_name: 'Алексей',
+      last_name: 'Белинский Иллюзионист',
+      photo_url:
+        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+      username: 'Escalion',
+      auth_date: 1769258925,
+      hash: 'bb2858ab1ada97cbc7e232dcb3e3d4cc131a06da1859ea46c3f75fcbc16a717e',
+    })
+  }, [handleTelegramResponse])
 
   // const test = () => {
   //   handleTelegramResponse({
@@ -1092,17 +1132,19 @@ const LoginPage = (props) => {
                 label="Телефон"
                 name="phone"
                 icon={faUser}
-                onChange={(event) => {
+                onChange={(eventOrValue) => {
                   removeError('phone')
-
-                  const value = event.target.value.replace(/[^0-9]/g, '')
-
+                  const value =
+                    typeof eventOrValue === 'string'
+                      ? eventOrValue
+                      : eventOrValue?.target?.value
+                  const digits = (value || '').toString().replace(/[^0-9]/g, '')
                   setInputPhone(
-                    !value
+                    !digits
                       ? '7'
-                      : value == '77' || value == '78'
+                      : digits == '77' || digits == '78'
                         ? '7'
-                        : Number(value)
+                        : Number(digits)
                   )
                 }}
                 value={inputPhone}
@@ -1332,6 +1374,15 @@ const LoginPage = (props) => {
                           botName={telegramBotName}
                           lang="ru"
                         />
+                        {isDevMode && (
+                          <div className="flex justify-center mt-2">
+                            <Button
+                              name="Telegram test auth"
+                              classBgColor="bg-blue-600"
+                              onClick={handleTelegramTestAuth}
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1526,21 +1577,52 @@ const LoginPage = (props) => {
               {telegramRegistrationConfirm ? (
                 //  === 'shure'
                 <>
+                  <div className="w-full text-2xl text-center">
+                    <b>!!! ВНИМАНИЕ !!!</b>
+                  </div>
                   <span>
-                    Если у Вас уже есть аккаунт <i>"Половинки успеха"</i>{' '}
-                    созданный по номеру телефона, то создание нового аккаунта
-                    приведет к задвоению!
                     <br />
-                    Вы <b>точно уверены</b> что у Вас нет аккаунта{' '}
-                    <i>"Половинки успеха"</i> и вы хотите создать новый?
+                    <b>Если Вы уже регистрировались</b> на сайте "Половинка
+                    успеха" ранее, но не помните пароль -{' '}
+                    <b>воспользуйтесь восстановлением</b> и нажмите кнопку ниже.
                   </span>
+                  <div className="w-full pt-2">
+                    <Button
+                      name="У меня есть аккаунт, но я не помню пароль"
+                      icon={faLock}
+                      classBgColor="bg-general"
+                      onClick={() => {
+                        setTelegramRegistrationConfirm(false)
+                        setCheckHave18Years(false)
+                        setCheckAgreement(false)
+                        setCheckHaveNoAccounts(false)
+                        setRegistrationAgreementsConfirmed(false)
+                        clearErrors()
+                        setProcess('forgotPassword')
+                        setRegistrationLevel(1)
+                        setType('phone')
+                        setSubmitAfterRerender(true)
+                      }}
+                    />
+                  </div>
+                  <div className="pt-8">
+                    Вы <b>точно уверены</b>, что Вы{' '}
+                    <b>ранее не регистрировались</b> на сайте{' '}
+                    <i>"Половинки успеха"</i> и вы хотите{' '}
+                    <b>создать новый аккаунт</b>?
+                  </div>
                   <CheckBox
                     checked={checkHaveNoAccounts}
                     labelPos="right"
                     onChange={(e) =>
                       setCheckHaveNoAccounts(!checkHaveNoAccounts)
                     }
-                    label={'У меня нет других аккаунтов "Половинки успеха"'}
+                    label={
+                      <div className="text-left">
+                        <span className="mr-1 text-danger">*</span>У меня нет
+                        других аккаунтов "Половинки успеха"
+                      </div>
+                    }
                   />
                   <CheckBox
                     checked={checkHave18Years}
@@ -1568,6 +1650,31 @@ const LoginPage = (props) => {
                         </span>
                       </div>
                     }
+                  />
+                  <CheckBox
+                    checked={checkConsentToMailing}
+                    onChange={() =>
+                      setCheckConsentToMailing(!checkConsentToMailing)
+                    }
+                    label={
+                      <div className="text-left">
+                        Согласен на{' '}
+                        <a
+                          href="/docs/Soglasie_na_poluchenie_rassylki.docx"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="italic font-bold underline text-general hover:text-success"
+                        >
+                          получение рассылки о мероприятиях
+                        </a>
+                      </div>
+                    }
+                    wrapperClassName={cn(
+                      'overflow-hidden',
+                      isRegistration && registrationLevel === 1
+                        ? 'max-h-15 mt-1 py-1 mb-4'
+                        : ''
+                    )}
                   />
                 </>
               ) : (

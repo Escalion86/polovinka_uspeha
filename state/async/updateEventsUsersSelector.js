@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
@@ -70,3 +70,4 @@ const updateEventsUsersSelector = atomFamily((eventId) =>
 )
 
 export default updateEventsUsersSelector
+

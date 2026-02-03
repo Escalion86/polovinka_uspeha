@@ -16,6 +16,7 @@ const ListWrapper = ({
   className,
   itemData,
   itemKey,
+  maxHeight,
 }) => {
   const rowProps = useMemo(
     () => ({
@@ -49,8 +50,16 @@ const ListWrapper = ({
     [children, itemCount, itemKey]
   )
 
+  const wrapperStyle = maxHeight ? { height: maxHeight, maxHeight } : undefined
+
   return (
-    <div className={cn('flex-1 w-full h-full min-h-0 relative z-0', className)}>
+    <div
+      className={cn(
+        'flex-1 w-full h-full min-h-0 relative z-0 overflow-hidden',
+        className
+      )}
+      style={wrapperStyle}
+    >
       <List
         rowComponent={Row}
         rowCount={itemCount}

@@ -3,9 +3,11 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 // import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 // import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
@@ -17,12 +19,16 @@ import { Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import locationAtom from '@state/atoms/locationAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import directionsAtom from '@state/atoms/directionsAtom'
 
 const menuCfg = (
   userActiveRole,
   userActiveStatusName,
   siteSettings,
-  loggedUser
+  loggedUser,
+  directions,
+  location,
+  loggedUserActiveRoleName
   // disabledGroupsIds
 ) => {
   // const visiblePages = pages.filter((page) => )
@@ -75,6 +81,47 @@ const menuCfg = (
         })
       return totalGroups
     }, [])
+  const canSeeDirectionsMenu =
+    userActiveRole?.dev ||
+    ['dev', 'supervisor'].includes(loggedUserActiveRoleName)
+
+  if (
+    canSeeDirectionsMenu &&
+    location &&
+    Array.isArray(directions) &&
+    directions.length
+  ) {
+    const sortedDirections = [...directions].sort((a, b) => {
+      const indexA = typeof a.index === 'number' ? a.index : null
+      const indexB = typeof b.index === 'number' ? b.index : null
+
+      if (indexA === null && indexB === null) {
+        return (a.title ?? '').localeCompare(b.title ?? '')
+      }
+      if (indexA === null) return 1
+      if (indexB === null) return -1
+      if (indexA === indexB) {
+        return (a.title ?? '').localeCompare(b.title ?? '')
+      }
+      return indexA - indexB
+    })
+
+    const directionItems = sortedDirections.map((direction) => ({
+      id: `direction-${direction._id}`,
+      name: direction.title ?? 'Без названия',
+      href: `/${location}/cabinet/direction/${direction._id}`,
+      icon: faHeart,
+    }))
+
+    result.push({
+      id: 'directionsMenu',
+      name: 'Направления',
+      icon: faHeart,
+      items: directionItems,
+      forceShow: true,
+    })
+  }
+
   return result
 }
 
@@ -82,7 +129,9 @@ const MenuItem = ({ item, active = false, badgeNum }) => {
   const location = useAtomValue(locationAtom)
   const setMenuOpen = useSetAtom(menuOpenAtom)
 
-  const href = `/${location}/cabinet/${item.href}`
+  const href = item?.href?.startsWith('/')
+    ? item.href
+    : `/${location}/cabinet/${item.href}`
 
   return (
     <Link
@@ -135,7 +184,7 @@ const Group = ({
   )
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
 
-  if (groupHidden) return null
+  if (groupHidden && !item.forceShow) return null
   const items = item.items
   const groupBadge = items.reduce((total, { id }) => {
     if (pagesIdsWithBadge[id]) return total + pagesIdsWithBadge[id]
@@ -168,7 +217,11 @@ const Group = ({
             'flex gap-x-2 cursor-pointer items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
             // active ? 'text-ganeral' : 'text-white'
           )}
-          href={`/${location}/cabinet/${items[0].href}`}
+          href={
+            items[0]?.href?.startsWith('/')
+              ? items[0].href
+              : `/${location}/cabinet/${items[0].href}`
+          }
           onClick={() => {
             if (items.length === 1) {
               // setPageId(item.items[0].id)
@@ -308,8 +361,11 @@ const SideBar = ({ page }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveRoleName = useAtomValue(loggedUserActiveRoleNameAtom)
+  const directions = useAtomValue(directionsAtom)
   // const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
+  const location = useAtomValue(locationAtom)
 
   const onChangeMenuIndex = (index) => {
     if (handler) clearTimeout(handler)
@@ -415,7 +471,10 @@ const SideBar = ({ page }) => {
               loggedUserActiveRole,
               loggedUserActiveStatus,
               siteSettings,
-              loggedUserActive
+              loggedUserActive,
+              directions,
+              location,
+              loggedUserActiveRoleName
             )}
             activePage={page}
             onChangeMenuIndex={onChangeMenuIndex}

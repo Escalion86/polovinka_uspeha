@@ -140,8 +140,7 @@ const fetchProps = async (user, location, params) => {
         .model('Directions')
         .find({})
         .select({
-          description: 0,
-
+          ...(params?.directions?.includeDescription ? {} : { description: 0 }),
           // plugins: 0,
           ...(params?.directions?.shortDescription
             ? {}

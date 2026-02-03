@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
@@ -42,3 +42,4 @@ const asyncPaymentsOfUserIdAtom = atomFamily((userId) =>
 )
 
 export default asyncPaymentsOfUserIdAtom
+

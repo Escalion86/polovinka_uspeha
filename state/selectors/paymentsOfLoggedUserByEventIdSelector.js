@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import paymentsOfLoggedUserSelector from './paymentsOfLoggedUserSelector'
@@ -20,3 +20,4 @@ const paymentsOfLoggedUserByEventIdSelector = atomFamily((id) =>
 )
 
 export default paymentsOfLoggedUserByEventIdSelector
+

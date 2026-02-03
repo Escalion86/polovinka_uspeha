@@ -23,6 +23,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import individualWeddingEditSelector from '@state/selectors/individualWeddingEditSelector'
 import useSnackbar from '@helpers/useSnackbar'
 import waitForResponseIndividualWeddingForUserIdAtom from '@state/atoms/waitForResponseIndividualWeddingForUserIdAtom'
+import Note from '@components/Note'
 
 const IndividualWeddingsContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -36,6 +37,8 @@ const IndividualWeddingsContent = () => {
   const [waitForResponse, setWaitForResponse] = useAtom(
     waitForResponseIndividualWeddingForUserIdAtom(selectedUserId)
   )
+  const isLoading = waitForResponse?.loading ?? !!waitForResponse
+  const loadingStage = waitForResponse?.stage
   // const [response, setResponse] = useState(
   //   individualWeddings ? individualWeddings.aiResponse : ''
   // )
@@ -218,14 +221,20 @@ const IndividualWeddingsContent = () => {
       </InputWrapper>
       {selectedUserId && (
         <Button
-          loading={waitForResponse}
+          loading={isLoading}
           name={`Создать новую выборку кандидатов`}
           onClick={() =>
             modalsFunc.individualWedding.add({
               userId: selectedUser._id,
               title: `Создание подборки кандидатов для пользователя\n"${getUserFullName(selectedUser)}"`,
               onConfirm: () => {
-                setWaitForResponse(true)
+                setWaitForResponse({
+                  loading: true,
+                  stage: 'Этап 1/2: быстрый отбор кандидатов',
+                })
+              },
+              onStageChange: (stage) => {
+                setWaitForResponse({ loading: true, stage })
               },
               onFinished: (response) => {
                 if (response.error) {
@@ -236,27 +245,33 @@ const IndividualWeddingsContent = () => {
                   setIndividualWeddings(response.data)
                 }
 
-                setWaitForResponse(false)
+                setWaitForResponse({ loading: false, stage: null })
               },
             })
           }
         />
       )}
-      {(individualWeddings?.length > 0 || waitForResponse) && (
+      {(individualWeddings?.length > 0 || isLoading) && (
         <InputWrapper
           label="Выборка кандидатов"
           className="flex-1"
           wrapperClassName="flex-col overflow-y-auto"
         >
+          {isLoading && (
+            <Note>Идет подбор кандидатов. Пожалуйста, не закрывайте окно.</Note>
+          )}
           {individualWeddings.map((individualWedding) => (
             <IndividualWeddingCard
               key={individualWedding._id}
               individualWeddingId={individualWedding._id}
             />
           ))}
-          {waitForResponse && (
-            <div className="w-full h-8 border border-gray-400 rounded-md ">
+          {isLoading && (
+            <div className="w-full h-8 border border-gray-400 rounded-md flex items-center gap-x-2 px-2">
               <LoadingSpinner size="xxs" />
+              <div className="text-xs text-gray-600">
+                {loadingStage || 'Идет подбор...'}
+              </div>
             </div>
           )}
         </InputWrapper>

@@ -20,11 +20,11 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
-// import usersAtomAsync from '@state/async/usersAtomAsync'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
@@ -38,7 +38,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 import Tooltip from '@components/Tooltip'
 import Note from '@components/Note'
-import { RESET } from 'jotai/utils'
+import { RESET, loadable } from 'jotai/utils'
 
 const ItemButton = ({
   onClick,
@@ -125,6 +125,10 @@ const EventUsers2 = ({
               user.eventUserCreatedAt ? 'pb-2' : undefined
             }
             noBorder
+            birthdayCheck={{
+              fromDate: event?.dateStart,
+              toDate: event?.dateEnd,
+            }}
             // {...props}
           >
             {!readOnly &&
@@ -357,6 +361,7 @@ const eventUsersFunc = (eventId) => {
     setOnlyCloseButtonShow,
     setTopLeftComponent,
     isDataChanged,
+    dataChanges,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -369,23 +374,53 @@ const eventUsersFunc = (eventId) => {
     const [dataChanged, setDataChanged] = useState(isDataChanged)
     const [isSortingByGenderAndName, setIsSortingByGenderAndName] =
       useState(true)
+    const users = useAtomValue(usersAtomAsync)
+    useEffect(() => {
+      if (isDataChanged) setDataChanged(true)
+    }, [isDataChanged])
     // const [sortType, setSortType] = useState('name')
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const event = useAtomValue(eventSelector(eventId))
+    const eventLoadable = useAtomValue(loadable(eventSelector(eventId)))
     const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
     // const users = useAtomValue(usersAtomAsync)
-    const isEventClosed = isEventClosedFunc(event)
+    const eventUsersLoadable = useAtomValue(
+      loadable(eventsUsersFullByEventIdSelector(eventId))
+    )
+    const [eventCached, setEventCached] = useState(null)
+    const [eventUsersCached, setEventUsersCached] = useState([])
 
-    const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
+    useEffect(() => {
+      if (eventLoadable.state === 'hasData') {
+        setEventCached(eventLoadable.data)
+      }
+    }, [eventLoadable])
+
+    useEffect(() => {
+      if (eventUsersLoadable.state === 'hasData') {
+        setEventUsersCached(eventUsersLoadable.data ?? [])
+      }
+    }, [eventUsersLoadable])
+
+    const event =
+      eventLoadable.state === 'hasData' ? eventLoadable.data : eventCached
+    const eventUsers =
+      eventUsersLoadable.state === 'hasData'
+        ? eventUsersLoadable.data ?? []
+        : eventUsersCached
+    const eventIdValue = event?._id ?? eventId
+    const subEvents = event?.subEvents ?? []
+
+    const isEventClosed = event ? isEventClosedFunc(event) : false
+
+    const showLikes = loggedUserActiveRole?.events?.editLikes && event?.likes
 
     // const sortedUsers = useMemo(
     //   () => [...users].sort(sortFunctions.genderAndFirstName.asc),
     //   [users]
     // )
 
-    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUsersCreatedAtObject = useMemo(
       () =>
         eventUsers.reduce((acc, { createdAt, userId }) => {
@@ -425,23 +460,31 @@ const eventUsersFunc = (eventId) => {
     //   [users]
     // )
 
-    const sortUsersByGenderAndFirstNameFull = useCallback((selectedUsers) => {
-      // const filteredUsers = users.filter((user) => ids.includes(user._id))
-      const updatedUsers = selectedUsers.map((user) => ({
-        ...user,
-        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-      }))
-      return updatedUsers.toSorted(sortFunctions.genderAndFirstName.asc)
-    }, [])
+    const sortUsersByGenderAndFirstNameFull = useCallback(
+      (selectedUsers) => {
+        // const filteredUsers = users.filter((user) => ids.includes(user._id))
+        const updatedUsers = selectedUsers.map((user) => ({
+          ...user,
+          eventUserCreatedAt:
+            eventUsersCreatedAtObject[user._id] ?? user.eventUserCreatedAt,
+        }))
+        return updatedUsers.toSorted(sortFunctions.genderAndFirstName.asc)
+      },
+      [eventUsersCreatedAtObject]
+    )
 
-    const sortUsersByCreatedAtFull = useCallback((selectedUsers) => {
-      // const filteredUsers = users.filter((user) => ids.includes(user._id))
-      const updatedUsers = selectedUsers.map((user) => ({
-        ...user,
-        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-      }))
-      return updatedUsers.toSorted(sortFunctions.eventUserCreatedAt.asc)
-    }, [])
+    const sortUsersByCreatedAtFull = useCallback(
+      (selectedUsers) => {
+        // const filteredUsers = users.filter((user) => ids.includes(user._id))
+        const updatedUsers = selectedUsers.map((user) => ({
+          ...user,
+          eventUserCreatedAt:
+            eventUsersCreatedAtObject[user._id] ?? user.eventUserCreatedAt,
+        }))
+        return updatedUsers.toSorted(sortFunctions.eventUserCreatedAt.asc)
+      },
+      [eventUsersCreatedAtObject]
+    )
 
     // const sortFunc = useMemo(
     //   () => (isSortingByGenderAndName ? sortUsersByIds : sortUsersByCreatedAt),
@@ -552,7 +595,7 @@ const eventUsersFunc = (eventId) => {
           sortedEventUsersParticipants,
           'subEventId',
           true,
-          event._id,
+          eventIdValue,
           ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersParticipants]
@@ -564,7 +607,7 @@ const eventUsersFunc = (eventId) => {
           sortedEventUsersReserve,
           'subEventId',
           true,
-          event._id,
+          eventIdValue,
           ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersReserve]
@@ -574,6 +617,8 @@ const eventUsersFunc = (eventId) => {
     const [reserve, setReserve] = useState(objReserve)
     const [assistants, setAssistants] = useState(arrayAssistants)
     const [banned, setBanned] = useState(arrayBanned)
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [hasUserEdited, setHasUserEdited] = useState(false)
 
     useEffect(() => {
       if (!compareObjects(participants, objParticipants))
@@ -585,7 +630,25 @@ const eventUsersFunc = (eventId) => {
     }, [objReserve])
 
     useEffect(() => {
-      if ((statusEdit || copyListToClipboard) && setTopLeftComponent)
+      if (!compareObjects(assistants, arrayAssistants, { byIDs: true }))
+        setAssistants(arrayAssistants)
+    }, [arrayAssistants])
+
+    useEffect(() => {
+      if (!compareObjects(banned, arrayBanned, { byIDs: true }))
+        setBanned(arrayBanned)
+    }, [arrayBanned])
+
+    useEffect(() => {
+      setIsInitialized(false)
+    }, [objParticipants, objReserve, arrayAssistants, arrayBanned])
+
+    useEffect(() => {
+        if (
+          (statusEdit || copyListToClipboard) &&
+          setTopLeftComponent &&
+          event
+        )
         setTopLeftComponent(() => (
           <div className="flex">
             {statusEdit &&
@@ -657,10 +720,14 @@ const eventUsersFunc = (eventId) => {
     ])
 
     const onClickConfirm = async () => {
+      if (!event) {
+        closeModal()
+        return
+      }
       closeModal()
 
       const usersStatuses = []
-      event.subEvents.forEach(({ id }) => {
+      subEvents.forEach(({ id }) => {
         if (participants[id])
           participants[id].forEach((user) =>
             usersStatuses.push({
@@ -718,17 +785,47 @@ const eventUsersFunc = (eventId) => {
         }
       }
 
+      const assistantsCheck = compareObjects(assistants, arrayAssistants, {
+        byIDs: true,
+      })
+      const bannedCheck = compareObjects(banned, arrayBanned, { byIDs: true })
+      const isSynced =
+        participantsCheck && reserveCheck && assistantsCheck && bannedCheck
+
+      if (!isInitialized && isSynced) {
+        setIsInitialized(true)
+        setOnConfirmFunc(undefined)
+        setOnShowOnCloseConfirmDialog(false)
+        setDisableConfirm(true)
+        setOnlyCloseButtonShow(!canEdit || isEventClosed)
+        return
+      }
+
+      if (!isInitialized && !isSynced) {
+        setIsInitialized(true)
+      }
+
       const isFormChanged =
         !reserveCheck ||
         !participantsCheck ||
-        !compareObjects(assistants, arrayAssistants, { byIDs: true }) ||
-        !compareObjects(banned, arrayBanned, { byIDs: true })
+        !assistantsCheck ||
+        !bannedCheck
 
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
-      setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!isFormChanged)
+      const shouldShowConfirm = hasUserEdited && isFormChanged
+
+      setOnConfirmFunc(shouldShowConfirm ? onClickConfirm : undefined)
+      setOnShowOnCloseConfirmDialog(shouldShowConfirm)
+      setDisableConfirm(!shouldShowConfirm)
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
-    }, [participants, assistants, reserve, banned, canEdit, isEventClosed])
+    }, [
+      participants,
+      assistants,
+      reserve,
+      banned,
+      canEdit,
+      isEventClosed,
+      hasUserEdited,
+    ])
 
     // const setParticipantsState = (subEventId, ids) => {
     //   setParticipants((state) => ({
@@ -745,6 +842,7 @@ const eventUsersFunc = (eventId) => {
     // }
 
     const setParticipantsStateFull = (subEventId, users) => {
+      setHasUserEdited(true)
       setParticipants((state) => ({
         ...state,
         [subEventId]: sortFuncFull(users),
@@ -752,6 +850,7 @@ const eventUsersFunc = (eventId) => {
     }
 
     const setReserveStateFull = (subEventId, users) => {
+      setHasUserEdited(true)
       setReserve((state) => ({
         ...state,
         [subEventId]: sortFuncFull(users),
@@ -760,11 +859,17 @@ const eventUsersFunc = (eventId) => {
 
     // const setAssistantsState = (ids) => setAssistants(sortFunc(ids))
 
-    const setAssistantsStateFull = (users) => setAssistants(sortFuncFull(users))
+    const setAssistantsStateFull = (users) => {
+      setHasUserEdited(true)
+      setAssistants(sortFuncFull(users))
+    }
 
     // const setBannedState = (ids) => setBanned(sortFunc(ids))
 
-    const setBannedStateFull = (users) => setBanned(sortFuncFull(users))
+    const setBannedStateFull = (users) => {
+      setHasUserEdited(true)
+      setBanned(sortFuncFull(users))
+    }
 
     const participantsCount = Object.keys(participants).reduce(
       (sum, subEventId) => sum + participants[subEventId]?.length ?? 0,
@@ -787,7 +892,7 @@ const eventUsersFunc = (eventId) => {
     const bannedIds = banned.map(({ _id }) => _id)
     const eventUsersToUse = {}
 
-    event.subEvents.forEach(({ id }) => {
+    subEvents.forEach(({ id }) => {
       const participantsSubEvent = participants[id] ?? []
       const reserveSubEvent = reserve[id] ?? []
 
@@ -814,7 +919,7 @@ const eventUsersFunc = (eventId) => {
 
     const Wrapper = useMemo(
       () =>
-        event.subEvents.length > 1
+        subEvents.length > 1
           ? ({ children, label }) => (
               <InputWrapper
                 label={label}
@@ -831,10 +936,54 @@ const eventUsersFunc = (eventId) => {
                 {children}
               </div>
             ),
-      [event]
+      [subEvents]
     )
 
     const readOnly = !canEdit || isEventClosed
+
+    const usersById = useMemo(() => {
+      const map = {}
+      if (Array.isArray(users)) {
+        users.forEach((user) => {
+          map[user._id] = user
+        })
+      }
+      return map
+    }, [users])
+
+    const formatUserName = useCallback(
+      (userId, status) => {
+        const user = usersById[userId]
+        const name = user
+          ? [user.secondName, user.firstName, user.thirdName]
+              .filter(Boolean)
+              .join(' ')
+          : userId
+        return status ? `${name} (${status})` : name
+      },
+      [usersById]
+    )
+
+    const addedNames = useMemo(
+      () =>
+        (dataChanges?.addedItems ?? [])
+          .map(({ userId, status }) => formatUserName(userId, status))
+          .filter(Boolean),
+      [dataChanges, formatUserName]
+    )
+
+    const removedNames = useMemo(
+      () =>
+        (dataChanges?.removedItems ?? [])
+          .map(({ userId, status }) => formatUserName(userId, status))
+          .filter(Boolean),
+      [dataChanges, formatUserName]
+    )
+
+    const changedNames = useMemo(
+      () => (dataChanges?.changedIds ?? []).map(formatUserName).filter(Boolean),
+      [dataChanges, formatUserName]
+    )
 
     return (
       <>
@@ -846,7 +995,12 @@ const eventUsersFunc = (eventId) => {
             showTitle
           />
         </div> */}
-        {canEdit && (
+        {!event && (
+          <div className="py-4 text-center text-gray-500">
+            Загрузка данных мероприятия...
+          </div>
+        )}
+        {event && canEdit && (
           <CheckBox
             label="Сортировать по дате создания записи"
             checked={!isSortingByGenderAndName}
@@ -856,13 +1010,13 @@ const eventUsersFunc = (eventId) => {
             }}
           />
         )}
-        {canEdit && isEventClosed && (
+        {event && canEdit && isEventClosed && (
           <Note type="warning">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
           </Note>
         )}
-        {canEdit && dataChanged && (
+        {event && canEdit && dataChanged && (
           <div
             className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
             onClick={() => setDataChanged(false)}
@@ -870,6 +1024,15 @@ const eventUsersFunc = (eventId) => {
             <Note type="warning">
               Обратите внимание! Данные были изменены с момента предыдущей
               загрузки. Отображены актуальные данные.
+              {!!addedNames.length && (
+                <div>Добавлены: {addedNames.join(', ')}</div>
+              )}
+              {!!removedNames.length && (
+                <div>Удалены: {removedNames.join(', ')}</div>
+              )}
+              {!!changedNames.length && (
+                <div>Изменены: {changedNames.join(', ')}</div>
+              )}
             </Note>
             <FontAwesomeIcon
               className="w-4 h-4 min-w-4 min-h-4"
@@ -877,15 +1040,15 @@ const eventUsersFunc = (eventId) => {
             />
           </div>
         )}
-        <TabContext value="Участники">
+        {event && <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
             tabAddToLabel={`(${participantsCount})`}
             className="flex flex-col mt-1 gap-y-5"
           >
-            {event.subEvents.map((subEvent) => {
+            {subEvents.map((subEvent) => {
               const { id, title } = subEvent
-              const otherSubEventsPartisipantsIds = event.subEvents.reduce(
+              const otherSubEventsPartisipantsIds = subEvents.reduce(
                 (sum, { id }) => {
                   if (id !== subEvent.id)
                     return [...sum, ...participantsIds[id]]
@@ -960,16 +1123,16 @@ const eventUsersFunc = (eventId) => {
               )
             })}
           </TabPanel>
-          {canEdit && subEventsSummator(event.subEvents)?.isReserveActive && (
+          {canEdit && subEventsSummator(subEvents)?.isReserveActive && (
             <TabPanel
               tabName="Резерв"
               tabAddToLabel={`(${reserveCount})`}
               className="flex flex-col gap-y-5"
             >
-              {event.subEvents.map((subEvent) => {
+              {subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
-                const otherSubEventsReserveIds = event.subEvents.reduce(
+                const otherSubEventsReserveIds = subEvents.reduce(
                   (sum, { id }) => {
                     if (id !== subEvent.id) return [...sum, ...reserveIds[id]]
                     return sum
@@ -1109,32 +1272,145 @@ const eventUsersFunc = (eventId) => {
               /> */}
             </TabPanel>
           )}
-        </TabContext>
+        </TabContext>}
       </>
     )
   }
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const [data, refreshEventState] = useAtom(
+    const [isRefreshing, setIsRefreshing] = useState(true)
+    const dataLoadable = useAtomValue(
+      loadable(asyncEventsUsersByEventIdAtom(eventId))
+    )
+    const refreshEventState = useSetAtom(
       asyncEventsUsersByEventIdAtom(eventId)
     )
-    const [prevData, setPravData] = useState(data)
+    const [prevData, setPrevData] = useState(null)
+    const [currentData, setCurrentData] = useState(null)
     // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
     useEffect(() => {
+      let isMounted = true
       const refreshFunc = async () => {
+        setIsRefreshing(true)
+        setIsRefreshed(false)
+        setPrevData(null)
+        setCurrentData(null)
+        if (dataLoadable.state === 'hasData') {
+          setPrevData(dataLoadable.data ?? [])
+        }
         await refreshEventState(RESET)
-        setIsRefreshed(true)
+        if (isMounted) {
+          setIsRefreshing(false)
+        }
       }
       refreshFunc()
+      return () => {
+        isMounted = false
+      }
     }, [])
 
-    const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
+    useEffect(() => {
+      if (isRefreshing || dataLoadable.state !== 'hasData') return
+      const data = dataLoadable.data ?? []
+      if (prevData === null) setPrevData(data)
+      setCurrentData(data)
+      setIsRefreshed(true)
+    }, [dataLoadable, isRefreshing, prevData])
+
+    const normalizeEventUsers = useCallback((list) => {
+      if (!Array.isArray(list)) return []
+      return list
+        .map(({ userId, status, subEventId }) => ({
+          userId,
+          status: status ?? null,
+          subEventId: subEventId ?? null,
+        }))
+        .sort((a, b) => {
+          const aId = a.userId ?? ''
+          const bId = b.userId ?? ''
+          if (aId !== bId) return aId < bId ? -1 : 1
+          if (a.status !== b.status) return a.status < b.status ? -1 : 1
+          const aSub = a.subEventId ?? ''
+          const bSub = b.subEventId ?? ''
+          return aSub < bSub ? -1 : 1
+        })
+    }, [])
+
+    const isDataChanged =
+      prevData && currentData
+        ? JSON.stringify(normalizeEventUsers(prevData)) !==
+          JSON.stringify(normalizeEventUsers(currentData))
+        : false
+
+    const dataChanges = useMemo(() => {
+      if (!prevData || !currentData) {
+        return {
+          addedItems: [],
+          removedItems: [],
+          changedIds: [],
+        }
+      }
+      const prevIds = new Set(
+        prevData.map(({ userId }) => userId).filter(Boolean)
+      )
+      const currentIds = new Set(
+        currentData.map(({ userId }) => userId).filter(Boolean)
+      )
+      const statusLabel = (status) => {
+        if (status === 'participant') return 'участник'
+        if (status === 'reserve') return 'резерв'
+        if (status === 'assistant') return 'ведущий'
+        if (status === 'ban') return 'бан'
+        return status || 'статус не указан'
+      }
+
+      const prevStatusMap = new Map(
+        prevData.map(({ userId, status, subEventId }) => [
+          userId,
+          `${status ?? ''}:${subEventId ?? ''}`,
+        ])
+      )
+      const currentStatusMap = new Map(
+        currentData.map(({ userId, status, subEventId }) => [
+          userId,
+          `${status ?? ''}:${subEventId ?? ''}`,
+        ])
+      )
+
+      const addedItems = Array.from(currentIds)
+        .filter((id) => !prevIds.has(id))
+        .map((id) => {
+          const [status] = (currentStatusMap.get(id) || '').split(':')
+          return { userId: id, status: statusLabel(status) }
+        })
+      const removedItems = Array.from(prevIds)
+        .filter((id) => !currentIds.has(id))
+        .map((id) => {
+          const [status] = (prevStatusMap.get(id) || '').split(':')
+          return { userId: id, status: statusLabel(status) }
+        })
+      const changedIds = []
+      for (const [userId, signature] of currentStatusMap.entries()) {
+        if (prevStatusMap.has(userId) && prevStatusMap.get(userId) !== signature)
+          changedIds.push(userId)
+      }
+      return { addedItems, removedItems, changedIds }
+    }, [prevData, currentData])
+
     return isRefreshed ? (
-      <EventUsersModal {...props} isDataChanged={isDataChanged} />
-    ) : null
+      <EventUsersModal
+        {...props}
+        isDataChanged={isDataChanged}
+        dataChanges={dataChanges}
+      />
+    ) : (
+      <div className="py-4 text-center text-gray-500">
+        Проверка обновлений...
+      </div>
+    )
   }
 
   return {

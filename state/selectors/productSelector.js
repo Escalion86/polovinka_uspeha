@@ -1,7 +1,7 @@
 'use client'
 
 import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 
 import productsAtom from '@state/atoms/servicesAtom'
 
@@ -13,3 +13,4 @@ const productSelector = atomFamily((id) =>
 )
 
 export default productSelector
+

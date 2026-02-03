@@ -1,6 +1,6 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 import { getData } from '@helpers/CRUD'
 import locationAtom from './locationAtom'
 
@@ -13,3 +13,4 @@ const historiesOfPaymentAtom = atomFamily((id) => async (get) => {
 })
 
 export default historiesOfPaymentAtom
+
