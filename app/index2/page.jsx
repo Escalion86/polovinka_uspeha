@@ -1031,7 +1031,7 @@ export default function Index2Page() {
               type="button"
               aria-label="Следующий отзыв"
               onClick={handleReviewsNext}
-              className="absolute right-0 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_10px_20px_rgba(0,0,0,0.15)]"
+              className="cursor-pointer font-bold pb-1.25 text-3xl absolute right-0 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#4fb0e8] text-white shadow-[0_12px_24px_rgba(79,176,232,0.35)] transition hover:-translate-y-[calc(50%+2px)]"
             >
               →
             </button>
@@ -1039,14 +1039,16 @@ export default function Index2Page() {
         </Section>
 
         {activeReview ? (
-          <div className="fixed inset-0 z-[90] flex items-center justify-center px-4">
-            {/* <button
-              type="button"
-              aria-label="Закрыть"
-              onClick={() => setActiveReview(null)}
-              className="absolute inset-0 bg-black/40"
-            /> */}
-            <div className="relative max-h-[85vh] w-full max-w-[640px] overflow-hidden rounded-[28px] bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
+          <div
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 px-4"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setActiveReview(null)
+            }}
+          >
+            <div
+              onMouseDown={(event) => event.stopPropagation()}
+              className="relative max-h-[85vh] w-full max-w-[640px] overflow-hidden rounded-[28px] bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+            >
               <button
                 type="button"
                 aria-label="Закрыть"
