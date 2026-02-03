@@ -23,7 +23,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CountDown from '@blocks/components/CountDown'
 
-const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
 const ServiceCard = dynamic(() => import('@layouts/cards/ServiceCard'))
 
 const sortByIndexAndTitle = (a, b) => {
@@ -105,13 +105,13 @@ function LocationDirectionClient(props) {
       ) : (
         <BlockContainer small>
           <P className="flex justify-center w-full">
-            Направление не найдено
+            Пространство не найдено
           </P>
         </BlockContainer>
       )}
 
       {directionServices.length > 0 && (
-        <BlockContainer id="direction-services" title="Услуги направления">
+        <BlockContainer id="direction-services" title="Услуги Пространства">
           <div className="flex flex-col w-full gap-4">
             {directionServices.map((service) => (
               <ServiceCard key={service._id} serviceId={service._id} />
@@ -120,11 +120,11 @@ function LocationDirectionClient(props) {
         </BlockContainer>
       )}
 
-      <BlockContainer id="direction-events" title="Мероприятия направления">
+      <BlockContainer id="direction-events" title="Мероприятия Пространства">
         {directionEvents.length > 0 ? (
           <div className="flex flex-col items-center w-full gap-4">
             {directionEvents.map((event) => (
-              <EventCardLight key={event._id} eventId={event._id} />
+              <EventCard key={event._id} eventId={event._id} />
             ))}
           </div>
         ) : (
@@ -144,3 +144,4 @@ function LocationDirectionClient(props) {
 }
 
 export default LocationDirectionClient
+

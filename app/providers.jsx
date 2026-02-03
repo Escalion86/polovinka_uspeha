@@ -21,10 +21,10 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#7a5151',
+      main: 'rgb(var(--color-general-rgb))',
     },
     general: {
-      main: '#7a5151',
+      main: 'rgb(var(--color-general-rgb))',
     },
     secondary: {
       main: '#2A323B',
@@ -203,8 +203,7 @@ const ClientErrorReporter = () => {
         error: {
           message: serialized.message,
           stack: serialized.stack,
-          componentStack:
-            componentStack || serialized.componentStack || '',
+          componentStack: componentStack || serialized.componentStack || '',
           url: window.location?.href ?? '',
           userAgent: navigator?.userAgent ?? '',
         },
@@ -284,3 +283,4 @@ export default function Providers({ children }) {
     </SessionProvider>
   )
 }
+

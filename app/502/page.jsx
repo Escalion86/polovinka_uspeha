@@ -5,7 +5,7 @@ export const metadata = {
 }
 
 export default function Page502() {
-  const generalColor = '#7a5151'
+  const generalColor = 'var(--color-general)'
 
   return (
     <div className="box-border w-screen h-screen overflow-y-auto">
@@ -28,3 +28,4 @@ export default function Page502() {
     </div>
   )
 }
+

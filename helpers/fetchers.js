@@ -44,6 +44,14 @@ export async function fetchingAdditionalBlocks(location) {
   return resp
 }
 
+export async function fetchingProducts(location) {
+  const resp = await fetch(`/api/${location}/products`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+    .catch((error) => console.log('fetchingProducts ERROR:', error))
+  return resp
+}
+
 export async function fetchingPayments(location) {
   const resp = await fetch(`/api/${location}/payments`)
     .then((res) => res.json())

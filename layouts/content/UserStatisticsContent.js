@@ -547,7 +547,7 @@ const UserStatisticsContent = () => {
       )}
       <PieChart
         data={eventsByDirectionsData}
-        title={`Посетил мероприятия по направлениям`}
+        title={`Посетил мероприятия по пространствам`}
       />
     </div>
   )

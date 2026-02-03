@@ -2,20 +2,19 @@ import { useAtomValue } from 'jotai'
 
 import CardButtons from '@components/CardButtons'
 import CardWrapper from '@components/CardWrapper'
-import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventButtonSignIn from '@components/EventButtonSignIn'
-import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import eventStatusFunc from '@helpers/eventStatus'
+import subEventsSummator from '@helpers/subEventsSummator'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventCutedSelector from '@state/selectors/eventCutedSelector'
 import Venzel1 from '@svg/venzels/1'
@@ -23,12 +22,12 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
 import { PriceDiscountByEventId } from '@components/PriceDiscount'
 import loadingAtom from '@state/atoms/loadingAtom'
+import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 
 const EventCard = ({
   eventId,
   noButtons,
   hidden = false,
-  onTagClick,
   style,
   changeStyle = 'laptop',
 }) => {
@@ -44,9 +43,38 @@ const EventCard = ({
   const loading = useAtomValue(loadingAtom('event' + eventId))
   const error = useAtomValue(errorAtom('event' + eventId))
   const itemFunc = useAtomValue(itemsFuncAtom)
+  const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
   // const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const canEdit = loggedUserActiveRole?.events?.edit
+
+  const participantsCount = useMemo(
+    () =>
+      (eventUsers || []).filter((item) => item?.status === 'participant')
+        .length,
+    [eventUsers]
+  )
+
+  const maxParticipants = useMemo(() => {
+    if (!event) return null
+    const hasSubEvents =
+      Array.isArray(event?.subEvents) && event.subEvents.length > 0
+    if (hasSubEvents) {
+      const summary = subEventsSummator(event.subEvents)
+      if (typeof summary?.maxParticipants === 'number')
+        return summary.maxParticipants
+      const maxMans = typeof summary?.maxMans === 'number' ? summary.maxMans : 0
+      const maxWomans =
+        typeof summary?.maxWomans === 'number' ? summary.maxWomans : 0
+      if (maxMans + maxWomans > 0) return maxMans + maxWomans
+    }
+
+    if (typeof event?.maxParticipants === 'number') return event.maxParticipants
+    const maxMans = typeof event?.maxMans === 'number' ? event.maxMans : 0
+    const maxWomans = typeof event?.maxWomans === 'number' ? event.maxWomans : 0
+    if (maxMans + maxWomans > 0) return maxMans + maxWomans
+    return null
+  }, [event])
 
   if (!event) return null
 
@@ -95,6 +123,10 @@ const EventCard = ({
       gap={false}
       hidden={hidden}
       style={style}
+      outerClassName="px-3 my-2"
+      className="rounded-2xl border border-[rgba(107,31,42,0.18)] shadow-[0_12px_26px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_34px_rgba(0,0,0,0.12)]"
+      bgClassName="bg-[linear-gradient(135deg,#8dcff2aa,#fff)]"
+      // className="rounded-2xl border border-[rgba(107,31,42,0.18)] shadow-[0_12px_26px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_34px_rgba(0,0,0,0.12)] bg-[#8dcff2]"
     >
       {/* <div className="flex items-stretch"> */}
       {/* {event?.images && event.images.length > 0 && (
@@ -122,7 +154,7 @@ const EventCard = ({
         (changeStyle === 'desktop' && widthNum >= 5)) && (
         <div
           className={cn(
-            'relative justify-center w-40 h-40 max-h-40',
+            'relative justify-center w-40 h-40 max-h-40 rounded-l-2xl overflow-hidden',
             // 'hidden',
             // changeStyle === 'laptop' ? 'laptop:flex' : 'desktop:flex',
             'flex',
@@ -181,26 +213,25 @@ const EventCard = ({
       // )} */}
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
-          <div className="flex pl-2">
+          <div className="flex pl-1">
             <div
               className={cn(
                 'flex items-center flex-1 h-9 gap-x-1',
                 event.showOnSite ? '' : 'pl-10 laptop:pl-0'
               )}
             >
-              <UserRelationshipIconByEventId eventId={eventId} />
-              {/* <TextLinesLimiter
-                className="flex-1 text-lg font-bold laptop:text-xl "
-                lines={1}
-              >
-                {direction.title}
-              </TextLinesLimiter> */}
-              <EventTagsChipsLine
-                tags={event.tags}
-                onTagClick={onTagClick}
-                className="flex-1"
-                // noWrap
-              />
+              <div className="flex flex-1 gap-x-1">
+                <UserRelationshipIconByEventId eventId={eventId} />
+                <TextLinesLimiter
+                  className="laptop:hidden inline-flex items-center rounded-full border border-[rgba(107,31,42,0.25)] bg-white/70 px-3 py-1 text-sm font-semibold text-general"
+                  textClassName="truncate"
+                  textCenter={false}
+                  lines={1}
+                >
+                  {direction?.title ?? '[неизвестное Пространство]'}
+                </TextLinesLimiter>
+              </div>
+              {/* <div className="flex-1 min-w-0" /> */}
               {/* <div className="flex-1 truncate w-[90%]">{direction.title}</div> */}
               {!noButtons && (
                 <CardButtons
@@ -240,30 +271,18 @@ const EventCard = ({
               <div className="flex items-center justify-center flex-1 gap-2 px-1">
                 <div
                   className={cn(
-                    'flex min-h-16 flex-col items-stretch justify-center flex-1',
+                    'flex min-h-12 flex-col items-stretch justify-center flex-1',
                     changeStyle === 'laptop'
-                      ? 'laptop:min-h-10'
-                      : 'desktop:min-h-10'
+                      ? 'laptop:min-h-9'
+                      : 'desktop:min-h-9'
                   )}
                 >
                   <TextLinesLimiter
                     className={cn(
-                      'text-lg italic font-bold text-general',
+                      'flex-1 text-xl font-bold flex items-center justify-center max-h-9',
                       changeStyle === 'laptop'
-                        ? 'laptop:hidden'
-                        : 'desktop:hidden'
-                    )}
-                    // textClassName="leading-5"
-                    lines={1}
-                  >
-                    {direction?.title ?? '[неизвестное направление]'}
-                  </TextLinesLimiter>
-                  <TextLinesLimiter
-                    className={cn(
-                      'flex-1 text-lg font-bold flex items-center justify-center max-h-9',
-                      changeStyle === 'laptop'
-                        ? 'laptop:text-xl'
-                        : 'desktop:text-xl'
+                        ? 'laptop:text-2xl'
+                        : 'desktop:text-2xl'
                     )}
                     textClassName={cn(
                       'leading-5',
@@ -278,14 +297,14 @@ const EventCard = ({
                 </div>
                 <PriceDiscountByEventId
                   eventId={eventId}
-                  className="hidden tablet:flex"
+                  className="hidden tablet:flex font-adleryProSwash text-[22px]"
                 />
               </div>
             </div>
           </div>
         </div>
         <div className="flex justify-center w-full mt-1">
-          <div className="w-full py-1 pl-2 pr-1 border-t">
+          <div className="w-full py-1 pl-2 pr-1">
             {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
             {/* <div className="flex flex-wrap justify-between w-full"> */}
             <DateTimeEvent
@@ -318,22 +337,39 @@ const EventCard = ({
 
         {widthNum >= 3 && (
           <div className="max-h-[42px]">
-            <div className="flex items-stretch justify-between border-t">
-              <EventUsersCounterAndAge event={event} className="h-[42px]" />
-              <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
+            <div className="flex items-stretch justify-between">
+              <div className="flex items-center justify-center ml-2 h-[42px] text-sm font-semibold text-general">
+                <span className="px-3 py-1 rounded-full bg-white/70">
+                  {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+                </span>
+              </div>
+              <EventButtonSignIn
+                eventId={eventId}
+                noButtonIfAlreadySignIn
+                className="rounded-full"
+              />
             </div>
           </div>
         )}
       </div>
       {widthNum <= 2 && (
         <div className="flex flex-wrap justify-end flex-1 w-full">
-          <EventUsersCounterAndAge
-            event={event}
-            className="flex-1 min-w-full border-t border-b h-[38px] laptop:h-[42px]"
-          />
-          <div className="flex items-stretch justify-end flex-1 w-full pr-1 h-9">
-            <PriceDiscountByEventId eventId={eventId} className="flex-1 mx-2" />
-            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn thin />
+          <div className="flex items-center justify-center flex-1 min-w-full h-[38px] laptop:h-[42px] text-sm font-semibold text-general">
+            <span className="px-3 py-1 rounded-full bg-white/70">
+              {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+            </span>
+          </div>
+          <div className="flex items-stretch justify-end flex-1 w-full h-9">
+            <PriceDiscountByEventId
+              eventId={eventId}
+              className="flex-1 mx-2 font-adleryProSwash text-[22px]"
+            />
+            <EventButtonSignIn
+              eventId={eventId}
+              noButtonIfAlreadySignIn
+              thin
+              className="rounded-full"
+            />
           </div>
         </div>
       )}

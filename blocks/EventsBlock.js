@@ -11,7 +11,7 @@ import Link from 'next/link'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
 import locationAtom from '@state/atoms/locationAtom'
-const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
 
 const Button = ({ title, className, href, onClick }) => {
   if (onClick)
@@ -67,7 +67,7 @@ const EventsBlock = ({
             .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
             .slice(0, maxShowedEvents)
             .map((event, index) => (
-              <EventCardLight key={event._id} eventId={event._id} />
+              <EventCard key={event._id} eventId={event._id} />
             ))}
           {maxEvents && filteredEvents?.length > maxShowedEvents && (
             <Button title="Посмотреть все" href={`/${location}/events`} />

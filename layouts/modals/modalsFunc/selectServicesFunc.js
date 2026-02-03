@@ -137,7 +137,7 @@ const selectServicesFunc = (
         </div>
         {showErrorMax && (
           <div className="text-danger">
-            Выбрано максимальное количество направлений
+            Выбрано максимальное количество Пространств
           </div>
         )}
 
@@ -153,7 +153,7 @@ const selectServicesFunc = (
 
           {showErrorMax && (
             <div className="text-danger">
-              Выбрано максимальное количество направлений
+              Выбрано максимальное количество Пространств
             </div>
           )}
         </div> */}
@@ -170,3 +170,4 @@ const selectServicesFunc = (
 }
 
 export default selectServicesFunc
+

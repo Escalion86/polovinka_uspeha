@@ -168,7 +168,7 @@ const EventViewModal = ({
           <Divider thin light />
           {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
           {direction?.title && (
-            <TextLine label="Направление">{direction.title}</TextLine>
+            <TextLine label="Пространство">{direction.title}</TextLine>
           )}
           <TextLine label="Начало">{formatDateTime(event?.dateStart)}</TextLine>
           <TextLine label="Завершение">
@@ -304,10 +304,9 @@ const EventView = (props) => {
         <span className="text-xl">
           {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
         </span>
-      ) :
-      loggedUserActive &&
-      isUserStatusCorrect !== false &&
-      isAgeOfUserCorrect === false ? (
+      ) : loggedUserActive &&
+        isUserStatusCorrect !== false &&
+        isAgeOfUserCorrect === false ? (
         <span className="text-xl">
           {`К сожалению данное мероприятие доступно для возрастной категории ${
             loggedUserActive?.gender === 'male'
@@ -315,10 +314,9 @@ const EventView = (props) => {
               : `женщин от ${subEventSum.minWomansAge} до ${subEventSum.maxWomansAge} лет`
           }`}
         </span>
-      ) :
-      canSee === false &&
-      isUserStatusCorrect !== false &&
-      isAgeOfUserCorrect !== false ? (
+      ) : canSee === false &&
+        isUserStatusCorrect !== false &&
+        isAgeOfUserCorrect !== false ? (
         <span className="text-xl">
           Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
           обратитесь к администратору
@@ -382,3 +380,4 @@ const eventViewFunc = (eventId) => {
 }
 
 export default eventViewFunc
+

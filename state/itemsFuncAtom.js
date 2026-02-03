@@ -14,6 +14,8 @@ import eventEditSelector from './selectors/eventEditSelector'
 import eventDeleteSelector from './selectors/eventDeleteSelector'
 import directionEditSelector from './selectors/directionEditSelector'
 import directionDeleteSelector from './selectors/directionDeleteSelector'
+import productEditSelector from './selectors/productEditSelector'
+import productDeleteSelector from './selectors/productDeleteSelector'
 import additionalBlockEditSelector from './selectors/additionalBlockEditSelector'
 import additionalBlockDeleteSelector from './selectors/additionalBlockDeleteSelector'
 import userDeleteSelector from './selectors/userDeleteSelector'
@@ -71,16 +73,30 @@ const messages = {
   },
   direction: {
     update: {
-      success: 'Направление обновлено',
-      error: 'Не удалось обновить направление',
+      success: 'Пространство обновлено',
+      error: 'Не удалось обновить Пространство',
     },
     add: {
-      success: 'Направление создано',
-      error: 'Не удалось создать направление',
+      success: 'Пространство создано',
+      error: 'Не удалось создать Пространство',
     },
     delete: {
-      success: 'Направление удалено',
-      error: 'Не удалось удалить направление',
+      success: 'Пространство удалено',
+      error: 'Не удалось удалить Пространство',
+    },
+  },
+  product: {
+    update: {
+      success: 'Товар обновлен',
+      error: 'Не удалось обновить товар',
+    },
+    add: {
+      success: 'Товар создан',
+      error: 'Не удалось создать товар',
+    },
+    delete: {
+      success: 'Товар удален',
+      error: 'Не удалось удалить товар',
     },
   },
   additionalBlock: {
@@ -229,6 +245,7 @@ const array = [
   'event',
   'eventsUser',
   'direction',
+  'product',
   'additionalBlock',
   'user',
   'review',
@@ -266,6 +283,8 @@ const itemsFuncGenerator = (get, set) => {
     deleteEvent: setFunc(eventDeleteSelector),
     setDirection: setFunc(directionEditSelector),
     deleteDirection: setFunc(directionDeleteSelector),
+    setProduct: setFunc(productEditSelector),
+    deleteProduct: setFunc(productDeleteSelector),
     setAdditionalBlock: setFunc(additionalBlockEditSelector),
     deleteAdditionalBlock: setFunc(additionalBlockDeleteSelector),
     setUser: setFunc(userEditSelector),
@@ -856,3 +875,4 @@ const itemsFuncGenerator = (get, set) => {
 const itemsFuncAtom = atom((get) => itemsFuncGenerator(get, store.set))
 
 export default itemsFuncAtom
+

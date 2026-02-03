@@ -28,6 +28,7 @@ import questionnairesAtom from '@state/atoms/questionnairesAtom'
 import questionnairesUsersAtom from '@state/atoms/questionnairesUsersAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
+import productsAtom from '@state/atoms/productsAtom'
 import modeAtom from '@state/atoms/modeAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationAtom from '@state/atoms/locationAtom'
@@ -116,6 +117,7 @@ const StateLoader = (props) => {
   const setQuestionnairesState = useSetAtom(questionnairesAtom)
   const setQuestionnairesUsersState = useSetAtom(questionnairesUsersAtom)
   const setServicesState = useSetAtom(servicesAtom)
+  const setProductsState = useSetAtom(productsAtom)
   // const setServicesUsersState = useSetAtom(servicesUsersAtom)
   const setServerSettingsState = useSetAtom(serverSettingsAtom)
 
@@ -223,6 +225,7 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
+    setProductsState(props.products)
     setAchievementsState(props.achievements ?? [])
     setAchievementsUsersState(props.achievementsUsers ?? [])
     // setServicesUsersState(props.servicesUsers)

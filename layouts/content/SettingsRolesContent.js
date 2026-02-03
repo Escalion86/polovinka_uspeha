@@ -414,6 +414,11 @@ const SettingsRolesContent = (props) => {
             <RoleItem label="Мероприятия" item="statistics" subItem="events" />
             <RoleItem label="Пользователи" item="statistics" subItem="users" />
             <RoleItem label="Финансы" item="statistics" subItem="finances" />
+            <RoleItem
+              label="Пространства"
+              item="statistics"
+              subItem="directionsView"
+            />
             <SubTitle name="Настройки сайта" />
             <RoleItem
               label="Настройки сервиса подтверждения номера"
@@ -483,7 +488,7 @@ const SettingsRolesContent = (props) => {
             />
             <SubTitle name="Главная страница сайта" />
             <RoleItem
-              label="Редактирование направлений"
+              label="Редактирование Пространств"
               item="generalPage"
               subItem="directions"
             />
@@ -569,3 +574,4 @@ const SettingsRolesContent = (props) => {
 }
 
 export default SettingsRolesContent
+

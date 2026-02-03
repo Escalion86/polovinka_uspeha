@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Button from '@components/Button'
 import ComboBox from '@components/ComboBox'
@@ -813,7 +813,7 @@ const newsletterFunc = (
               if (text2) {
                 this.quill.insertText(range.index, '}', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
@@ -825,14 +825,14 @@ const newsletterFunc = (
                 })
                 this.quill.insertText(range.index, '{', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
               }
               this.quill.insertText(range.index, '}', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -845,19 +845,19 @@ const newsletterFunc = (
                 })
               this.quill.insertText(range.index, '}{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, 'клуб', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, '{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -878,7 +878,7 @@ const newsletterFunc = (
               if (text2) {
                 this.quill.insertText(range.index, '}', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
@@ -890,14 +890,14 @@ const newsletterFunc = (
                 })
                 this.quill.insertText(range.index, '{', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
               }
               this.quill.insertText(range.index, '}', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -910,19 +910,19 @@ const newsletterFunc = (
                 })
               this.quill.insertText(range.index, '}{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, 'муж', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, '{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -939,7 +939,7 @@ const newsletterFunc = (
               if (text2) {
                 this.quill.insertText(range.index, '}', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
@@ -951,14 +951,14 @@ const newsletterFunc = (
                 })
                 this.quill.insertText(range.index, '{', {
                   color: 'white',
-                  background: '#7a5151',
+                  background: 'var(--color-general)',
                   italic: false,
                   bold: false,
                 })
               }
               this.quill.insertText(range.index, '}', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -971,19 +971,19 @@ const newsletterFunc = (
                 })
               this.quill.insertText(range.index, '}{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, 'пара', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, '{', {
                 color: 'white',
-                background: '#7a5151',
+                background: 'var(--color-general)',
                 italic: false,
                 bold: false,
               })
@@ -1567,3 +1567,4 @@ const newsletterFunc = (
 }
 
 export default newsletterFunc
+

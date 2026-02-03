@@ -1,8 +1,21 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
+import {
+  ADDITIONAL_BLOCK_TILE_COLORS,
+  LOCATIONS_KEYS_VISIBLE,
+} from '@helpers/constants'
+import {
+  fetchingAdditionalBlocks,
+  fetchingDirections,
+  fetchingEvents,
+  fetchingEventsUsers,
+  fetchingReviews,
+} from '@helpers/fetchers'
+import subEventsSummator from '@helpers/subEventsSummator'
+import DOMPurify from 'isomorphic-dompurify'
 
 const heroImages = [
   '/img/other/0eoqjwuzhUU.webp',
@@ -15,57 +28,6 @@ const heroImages = [
   '/img/other/photo.webp',
 ]
 
-const spaces = [
-  {
-    id: 'pair',
-    title: 'LOVE - пространство',
-    description:
-      'Быстрые и индивидуальные свидания, форматы для пар и определение совместимости через физиогномику.',
-  },
-  {
-    id: 'new-space',
-    title: 'Новое пространство',
-    description:
-      'Каждый месяц — свежие идеи и новые форматы, чтобы пробовать что-то необычное и вдохновляющее.',
-  },
-  {
-    id: 'travel',
-    title: 'Туристическое пространство',
-    description:
-      'Походы, сплавы, поездки и туры для тех, кто любит движение и природу.',
-  },
-  {
-    id: 'games',
-    title: 'Игровое пространство',
-    description:
-      'Покер, вечера настольных игр и квесты для драйва и командного азарта.',
-  },
-  {
-    id: 'closed-club',
-    title: 'Закрытое пространство',
-    description:
-      'События для участников закрытого клуба с бонусами и дополнительными форматами.',
-  },
-  {
-    id: 'drive',
-    title: 'Драйвовое пространство',
-    description:
-      'Автоквесты и фотоквесты для тех, кто любит скорость и новые впечатления.',
-  },
-  {
-    id: 'growth',
-    title: 'Пространство саморазвития',
-    description:
-      'Трансформационные игры, тренинги, мастер-классы и консультации психолога.',
-  },
-  {
-    id: 'goods',
-    title: 'Пространство товаров',
-    description:
-      'Мерч нашего пространства: вещи и аксессуары, которые можно приобрести.',
-  },
-]
-
 const services = [
   {
     title: 'ЛИЧНОЕ СОПРОВОЖДЕНИЕ',
@@ -73,15 +35,15 @@ const services = [
       'Мягкая помощь в выборе формата, знакомстве и адаптации к новым людям.',
   },
   {
-    title: 'ОРГАНИЗАЦИЯ ВСТРЕЧ ПОД ЗАПРОС',
-    description:
-      'Собираем небольшие группы под интересы: активные, творческие, деловые.',
-  },
-  {
     title: 'ПОДАРОЧНЫЙ СЕРТИФИКАТ',
     description:
       'Тёплый подарок, который дарит живые эмоции и новые знакомства.',
     accent: true,
+  },
+  {
+    title: 'ОРГАНИЗАЦИЯ ВСТРЕЧ ПОД ЗАПРОС',
+    description:
+      'Собираем небольшие группы под интересы: активные, творческие, деловые.',
   },
 ]
 
@@ -117,7 +79,7 @@ const stats = [
     text: 'пар нашли друг друга, из них 2 пары поженились и родились 2 детей',
   },
   {
-    number: '200+',
+    number: '400+',
     text: 'людей нашли друзей и единомышленников',
   },
   {
@@ -149,67 +111,35 @@ const reasonsItems = [
   },
 ]
 
-const calendarDays = Array.from({ length: 28 }, (_, index) => index + 1)
-const activeDays = [2, 5, 9, 12, 14, 18, 21, 25]
+const MONTHS_FULL = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+]
 
-const eventsByDay = {
-  2: [
-    {
-      title: 'ВЕЧЕР НАСТОЛЬНЫХ ИГР',
-      time: '19:00',
-      place: 'Кафе на Набережной',
-    },
-  ],
-  5: [
-    {
-      title: 'ПРОГУЛКА И ФОТО-КВЕСТ',
-      time: '18:30',
-      place: 'Парк в центре',
-    },
-  ],
-  9: [
-    {
-      title: 'ЛЕГКИЙ РАЗГОВОРНЫЙ ВЕЧЕР',
-      time: '19:30',
-      place: 'Пространство «Половинка успеха»',
-    },
-  ],
-  12: [
-    {
-      title: 'МАСТЕР-КЛАСС ПО КУЛИНАРИИ',
-      time: '18:00',
-      place: 'Студия вкуса',
-    },
-  ],
-  14: [
-    {
-      title: 'ТЕМАТИЧЕСКИЙ ВЕЧЕР «СВИДАНИЕ С СОБОЙ»',
-      time: '20:00',
-      place: 'Уютный лофт',
-    },
-  ],
-  18: [
-    {
-      title: 'ВЫЕЗД НА ПРИРОДУ',
-      time: '10:00',
-      place: 'Загородный маршрут',
-    },
-  ],
-  21: [
-    {
-      title: 'ЖИВОЕ ОБЩЕНИЕ + МУЗЫКА',
-      time: '19:00',
-      place: 'Городская веранда',
-    },
-  ],
-  25: [
-    {
-      title: 'АВТОКВЕСТ ВЕЧЕРНИЙ',
-      time: '18:00',
-      place: 'Старт у театра',
-    },
-  ],
-}
+const MONTHS_FULL_UPPER = [
+  'ЯНВАРЬ',
+  'ФЕВРАЛЬ',
+  'МАРТ',
+  'АПРЕЛЬ',
+  'МАЙ',
+  'ИЮНЬ',
+  'ИЮЛЬ',
+  'АВГУСТ',
+  'СЕНТЯБРЬ',
+  'ОКТЯБРЬ',
+  'НОЯБРЬ',
+  'ДЕКАБРЬ',
+]
 
 const navItems = [
   { id: 'about', label: 'О нас' },
@@ -218,29 +148,268 @@ const navItems = [
   { id: 'contacts', label: 'Контакты' },
 ]
 
-const spacesNavItems = [
-  { id: 'spaces', label: 'Пространство мероприятий' },
-  { id: 'services', label: 'Пространство товаров и услуг' },
-  { id: 'closed', label: 'Закрытое пространство' },
-]
+const spacesNavItems = [{ id: 'spaces', label: 'Наши пространства' }]
 
 export default function Index2Page() {
-  const [activeSpace, setActiveSpace] = useState('all')
-  const [activeDay, setActiveDay] = useState(activeDays[0])
+  const [activeDay, setActiveDay] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [events, setEvents] = useState([])
+  const [additionalBlocks, setAdditionalBlocks] = useState([])
+  const [reviewsData, setReviewsData] = useState([])
+  const [directionsData, setDirectionsData] = useState([])
+  const [eventsUsers, setEventsUsers] = useState([])
+  const [reviewsPerView, setReviewsPerView] = useState(3)
+  const defaultLocation = LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk'
+  const reviewsContainerRef = useRef(null)
+  const [reviewsIndex, setReviewsIndex] = useState(0)
+  const reviewsGapPx = 16
+  const headerRef = useRef(null)
 
-  const filteredSpaces = useMemo(() => {
-    if (activeSpace === 'all') {
-      return spaces
+  useEffect(() => {
+    let isMounted = true
+
+    const loadData = async () => {
+      const [
+        eventsData,
+        additionalBlocksData,
+        reviewsResponse,
+        directions,
+        eventsUsersData,
+      ] = await Promise.all([
+        fetchingEvents(defaultLocation),
+        fetchingAdditionalBlocks(defaultLocation),
+        fetchingReviews(defaultLocation),
+        fetchingDirections(defaultLocation),
+        fetchingEventsUsers(defaultLocation),
+      ])
+
+      if (isMounted) {
+        setEvents(Array.isArray(eventsData) ? eventsData : [])
+        setAdditionalBlocks(
+          Array.isArray(additionalBlocksData) ? additionalBlocksData : []
+        )
+        setReviewsData(Array.isArray(reviewsResponse) ? reviewsResponse : [])
+        setDirectionsData(Array.isArray(directions) ? directions : [])
+        setEventsUsers(Array.isArray(eventsUsersData) ? eventsUsersData : [])
+      }
     }
-    return spaces.filter((space) => space.id === activeSpace)
-  }, [activeSpace])
 
-  const eventsForDay = eventsByDay[activeDay] || []
+    loadData()
+
+    return () => {
+      isMounted = false
+    }
+  }, [defaultLocation])
+
+  const spacesFromDirections = useMemo(() => {
+    return (directionsData || [])
+      .filter((direction) => direction?.showOnSite)
+      .sort((a, b) => (a.index < b.index ? -1 : 1))
+      .map((direction) => ({
+        id: direction._id,
+        title: direction.title,
+        description: direction.shortDescription || direction.description || '',
+      }))
+  }, [directionsData])
+
+  const index2AdditionalBlocks = useMemo(() => {
+    return (additionalBlocks || [])
+      .filter((block) => block?.showOnIndex2)
+      .sort((a, b) => (a.index < b.index ? -1 : 1))
+  }, [additionalBlocks])
+
+  const visibleReviews = useMemo(() => {
+    const normalized = (reviewsData || [])
+      .filter((review) => review?.showOnSite)
+      .map((review) => ({
+        name: review.author,
+        text: review.review,
+        photo: review.image,
+        id: review._id,
+      }))
+
+    return normalized.length > 0 ? normalized : reviews
+  }, [reviewsData])
+
+  useEffect(() => {
+    const calcPerView = () => {
+      const width = window.innerWidth
+      if (width < 768) return 1
+      if (width < 1024) return 2
+      return 3
+    }
+
+    const updatePerView = () => {
+      setReviewsPerView(calcPerView())
+    }
+
+    updatePerView()
+    window.addEventListener('resize', updatePerView)
+    return () => window.removeEventListener('resize', updatePerView)
+  }, [])
+
+  const scrollReviewsToIndex = (index) => {
+    const container = reviewsContainerRef.current
+    if (!container) return
+    const gapValue = reviewsGapPx
+    const cardWidth =
+      (container.clientWidth - gapValue * (reviewsPerView - 1)) / reviewsPerView
+    container.scrollTo({
+      left: (cardWidth + gapValue) * index,
+      behavior: 'smooth',
+    })
+  }
+
+  const handleReviewsNext = () => {
+    const total = visibleReviews.length
+    if (total === 0) return
+    const maxIndex = Math.max(0, total - reviewsPerView)
+    const nextIndex = reviewsIndex >= maxIndex ? 0 : reviewsIndex + 1
+    setReviewsIndex(nextIndex)
+    scrollReviewsToIndex(nextIndex)
+  }
+
+  const scrollToSection = (id) => {
+    const target = document.getElementById(id)
+    if (!target) return
+    const headerHeight = headerRef.current?.offsetHeight ?? 0
+    const offsetTop =
+      target.getBoundingClientRect().top + window.scrollY - headerHeight
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' })
+  }
+
+  const { calendarDays, activeDays, eventsByDay, monthLabel, monthName } =
+    useMemo(() => {
+      const now = new Date()
+      const participantsByEventId = (eventsUsers || []).reduce(
+        (acc, eventUser) => {
+          if (!eventUser?.eventId || eventUser?.status !== 'participant')
+            return acc
+          const current = acc.get(eventUser.eventId) ?? 0
+          acc.set(eventUser.eventId, current + 1)
+          return acc
+        },
+        new Map()
+      )
+
+      const getEventMaxParticipants = (event) => {
+        const hasSubEvents =
+          Array.isArray(event?.subEvents) && event.subEvents.length > 0
+        if (hasSubEvents) {
+          const summary = subEventsSummator(event.subEvents)
+          if (typeof summary?.maxParticipants === 'number')
+            return summary.maxParticipants
+          const maxMans =
+            typeof summary?.maxMans === 'number' ? summary.maxMans : 0
+          const maxWomans =
+            typeof summary?.maxWomans === 'number' ? summary.maxWomans : 0
+          if (maxMans + maxWomans > 0) return maxMans + maxWomans
+        }
+
+        if (typeof event?.maxParticipants === 'number')
+          return event.maxParticipants
+        const maxMans = typeof event?.maxMans === 'number' ? event.maxMans : 0
+        const maxWomans =
+          typeof event?.maxWomans === 'number' ? event.maxWomans : 0
+        if (maxMans + maxWomans > 0) return maxMans + maxWomans
+        return null
+      }
+
+      const normalizedEvents = (events || [])
+        .map((event) => {
+          const dateStart = event?.dateStart ? new Date(event.dateStart) : null
+          if (!dateStart || Number.isNaN(dateStart.getTime())) return null
+          if (event?.showOnSite === false) return null
+          if (event?.status === 'canceled') return null
+          const participantsCount = participantsByEventId.get(event._id) ?? 0
+          const maxParticipants = getEventMaxParticipants(event)
+          return {
+            ...event,
+            dateStart,
+            participantsCount,
+            maxParticipants,
+          }
+        })
+        .filter(Boolean)
+
+      const upcoming = normalizedEvents
+        .filter((event) => event.dateStart >= now)
+        .sort((a, b) => a.dateStart - b.dateStart)
+
+      const baseEvent = upcoming[0] ?? normalizedEvents[0]
+      const baseDate = baseEvent?.dateStart ?? now
+      const month = baseDate.getMonth()
+      const year = baseDate.getFullYear()
+
+      const monthEvents = normalizedEvents.filter(
+        (event) =>
+          event.dateStart.getMonth() === month &&
+          event.dateStart.getFullYear() === year
+      )
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate()
+      const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+      const eventsByDayMap = monthEvents.reduce((acc, event) => {
+        const day = event.dateStart.getDate()
+        const address = event.address || {}
+        const addressParts = [
+          address.town,
+          address.street,
+          address.house,
+        ].filter(Boolean)
+        const place =
+          addressParts.join(', ') || address.comment || 'Место уточняется'
+        const time = event.dateStart.toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+
+        if (!acc[day]) acc[day] = []
+        acc[day].push({
+          id: event._id,
+          title: event.title,
+          time,
+          place,
+          dateStart: event.dateStart,
+          participantsCount: event.participantsCount,
+          maxParticipants: event.maxParticipants,
+        })
+        return acc
+      }, {})
+      Object.values(eventsByDayMap).forEach((items) =>
+        items.sort((a, b) => a.dateStart - b.dateStart)
+      )
+      const activeDaysList = Object.keys(eventsByDayMap)
+        .map((day) => Number(day))
+        .sort((a, b) => a - b)
+
+      return {
+        calendarDays: daysArray,
+        activeDays: activeDaysList,
+        eventsByDay: eventsByDayMap,
+        monthLabel: `${MONTHS_FULL_UPPER[month]} ${year}`,
+        monthName: MONTHS_FULL[month],
+      }
+    }, [events, eventsUsers])
+
+  useEffect(() => {
+    if (activeDays.length === 0) {
+      setActiveDay(null)
+      return
+    }
+    if (!activeDays.includes(activeDay)) {
+      setActiveDay(activeDays[0])
+    }
+  }, [activeDays, activeDay])
+
+  const eventsForDay = activeDay ? eventsByDay[activeDay] || [] : []
 
   return (
     <div className="bg-[#f6f3f1] text-[#1d1b1f]">
-      <header className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur">
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur"
+      >
         <div className="relative flex items-center gap-6 px-[4vw] py-2">
           <div className="flex items-center gap-3">
             <img
@@ -275,29 +444,29 @@ export default function Index2Page() {
                 key={item.id}
                 href={`#${item.id}`}
                 className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500"
-                onClick={() => setMenuOpen(false)}
+                onClick={(event) => {
+                  event.preventDefault()
+                  setMenuOpen(false)
+                  scrollToSection(item.id)
+                }}
               >
                 {item.label}
               </a>
             ))}
-            <details className="relative lg:w-full">
-              <summary className="whitespace-nowrap flex cursor-pointer list-none items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white">
-                Наши пространства
-                <span className="text-[10px] leading-none">▾</span>
-              </summary>
-              <div className="static mt-2 grid min-w-0 gap-1 rounded-xl bg-white p-0 shadow-none lg:absolute lg:left-0 lg:top-[calc(100%+8px)] lg:min-w-[240px] lg:gap-1 lg:rounded-xl lg:bg-white lg:p-2 lg:shadow-2xl">
-                {spacesNavItems.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className="rounded-lg px-2.5 py-2 text-[12px] uppercase tracking-[0.06em] text-[#4b0f1c] transition hover:bg-[rgba(107,31,42,0.12)]"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            </details>
+            {spacesNavItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500"
+                onClick={(event) => {
+                  event.preventDefault()
+                  setMenuOpen(false)
+                  scrollToSection(item.id)
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
             <Link
               href="/login"
               className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
@@ -518,49 +687,39 @@ export default function Index2Page() {
           </div>
         </Section>
 
-        <Section id="spaces" title="Пространство мероприятий">
-          <div className="mb-5 text-[16px] text-[#3d2a2f]">
-            Выберите пространство, которое откликается именно вам, или откройте
-            все сразу.
-          </div>
-          <div className="flex flex-wrap gap-2 mb-6">
-            <FilterButton
-              active={activeSpace === 'all'}
-              onClick={() => setActiveSpace('all')}
-            >
-              Все пространства
-            </FilterButton>
-            {spaces.map((space) => (
-              <FilterButton
-                key={space.id}
-                active={activeSpace === space.id}
-                onClick={() => setActiveSpace(space.id)}
-              >
-                {space.title}
-              </FilterButton>
-            ))}
-          </div>
+        <Section id="spaces" title="Наши пространства">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredSpaces.map((space) => (
+            {spacesFromDirections.map((space) => (
               <SpaceCard key={space.id} space={space} />
             ))}
           </div>
         </Section>
 
-        <Section id="services" title="Пространство товаров и услуг">
+        <Section id="services" title="Пространство товаров">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.title} service={service} />
+            {services.map((service, index) => (
+              <ServiceCard
+                key={`${service.title ?? 'service'}-${index}`}
+                service={service}
+              />
             ))}
           </div>
         </Section>
+        {index2AdditionalBlocks.map((block) => (
+          <AdditionalBlockSection key={block._id} block={block} />
+        ))}
 
         <Section id="closed" title="Закрытое пространство">
-          <div className="rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed">
+          <div className="relative overflow-hidden rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed">
+            <img
+              src="/key.png"
+              alt=""
+              className="pointer-events-none absolute right-5 top-30 rotate-15 tablet:top-10 h-[calc(100%-8rem)] tablet:right-8 tablet:h-[calc(100%-5rem)] w-auto object-contain opacity-40"
+            />
             <h3 className="text-[22px] text-[#6b1f2a]">
               ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ
             </h3>
-            <p className="mt-3">
+            <p className="pr-10 mt-3 tablet:pr-13">
               Это формат с камерными встречами, где мы собираем небольшие группы
               по ценностям. Здесь больше глубины, доверия и долгих разговоров.
               Доступ открывается после знакомства с командой и участия в
@@ -579,8 +738,8 @@ export default function Index2Page() {
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
               <div className="mb-4 flex items-center justify-between font-semibold text-[#6b1f2a]">
-                <span>ФЕВРАЛЬ 2026</span>
-                <span className="text-[12px] text-[#566]">
+                <span>{monthLabel}</span>
+                <span className="text-[14px] text-[#1f6e9c]">
                   Активные даты выделены
                 </span>
               </div>
@@ -609,22 +768,33 @@ export default function Index2Page() {
             </div>
 
             <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
-              <h3 className="text-[#6b1f2a]">События на {activeDay} февраля</h3>
+              <h3 className="font-bold text-lg text-[#6b1f2a]">
+                {activeDay
+                  ? `События на ${activeDay} ${monthName}`
+                  : 'Выберите активную дату'}
+              </h3>
               {eventsForDay.length === 0 ? (
-                <p className="mt-3 text-[#666]">
+                <p className="mt-2 text-[#666]">
                   На выбранную дату нет мероприятий. Выберите активную дату.
                 </p>
               ) : (
-                <div className="grid gap-3 mt-4">
+                <div className="grid gap-3 mt-2">
                   {eventsForDay.map((event) => (
                     <div
-                      key={event.title}
-                      className="rounded-2xl bg-[rgba(79,176,232,0.12)] p-4"
+                      key={event.id ?? event.title}
+                      className="rounded-2xl border border-[rgba(107,31,42,0.2)] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(141,207,242,0.18))] p-4 shadow-[0_12px_26px_rgba(0,0,0,0.08)]"
                     >
-                      <div className="font-semibold">{event.title}</div>
-                      <div className="mt-1 flex justify-between text-[#2f586f]">
+                      <div className="font-semibold text-[#4b0f1c]">
+                        {event.title}
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-[#2f586f]">
                         <span>{event.time}</span>
-                        <span>{event.place}</span>
+                        <span className="text-right">{event.place}</span>
+                      </div>
+                      <div className="mt-3 inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
+                        {`${event.participantsCount ?? 0} / ${
+                          event.maxParticipants ?? '∞'
+                        }`}
                       </div>
                     </div>
                   ))}
@@ -635,25 +805,45 @@ export default function Index2Page() {
         </Section>
 
         <Section id="reviews" title="Наши отзывы">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {reviews.map((review) => (
-              <div
-                key={review.name}
-                className="flex gap-3 rounded-2xl bg-white p-5 shadow-[0_14px_28px_rgba(0,0,0,0.08)]"
-              >
-                <img
-                  src={review.photo}
-                  alt={review.name}
-                  className="h-16 w-16 rounded-full border-2 border-[#4fb0e8] object-cover"
-                />
-                <div>
-                  <p className="leading-relaxed">{review.text}</p>
-                  <span className="mt-2 block font-semibold text-[#4b0f1c]">
-                    {review.name}
-                  </span>
+          <div className="relative">
+            <div
+              ref={reviewsContainerRef}
+              className="flex gap-4 overflow-hidden scroll-smooth"
+            >
+              {visibleReviews.map((review) => (
+                <div
+                  key={review.id ?? review.name}
+                  className="shrink-0 rounded-2xl bg-white p-5 shadow-[0_14px_28px_rgba(0,0,0,0.08)]"
+                  style={{
+                    width: `calc((100% - ${reviewsGapPx * (reviewsPerView - 1)}px) / ${reviewsPerView})`,
+                  }}
+                >
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-x-3">
+                      <img
+                        src={review.photo || '/img/users/null.jpg'}
+                        alt={review.name}
+                        className="h-16 w-16 rounded-full border-2 border-[#4fb0e8] object-cover"
+                      />
+                      <span className="block font-semibold text-[#4b0f1c]">
+                        {review.name}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="leading-relaxed">{review.text}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <button
+              type="button"
+              aria-label="Следующий отзыв"
+              onClick={handleReviewsNext}
+              className="absolute right-0 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_10px_20px_rgba(0,0,0,0.15)]"
+            >
+              →
+            </button>
           </div>
         </Section>
 
@@ -763,16 +953,51 @@ SpaceCard.propTypes = {
 }
 
 function ServiceCard({ service }) {
+  const tileStyle = service?.color
+    ? ADDITIONAL_BLOCK_TILE_COLORS.find(
+        (option) => option.value === service.color
+      )
+    : null
+  const isCustomColor =
+    typeof service?.color === 'string' &&
+    service.color.startsWith('#') &&
+    !tileStyle
+
   return (
     <div
       className={`rounded-2xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)] ${
-        service.accent
-          ? 'bg-[linear-gradient(140deg,#6b1f2a,#8e2f3a)] text-white'
-          : 'bg-white'
+        tileStyle
+          ? tileStyle.bgClassName
+          : service.accent
+            ? 'bg-[linear-gradient(140deg,#6b1f2a,#8e2f3a)] text-white'
+            : 'bg-white'
       }`}
+      style={isCustomColor ? { backgroundColor: service.color } : undefined}
     >
-      <h3 className="text-[18px]">{service.title}</h3>
-      <p className="mt-2">{service.description}</p>
+      <div className="flex items-center gap-x-2">
+        {service.image ? (
+          <img
+            src={service.image}
+            alt=""
+            className="object-cover w-12 h-12 rounded-full"
+          />
+        ) : null}
+        <h3
+          className={`flex-1 text-center text-[18px] ${
+            tileStyle?.titleClassName ?? (isCustomColor ? 'text-white' : '')
+          }`}
+        >
+          {service.title}
+        </h3>
+      </div>
+      <p
+        className={`mt-2 ${
+          tileStyle?.descriptionClassName ??
+          (isCustomColor ? 'text-white/90' : '')
+        }`}
+      >
+        {service.description}
+      </p>
     </div>
   )
 }
@@ -782,27 +1007,80 @@ ServiceCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     accent: PropTypes.bool,
+    image: PropTypes.string,
+    color: PropTypes.string,
   }).isRequired,
 }
 
-function FilterButton({ active, onClick, children }) {
+function AdditionalBlockSection({ block }) {
+  const tiles = Array.isArray(block.tiles) ? block.tiles : []
+  const hasDescription = Boolean(block.description)
+  const blockStyle =
+    block.blockBgMode === 'gradient'
+      ? {
+          background: `linear-gradient(135deg, ${
+            block.blockBgColor1 || '#ffffff'
+          }, ${block.blockBgColor2 || '#f6f3f1'})`,
+        }
+      : {
+          backgroundColor: block.blockBgColor1 || '#ffffff',
+        }
+
   return (
-    <button
-      type="button"
-      className={`rounded-full border px-3.5 py-2 text-[12px] uppercase tracking-[0.06em] transition ${
-        active
-          ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
-          : 'border-[rgba(107,31,42,0.25)] bg-white text-[#4b0f1c]'
-      }`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+    <section className="px-[6vw] py-[70px] even:bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))]">
+      <div className="mb-8">
+        <h2 className="font-lora text-[clamp(26px,3vw,38px)] text-[#6b1f2a]">
+          {block.title}
+        </h2>
+      </div>
+      <div
+        className="rounded-3xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+        style={blockStyle}
+      >
+        {hasDescription ? (
+          <div
+            className="rounded-2xl bg-white/70 p-5 shadow-[0_12px_24px_rgba(0,0,0,0.08)]"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(block.description),
+            }}
+          />
+        ) : null}
+        {tiles.length > 0 ? (
+          <div
+            className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
+              hasDescription ? 'mt-6' : ''
+            }`}
+          >
+            {tiles.map((tile, index) => (
+              <ServiceCard
+                key={`${tile.title ?? 'tile'}-${index}`}
+                service={{
+                  title: tile.title,
+                  description: tile.description,
+                  image: tile.image,
+                  color: tile.color,
+                }}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </section>
   )
 }
 
-FilterButton.propTypes = {
-  active: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
+AdditionalBlockSection.propTypes = {
+  block: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    tiles: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        description: PropTypes.string,
+        image: PropTypes.string,
+        color: PropTypes.string,
+      })
+    ),
+  }).isRequired,
 }

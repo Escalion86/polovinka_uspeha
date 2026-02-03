@@ -3,7 +3,7 @@
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
 
-import productsAtom from '@state/atoms/servicesAtom'
+import productsAtom from '@state/atoms/productsAtom'
 
 const productSelector = atomFamily((id) =>
   atom((get) => {

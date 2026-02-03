@@ -2,8 +2,8 @@ const directionsSchema = {
   title: {
     type: String,
     // required: [true, 'Введите название курса. Давай включи фантазию!'],
-    // maxlength: [100, 'Название направления не может превышать 100 символов'],
-    default: 'Новое направление',
+    // maxlength: [100, 'Название Пространства не может превышать 100 символов'],
+    default: 'Новое Пространство',
   },
   shortDescription: {
     type: String,
@@ -15,7 +15,7 @@ const directionsSchema = {
     //   2000,
     //   'Описание не может превышать 2000 символов. Краткость - сестра таланта!',
     // ],
-    default: 'Описание направления',
+    default: 'Описание Пространства',
   },
   // image: {
   //   type: String,
@@ -39,3 +39,4 @@ const directionsSchema = {
 }
 
 export default directionsSchema
+

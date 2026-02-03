@@ -18,7 +18,7 @@ const IconCheckBox = ({
   disabled,
   checkedIcon = faCheck,
   uncheckedIcon,
-  checkedIconColor = '#7a5151',
+  checkedIconColor = 'var(--color-general)',
   uncheckedIconColor = '#9ca3af',
 }) => {
   if (readOnly && !checked) return null
@@ -107,3 +107,4 @@ const IconCheckBox = ({
 }
 
 export default IconCheckBox
+

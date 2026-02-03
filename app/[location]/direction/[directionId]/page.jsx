@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: 'Направление - ЦОЗ «Половинка успеха»',
+  title: 'Пространство - ЦОЗ «Половинка успеха»',
 }
 
 export default async function LocationDirectionPage({ params }) {
@@ -42,3 +42,4 @@ export default async function LocationDirectionPage({ params }) {
 
   return <LocationDirectionClient {...props} directionId={directionId} />
 }
+

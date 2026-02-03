@@ -73,7 +73,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
             icon={faHeart}
             color={
               coincidenceCount === null
-                ? '#7a5151'
+                ? 'var(--color-general)'
                 : coincidenceCount > 0
                   ? '#EC4899'
                   : '#9ca3af'
@@ -255,3 +255,4 @@ const LikesContent = () => {
 }
 
 export default LikesContent
+

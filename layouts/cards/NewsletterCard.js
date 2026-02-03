@@ -91,7 +91,7 @@ const NewsletterCard = ({ newsletter, style }) => {
       onClick={() => modalsFunc.newsletter.view(newsletter._id)}
       // hidden={hidden}
       style={style}
-      className="flex items-center px-1"
+      className="flex items-center px-1 bg-white"
       flex={false}
     >
       <div className="flex-1 flex flex-col gap-y-0.5">

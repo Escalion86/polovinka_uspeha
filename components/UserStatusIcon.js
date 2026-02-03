@@ -10,19 +10,19 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
   var numSize
   switch (size) {
     case 'xs':
-      numSize = 3
-      break
-    case 's':
       numSize = 4
       break
-    case 'm':
+    case 's':
       numSize = 5
       break
-    case 'l':
+    case 'm':
       numSize = 6
       break
+    case 'l':
+      numSize = 7
+      break
     default:
-      numSize = 6
+      numSize = 8
   }
 
   switch (status) {
@@ -31,13 +31,19 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
         <Tooltip title={'Новичок' + (slashed ? ' (запрещено)' : '')}>
           <div ref={ref} className="relative">
             <div
-              className={`grayscale brightness-150 contrast-75 flex items-center justify-center min-w-${
-                numSize + 1
-              } w-${numSize + 1} h-${numSize + 1}`}
+              className={cn(
+                `grayscale brightness-150 contrast-75`,
+                `flex items-center justify-center min-w-${
+                  numSize + 1
+                } w-${numSize + 1} h-${numSize + 1}`,
+                'rotate-15'
+              )}
             >
               <Image
-                alt="member"
-                src="/img/svg_icons/medal.svg"
+                alt="novice"
+                // src="/img/svg_icons/medal.svg"
+                // src="/img/key_gray.png"
+                src="/img/key_gold2.png"
                 width={numSize * 4}
                 height={numSize * 4}
                 style={{ width: 'auto', height: 'auto' }}
@@ -56,13 +62,17 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
         <Tooltip title={'Участник клуба' + (slashed ? ' (запрещено)' : '')}>
           <div ref={ref} className="relative">
             <div
-              className={`flex items-center justify-center min-w-${
-                numSize + 1
-              } w-${numSize + 1} h-${numSize + 1}`}
+              className={cn(
+                `flex items-center justify-center min-w-${
+                  numSize + 1
+                } w-${numSize + 1} h-${numSize + 1}`,
+                'rotate-15'
+              )}
             >
               <Image
                 alt="member"
-                src="/img/svg_icons/medal.svg"
+                // src="/img/svg_icons/medal.svg"
+                src="/img/key_gold2.png"
                 width={numSize * 4}
                 height={numSize * 4}
                 style={{ width: 'auto', height: 'auto' }}

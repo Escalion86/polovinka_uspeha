@@ -10,7 +10,7 @@ const GridX = ({ slices, linesOnX }) => {
           y1="300"
           x2={slices[line.index].x}
           y2="0"
-          stroke="#7a5151"
+          stroke="var(--color-general)"
         />
       )}
       {!!line?.text && (line.index === 0 || !!line.index) && (
@@ -22,7 +22,7 @@ const GridX = ({ slices, linesOnX }) => {
           dominantBaseline="central"
           fontSize="smaller"
           // font-weight="lighter"
-          fill="#7a5151"
+          fill="var(--color-general)"
           // style={{
           //   fontSize: '36px',
           // }}
@@ -236,3 +236,4 @@ const StreamChart = ({
 }
 
 export default StreamChart
+

@@ -252,10 +252,11 @@ const directionFunc = (directionId, clone = false) => {
   return {
     title: `${
       directionId && !clone ? 'Редактирование' : 'Создание'
-    } направления`,
+    } Пространства`,
     confirmButtonName: directionId && !clone ? 'Применить' : 'Создать',
     Children: DirectionModal,
   }
 }
 
 export default directionFunc
+

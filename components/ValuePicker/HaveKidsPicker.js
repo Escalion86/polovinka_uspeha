@@ -10,8 +10,8 @@ const HaveKidsPicker = ({
     value={haveKids}
     valuesArray={[
       { value: false, name: 'Нет', color: 'blue-400' },
-      { value: true, name: 'Есть', color: 'green-400' },
-      { value: null, name: 'Не указано', color: 'red-400' },
+      { value: true, name: 'Есть', color: 'blue-400' },
+      { value: null, name: 'Не указано', color: 'general' },
     ]}
     label="Есть дети"
     onChange={onChange}

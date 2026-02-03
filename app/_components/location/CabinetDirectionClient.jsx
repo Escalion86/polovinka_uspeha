@@ -15,14 +15,13 @@ import directionSelector from '@state/selectors/directionSelector'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import useRouter from '@utils/useRouter'
 import dynamic from 'next/dynamic'
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CountDown from '@blocks/components/CountDown'
 
-const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
 const ServiceCard = dynamic(() => import('@layouts/cards/ServiceCard'))
 
 const sortByIndexAndTitle = (a, b) => {
@@ -46,16 +45,13 @@ function CabinetDirectionClient(props) {
   const [locationState, setLocationState] = useAtom(locationAtom)
   const isPWA = useAtomValue(isPWAAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveRoleName = useAtomValue(loggedUserActiveRoleNameAtom)
   const hideFab = loggedUserActiveRole?.hideFab
 
   const direction = useAtomValue(directionSelector(directionId))
   const services = useAtomValue(filteredServicesSelector)
   const events = useAtomValue(filteredEventsSelector)
 
-  const canSeeDirectionsMenu =
-    loggedUserActiveRole?.dev ||
-    ['dev', 'supervisor'].includes(loggedUserActiveRoleName)
+  const canSeeDirectionsMenu = loggedUserActiveRole?.statistics?.directionsView
 
   const directionServices = useMemo(
     () =>
@@ -98,10 +94,10 @@ function CabinetDirectionClient(props) {
   if (!locationState) return null
   if (!canSeeDirectionsMenu) return null
 
-  const activePage = `/${location}/cabinet/direction/${directionId}`
+  const activePage = router.asPath.split('?')[0]
   const title = direction?._id
-    ? `Направление: ${direction.title}`
-    : 'Направление'
+    ? `Пространство | ${direction.title}`
+    : 'Пространство'
 
   return (
     <StateLoader {...props} isCabinet>
@@ -113,13 +109,13 @@ function CabinetDirectionClient(props) {
             {!direction?._id && (
               <BlockContainer small>
                 <P className="flex justify-center w-full">
-                  Направление не найдено
+                  Пространство не найдено
                 </P>
               </BlockContainer>
             )}
 
             {directionServices.length > 0 && (
-              <BlockContainer id="direction-services" title="Услуги направления">
+              <BlockContainer id="direction-services" title="Услуги Пространства">
                 <div className="flex flex-col w-full gap-4">
                   {directionServices.map((service) => (
                     <ServiceCard key={service._id} serviceId={service._id} />
@@ -128,11 +124,11 @@ function CabinetDirectionClient(props) {
               </BlockContainer>
             )}
 
-            <BlockContainer id="direction-events" title="Мероприятия направления">
+            <BlockContainer id="direction-events" title="Мероприятия Пространства">
               {directionEvents.length > 0 ? (
                 <div className="flex flex-col items-center w-full gap-4">
                   {directionEvents.map((event) => (
-                    <EventCardLight key={event._id} eventId={event._id} />
+                    <EventCard key={event._id} eventId={event._id} />
                   ))}
                 </div>
               ) : (
@@ -152,3 +148,4 @@ function CabinetDirectionClient(props) {
 }
 
 export default CabinetDirectionClient
+

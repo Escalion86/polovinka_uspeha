@@ -15,12 +15,12 @@ const RelationshipSelector = ({
         {
           value: true,
           name: 'Есть пара',
-          color: 'green-400',
+          color: 'blue-400',
         },
         {
           value: false,
           name: 'Нет пары',
-          color: 'blue-400',
+          color: 'general',
         },
       ]}
       label="Статус отношений"

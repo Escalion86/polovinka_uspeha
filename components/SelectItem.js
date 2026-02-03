@@ -505,7 +505,7 @@ export const SelectEvent = ({
 //   return (
 //     <SelectItemContainer
 //       required={required}
-//       label="Направление"
+//       label="Пространство"
 //       onClickClearButton={
 //         selectedId && clearButton
 //           ? onDelete
@@ -607,3 +607,4 @@ export const SelectPayment = ({
     </SelectItemContainer>
   )
 }
+

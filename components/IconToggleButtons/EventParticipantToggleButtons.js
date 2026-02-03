@@ -23,8 +23,17 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
           })
         }
         variant={value.participant ? 'contained' : 'outlined'}
-        color="green"
-        className={value.participant ? '' : 'text-green-400'}
+        color="inherit"
+        sx={{
+          backgroundColor: value.participant ? '#6b1f2a' : 'transparent',
+          color: value.participant ? '#ffffff' : '#6b1f2a',
+          borderColor: '#6b1f2a',
+          '&:hover': {
+            backgroundColor: value.participant ? '#5b1722' : 'transparent',
+            borderColor: '#5b1722',
+            color: value.participant ? '#ffffff' : '#5b1722',
+          },
+        }}
       >
         Записан
       </Button>
@@ -39,8 +48,17 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
           })
         }
         variant={value.notParticipant ? 'contained' : 'outlined'}
-        color="red"
-        className={value.notParticipant ? '' : 'text-red-400'}
+        color="inherit"
+        sx={{
+          backgroundColor: value.notParticipant ? '#8dcff2' : 'transparent',
+          color: '#1d3950',
+          borderColor: '#8dcff2',
+          '&:hover': {
+            backgroundColor: value.notParticipant ? '#7fc3ea' : 'transparent',
+            borderColor: '#7fc3ea',
+            color: '#1d3950',
+          },
+        }}
       >
         Не записан
       </Button>

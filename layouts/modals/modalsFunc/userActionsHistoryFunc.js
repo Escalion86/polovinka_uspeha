@@ -32,7 +32,7 @@ const schemasNames = {
   payments: 'Транзакция',
   reviews: 'Отзыв',
   additionalblocks: 'Дополнительный блок',
-  directions: 'Направление',
+  directions: 'Пространство',
   eventsusers: 'Запись на мероприятие',
 }
 
@@ -357,3 +357,4 @@ const userActionsHistoryFunc = (userId) => {
 }
 
 export default userActionsHistoryFunc
+

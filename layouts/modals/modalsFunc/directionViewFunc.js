@@ -17,7 +17,7 @@ const directionViewFunc = (directionId) => {
     if (!directionId || !direction)
       return (
         <div className="flex justify-center w-full text-lg ">
-          ОШИБКА! Направление не найдено!
+          ОШИБКА! Пространство не найдено!
         </div>
       )
 
@@ -42,7 +42,7 @@ const directionViewFunc = (directionId) => {
   }
 
   return {
-    title: `Направление`,
+    title: `Пространство`,
     confirmButtonName: 'Закрыть',
     showDecline: false,
     onConfirm: true,
@@ -59,3 +59,4 @@ const directionViewFunc = (directionId) => {
 }
 
 export default directionViewFunc
+

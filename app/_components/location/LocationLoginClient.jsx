@@ -261,7 +261,7 @@ const Input = ({
   )
 }
 
-const generalColor = '#7a5151'
+const generalColor = 'var(--color-general)'
 
 const secondsToWait = 60
 
@@ -1027,18 +1027,29 @@ const LoginPage = (props) => {
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
 
   return (
-    <div className="box-border w-full h-screen overflow-y-auto">
-      <SvgWave
-        color="#ffd6d6"
+    <div
+      className="box-border w-full h-screen overflow-y-auto"
+      style={{
+        backgroundImage: 'linear-gradient(140deg, #4fb0e855, #6f1d2b55)',
+      }}
+    >
+      {/* <SvgWave
+        color="#4b0f1cee"
         className="fixed bottom-0 left-0 z-10 h-[30%] laptop:h-full laptop:block"
       />
       <SvgWave
-        color="#ffd6d6"
+        color="#4b0f1cee"
         className="fixed top-0 right-0 z-10 laptop:block -scale-100 h-[40%]"
-      />
+      /> */}
       <div className="relative z-20 flex w-full h-full gap-2 px-6 bg-transparent laptop:px-10">
         <div className="items-center justify-center flex-1 hidden pl-4 text-center laptop:flex">
-          <SvgLove color={generalColor} className="z-20 w-124" />
+          {/* <SvgLove color={generalColor} className="z-20 w-124" /> */}
+          <img
+            src={'/login.png'}
+            alt="login_pic"
+            // width={200}
+            className="z-20 w-180 grayscale-40"
+          />
         </div>
         <div className="flex items-center justify-center flex-1 text-center">
           <div className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
@@ -1536,7 +1547,7 @@ const LoginPage = (props) => {
                     setType()
                     setRegistrationAgreementsConfirmed(false)
                   }}
-                  className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
+                  className="block text-base text-right duration-300 cursor-pointer hover:text-general"
                 >
                   {isAuthorization
                     ? 'Я не зарегистрирован'
@@ -1902,7 +1913,7 @@ const LoginPage = (props) => {
                       относящимся к сфере деятельности Центра;
                     </li>
                     <li>
-                      • направление в адрес физических лиц информации, в том
+                      • Пространство в адрес физических лиц информации, в том
                       числе рекламной, о мероприятиях/товарах/услугах/работах
                       Центра;
                     </li>
@@ -1935,7 +1946,7 @@ const LoginPage = (props) => {
                 <li>
                   6.1. настоящее Согласие на обработку моих персональных данных
                   является бессрочным и может быть отозвано посредством
-                  направления мною уведомления на электронный адрес Центра
+                  Пространства мною уведомления на электронный адрес Центра
                   polovinka.krsk24@gmail.com.
                 </li>
                 <li>
@@ -1996,3 +2007,5 @@ const Login = (props) => (
 )
 
 export default Login
+
+

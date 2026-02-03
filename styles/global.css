@@ -13,6 +13,11 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  :root {
+    --color-general-rgb: 107 31 42;
+    --color-general: rgb(var(--color-general-rgb));
+  }
+
   *,
   ::after,
   ::before,
@@ -137,7 +142,7 @@
 }
 
 blockquote {
-  border-left: 4px solid #7a5151 !important;
+  border-left: 4px solid var(--color-general) !important;
   margin-bottom: 5px;
   margin-top: 5px;
   padding-left: 16px;
@@ -343,7 +348,7 @@ li[data-list='bullet'] span.ql-ui:before {
 .ql a,
 .ql-snow a {
   text-decoration: underline !important;
-  color: #7a5151;
+  color: var(--color-general);
   transition-duration: 300ms;
 }
 
@@ -415,7 +420,7 @@ li[data-list='bullet'] span.ql-ui:before {
 }
 
 .MuiSlider-thumb {
-  color: #7a5151;
+  color: var(--color-general);
 }
 
 .MuiSlider-rail {
@@ -423,5 +428,6 @@ li[data-list='bullet'] span.ql-ui:before {
 }
 
 .MuiSlider-track {
-  color: #7a5151;
+  color: var(--color-general);
 }
+

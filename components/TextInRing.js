@@ -17,7 +17,7 @@ const TextInRing = ({ text, fullHeight = true }) => {
         <Image
           className="w-full h-full"
           alt="text_ring"
-          src="/img/ring150px.png"
+          src="/img/arc.png"
           // layout="responsive"
           // height="80%"
           // width="80%"

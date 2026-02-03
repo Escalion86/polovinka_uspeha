@@ -44,6 +44,13 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
           }}
         />
       </div>
+      <div className="px-2 py-2">
+        <img
+          src={review.image || '/img/users/null.jpg'}
+          alt={review.author}
+          className="max-h-40 w-full rounded-xl object-cover"
+        />
+      </div>
       <div className="px-2 py-1">{review.review}</div>
     </CardWrapper>
   )

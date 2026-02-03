@@ -124,8 +124,12 @@ const Status = ({
     <Button
       thin={thin}
       stopPropagation
+      rounded={false}
       classBgColor="bg-pink-500"
-      className={cn('border w-auto self-center', className)}
+      className={cn(
+        'border w-auto self-center rounded-full px-3 mr-0.5',
+        className
+      )}
       name={
         event.likesProcessActive
           ? eventUser?.likes === null
@@ -179,6 +183,7 @@ const Status = ({
     <Button
       thin={thin}
       stopPropagation
+      rounded={false}
       onClick={() => {
         if (!loggedUserActive || (canSignIn && !alreadySignIn)) {
           modalsFunc.event.signUp(event)
@@ -194,7 +199,10 @@ const Status = ({
         }
       }}
       classBgColor={canSignOut ? 'bg-danger' : undefined}
-      className={cn('border w-auto self-center', className)}
+      className={cn(
+        'border w-auto self-center rounded-full px-3 mr-0.5',
+        className
+      )}
       name={
         canSignOut
           ? `Отменить запись${userEventStatus === 'reserve' ? ' в резерв' : ''}`

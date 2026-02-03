@@ -50,7 +50,7 @@ const DirectionsBlock = () => {
   if (!filteredDirections || filteredDirections.length === 0) return null
   return (
     <>
-      <BlockContainer id="directions" title="Направления центра">
+      <BlockContainer id="directions" title="Пространства центра">
         <Masonry gap={16}>
           {filteredDirections.map((direction, index) => (
             <DirectionItem
@@ -72,3 +72,4 @@ const DirectionsBlock = () => {
 }
 
 export default DirectionsBlock
+

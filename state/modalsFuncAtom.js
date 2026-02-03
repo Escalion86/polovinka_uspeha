@@ -326,11 +326,11 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       delete: (directionId) =>
-        addModal({
-          title: 'Удаление направления',
-          text: 'Вы уверены, что хотите удалить направление?',
-          onConfirm: async () => itemsFunc.direction.delete(directionId),
-        }),
+        addModal(
+          require('../layouts/modals/modalsFunc/directionDeleteFunc').default(
+            directionId
+          )
+        ),
       view: (directionId) =>
         addModal(
           require('../layouts/modals/modalsFunc/directionViewFunc').default(
@@ -687,6 +687,25 @@ const modalsFuncGenerator = (get, set) => {
         addModal(
           require('../layouts/modals/modalsFunc/achievementIssueFunc').default()
         ),
+    },
+    product: {
+      add: (productId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productFunc').default(
+            productId,
+            true
+          )
+        ),
+      edit: (productId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productFunc').default(productId)
+        ),
+      delete: (productId) =>
+        addModal({
+          title: 'Удаление товара',
+          text: 'Вы уверены, что хотите удалить товар?',
+          onConfirm: async () => itemsFunc.product.delete(productId),
+        }),
     },
     service: {
       add: (serviceId) =>

@@ -36,7 +36,7 @@ const DirectionsContent = () => {
               <DirectionCard key={direction._id} directionId={direction._id} />
             ))
         ) : (
-          <div className="flex justify-center p-2">Нет направлений</div>
+          <div className="flex justify-center p-2">Нет Пространств</div>
         )}
         {/* <Fab onClick={() => modalsFunc.direction.edit()} show /> */}
       </CardListWrapper>
@@ -45,3 +45,4 @@ const DirectionsContent = () => {
 }
 
 export default DirectionsContent
+

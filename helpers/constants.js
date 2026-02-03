@@ -13,6 +13,7 @@ import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 import { faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons/faHandHoldingHeart'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
+import { faKey } from '@fortawesome/free-solid-svg-icons/faKey'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal'
@@ -58,6 +59,9 @@ import { faHeading } from '@fortawesome/free-solid-svg-icons/faHeading'
 import dynamic from 'next/dynamic'
 const ServicesContent = dynamic(
   () => import('@layouts/content/ServicesContent')
+)
+const ProductsContent = dynamic(
+  () => import('@layouts/content/ProductsContent')
 )
 const DirectionsContent = dynamic(
   () => import('@layouts/content/DirectionsContent')
@@ -432,7 +436,7 @@ export const PASTEL_COLORS = [
   '#E8D595',
 ]
 
-export const GRADIENT_COLORS = ['#504436', '#84725A']
+export const GRADIENT_COLORS = ['#8a3a45', '#8dcff2']
 
 export const LOCATIONS = {
   // dev: {
@@ -705,6 +709,7 @@ export const DEFAULT_REVIEW = Object.freeze({
   author: '',
   review: '',
   authorAge: null,
+  image: null,
   showOnSite: true,
 })
 
@@ -731,7 +736,36 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   menuName: '',
   index: null,
   showOnSite: true,
+  showOnIndex2: false,
+  tiles: [],
+  blockBgMode: 'solid',
+  blockBgColor1: '#ffffff',
+  blockBgColor2: '#f6f3f1',
 })
+
+export const ADDITIONAL_BLOCK_TILE_COLORS = [
+  {
+    value: 'burgundy',
+    label: 'Burgundy',
+    bgClassName: 'bg-[linear-gradient(140deg,#6b1f2a,#8e2f3a)] text-white',
+    titleClassName: 'text-white',
+    descriptionClassName: 'text-white/90',
+  },
+  {
+    value: 'blue',
+    label: 'Blue',
+    bgClassName: 'bg-[linear-gradient(140deg,#3aa3e0,#4fb0e8)] text-[#0b2230]',
+    titleClassName: 'text-[#0b2230]',
+    descriptionClassName: 'text-[#0b2230]/90',
+  },
+  {
+    value: 'white',
+    label: 'White',
+    bgClassName: 'bg-white text-[#1d1b1f]',
+    titleClassName: 'text-[#4b0f1c]',
+    descriptionClassName: 'text-[#1d1b1f]',
+  },
+]
 
 export const DEFAULT_SERVICE = Object.freeze({
   directionId: null,
@@ -827,7 +861,7 @@ export const EVENT_USER_STATUSES = [
 
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
-  { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+  { value: 'famale', name: 'Женщина', color: 'general', icon: faVenus },
 ]
 
 export const CHECKED_BUTTONS = [
@@ -1043,6 +1077,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: false,
     },
     instruments: {
       anonsTextGenerator: false,
@@ -1157,7 +1192,7 @@ export const DEFAULT_ROLES = [
       statusEdit: false,
     },
     products: {
-      see: true,
+      see: false,
       seeHidden: false,
       add: false,
       edit: false,
@@ -1165,7 +1200,7 @@ export const DEFAULT_ROLES = [
       seeHistory: false,
     },
     productsUsers: {
-      see: true,
+      see: false,
       add: false,
       edit: false,
       delete: false,
@@ -1184,6 +1219,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: false,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1298,19 +1334,19 @@ export const DEFAULT_ROLES = [
       statusEdit: true,
     },
     products: {
-      see: true,
-      seeHidden: true,
-      add: true,
-      edit: true,
+      see: false,
+      seeHidden: false,
+      add: false,
+      edit: false,
       delete: false,
       seeHistory: false,
     },
     productsUsers: {
-      see: true,
-      add: true,
-      edit: true,
+      see: false,
+      add: false,
+      edit: false,
       delete: false,
-      statusEdit: true,
+      statusEdit: false,
     },
     payments: {
       see: true,
@@ -1325,6 +1361,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1466,6 +1503,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1607,6 +1645,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1748,6 +1787,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1881,6 +1921,11 @@ export const CONTENTS = Object.freeze({
     name: 'Услуги / Список услуг',
     roleAccess: (role) => role?.services?.see,
   },
+  products: {
+    Component: ProductsContent,
+    name: 'Товары / Список товаров',
+    roleAccess: (role) => role?.products?.see,
+  },
   servicesUsers: {
     Component: ServicesUsersContent,
     name: 'Услуги / Заявки на услуги',
@@ -1893,7 +1938,7 @@ export const CONTENTS = Object.freeze({
   },
   directions: {
     Component: DirectionsContent,
-    name: 'Сайт / Направления',
+    name: 'Сайт / Пространства',
     roleAccess: (role) => role?.generalPage?.directions,
   },
   reviews: {
@@ -2107,7 +2152,9 @@ export const CONTENTS = Object.freeze({
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
-    roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
+    roleAccess: (role, status) =>
+      (role?.dev || role.president) &&
+      (role?.seeMyStatistics || status === 'member'),
   },
   referrals: {
     Component: ReferralsContent,
@@ -2196,6 +2243,14 @@ export const pages = [
     roleAccess: CONTENTS['services'].roleAccess,
   },
   {
+    id: 4.5,
+    group: 2.5,
+    name: 'Товары',
+    href: 'products',
+    icon: faShoppingBag,
+    roleAccess: CONTENTS['products'].roleAccess,
+  },
+  {
     id: 5,
     group: 2,
     name: 'Заявки на услуги',
@@ -2241,11 +2296,23 @@ export const pages = [
   {
     id: 9,
     group: 4,
-    name: 'Направления',
+    name: 'Пространства',
     href: 'directions',
-    icon: faHeart,
+    icon: faKey,
     // accessRoles: CONTENTS['directions'].accessRoles,
     roleAccess: CONTENTS['directions'].roleAccess,
+  },
+  {
+    id: 9.5,
+    group: 0.5,
+    name: 'Пространства',
+    href: 'directions',
+    icon: faKey,
+    schema: 'Directions',
+    skipBase: true,
+    itemName: (direction) =>
+      direction?.title ?? direction?.name ?? 'Без названия',
+    roleAccess: (role) => role?.statistics?.directionsView,
   },
   {
     id: 10,
@@ -2604,6 +2671,11 @@ export const pagesGroups = [
     // accessStatuses: ['member'],
   },
   {
+    id: 0.5,
+    name: 'Пространства',
+    icon: faKey,
+  },
+  {
     id: 3,
     name: 'Мероприятия',
     icon: faCalendarAlt,
@@ -2620,6 +2692,11 @@ export const pagesGroups = [
     name: 'Услуги',
     icon: faHandHoldingHeart,
     // accessRoles: ['client', 'admin', 'supervisor', 'dev'],
+  },
+  {
+    id: 2.5,
+    name: 'Товары',
+    icon: faShoppingBag,
   },
   {
     id: 4,

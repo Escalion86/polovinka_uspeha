@@ -456,7 +456,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
       (direction?.rules?.userRelationship &&
         direction?.rules?.userRelationship !== 'select') ? (
         <div className="pl-2 -mb-2 text-sm text-danger">
-          Применены ограничения доступа заданные направлением
+          Применены ограничения доступа заданные пространством
         </div>
       ) : null
 

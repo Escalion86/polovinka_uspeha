@@ -19,16 +19,28 @@ const DateTimeEvent = ({
   if (!dateTimeStart) return undefined
 
   const dateTimeEnd = event?.dateEnd
+  const currentYear = new Date().getFullYear()
+  const startDateObj = new Date(dateTimeStart)
+  const endDateObj = dateTimeEnd ? new Date(dateTimeEnd) : null
+  const showYearStart =
+    !Number.isNaN(startDateObj.getTime()) &&
+    startDateObj.getFullYear() !== currentYear
+  const showYearEnd =
+    endDateObj &&
+    !Number.isNaN(endDateObj.getTime()) &&
+    endDateObj.getFullYear() !== currentYear
 
   const [strDateStart, strTimeStart] = dateToDateTimeStr(
     dateTimeStart,
     showDayOfWeek,
-    fullMonth
+    fullMonth,
+    showYearStart
   )
   const [strDateFinish, strTimeFinish] = dateToDateTimeStr(
     dateTimeEnd,
     showDayOfWeek,
-    fullMonth
+    fullMonth,
+    showYearEnd
   )
 
   const duration = getEventDuration(event)

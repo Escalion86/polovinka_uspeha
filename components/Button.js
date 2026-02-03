@@ -28,6 +28,7 @@ const Button = forwardRef(
       iconRight = false,
       outline = false,
       loadingText,
+      roundedFull = false,
       ...props
     },
     ref
@@ -40,7 +41,13 @@ const Button = forwardRef(
           'relative px-4 bg-gray-300/90 cursor-not-allowed',
           'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-transparent font-normal prevent-select-text overflow-hidden',
           big ? 'text-xl py-2' : thin ? 'h-8 py-0.5' : 'h-9 py-1',
-          rounded ? (big ? 'rounded-lg' : 'rounded-sm') : '',
+          roundedFull
+            ? 'rounded-full'
+            : rounded
+              ? big
+                ? 'rounded-lg'
+                : 'rounded-sm'
+              : '',
           className
         )}
         onClick={undefined}
@@ -72,7 +79,13 @@ const Button = forwardRef(
         className={cn(
           'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-base font-normal prevent-select-text overflow-hidden',
 
-          rounded ? (big ? 'rounded-lg' : 'rounded-sm') : '',
+          roundedFull
+            ? 'rounded-full'
+            : rounded
+              ? big
+                ? 'rounded-lg'
+                : 'rounded-sm'
+              : '',
           iconRight ? 'flex-row-reverse' : '',
           big ? 'text-xl py-2' : thin ? 'h-8 py-0.5' : 'h-9 py-1',
           className,

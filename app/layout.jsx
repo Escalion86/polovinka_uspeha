@@ -36,7 +36,7 @@ export const metadata = {
 }
 
 export const viewport = {
-  themeColor: '#7a5151',
+  themeColor: '#6b1f2a',
 }
 
 const futura = localFont({
@@ -155,3 +155,4 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
+

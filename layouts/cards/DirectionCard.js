@@ -56,9 +56,9 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       )
     )
     if (result.filter((item) => item).length === itemsToChange.length)
-      snackbar.success(`Направление "${direction.title}" перемещено выше`)
+      snackbar.success(`Пространство "${direction.title}" перемещено выше`)
     else
-      snackbar.error(`Не удеалось переместить направление "${direction.title}"`)
+      snackbar.error(`Не удеалось переместить Пространство "${direction.title}"`)
   }
 
   const setDown = async () => {
@@ -94,9 +94,9 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       )
     )
     if (result.filter((item) => item).length === itemsToChange.length)
-      snackbar.success(`Направление "${direction.title}" перемещено ниже`)
+      snackbar.success(`Пространство "${direction.title}" перемещено ниже`)
     else
-      snackbar.error(`Не удеалось переместить направление "${direction.title}"`)
+      snackbar.error(`Не удеалось переместить Пространство "${direction.title}"`)
   }
 
   return (
@@ -148,3 +148,4 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
 }
 
 export default DirectionCard
+

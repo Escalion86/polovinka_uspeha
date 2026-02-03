@@ -43,7 +43,7 @@ module.exports = {
         yellow: colors.amber,
         purple: colors.violet,
         header: '#4D9DC4',
-        general: '#7a5151',
+        general: 'rgb(var(--color-general-rgb) / <alpha-value>)',
         'general-light': '#ebe0e0',
         primary: '#2A323B',
         secondary: '#D3D0C9',

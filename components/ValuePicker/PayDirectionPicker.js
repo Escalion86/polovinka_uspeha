@@ -29,7 +29,7 @@ const PayDirectionPicker = ({
     <ValuePicker
       value={payDirection}
       valuesArray={valuesArray}
-      label="Направление"
+      label="Пространство"
       onChange={onChange}
       name="payDirection"
       required={required}
@@ -40,3 +40,4 @@ const PayDirectionPicker = ({
 }
 
 export default PayDirectionPicker
+

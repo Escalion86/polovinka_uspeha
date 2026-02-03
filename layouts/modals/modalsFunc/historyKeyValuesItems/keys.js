@@ -1,6 +1,6 @@
 export const paymentKeys = {
   sector: 'Сектор', //
-  payDirection: 'Направление',
+  payDirection: 'Пространство',
   userId: 'Пользователь', //
   eventId: 'Мероприятие', //
   serviceId: 'Услуга', //
@@ -15,7 +15,7 @@ export const paymentKeys = {
 }
 
 export const eventKeys = {
-  directionId: 'Направление',
+  directionId: 'Пространство',
   title: 'Заголовок',
   description: 'Описание',
   dateStart: 'Дата и время начала',
@@ -81,3 +81,4 @@ export const userKeys = {
   soctag: 'Социальный тэг',
   custag: 'Кастомный тэг',
 }
+

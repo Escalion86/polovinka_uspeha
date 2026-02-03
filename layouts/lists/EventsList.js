@@ -11,7 +11,7 @@ const EventsList = ({ events, onTagClick }) => {
   return (
     <ListWrapper
       itemCount={events.length}
-      itemSize={widthNum > 3 ? 165 : widthNum === 3 ? 176 : 224}
+      itemSize={widthNum > 3 ? 180 : widthNum === 3 ? 176 : 224}
       className="bg-general/15"
     >
       {({ index, style }) => (

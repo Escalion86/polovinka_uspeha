@@ -13,6 +13,10 @@ const reviewsSchema = {
     type: Number,
     default: null,
   },
+  image: {
+    type: String,
+    default: null,
+  },
   showOnSite: {
     type: Boolean,
     default: true,

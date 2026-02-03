@@ -16,6 +16,13 @@ const Review = ({ review, style }) => (
         ? ', ' + review.authorAge + ' ' + textAge(review.authorAge)
         : ''}
     </div>
+    {review.image && (
+      <img
+        src={review.image}
+        alt={review.author}
+        className="mt-2 max-h-48 w-full rounded-xl object-cover"
+      />
+    )}
     <div className="leading-5">{review.review}</div>
   </div>
 )

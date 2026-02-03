@@ -295,7 +295,7 @@ const serviceFunc = (serviceId, clone = false) => {
               <DirectionSelector
                 value={directionId}
                 onChange={setDirectionId}
-                placeholder="Без направления"
+                placeholder="Без Пространства"
                 fullWidth
               />
               <CheckBox
@@ -399,3 +399,4 @@ const serviceFunc = (serviceId, clone = false) => {
 }
 
 export default serviceFunc
+

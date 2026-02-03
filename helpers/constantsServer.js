@@ -320,6 +320,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: false,
     },
     instruments: {
       anonsTextGenerator: false,
@@ -434,7 +435,7 @@ export const DEFAULT_ROLES = [
       statusEdit: false,
     },
     products: {
-      see: true,
+      see: false,
       seeHidden: false,
       add: false,
       edit: false,
@@ -442,7 +443,7 @@ export const DEFAULT_ROLES = [
       seeHistory: false,
     },
     productsUsers: {
-      see: true,
+      see: false,
       add: false,
       edit: false,
       delete: false,
@@ -461,6 +462,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: false,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -575,19 +577,19 @@ export const DEFAULT_ROLES = [
       statusEdit: true,
     },
     products: {
-      see: true,
-      seeHidden: true,
-      add: true,
-      edit: true,
+      see: false,
+      seeHidden: false,
+      add: false,
+      edit: false,
       delete: false,
       seeHistory: false,
     },
     productsUsers: {
-      see: true,
-      add: true,
-      edit: true,
+      see: false,
+      add: false,
+      edit: false,
       delete: false,
-      statusEdit: true,
+      statusEdit: false,
     },
     payments: {
       see: true,
@@ -602,6 +604,7 @@ export const DEFAULT_ROLES = [
       events: false,
       users: false,
       finances: false,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -743,6 +746,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -884,6 +888,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,
@@ -1025,6 +1030,7 @@ export const DEFAULT_ROLES = [
       events: true,
       users: true,
       finances: true,
+      directionsView: true,
     },
     instruments: {
       anonsTextGenerator: true,

@@ -44,6 +44,7 @@ const fetchProps = async (user, location, params) => {
         questionnaires: [],
         questionnairesUsers: [],
         services: [],
+        products: [],
         achievements: [],
         achievementsUsers: [],
         // servicesUsers: [],
@@ -106,6 +107,7 @@ const fetchProps = async (user, location, params) => {
       questionnaires,
       questionnairesUsers,
       services,
+      products,
       achievements,
       achievementsUsers,
     ] = await Promise.all([
@@ -166,6 +168,9 @@ const fetchProps = async (user, location, params) => {
       params?.services === false
         ? Promise.resolve([])
         : db.model('Services').find({}).lean(),
+      params?.products === false
+        ? Promise.resolve([])
+        : db.model('Products').find({}).lean(),
       params?.achievements === false
         ? Promise.resolve([])
         : db.model('Achievements').find({}).lean(),
@@ -261,6 +266,7 @@ const fetchProps = async (user, location, params) => {
       JSON.stringify(questionnairesUsers).length
     )
     console.log('services :>> ', JSON.stringify(services).length)
+    console.log('products :>> ', JSON.stringify(products).length)
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
@@ -281,6 +287,7 @@ const fetchProps = async (user, location, params) => {
       questionnaires: serializeLeanDoc(questionnaires),
       questionnairesUsers: serializeLeanDoc(questionnairesUsers),
       services: serializeLeanDoc(services),
+      products: serializeLeanDoc(products),
       // servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
       serverSettings: {
         dateTime: serverDateTime.toISOString(),
@@ -306,6 +313,7 @@ const fetchProps = async (user, location, params) => {
       questionnaires: [],
       questionnairesUsers: [],
       services: [],
+      products: [],
       achievements: [],
       achievementsUsers: [],
       // servicesUsers: [],

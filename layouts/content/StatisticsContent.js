@@ -250,7 +250,7 @@ const StatisticsContent = () => {
           <PieChart data={eventsByStatusData} title="По статусу" />
           <Divider light />
           <div className="flex flex-col items-center w-[300px]">
-            <H3>По направлениям</H3>
+            <H3>По пространствам</H3>
             <EventStatusToggleButtons
               value={filterEvents.status}
               onChange={(value) =>

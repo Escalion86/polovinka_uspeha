@@ -45,12 +45,9 @@ const RelationshipUserToggleButtons = ({ value, onChange, names }) => {
           })
         }
         variant={value.havePartner ? 'contained' : 'outlined'}
-        color="green"
+        color="general"
         aria-label="havePartner"
-        className={cn(
-          'flex gap-x-2',
-          value.havePartner ? '' : 'text-green-400'
-        )}
+        className={cn('flex gap-x-2', value.havePartner ? '' : 'text-general')}
       >
         <div className="w-6 h-6 min-h-6">
           <Image

@@ -76,7 +76,7 @@ const useErrors = () => {
       directionId: (data) =>
         !data
           ? setError({
-              directionId: 'Выберите направление мероприятия',
+              directionId: 'Выберите Пространство мероприятия',
             })
           : null,
       organizerId: (data) =>
@@ -228,3 +228,4 @@ const useErrors = () => {
 }
 
 export default useErrors
+

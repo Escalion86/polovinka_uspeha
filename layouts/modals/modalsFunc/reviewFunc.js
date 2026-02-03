@@ -3,6 +3,7 @@ import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
+import InputImage from '@components/InputImage'
 import Textarea from '@components/Textarea'
 import { DEFAULT_REVIEW } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
@@ -34,6 +35,9 @@ const reviewFunc = (reviewId, clone = false) => {
     const [reviewText, setReviewText] = useState(
       review?.review ?? DEFAULT_REVIEW.review
     )
+    const [image, setImage] = useState(
+      review?.image ?? DEFAULT_REVIEW.image
+    )
     const [showOnSite, setShowOnSite] = useState(
       review?.showOnSite ?? DEFAULT_REVIEW.showOnSite
     )
@@ -55,6 +59,7 @@ const reviewFunc = (reviewId, clone = false) => {
             author,
             authorAge,
             review: reviewText,
+            image,
             showOnSite,
           },
           clone
@@ -90,12 +95,13 @@ const reviewFunc = (reviewId, clone = false) => {
         review?.author !== author ||
         review?.review !== reviewText ||
         review?.authorAge !== authorAge ||
+        review?.image !== image ||
         review?.showOnSite !== showOnSite
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-    }, [author, reviewText, authorAge, showOnSite])
+    }, [author, reviewText, authorAge, image, showOnSite])
 
     useEffect(() => {
       if (setTopLeftComponent)
@@ -113,6 +119,15 @@ const reviewFunc = (reviewId, clone = false) => {
     return (
       // <div className="flex flex-col gap-2">
       <FormWrapper>
+        <InputImage
+          label="Фотография"
+          directory="reviews"
+          image={image}
+          onChange={(value) => {
+            removeError('image')
+            setImage(value)
+          }}
+        />
         <Input
           label="Имя автора"
           type="text"

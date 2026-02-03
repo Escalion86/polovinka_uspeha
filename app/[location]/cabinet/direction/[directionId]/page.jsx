@@ -7,7 +7,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: 'Половинка успеха - Кабинет / Направление',
+  title: 'Половинка успеха - Кабинет / Пространство',
 }
 
 export default async function CabinetDirectionPage({ params }) {
@@ -53,3 +53,4 @@ export default async function CabinetDirectionPage({ params }) {
 
   return <CabinetDirectionClient {...props} directionId={directionId} />
 }
+

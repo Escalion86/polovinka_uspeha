@@ -47,7 +47,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 // const menu = [
 //   { name: 'О нас', href: '#about', key: null },
 //   { name: 'Запись', href: '#timetable', key: 'events' },
-//   { name: 'Направления', href: '#directions', key: 'directions' },
+//   { name: 'Пространства', href: '#directions', key: 'directions' },
 //   // { name: 'Доп. блоки', href: '#additionalBlock', key: 'additionalBlocks' },
 //   // { name: 'Стоимость', href: '#price', key: null },
 //   { name: 'Отзывы', href: '#reviews', key: 'reviews' },
@@ -80,7 +80,7 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
     })
   if (directions?.length > 0)
     menu.push({
-      name: 'Направления',
+      name: 'Пространства',
       href: `${fullLinkInMenu ? `/${location}` : ''}#directions`,
     })
   if (services?.length > 0)
@@ -210,3 +210,4 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
 }
 
 export default Header
+

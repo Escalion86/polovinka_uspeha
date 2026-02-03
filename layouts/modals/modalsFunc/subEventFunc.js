@@ -309,7 +309,7 @@ const subEventFunc = (props, onChange, rules) => {
             {['any', 'novice', 'member'].includes(rules?.userStatus) ||
             ['any', 'alone', 'pair'].includes(rules?.userRelationship) ? (
               <div className="pl-2 -mb-2 text-sm text-danger">
-                Применены ограничения доступа заданные направлением
+                Применены ограничения доступа заданные пространством
               </div>
             ) : null}
             <PriceInput
@@ -413,7 +413,7 @@ const subEventFunc = (props, onChange, rules) => {
               (rules?.userRelationship &&
                 rules?.userRelationship !== 'select' && (
                   <div className="pl-2 -mb-2 text-sm text-danger">
-                    Выбранное направление ограничевает доступ на изменение
+                    Выбранное Пространство ограничевает доступ на изменение
                     некоторых прав
                   </div>
                 ))}
@@ -729,3 +729,4 @@ const subEventFunc = (props, onChange, rules) => {
 }
 
 export default subEventFunc
+

@@ -53,7 +53,7 @@ const CountDown = ({ children, Wrapper = ({ children }) => children }) => {
           background: 'white',
         }}
         dividerStyle={{ color: 'rgba(0,0,0,0.1)', height: 1 }}
-        separatorStyle={{ color: '#7a5151', size: '5px' }}
+        separatorStyle={{ color: 'var(--color-general)', size: '5px' }}
         duration={0.5}
       />
     </div>
@@ -63,3 +63,4 @@ const CountDown = ({ children, Wrapper = ({ children }) => children }) => {
 }
 
 export default CountDown
+

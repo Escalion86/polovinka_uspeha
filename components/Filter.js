@@ -48,7 +48,7 @@ const Filter = ({
           key="directionsFilter"
           value={componentValue}
           onChange={(value) => onChangeComponent(key, value)}
-          placeholder="ВСЕ НАПРАВЛЕНИЯ"
+          placeholder="ВСЕ Пространства"
           activePlaceholder
           fullWidth
         />
@@ -100,3 +100,4 @@ const Filter = ({
 }
 
 export default Filter
+

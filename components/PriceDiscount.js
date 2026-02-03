@@ -93,43 +93,68 @@ const PriceDiscount = ({
           {item.usersStatusDiscountResult &&
           item.usersStatusDiscountResult[
             fixedUserStatus === 'member' ? 'memberFrom' : 'noviceFrom'
-          ]
-            ? ' от'
-            : !priceForStatus &&
-              !!item.price &&
-              item.price / 100 !== eventPriceForUser && (
-                <div
-                  className={cn(
-                    'text-sm laptop:text-base text-center whitespace-normal',
-                    {
-                      'absolute top-0 left-0 right-0': vertical,
-                    },
-                    mobileVertical
-                      ? 'absolute laptop:block top-0 left-0 right-0 laptop:top-auto laptop:left-auto laptop:right-auto laptop:relative'
-                      : ''
-                  )}
-                >
-                  <div className="relative">
-                    <div className="whitespace-nowrap">
-                      {item.price / 100 + ' ₽'}
-                    </div>
-                    <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform rotate-15 border-b-1 laptop:border-b-2 border-danger" />
-                    <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform -rotate-15 border-b-1 laptop:border-b-2 border-danger" />
-                  </div>
-                </div>
+          ] ? (
+            <span
+              className={cn(
+                'text-base font-bold flex items-center',
+                vertical ? 'mt-3.5' : 'h-7'
               )}
-          <div
-            className={cn(
-              'whitespace-nowrap text-lg laptop:text-xl font-bold',
-              {
-                'mt-3.5': vertical,
-              },
-              mobileVertical ? 'mt-3 laptop:mt-0' : '',
-              eventPriceForUser ? 'uppercase' : ''
-            )}
-          >
-            {eventPriceForUser ? eventPriceForUser + ' ₽' : 'Бесплатно'}
-          </div>
+            >
+              от
+            </span>
+          ) : (
+            !priceForStatus &&
+            !!item.price &&
+            item.price / 100 !== eventPriceForUser && (
+              <div
+                className={cn(
+                  'text-sm laptop:text-base text-center whitespace-normal',
+                  {
+                    'absolute top-0 left-0 right-0': vertical,
+                  },
+                  mobileVertical
+                    ? 'absolute laptop:block top-0 left-0 right-0 laptop:top-auto laptop:left-auto laptop:right-auto laptop:relative'
+                    : ''
+                )}
+              >
+                <div className="relative flex items-center gap-x-1">
+                  <div className="text-2xl">{item.price / 100}</div>
+                  {/* <div>₽</div> */}
+                  <div className="absolute top-[11px] laptop:top-[12px] left-0 right-0 transform rotate-15 border-b-1 laptop:border-b-2 border-danger" />
+                  <div className="absolute top-[11px] laptop:top-[12px] left-0 right-0 transform -rotate-15 border-b-1 laptop:border-b-2 border-danger" />
+                </div>
+              </div>
+            )
+          )}
+          {eventPriceForUser ? (
+            <div
+              className={cn(
+                'flex items-center gap-x-1 whitespace-nowrap font-bold',
+                {
+                  'mt-3.5': vertical,
+                },
+                mobileVertical ? 'mt-3 laptop:mt-0' : ''
+              )}
+            >
+              <span className="text-3xl leading-none laptop:text-3xl">
+                {eventPriceForUser}
+              </span>
+              <span className="text-lg leading-none laptop:text-xl">₽</span>
+            </div>
+          ) : (
+            <div
+              className={cn(
+                'whitespace-nowrap text-lg laptop:text-xl font-bold',
+                {
+                  'mt-3.5': vertical,
+                },
+                mobileVertical ? 'mt-3 laptop:mt-0' : '',
+                eventPriceForUser ? 'uppercase' : ''
+              )}
+            >
+              Бесплатно
+            </div>
+          )}
         </div>
       </div>
       {/* // )

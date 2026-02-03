@@ -10,7 +10,7 @@ const paymentsSchema = {
     type: String,
     required: [
       true,
-      'Необходимо указать направление транзакции. Кто кому платит то?',
+      'Необходимо указать Пространство транзакции. Кто кому платит то?',
     ],
   },
   userId: {
@@ -84,3 +84,4 @@ const paymentsSchema = {
 }
 
 export default paymentsSchema
+

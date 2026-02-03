@@ -3,11 +3,9 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 // import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 // import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
@@ -27,11 +25,31 @@ const menuCfg = (
   siteSettings,
   loggedUser,
   directions,
-  location,
-  loggedUserActiveRoleName
+  location
   // disabledGroupsIds
 ) => {
   // const visiblePages = pages.filter((page) => )
+
+  const sortByIndexAndTitle = (a, b) => {
+    const indexA = typeof a.index === 'number' ? a.index : null
+    const indexB = typeof b.index === 'number' ? b.index : null
+
+    if (indexA === null && indexB === null) {
+      return (a.title ?? '').localeCompare(b.title ?? '')
+    }
+    if (indexA === null) return 1
+    if (indexB === null) return -1
+    if (indexA === indexB) {
+      return (a.title ?? '').localeCompare(b.title ?? '')
+    }
+    return indexA - indexB
+  }
+
+  const schemaMap = {
+    Directions: Array.isArray(directions)
+      ? [...directions].sort(sortByIndexAndTitle)
+      : [],
+  }
 
   const result = pagesGroups
     // .filter(
@@ -60,7 +78,42 @@ const menuCfg = (
           // (!page.accessStatuses ||
           //   page.accessStatuses.includes(userActiveStatus))
         ) {
-          totalPages.push(page)
+          if (page.schema) {
+            const schemaItemsRaw = schemaMap[page.schema] ?? []
+            const schemaItems = schemaItemsRaw.filter(
+              (item) => item?.showOnSite !== false
+            )
+            if (!page.skipBase) {
+              const baseName =
+                typeof page.name === 'string'
+                  ? page.name
+                  : page.baseName || 'Раздел'
+              totalPages.push({
+                ...page,
+                name: baseName,
+              })
+            }
+            if (location) {
+              const itemName =
+                typeof page.itemName === 'function'
+                  ? page.itemName
+                  : typeof page.name === 'function'
+                    ? page.name
+                    : null
+              schemaItems.forEach((item) => {
+                totalPages.push({
+                  id: `${page.id}-${item._id}`,
+                  name: itemName
+                    ? itemName(item)
+                    : item?.title ?? item?.name ?? 'Без названия',
+                  href: `/${location}/cabinet/${page.href}/${item._id}`,
+                  icon: page.icon,
+                })
+              })
+            }
+          } else {
+            totalPages.push(page)
+          }
           // if (user.access && page.variable && user.access[page.variable]) {
           //   if (user.access[page.variable].page) totalPages.push(page)
           //   return totalPages
@@ -81,47 +134,6 @@ const menuCfg = (
         })
       return totalGroups
     }, [])
-  const canSeeDirectionsMenu =
-    userActiveRole?.dev ||
-    ['dev', 'supervisor'].includes(loggedUserActiveRoleName)
-
-  if (
-    canSeeDirectionsMenu &&
-    location &&
-    Array.isArray(directions) &&
-    directions.length
-  ) {
-    const sortedDirections = [...directions].sort((a, b) => {
-      const indexA = typeof a.index === 'number' ? a.index : null
-      const indexB = typeof b.index === 'number' ? b.index : null
-
-      if (indexA === null && indexB === null) {
-        return (a.title ?? '').localeCompare(b.title ?? '')
-      }
-      if (indexA === null) return 1
-      if (indexB === null) return -1
-      if (indexA === indexB) {
-        return (a.title ?? '').localeCompare(b.title ?? '')
-      }
-      return indexA - indexB
-    })
-
-    const directionItems = sortedDirections.map((direction) => ({
-      id: `direction-${direction._id}`,
-      name: direction.title ?? 'Без названия',
-      href: `/${location}/cabinet/direction/${direction._id}`,
-      icon: faHeart,
-    }))
-
-    result.push({
-      id: 'directionsMenu',
-      name: 'Направления',
-      icon: faHeart,
-      items: directionItems,
-      forceShow: true,
-    })
-  }
-
   return result
 }
 
@@ -361,7 +373,6 @@ const SideBar = ({ page }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
-  const loggedUserActiveRoleName = useAtomValue(loggedUserActiveRoleNameAtom)
   const directions = useAtomValue(directionsAtom)
   // const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
@@ -473,8 +484,7 @@ const SideBar = ({ page }) => {
               siteSettings,
               loggedUserActive,
               directions,
-              location,
-              loggedUserActiveRoleName
+              location
             )}
             activePage={page}
             onChangeMenuIndex={onChangeMenuIndex}

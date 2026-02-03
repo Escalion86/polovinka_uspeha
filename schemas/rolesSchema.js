@@ -134,6 +134,7 @@ const rolesSchema = {
       events: false,
       users: false,
       finances: false,
+      directionsView: false,
     },
   },
   instruments: {

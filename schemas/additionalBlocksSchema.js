@@ -29,6 +29,26 @@ const additionalBlocksSchema = {
     type: Boolean,
     default: true,
   },
+  showOnIndex2: {
+    type: Boolean,
+    default: false,
+  },
+  tiles: {
+    type: Array,
+    default: [],
+  },
+  blockBgMode: {
+    type: String,
+    default: 'solid',
+  },
+  blockBgColor1: {
+    type: String,
+    default: '#ffffff',
+  },
+  blockBgColor2: {
+    type: String,
+    default: '#f6f3f1',
+  },
 }
 
 export default additionalBlocksSchema

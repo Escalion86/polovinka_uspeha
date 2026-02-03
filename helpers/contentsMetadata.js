@@ -1,8 +1,9 @@
 export const CABINET_PAGE_TITLES = Object.freeze({
   services: 'Услуги / Список услуг',
+  products: 'Товары / Список товаров',
   servicesUsers: 'Услуги / Заявки на услуги',
   myServices: 'Услуги / Мои заявки на услуги',
-  directions: 'Сайт / Направления',
+  directions: 'Сайт / Пространства',
   reviews: 'Сайт / Отзывы',
   additionalBlocks: 'Сайт / Доп. блоки',
   contacts: 'Сайт / Контакты на сайте',
@@ -47,3 +48,4 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   likes: 'Лайки',
   remindDates: 'Особые даты ПУ',
 })
+

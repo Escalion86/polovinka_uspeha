@@ -141,7 +141,7 @@ const selectDirectionsFunc = (
         </div>
         {showErrorMax && (
           <div className="text-danger">
-            Выбрано максимальное количество направлений
+            Выбрано максимальное количество Пространств
           </div>
         )}
 
@@ -157,7 +157,7 @@ const selectDirectionsFunc = (
 
           {showErrorMax && (
             <div className="text-danger">
-              Выбрано максимальное количество направлений
+              Выбрано максимальное количество Пространств
             </div>
           )}
         </div> */}
@@ -168,7 +168,7 @@ const selectDirectionsFunc = (
   return {
     title:
       title ??
-      (maxDirections === 1 ? `Выбор направления` : `Выбор направлений`),
+      (maxDirections === 1 ? `Выбор Пространства` : `Выбор Пространств`),
     confirmButtonName: 'Применить',
     // showConfirm: true,
     Children: SelectDirectionsModal,
@@ -176,3 +176,4 @@ const selectDirectionsFunc = (
 }
 
 export default selectDirectionsFunc
+

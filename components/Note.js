@@ -20,7 +20,7 @@ const Note = ({ children, noMargin, className, type }) => (
         ? 'text-red-900 bg-red-100 border-red-400'
         : type === 'warning'
           ? 'text-orange-600 bg-orange-100 border-orange-300'
-          : 'text-teal-900 bg-teal-100 border-teal-400',
+          : 'text-blue-900 bg-blue-100 border-blue-400',
       className
     )}
   >

@@ -21,14 +21,20 @@ const CardWrapper = ({
   gap = true,
   showOnSite = true,
   className,
+  outerClassName,
   hidden,
   style,
+  bgClassName,
 }) => {
   const device = useAtomValue(windowDimensionsTailwindSelector)
   return (
     <div
       style={style}
-      className={cn('w-full py-0.5', hidden ? 'overflow-hidden' : '')}
+      className={cn(
+        'w-full py-0.5',
+        hidden ? 'overflow-hidden' : '',
+        outerClassName
+      )}
       onClick={(e) => {
         if (onClick && !parentHasAttr(e.target, 'data-prevent-parent-click'))
           onClick()
@@ -37,13 +43,14 @@ const CardWrapper = ({
       {/* <div className="py-0.5"> */}
       <div
         className={cn(
-          'bg-white border-t border-b border-gray-400 relative w-full duration-300 shadow-xs hover:shadow-medium-active',
+          'border-t border-b border-gray-400 relative w-full duration-300 shadow-xs hover:shadow-medium-active',
           { 'cursor-pointer': !loading },
           {
             'flex flex-col laptop:flex-row items-center laptop:items-stretch':
               flex,
           },
           { 'gap-x-2': gap },
+          bgClassName ? bgClassName : 'bg-white',
           className
         )}
       >

@@ -455,11 +455,11 @@ const QuestionnaireContent = (props) => {
           <ValuePicker
             value={security.fullSecondName}
             valuesArray={[
-              { value: true, name: 'Полностью', color: 'green-400' },
+              { value: true, name: 'Полностью', color: 'blue-400' },
               {
                 value: false,
                 name: 'Только первую букву',
-                color: 'blue-400',
+                color: 'general',
               },
             ]}
             label="Показывать фамилию пользователям"
@@ -471,11 +471,11 @@ const QuestionnaireContent = (props) => {
           <ValuePicker
             value={security.fullThirdName}
             valuesArray={[
-              { value: true, name: 'Полностью', color: 'green-400' },
+              { value: true, name: 'Полностью', color: 'blue-400' },
               {
                 value: false,
                 name: 'Только первую букву',
-                color: 'blue-400',
+                color: 'general',
               },
             ]}
             label="Показывать отчество пользователям"
@@ -509,17 +509,17 @@ const QuestionnaireContent = (props) => {
               {
                 value: 'full',
                 name: 'Показывать (в том числе возраст)',
-                color: 'green-400',
+                color: 'blue-400',
               },
               {
                 value: 'noYear',
                 name: 'Только день и месяц (скрыть возраст)',
-                color: 'blue-400',
+                color: 'general',
               },
               {
                 value: 'no',
                 name: 'Не показывать',
-                color: 'red-400',
+                color: 'general',
               },
             ]}
             label="Показывать дату рождения пользователям"

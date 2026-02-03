@@ -18,7 +18,7 @@ const DirectionSelector = ({
   }))
   return (
     <ComboBox
-      label="Направление"
+      label="Пространство"
       value={value}
       onChange={onChange}
       items={items}
@@ -33,3 +33,4 @@ const DirectionSelector = ({
 }
 
 export default DirectionSelector
+

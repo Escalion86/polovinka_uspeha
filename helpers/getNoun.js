@@ -30,11 +30,14 @@ export const getNounAdditionalBlocks = (number) =>
 export const getNounServices = (number) =>
   getNoun(number, 'услуга', 'услуги', 'услуг')
 
+export const getNounProducts = (number) =>
+  getNoun(number, 'товар', 'товара', 'товаров')
+
 export const getNounUsers = (number) =>
   getNoun(number, 'пользователь', 'пользователя', 'пользователей')
 
 export const getNounDirections = (number) =>
-  getNoun(number, 'направление', 'направления', 'направлений')
+  getNoun(number, 'Пространство', 'Пространства', 'Пространств')
 
 export const getNounReviews = (number) =>
   getNoun(number, 'отзыв', 'отзыва', 'отзывов')
@@ -73,3 +76,4 @@ export const getNounMessages = (number) =>
 
 export const getNounAnkets = (number) =>
   getNoun(number, 'анкета', 'анкеты', 'анкет')
+
