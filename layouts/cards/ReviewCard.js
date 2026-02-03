@@ -23,11 +23,16 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
       hidden={hidden}
       style={style}
     >
-      <div className="flex">
+      <div className="flex items-center gap-3 px-2 py-2">
+        <img
+          src={review.image || '/img/users/null.jpg'}
+          alt={review.author}
+          className="h-16 w-16 rounded-full border-2 border-[#4fb0e8] object-cover"
+        />
         <div
           className={cn(
-            'flex-1 pr-2 py-1 text-xl font-bold',
-            review.showOnSite ? 'pl-2' : 'pl-12 laptop:pl-2'
+            'flex-1 pr-2 text-xl font-bold',
+            review.showOnSite ? '' : 'pl-10 laptop:pl-0'
           )}
         >
           {review.author}
@@ -44,14 +49,7 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
           }}
         />
       </div>
-      <div className="px-2 py-2">
-        <img
-          src={review.image || '/img/users/null.jpg'}
-          alt={review.author}
-          className="max-h-40 w-full rounded-xl object-cover"
-        />
-      </div>
-      <div className="px-2 py-1">{review.review}</div>
+      <div className="px-2 pb-3 whitespace-pre-line">{review.review}</div>
     </CardWrapper>
   )
 }

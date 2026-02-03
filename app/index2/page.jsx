@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Link from 'next/link'
 import {
   ADDITIONAL_BLOCK_TILE_COLORS,
+  LOCATIONS,
   LOCATIONS_KEYS_VISIBLE,
 } from '@helpers/constants'
 import {
@@ -13,19 +14,22 @@ import {
   fetchingEvents,
   fetchingEventsUsers,
   fetchingReviews,
+  fetchingSiteSettings,
 } from '@helpers/fetchers'
 import subEventsSummator from '@helpers/subEventsSummator'
 import DOMPurify from 'isomorphic-dompurify'
 
 const heroImages = [
-  '/img/other/0eoqjwuzhUU.webp',
-  '/img/other/7yMY8jczYqo.jpg',
-  '/img/other/IF8t5okaUQI_1.webp',
-  '/img/other/SX8uR3hsbx8.webp',
-  '/img/other/xsh35VC6g0c.jpg',
-  '/img/other/kjjxV_zPePM.webp',
-  '/img/other/aONc1PLjZ4M.webp',
-  '/img/other/photo.webp',
+  '/img/general/1.jpg',
+  '/img/general/2.jpg',
+  '/img/general/3.jpg',
+  '/img/general/4.jpg',
+  '/img/general/5.jpg',
+  '/img/general/6.jpg',
+  '/img/general/7.jpg',
+  '/img/general/8.jpg',
+  '/img/general/9.jpg',
+  '/img/general/10.jpg',
 ]
 
 const services = [
@@ -164,6 +168,7 @@ export default function Index2Page() {
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
   const headerRef = useRef(null)
+  const [siteSettings, setSiteSettings] = useState({})
 
   useEffect(() => {
     let isMounted = true
@@ -175,12 +180,14 @@ export default function Index2Page() {
         reviewsResponse,
         directions,
         eventsUsersData,
+        siteSettingsData,
       ] = await Promise.all([
         fetchingEvents(defaultLocation),
         fetchingAdditionalBlocks(defaultLocation),
         fetchingReviews(defaultLocation),
         fetchingDirections(defaultLocation),
         fetchingEventsUsers(defaultLocation),
+        fetchingSiteSettings(defaultLocation),
       ])
 
       if (isMounted) {
@@ -191,6 +198,7 @@ export default function Index2Page() {
         setReviewsData(Array.isArray(reviewsResponse) ? reviewsResponse : [])
         setDirectionsData(Array.isArray(directions) ? directions : [])
         setEventsUsers(Array.isArray(eventsUsersData) ? eventsUsersData : [])
+        setSiteSettings(siteSettingsData || {})
       }
     }
 
@@ -223,6 +231,7 @@ export default function Index2Page() {
       .filter((review) => review?.showOnSite)
       .map((review) => ({
         name: review.author,
+        age: review.authorAge,
         text: review.review,
         photo: review.image,
         id: review._id,
@@ -230,6 +239,73 @@ export default function Index2Page() {
 
     return normalized.length > 0 ? normalized : reviews
   }, [reviewsData])
+
+  const contactsData = useMemo(() => {
+    const phone = siteSettings?.phone || ''
+    const email = siteSettings?.email || ''
+    const whatsapp = siteSettings?.whatsapp || ''
+    const viber = siteSettings?.viber || ''
+    const telegram = siteSettings?.telegram || ''
+    const instagram = siteSettings?.instagram || ''
+    const vk = siteSettings?.vk || ''
+    const cityName = LOCATIONS?.[defaultLocation]?.towns?.[0] || ''
+
+    const normalizePhone = (value) => String(value ?? '').replace(/[^\d+]/g, '')
+    const normalizeHandle = (value) =>
+      String(value ?? '')
+        .replace(/^@/, '')
+        .trim()
+
+    const primary = [
+      phone && {
+        label: 'Телефон',
+        value: phone,
+        href: `tel:${normalizePhone(phone)}`,
+      },
+      email && { label: 'Email', value: email, href: `mailto:${email}` },
+      cityName && { label: 'Город', value: cityName },
+    ].filter(Boolean)
+
+    const socials = [
+      whatsapp && {
+        label: 'WhatsApp',
+        value: whatsapp,
+        href: `https://wa.me/${normalizePhone(whatsapp)}`,
+        badge: 'WA',
+        tone: 'bg-[#25d366] text-white',
+      },
+      viber && {
+        label: 'Viber',
+        value: viber,
+        href: `viber://chat?number=${normalizePhone(viber)}`,
+        badge: 'VB',
+        tone: 'bg-[#7360f2] text-white',
+      },
+      telegram && {
+        label: 'Telegram',
+        value: `@${normalizeHandle(telegram)}`,
+        href: `https://t.me/${normalizeHandle(telegram)}`,
+        badge: 'TG',
+        tone: 'bg-[#2aabee] text-white',
+      },
+      instagram && {
+        label: 'Instagram',
+        value: `@${normalizeHandle(instagram)}`,
+        href: `https://instagram.com/${normalizeHandle(instagram)}`,
+        badge: 'IG',
+        tone: 'bg-[#c13584] text-white',
+      },
+      vk && {
+        label: 'VK',
+        value: vk,
+        href: vk.startsWith('http') ? vk : `https://vk.com/${vk}`,
+        badge: 'VK',
+        tone: 'bg-[#0077ff] text-white',
+      },
+    ].filter(Boolean)
+
+    return { primary, socials }
+  }, [defaultLocation, siteSettings])
 
   useEffect(() => {
     const calcPerView = () => {
@@ -247,6 +323,36 @@ export default function Index2Page() {
     window.addEventListener('resize', updatePerView)
     return () => window.removeEventListener('resize', updatePerView)
   }, [])
+
+  useEffect(() => {
+    const items = document.querySelectorAll('[data-reveal]')
+    if (!items.length) return undefined
+
+    if (!('IntersectionObserver' in window)) {
+      items.forEach((item) => item.classList.add('reveal-in'))
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-in')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    items.forEach((item) => observer.observe(item))
+    return () => observer.disconnect()
+  }, [
+    events.length,
+    reviewsData.length,
+    additionalBlocks.length,
+    directionsData.length,
+  ])
 
   const scrollReviewsToIndex = (index) => {
     const container = reviewsContainerRef.current
@@ -538,7 +644,10 @@ export default function Index2Page() {
         </section>
 
         <Section id="about" title="О нашем пространстве!">
-          <div className="rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
+          <div
+            className="rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
+            data-reveal
+          >
             <p>
               Каждый день похож на предыдущий: работа, заботы, спорт, домашние
               дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но
@@ -553,7 +662,10 @@ export default function Index2Page() {
           </div>
 
           <div className="grid gap-6 mt-6 lg:grid-cols-2">
-            <div className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+            <div
+              className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
               <h3 className="text-[18px] text-white">
                 <strong>
                   УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:
@@ -618,7 +730,10 @@ export default function Index2Page() {
                 double
               />
             </div>
-            <div className="rounded-3xl bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+            <div
+              className="rounded-3xl bg-[linear-gradient(145deg,#4fb0e8_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
               <h3 className="text-[18px] text-[#0b2230]">
                 <strong>ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
               </h3>
@@ -638,7 +753,10 @@ export default function Index2Page() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-3xl bg-white p-7 shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+          <div
+            className="mt-6 rounded-3xl bg-white p-7 shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
+            data-reveal
+          >
             <h3 className="text-[18px] text-[#4b0f1c]">
               <strong>КОГДА ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
             </h3>
@@ -660,6 +778,7 @@ export default function Index2Page() {
                 <div
                   key={stat.number}
                   className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+                  data-reveal
                 >
                   <div className="font-adleryProSwash text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
                     {stat.number}
@@ -671,10 +790,13 @@ export default function Index2Page() {
               ))}
             </div>
           </div>
-          <div className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
+          <div
+            className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
+            data-reveal
+          >
             <div className="grid gap-6 lg:grid-cols-[minmax(0,180px)_minmax(0,1fr)] lg:items-center">
               <img
-                src="/img/other/gubina2.png"
+                src="/img/other/gubina.jpg"
                 alt="Надежда Губина"
                 className="w-full max-w-[220px] justify-self-center object-contain"
               />
@@ -689,8 +811,12 @@ export default function Index2Page() {
 
         <Section id="spaces" title="Наши пространства">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {spacesFromDirections.map((space) => (
-              <SpaceCard key={space.id} space={space} />
+            {spacesFromDirections.map((space, index) => (
+              <SpaceCard
+                key={space.id}
+                space={space}
+                style={{ transitionDelay: `${index * 80}ms` }}
+              />
             ))}
           </div>
         </Section>
@@ -701,6 +827,7 @@ export default function Index2Page() {
               <ServiceCard
                 key={`${service.title ?? 'service'}-${index}`}
                 service={service}
+                style={{ transitionDelay: `${index * 80}ms` }}
               />
             ))}
           </div>
@@ -710,7 +837,10 @@ export default function Index2Page() {
         ))}
 
         <Section id="closed" title="Закрытое пространство">
-          <div className="relative overflow-hidden rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed">
+          <div
+            className="relative overflow-hidden rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed"
+            data-reveal
+          >
             <img
               src="/key.png"
               alt=""
@@ -736,7 +866,10 @@ export default function Index2Page() {
 
         <Section id="announcements" title="Анонс наших мероприятий">
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+            <div
+              className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
               <div className="mb-4 flex items-center justify-between font-semibold text-[#6b1f2a]">
                 <span>{monthLabel}</span>
                 <span className="text-[14px] text-[#1f6e9c]">
@@ -755,7 +888,7 @@ export default function Index2Page() {
                         isSelected
                           ? 'border-transparent bg-[#6b1f2a] text-white'
                           : isActive
-                            ? 'border-[rgba(79,176,232,0.5)] bg-[rgba(79,176,232,0.2)] text-[#245c7b]'
+                            ? 'border-[rgba(79,176,232,0.5)] bg-[rgba(79,176,232,0.2)] text-[#245c7b] cursor-pointer'
                             : 'border-transparent bg-[#f1f2f4] text-[#555]'
                       }`}
                       onClick={() => isActive && setActiveDay(day)}
@@ -767,7 +900,10 @@ export default function Index2Page() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+            <div
+              className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
               <h3 className="font-bold text-lg text-[#6b1f2a]">
                 {activeDay
                   ? `События на ${activeDay} ${monthName}`
@@ -805,7 +941,7 @@ export default function Index2Page() {
         </Section>
 
         <Section id="reviews" title="Наши отзывы">
-          <div className="relative">
+          <div className="relative" data-reveal>
             <div
               ref={reviewsContainerRef}
               className="flex gap-4 overflow-hidden scroll-smooth"
@@ -827,10 +963,13 @@ export default function Index2Page() {
                       />
                       <span className="block font-semibold text-[#4b0f1c]">
                         {review.name}
+                        {review.age ? `, ${review.age}` : ''}
                       </span>
                     </div>
                     <div>
-                      <p className="leading-relaxed">{review.text}</p>
+                      <p className="leading-relaxed whitespace-pre-line">
+                        {review.text}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -848,18 +987,102 @@ export default function Index2Page() {
         </Section>
 
         <Section id="contacts" title="Наши контакты и соц. Сети">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="rounded-2xl bg-white p-6 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
-              <h3>Свяжитесь с нами</h3>
-              <p className="mt-2">Телефон: +7 (999) 123-45-67</p>
-              <p>Email: hello@polovinka-uspeha.ru</p>
-              <p>Город: Красноярск</p>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+            <div
+              className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#7a2a3a,rgba(141,207,242,0.55))] p-7 text-white shadow-[0_20px_36px_rgba(107,31,42,0.25)]"
+              data-reveal
+            >
+              <div className="absolute w-32 h-32 rounded-full pointer-events-none -right-10 top-6 bg-white/20 blur-2xl" />
+              <div className="absolute w-24 h-24 rounded-full pointer-events-none -bottom-10 left-10 bg-white/10 blur-2xl" />
+              <h3 className="text-xl font-semibold">
+                Свяжитесь с нами напрямую
+              </h3>
+              <p className="mt-2 text-sm text-white/80">
+                Подскажем формат, ответим на вопросы и поможем выбрать событие.
+              </p>
+              <div className="grid gap-3 mt-6">
+                {contactsData.primary.length > 0 ? (
+                  contactsData.primary.map((item) => {
+                    const content = (
+                      <>
+                        <span className="flex items-center justify-center w-10 h-10 text-sm font-semibold rounded-full bg-white/20">
+                          {item.label.slice(0, 2).toUpperCase()}
+                        </span>
+                        <div className="flex-1">
+                          <div className="text-xs uppercase tracking-[0.2em] text-white/70">
+                            {item.label}
+                          </div>
+                          <div className="text-base font-semibold">
+                            {item.value}
+                          </div>
+                        </div>
+                      </>
+                    )
+
+                    return item.href ? (
+                      <a
+                        key={`${item.label}-${item.value}`}
+                        href={item.href}
+                        className="flex items-center gap-4 rounded-2xl border border-white/25 bg-white/10 px-4 py-3 transition hover:-translate-y-0.5 hover:bg-white/15"
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      <div
+                        key={`${item.label}-${item.value}`}
+                        className="flex items-center gap-4 px-4 py-3 border rounded-2xl border-white/25 bg-white/10"
+                      >
+                        {content}
+                      </div>
+                    )
+                  })
+                ) : (
+                  <div className="px-4 py-3 text-sm border rounded-2xl border-white/30 bg-white/10 text-white/80">
+                    Мы готовим контакты для связи. Загляните чуть позже.
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="rounded-2xl bg-white p-6 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
-              <h3>Мы в соцсетях</h3>
-              <p className="mt-2">Instagram: @polovinka_uspeha</p>
-              <p>Telegram: @polovinka_uspeha</p>
-              <p>VK: vk.com/polovinka_uspeha</p>
+
+            <div
+              className="rounded-[28px] border border-white/70 bg-white/85 p-7 shadow-[0_16px_32px_rgba(107,31,42,0.12)] backdrop-blur"
+              data-reveal
+            >
+              <h3 className="text-xl font-semibold text-[#6b1f2a]">
+                Соцсети и мессенджеры
+              </h3>
+              <p className="mt-2 text-sm text-[#3a2c33]/70">
+                Пишите в удобном канале, мы быстро отвечаем.
+              </p>
+              <div className="grid gap-3 mt-5 sm:grid-cols-2">
+                {contactsData.socials.length > 0 ? (
+                  contactsData.socials.map((item) => (
+                    <a
+                      key={`${item.label}-${item.value}`}
+                      href={item.href}
+                      className="group flex items-center gap-3 rounded-2xl border border-[#f0e5ea] bg-white px-4 py-3 shadow-[0_10px_22px_rgba(107,31,42,0.1)] transition hover:-translate-y-0.5"
+                    >
+                      <span
+                        className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ${item.tone}`}
+                      >
+                        {item.badge}
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b1f2a]/70">
+                          {item.label}
+                        </div>
+                        <div className="text-sm font-semibold text-[#2b1b21]">
+                          {item.value}
+                        </div>
+                      </div>
+                    </a>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-[#f0e5ea] bg-white px-4 py-3 text-sm text-[#6b1f2a]">
+                    Контакты появятся после обновления настроек.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </Section>
@@ -872,6 +1095,17 @@ export default function Index2Page() {
           100% {
             transform: translateX(-50%);
           }
+        }
+        [data-reveal] {
+          opacity: 0;
+          transform: translateY(16px);
+          transition:
+            opacity 0.6s ease,
+            transform 0.6s ease;
+        }
+        .reveal-in {
+          opacity: 1;
+          transform: translateY(0);
         }
         html {
           scroll-behavior: smooth;
@@ -888,7 +1122,7 @@ function Section({ id, title, children }) {
       className="px-[6vw] py-[70px] even:bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))]"
     >
       <div className="mb-8">
-        <h2 className="font-lora text-[clamp(26px,3vw,38px)] text-[#6b1f2a]">
+        <h2 className="font-lora text-[clamp(26px,3vw,38px)] font-bold text-[#6b1f2a]">
           {title}
         </h2>
       </div>
@@ -933,9 +1167,13 @@ HeartList.propTypes = {
   renderItem: PropTypes.func,
 }
 
-function SpaceCard({ space }) {
+function SpaceCard({ space, style }) {
   return (
-    <div className="rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+    <div
+      className="rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+      data-reveal
+      style={style}
+    >
       <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
         {space.title}
       </h3>
@@ -950,9 +1188,10 @@ SpaceCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
   }).isRequired,
+  style: PropTypes.object,
 }
 
-function ServiceCard({ service }) {
+function ServiceCard({ service, style }) {
   const tileStyle = service?.color
     ? ADDITIONAL_BLOCK_TILE_COLORS.find(
         (option) => option.value === service.color
@@ -973,6 +1212,8 @@ function ServiceCard({ service }) {
             : 'bg-white'
       }`}
       style={isCustomColor ? { backgroundColor: service.color } : undefined}
+      data-reveal
+      {...(style ? { style } : {})}
     >
       <div className="flex items-center gap-x-2">
         {service.image ? (
@@ -1010,6 +1251,7 @@ ServiceCard.propTypes = {
     image: PropTypes.string,
     color: PropTypes.string,
   }).isRequired,
+  style: PropTypes.object,
 }
 
 function AdditionalBlockSection({ block }) {
