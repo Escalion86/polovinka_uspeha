@@ -119,7 +119,7 @@ const fetchProps = async (user, location, params) => {
             .select({
               description: 0,
               address: 0,
-              images: 0,
+              images: { $slice: 1 },
               organizerId: 0,
               warning: 0,
               googleCalendarId: 0,

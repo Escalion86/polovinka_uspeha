@@ -1,6 +1,6 @@
 // import EventCard from '@layouts/cards/EventCard'
 import dynamic from 'next/dynamic'
-const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard2'))
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
@@ -11,7 +11,9 @@ const EventsList = ({ events, onTagClick }) => {
   return (
     <ListWrapper
       itemCount={events.length}
-      itemSize={widthNum > 3 ? 180 : widthNum === 3 ? 176 : 224}
+      itemSize={
+        widthNum > 3 ? 270 : widthNum === 3 ? 270 : widthNum === 2 ? 310 : 310
+      }
       className="bg-general/15"
     >
       {({ index, style }) => (

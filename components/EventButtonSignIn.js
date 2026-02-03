@@ -127,7 +127,7 @@ const Status = ({
       rounded={false}
       classBgColor="bg-pink-500"
       className={cn(
-        'border w-auto self-center rounded-full px-3 mr-0.5',
+        'border self-center rounded-full px-3 mr-0.5 w-auto',
         className
       )}
       name={
@@ -200,7 +200,7 @@ const Status = ({
       }}
       classBgColor={canSignOut ? 'bg-danger' : undefined}
       className={cn(
-        'border w-auto self-center rounded-full px-3 mr-0.5',
+        'border self-center rounded-full px-3 mr-0.5 w-auto',
         className
       )}
       name={

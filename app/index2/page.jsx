@@ -1013,7 +1013,7 @@ export default function Index2Page() {
                         <span className="text-right">{event.place}</span>
                       </div>
                       <div className="mt-3 inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
-                        {`${event.participantsCount ?? 0} / ${
+                        {`Участников: ${event.participantsCount ?? 0} / ${
                           event.maxParticipants ?? '∞'
                         }`}
                       </div>
