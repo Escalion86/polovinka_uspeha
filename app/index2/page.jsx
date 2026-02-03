@@ -869,7 +869,7 @@ export default function Index2Page() {
                 ×
               </button>
               {activeSpace.images?.length > 0 ? (
-                <div className="relative overflow-hidden bg-black h-50">
+                <div className="relative overflow-hidden bg-black h-50 tablet:h-56">
                   <div className="absolute inset-0">
                     <div className="flex h-full w-max animate-[marquee_40s_linear_infinite]">
                       {[...activeSpace.images, ...activeSpace.images].map(
