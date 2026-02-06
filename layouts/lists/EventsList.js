@@ -14,6 +14,7 @@ const EventsList = ({ events, onTagClick }) => {
       itemSize={
         widthNum > 3 ? 270 : widthNum === 3 ? 270 : widthNum === 2 ? 310 : 310
       }
+      itemKey={(index) => events[index]?._id ?? index}
       className="bg-general/15"
     >
       {({ index, style }) => (

@@ -557,7 +557,7 @@ export default function Index2Page() {
 
           <button
             type="button"
-            className="ml-auto flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-[rgba(107,31,42,0.3)] bg-white lg:hidden"
+            className="cursor-pointer transition duration-500 hover:bg-[rgba(107,31,42,0.3)] ml-auto flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-[rgba(107,31,42,0.3)] bg-white lg:hidden"
             aria-label="Открыть меню"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -612,7 +612,7 @@ export default function Index2Page() {
       </header>
       <button
         type="button"
-        className={`fixed inset-0 z-20 bg-black/40 transition lg:hidden ${
+        className={`cursor-pointer fixed inset-0 z-20 bg-black/40 transition lg:hidden ${
           menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden={!menuOpen}
@@ -645,7 +645,7 @@ export default function Index2Page() {
                       key={`${src}-${index}`}
                       src={src}
                       alt=""
-                      className="h-full w-80 object-cover brightness-[0.55]"
+                      className="h-full w-full object-cover brightness-[0.55]"
                     />
                   ))}
                 </div>
@@ -825,7 +825,7 @@ export default function Index2Page() {
               <img
                 src="/img/other/gubina.jpg"
                 alt="Надежда Губина"
-                className="w-full max-w-[220px] justify-self-center object-contain"
+                className="w-full max-w-[220px] rounded-[20px] justify-self-center object-contain"
               />
               <p className="text-[18px] leading-relaxed">
                 <strong>Надежда</strong> – основатель пространства живых встреч,
@@ -864,7 +864,7 @@ export default function Index2Page() {
                 type="button"
                 aria-label="Закрыть"
                 onClick={() => setActiveSpace(null)}
-                className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#f0e5ea] bg-white text-[#6b1f2a] transition hover:bg-[#f8f2f4]"
+                className="cursor-pointer absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#f0e5ea] bg-white text-[#6b1f2a] transition hover:bg-[#f8f2f4]"
               >
                 ×
               </button>
@@ -1352,7 +1352,7 @@ function SpaceCard({ space, style, onMore }) {
           <button
             type="button"
             onClick={onMore}
-            className="mt-auto inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
+            className="cursor-pointer mt-auto inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
           >
             Подробнее
           </button>
