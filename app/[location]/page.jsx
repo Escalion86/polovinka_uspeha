@@ -1,34 +1,16 @@
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import LocationHomeClient from '../_components/location/LocationHomeClient'
-import buildPageProps from '@server/getServerSidePropsFunc'
-import fetchProps from '@server/fetchProps'
-import { authOptions } from '@server/authOptions'
+import LocationIndexClient from '../_components/location/LocationIndexClient'
 
-export default async function LocationPage({ params }) {
-  const session = await getServerSession(authOptions)
+export const metadata = {
+  title: 'Половинка успеха',
+}
+
+export default async function LocationRootPage({ params }) {
   const { location } = await params
 
   if (!location) {
     redirect('/')
   }
 
-  if (session?.location && session.location !== location) {
-    redirect(`/${session.location}/cabinet`)
-  }
-
-  if (session) {
-    redirect(`/${location}/cabinet`)
-  }
-
-  const props = await buildPageProps({
-    session,
-    fetcher: fetchProps,
-    location,
-    params: {
-      directions: { shortDescription: true },
-    },
-  })
-
-  return <LocationHomeClient {...props} />
+  return <LocationIndexClient location={location} />
 }

@@ -70,7 +70,7 @@ const reviews = [
   },
 ]
 
-const stats = [
+const DEFAULT_STATS = [
   {
     number: '800+',
     text: 'мероприятий организовано и проведено',
@@ -155,7 +155,7 @@ const navItems = [
 
 const spacesNavItems = [{ id: 'spaces', label: 'Наши пространства' }]
 
-export default function Index2Page() {
+export default function LocationIndexClient({ location }) {
   const [activeDay, setActiveDay] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [events, setEvents] = useState([])
@@ -164,7 +164,8 @@ export default function Index2Page() {
   const [directionsData, setDirectionsData] = useState([])
   const [eventsUsers, setEventsUsers] = useState([])
   const [reviewsPerView, setReviewsPerView] = useState(3)
-  const defaultLocation = LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk'
+  const defaultLocation =
+    location || (LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk')
   const reviewsContainerRef = useRef(null)
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
@@ -174,6 +175,11 @@ export default function Index2Page() {
   const [activeSpace, setActiveSpace] = useState(null)
   const reviewTextRefs = useRef(new Map())
   const [reviewOverflowMap, setReviewOverflowMap] = useState({})
+  const spaceStats = useMemo(() => {
+    const items = siteSettings?.spaceStats
+    if (!Array.isArray(items) || items.length === 0) return DEFAULT_STATS
+    return [...items].sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+  }, [siteSettings])
 
   useEffect(() => {
     let isMounted = true
@@ -670,7 +676,7 @@ export default function Index2Page() {
           </div>
         </section>
 
-        <Section id="about" title="О нашем пространстве!">
+        <Section id="about" title="О нашем пространстве">
           <div
             className="rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
             data-reveal
@@ -798,16 +804,16 @@ export default function Index2Page() {
 
           <div className="mt-8">
             <h3 className="text-[22px] text-[#4b0f1c]">
-              <strong>ПРОСТРАНСТВО В ЦИФРАХ ЗА 4 ГОДА:</strong>
+              <strong>ПРОСТРАНСТВО В ЦИФРАХ:</strong>
             </h3>
             <div className="grid gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-3">
-              {stats.map((stat) => (
+              {spaceStats.map((stat, index) => (
                 <div
-                  key={stat.number}
+                  key={stat.id ?? `${stat.number}-${index}`}
                   className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
                   data-reveal
                 >
-                  <div className="font-adleryProSwash text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
+                  <div className="font-futura font-semibold text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
                     {stat.number}
                   </div>
                   <div className="mt-2 font-futura text-[18px] leading-relaxed">
@@ -1013,9 +1019,13 @@ export default function Index2Page() {
                         <span className="text-right">{event.place}</span>
                       </div>
                       <div className="mt-3 inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
-                        {`Участников: ${event.participantsCount ?? 0} / ${
-                          event.maxParticipants ?? '∞'
-                        }`}
+                        {event.maxParticipants
+                          ? `Свободных мест ${Math.max(
+                              0,
+                              (event.maxParticipants ?? 0) -
+                                (event.participantsCount ?? 0)
+                            )} из ${event.maxParticipants}`
+                          : 'Количество мест не ограничено'}
                       </div>
                     </div>
                   ))}
@@ -1025,7 +1035,7 @@ export default function Index2Page() {
           </div>
         </Section>
 
-        <Section id="reviews" title="Наши отзывы">
+        <Section id="reviews" title="Отзывы о нас">
           <div className="relative" data-reveal>
             <div
               ref={reviewsContainerRef}
@@ -1147,7 +1157,7 @@ export default function Index2Page() {
           </div>
         ) : null}
 
-        <Section id="contacts" title="Наши контакты и соц. Сети">
+        <Section id="contacts" title="Наши контакты и соц. сети">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <div
               className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#7a2a3a,rgba(141,207,242,0.55))] p-7 text-white shadow-[0_20px_36px_rgba(107,31,42,0.25)]"
@@ -1509,3 +1519,9 @@ AdditionalBlockSection.propTypes = {
     ),
   }).isRequired,
 }
+
+
+LocationIndexClient.propTypes = {
+  location: PropTypes.string,
+}
+

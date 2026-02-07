@@ -7,6 +7,7 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import locationAtom from '@state/atoms/locationAtom'
 import routerAtom from './atoms/routerAtom'
 import store from './store'
 
@@ -16,7 +17,9 @@ const modalsFuncGenerator = (get, set) => {
   if (!itemsFunc) return () => {}
 
   const loggedUser = get(loggedUserActiveAtom)
+  const location = get(locationAtom)
   const router = get(routerAtom)
+  const locationPrefix = location ? `/${location}` : ''
 
   const addModal = (value) => set(addModalSelector, value)
 
@@ -32,13 +35,11 @@ const modalsFuncGenerator = (get, set) => {
         confirmButtonName: 'Авторизироваться',
         confirmButtonName2: 'Зарегистрироваться',
         onConfirm: () =>
-          router.push(`/login${query ? `?${query}` : ''}`, '', {
+          router.push(`${locationPrefix}/login${query ? `?${query}` : ''}`, '', {
             shallow: true,
           }),
         onConfirm2: () =>
-          router.push(`/login?registration=true`, '', {
-            shallow: true,
-          }),
+          router.push(`${locationPrefix}/register`, '', { shallow: true }),
       })
       return false
     } else if (!isUserQuestionnaireFilled(loggedUser)) {
@@ -668,6 +669,22 @@ const modalsFuncGenerator = (get, set) => {
             itemsFunc.additionalBlock.delete(additionalBlockId),
         }),
     },
+    spaceStats: {
+      add: (onConfirm) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/spaceStatsFunc').default(
+            null,
+            onConfirm
+          )
+        ),
+      edit: (stat, onConfirm) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/spaceStatsFunc').default(
+            stat,
+            onConfirm
+          )
+        ),
+    },
     achievement: {
       create: (onSubmit) =>
         addModal(
@@ -733,11 +750,11 @@ const modalsFuncGenerator = (get, set) => {
             confirmButtonName: 'Авторизироваться',
             confirmButtonName2: 'Зарегистрироваться',
             onConfirm: () =>
-              router.push(`/login?service=${serviceId}`, '', { shallow: true }),
-            onConfirm2: () =>
-              router.push(`/login?registration=true`, '', {
+              router.push(`${locationPrefix}/login?service=${serviceId}`, '', {
                 shallow: true,
               }),
+            onConfirm2: () =>
+              router.push(`${locationPrefix}/register`, '', { shallow: true }),
           })
         } else if (!isUserQuestionnaireFilled(loggedUser))
           addModal({

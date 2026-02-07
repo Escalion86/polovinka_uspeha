@@ -1,13 +1,13 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import LocationLogin3Client from '../../_components/location/LocationLogin3Client'
 import { authOptions } from '@server/authOptions'
+import LocationRegister3Client from '../../_components/location/LocationRegister3Client'
 
 export const metadata = {
-  title: 'Вход в кабинет - Половинка успеха',
+  title: 'Регистрация - Половинка успеха',
 }
 
-export default async function LocationLogin3Page({ params }) {
+export default async function LocationRegisterPage({ params }) {
   const session = await getServerSession(authOptions)
   const { location } = await params
 
@@ -23,5 +23,5 @@ export default async function LocationLogin3Page({ params }) {
     redirect(`/${location}/cabinet`)
   }
 
-  return <LocationLogin3Client location={location} />
+  return <LocationRegister3Client location={location} />
 }

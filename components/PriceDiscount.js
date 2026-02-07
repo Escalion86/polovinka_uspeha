@@ -118,10 +118,12 @@ const PriceDiscount = ({
                 )}
               >
                 <div className="relative flex items-center gap-x-1">
-                  <div className="text-2xl">{item.price / 100}</div>
+                  <div className="text-lg tablet:text-xl laptop:text-2xl">
+                    {item.price / 100}
+                  </div>
                   {/* <div>₽</div> */}
-                  <div className="absolute top-[11px] laptop:top-[12px] left-0 right-0 transform rotate-15 border-b-1 laptop:border-b-2 border-danger" />
-                  <div className="absolute top-[11px] laptop:top-[12px] left-0 right-0 transform -rotate-15 border-b-1 laptop:border-b-2 border-danger" />
+                  <div className="absolute left-0 right-0 transform border-b-2 top-3 rotate-15 laptop:border-b-2 border-danger" />
+                  <div className="absolute left-0 right-0 transform border-b-2 top-3 -rotate-15 laptop:border-b-2 border-danger" />
                 </div>
               </div>
             )
@@ -136,7 +138,7 @@ const PriceDiscount = ({
                 mobileVertical ? 'mt-3 laptop:mt-0' : ''
               )}
             >
-              <span className="text-3xl leading-none laptop:text-3xl">
+              <span className="text-xl leading-none tablet:text-2xl laptop:text-3xl">
                 {eventPriceForUser}
               </span>
               <span className="text-lg leading-none laptop:text-xl">₽</span>

@@ -167,7 +167,7 @@ const EventCard2 = ({
                 <div className="hidden tablet:inline-flex rounded-full bg-[#f7f1f4] px-3 py-1 laptop:hidden">
                   <PriceDiscountByEventId
                     eventId={eventId}
-                    className="font-adleryProSwash text-[26px] text-[#6b1f2a]"
+                    className="text-[#6b1f2a]"
                   />
                 </div>
               </div>
@@ -190,18 +190,23 @@ const EventCard2 = ({
             <div className="rounded-full hidden w-fitrounded-full bg-[#f7f1f4] px-3 py-1 laptop:inline-flex">
               <PriceDiscountByEventId
                 eventId={eventId}
-                className="font-adleryProSwash text-[26px] text-[#6b1f2a]"
+                className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
               />
             </div>
             <div className="laptop:hidden mt-auto flex flex-col tablet:flex-row w-full flex-wrap items-center justify-between gap-3 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
               <div className="flex items-center justify-between w-full tablet:w-auto gap-x-1">
                 <div className="inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]">
-                  {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+                  {maxParticipants
+                    ? `Свободных мест ${Math.max(
+                        0,
+                        (maxParticipants ?? 0) - (participantsCount ?? 0)
+                      )} из ${maxParticipants}`
+                    : 'Количество мест не ограничено'}
                 </div>
                 <div className="tablet:hidden rounded-full bg-[#f7f1f4] px-3">
                   <PriceDiscountByEventId
                     eventId={eventId}
-                    className="font-adleryProSwash text-[26px] text-[#6b1f2a]"
+                    className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
                   />
                 </div>
               </div>
@@ -215,7 +220,12 @@ const EventCard2 = ({
         </div>
         <div className="rounded-[30px] overflow-hidden hidden laptop:flex w-full flex-wrap items-center justify-between gap-3 border border-[#f0e5ea] bg-white/90 px-4 py-3 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
           <div className="inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]">
-            {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+            {maxParticipants
+              ? `Свободных мест ${Math.max(
+                  0,
+                  (maxParticipants ?? 0) - (participantsCount ?? 0)
+                )} из ${maxParticipants}`
+              : 'Количество мест не ограничено'}
           </div>
           <EventButtonSignIn
             eventId={eventId}

@@ -498,6 +498,11 @@ const SettingsRolesContent = (props) => {
               subItem="additionalBlocks"
             />
             <RoleItem
+              label="Редактирование блока «Пространство в цифрах»"
+              item="generalPage"
+              subItem="spaceStats"
+            />
+            <RoleItem
               label="Редактирование отзывов"
               item="generalPage"
               subItem="reviews"

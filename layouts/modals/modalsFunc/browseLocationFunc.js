@@ -10,7 +10,7 @@ import { useAtomValue } from 'jotai'
 const Item = ({ towns = [], checked, location, isRegister }) => {
   return (
     <a
-      href={`/${location}/login${isRegister ? '?registration=true' : ''}`}
+      href={isRegister ? `/${location}/register` : `/${location}/login`}
       className={cn(
         checked
           ? 'border-success bg-green-300/50'

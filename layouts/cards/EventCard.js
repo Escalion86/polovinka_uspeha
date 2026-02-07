@@ -290,7 +290,7 @@ const EventCard = ({
                 </div>
                 <PriceDiscountByEventId
                   eventId={eventId}
-                  className="hidden tablet:flex font-adleryProSwash text-[22px]"
+                  className="hidden tablet:flex font-futura font-semibold text-[22px]"
                 />
               </div>
             </div>
@@ -333,7 +333,12 @@ const EventCard = ({
             <div className="flex items-stretch justify-between">
               <div className="flex items-center justify-center ml-2 h-[42px] text-sm font-semibold text-general">
                 <span className="px-3 py-1 rounded-full bg-white/70">
-                  {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+                  {maxParticipants
+                    ? `Свободных мест ${Math.max(
+                        0,
+                        (maxParticipants ?? 0) - (participantsCount ?? 0)
+                      )} из ${maxParticipants}`
+                    : 'Количество мест не ограничено'}
                 </span>
               </div>
               <EventButtonSignIn
@@ -349,14 +354,16 @@ const EventCard = ({
         <div className="flex flex-wrap justify-end flex-1 w-full">
           <div className="flex items-center justify-center flex-1 min-w-full h-[38px] laptop:h-[42px] text-sm font-semibold text-general">
             <span className="px-3 py-1 rounded-full bg-white/70">
-              {`Участников: ${participantsCount} / ${maxParticipants ?? '∞'}`}
+              {maxParticipants
+                ? `Свободных мест ${Math.max(
+                    0,
+                    (maxParticipants ?? 0) - (participantsCount ?? 0)
+                  )} из ${maxParticipants}`
+                : 'Количество мест не ограничено'}
             </span>
           </div>
           <div className="flex items-stretch justify-end flex-1 w-full h-9">
-            <PriceDiscountByEventId
-              eventId={eventId}
-              className="flex-1 mx-2 font-adleryProSwash text-[22px]"
-            />
+            <PriceDiscountByEventId eventId={eventId} className="flex-1 mx-2" />
             <EventButtonSignIn
               eventId={eventId}
               noButtonIfAlreadySignIn

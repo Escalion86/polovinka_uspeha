@@ -99,6 +99,10 @@ const siteSettingsSchema = {
       requirePaidEvent: false,
     },
   },
+  spaceStats: {
+    type: [{ id: String, number: String, text: String, index: Number }],
+    default: [],
+  },
   title: {
     type: String,
     default: 'Центр серёзных знакомств',

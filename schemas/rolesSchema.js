@@ -154,6 +154,7 @@ const rolesSchema = {
       additionalBlocks: false,
       reviews: false,
       contacts: false,
+      spaceStats: false,
     },
   },
   siteSettings: {

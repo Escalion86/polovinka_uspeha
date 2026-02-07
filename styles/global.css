@@ -29,6 +29,10 @@
   body {
     font-family: var(--font-futura), sans-serif;
   }
+
+  button {
+    cursor: pointer;
+  }
 }
 
 @layer utilities {

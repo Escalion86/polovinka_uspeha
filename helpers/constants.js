@@ -38,6 +38,7 @@ import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
 import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar'
 
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
 import { faCreditCard } from '@fortawesome/free-regular-svg-icons/faCreditCard'
@@ -75,6 +76,9 @@ const EventsPastContent = dynamic(
 )
 const AdditionalBlocksContent = dynamic(
   () => import('@layouts/content/AdditionalBlocksContent')
+)
+const SpaceStatsContent = dynamic(
+  () => import('@layouts/content/SpaceStatsContent')
 )
 const QuestionnaireContent = dynamic(
   () => import('@layouts/content/QuestionnaireContent')
@@ -812,6 +816,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   instagram: '',
   vk: '',
   codeSendService: 'telefonip',
+  spaceStats: [],
   referralProgram: {
     enabled: false,
     enabledForCenter: false,
@@ -1951,6 +1956,14 @@ export const CONTENTS = Object.freeze({
     name: 'Сайт / Доп. блоки',
     roleAccess: (role) => role?.generalPage?.additionalBlocks,
   },
+  spaceStats: {
+    Component: SpaceStatsContent,
+    name: 'Сайт / Пространство в цифрах',
+    roleAccess: (role) =>
+      role?.generalPage?.spaceStats ||
+      role?.generalPage?.additionalBlocks ||
+      role?.dev,
+  },
   contacts: {
     Component: ContactsContent,
     name: 'Сайт / Контакты на сайте',
@@ -1959,7 +1972,7 @@ export const CONTENTS = Object.freeze({
   siteTitleSettings: {
     Component: TitleBlockContent,
     name: 'Сайт / Заголовоки',
-    roleAccess: (role) => role?.generalPage?.siteTitleSettings,
+    roleAccess: () => false,
   },
   supervisor: {
     Component: SupervisorBlockContent,
@@ -2322,6 +2335,14 @@ export const pages = [
     icon: faCube,
     // accessRoles: CONTENTS['additionalBlocks'].accessRoles,
     roleAccess: CONTENTS['additionalBlocks'].roleAccess,
+  },
+  {
+    id: 10.2,
+    group: 4,
+    name: 'Пространство в цифрах',
+    href: 'spaceStats',
+    icon: faChartBar,
+    roleAccess: CONTENTS['spaceStats'].roleAccess,
   },
   {
     id: 11,

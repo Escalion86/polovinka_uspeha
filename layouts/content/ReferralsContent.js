@@ -43,7 +43,7 @@ const ReferralsContent = () => {
 
   const referralPath = useMemo(() => {
     if (!loggedUserId || !location) return ''
-    return `/${location}/login?registration=true&ref=${loggedUserId}`
+    return `/${location}/register?ref=${loggedUserId}`
   }, [loggedUserId, location])
 
   const referralLink = useMemo(() => {
