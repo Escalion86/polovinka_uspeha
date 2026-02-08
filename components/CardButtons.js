@@ -93,6 +93,7 @@ const CardButtons = ({
   onEditQuestionnaire,
   customButtons = [],
   customOnly = false,
+  triggerClassName = '',
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const itemsFunc = useAtomValue(itemsFuncAtom)
@@ -511,7 +512,12 @@ const CardButtons = ({
     <div onClick={(e) => e.stopPropagation()}>
       <DropDown
         trigger={
-          <div className="flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general">
+          <div
+            className={cn(
+              'flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general',
+              triggerClassName
+            )}
+          >
             <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7 min-h-7" />
           </div>
         }

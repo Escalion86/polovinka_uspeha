@@ -30,11 +30,16 @@ const DirectionsContent = () => {
       </ContentHeader>
       <CardListWrapper>
         {directions?.length > 0 ? (
-          [...directions]
-            .sort((a, b) => (a.index < b.index ? -1 : 1))
-            .map((direction) => (
-              <DirectionCard key={direction._id} directionId={direction._id} />
-            ))
+          <div className="grid gap-4 px-3 tablet:px-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[...directions]
+              .sort((a, b) => (a.index < b.index ? -1 : 1))
+              .map((direction) => (
+                <DirectionCard
+                  key={direction._id}
+                  directionId={direction._id}
+                />
+              ))}
+          </div>
         ) : (
           <div className="flex justify-center p-2">Нет Пространств</div>
         )}
@@ -45,4 +50,3 @@ const DirectionsContent = () => {
 }
 
 export default DirectionsContent
-

@@ -1,6 +1,5 @@
 import CardButtons from '@components/CardButtons'
 import CardWrapper from '@components/CardWrapper'
-import TextInRing from '@components/TextInRing'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
@@ -58,7 +57,9 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
     if (result.filter((item) => item).length === itemsToChange.length)
       snackbar.success(`Пространство "${direction.title}" перемещено выше`)
     else
-      snackbar.error(`Не удеалось переместить Пространство "${direction.title}"`)
+      snackbar.error(
+        `Не удеалось переместить Пространство "${direction.title}"`
+      )
   }
 
   const setDown = async () => {
@@ -96,7 +97,9 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
     if (result.filter((item) => item).length === itemsToChange.length)
       snackbar.success(`Пространство "${direction.title}" перемещено ниже`)
     else
-      snackbar.error(`Не удеалось переместить Пространство "${direction.title}"`)
+      snackbar.error(
+        `Не удеалось переместить Пространство "${direction.title}"`
+      )
   }
 
   return (
@@ -106,26 +109,13 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       showOnSite={direction.showOnSite}
       hidden={hidden}
       style={style}
+      className="rounded-2xl"
     >
-      {/* {direction?.image ? (
-        <img
-          className="object-cover h-full max-w-full tablet:w-48 tablet:max-w-48 max-h-60 tablet:max-h-72"
-          src={direction.image}
-          alt="direction"
-          // width={48}
-          // height={48}
-        />
-      ) : ( */}
-      <div className="flex justify-center w-full laptop:w-auto">
-        <TextInRing text={direction.title} />
-      </div>
-      {/* )} */}
-      <div className="w-full">
-        <div className="flex">
-          <div className="flex-1 px-2 py-1 text-xl font-bold ">
-            {direction.title}
-          </div>
-          <div className="font-bold text-blue-600">{direction.index}</div>
+      <div className="relative w-full flex h-full flex-col rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+        <div
+          className="absolute z-10 right-2 top-1"
+          onClick={(event) => event.stopPropagation()}
+        >
           <CardButtons
             item={direction}
             typeOfItem="direction"
@@ -135,12 +125,23 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
                 showOnSite: !direction.showOnSite,
               })
             }}
-            onUpClick={direction.index > 0 && setUp}
-            onDownClick={direction.index < directions.length - 1 && setDown}
+            onUpClick={direction.index > 0 ? setUp : undefined}
+            onDownClick={
+              direction.index < directions.length - 1 ? setDown : undefined
+            }
+            alwaysCompact
+            triggerClassName="text-white"
           />
         </div>
-        <div className="px-2 py-1 text-sm whitespace-pre-wrap">
-          {direction.shortDescription}
+        <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
+          {direction.title}
+        </h3>
+        <div className="flex flex-col h-full p-5 gap-y-1">
+          <p className="text-[18px] text-[#4b3a40] whitespace-pre-line">
+            {direction.shortDescription ||
+              direction.description ||
+              'Описание пространства пока не добавлено.'}
+          </p>
         </div>
       </div>
     </CardWrapper>
@@ -148,4 +149,3 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
 }
 
 export default DirectionCard
-
