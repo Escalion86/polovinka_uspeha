@@ -602,12 +602,13 @@ export default function LocationIndexClient({ location }) {
         ref={headerRef}
         className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur"
       >
-        <div className="relative flex items-center gap-6 px-[4vw] py-2">
-          <div className="flex items-center gap-3">
+        <div className="relative flex items-center gap-6 px-[4vw] py-2 h-[100px]">
+          <div className="flex items-center justify-center gap-3 min-w-[120px] flex-1">
+            {/* absolute lg:relative lg:left-0 lg:translate-y-0 lg:top-0 lg:translate-x-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  */}
             <img
-              src="/img/logo_horizontal.png"
+              src="/img/logo_new_horizontal_burgundy.png"
               alt="Логотип Половинка успеха"
-              className="h-[92px] w-[160px] min-w-[120px] object-contain"
+              className="h-[68px] object-contain"
             />
             {/* <span className="font-adlery text-[18px] tracking-[0.06em] text-[#6b1f2a]">
               ПОЛОВИНКА УСПЕХА
@@ -711,9 +712,9 @@ export default function LocationIndexClient({ location }) {
               </div>
               <div className="relative z-10 grid h-full place-items-center">
                 <img
-                  src="/img/logo.png"
+                  src="/img/logo_new.png"
                   alt="Половинка успеха"
-                  className="w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
+                  className="p-5 w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
                 />
               </div>
             </div>

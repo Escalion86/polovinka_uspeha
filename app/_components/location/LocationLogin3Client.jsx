@@ -138,24 +138,24 @@ export default function LocationLogin3Client({ location }) {
             <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
               Войдите в пространство живых встреч
             </h1>
-            <p className="max-w-[520px] text-[16px] leading-relaxed text-[#3a2c33]">
+            <p className="max-w-[520px] text-[18px] leading-relaxed text-[#3a2c33]">
               Личный кабинет помогает быстро записываться на мероприятия,
               следить за статусом заявок и получать персональные рекомендации.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
-                <div className="text-sm font-semibold text-[#6b1f2a]">
+                <div className="text-[16px] font-semibold text-[#6b1f2a]">
                   Живые встречи
                 </div>
-                <div className="mt-2 text-sm text-[#3a2c33]">
+                <div className="mt-2 text-[16px] text-[#3a2c33]">
                   Настоящие эмоции без ожиданий и масок.
                 </div>
               </div>
               <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
-                <div className="text-sm font-semibold text-[#6b1f2a]">
+                <div className="text-[16px] font-semibold text-[#6b1f2a]">
                   Удобный доступ
                 </div>
-                <div className="mt-2 text-sm text-[#3a2c33]">
+                <div className="mt-2 text-[16px] text-[#3a2c33]">
                   Всё в одном месте: события, заявки и новости.
                 </div>
               </div>
@@ -242,6 +242,14 @@ export default function LocationLogin3Client({ location }) {
                 className="font-semibold text-[#6b1f2a]"
               >
                 Восстановить
+              </Link>
+            </div>
+            <div className="mt-3 text-center text-sm text-[#5d4a52]">
+              <Link
+                href={`/${location}`}
+                className="font-semibold text-[#6b1f2a]"
+              >
+                Перейти на главную страницу
               </Link>
             </div>
           </div>

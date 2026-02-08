@@ -165,7 +165,8 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       showOnSite={direction.showOnSite}
       hidden={hidden}
       style={style}
-      className="rounded-2xl"
+      outerClassName="h-full"
+      className="rounded-2xl h-full"
     >
       <DirectionCardView
         direction={direction}

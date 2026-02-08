@@ -64,10 +64,7 @@ const CardWrapper = ({
             <LoadingSpinner />
           </div>
         )}
-        {!showOnSite &&
-          (device === 'phoneV' ||
-            device === 'phoneH' ||
-            device == 'tablet') && (
+        {!showOnSite && (
             <div className="absolute top-0 left-0 z-10 w-12 h-12 overflow-hidden">
               <div className="absolute w-24 h-24 pb-1 pr-1 bg-purple-500 rounded-full pt-[54px] pl-[54px] -left-12 -top-12">
                 <FontAwesomeIcon
