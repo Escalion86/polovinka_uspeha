@@ -194,7 +194,7 @@ const SpaceStatsContent = () => {
       </ContentHeader>
       <CardListWrapper>
         {stats.length > 0 ? (
-          <div className="grid gap-4 px-3 tablet:px-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 px-3 py-3 tablet:px-4 sm:grid-cols-2 lg:grid-cols-3">
             {stats.map((stat, index) => (
               <SpaceStatsCard
                 key={stat.id}

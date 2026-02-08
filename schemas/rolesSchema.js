@@ -151,6 +151,7 @@ const rolesSchema = {
     type: {},
     default: {
       directions: false,
+      aboutSpace: false,
       additionalBlocks: false,
       reviews: false,
       contacts: false,

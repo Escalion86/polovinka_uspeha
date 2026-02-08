@@ -685,6 +685,22 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
     },
+    aboutSpace: {
+      add: (onConfirm) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/aboutSpaceCardFunc').default(
+            null,
+            onConfirm
+          )
+        ),
+      edit: (card, onConfirm) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/aboutSpaceCardFunc').default(
+            card,
+            onConfirm
+          )
+        ),
+    },
     achievement: {
       create: (onSubmit) =>
         addModal(

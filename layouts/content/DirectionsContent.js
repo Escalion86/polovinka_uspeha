@@ -30,7 +30,7 @@ const DirectionsContent = () => {
       </ContentHeader>
       <CardListWrapper>
         {directions?.length > 0 ? (
-          <div className="grid gap-4 px-3 tablet:px-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 px-3 py-3 tablet:px-4 sm:grid-cols-2 lg:grid-cols-3">
             {[...directions]
               .sort((a, b) => (a.index < b.index ? -1 : 1))
               .map((direction) => (

@@ -103,6 +103,22 @@ const siteSettingsSchema = {
     type: [{ id: String, number: String, text: String, index: Number }],
     default: [],
   },
+  aboutSpaceCards: {
+    type: [
+      {
+        id: String,
+        title: String,
+        text: String,
+        wide: Boolean,
+        tone: String,
+        bgMode: String,
+        bgColor1: String,
+        bgColor2: String,
+        index: Number,
+      },
+    ],
+    default: [],
+  },
   title: {
     type: String,
     default: 'Центр серёзных знакомств',

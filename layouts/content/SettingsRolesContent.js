@@ -493,6 +493,11 @@ const SettingsRolesContent = (props) => {
               subItem="directions"
             />
             <RoleItem
+              label="Редактирование блока «О нашем пространстве»"
+              item="generalPage"
+              subItem="aboutSpace"
+            />
+            <RoleItem
               label="Редактирование доп. блоков"
               item="generalPage"
               subItem="additionalBlocks"

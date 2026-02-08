@@ -97,24 +97,58 @@ const DEFAULT_STATS = [
   },
 ]
 
-const reasonsItems = [
+const DEFAULT_ABOUT_CARDS = [
   {
-    label: 'Сбалансированные форматы',
-    text: 'мероприятия под настроение от камерных игр до выездов на природу',
+    id: 'about-1',
+    tone: 'white',
+    wide: true,
+    title: '',
+    text: `<p>Каждый день похож на предыдущий: работа, заботы, спорт, домашние дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но чего-то не хватает тепла, спонтанности, человеческого контакта. Тебе хочется просто расслабиться и побыть среди «своих» самим собой, где не нужно играть роли и подбирать слова?</p><p><strong>ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»</strong> — это пространство лёгкости и живого общения.</p>`,
   },
   {
-    label: 'Тонкая модерация',
-    text: 'ведущие создают атмосферу вовлечённости и лёгкости, помогая каждому раскрыться',
+    id: 'about-2',
+    tone: 'burgundy',
+    wide: false,
+    title: 'УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:',
+    text: `<ul><li>просто быть самим собой</li><li>отдыхать от суеты и дел</li><li>наслаждаться общением</li><li>открывать для себя новых людей естественно, без ожиданий и масок</li><li>встретить свою вторую половинку</li><li>обрести новых друзей и единомышленников в своих увлечениях</li><li>расширить круг деловых связей и партнеров</li><li>научиться чему-то новому и получить новый опыт и эмоции</li><li>весело провести время и просто потусоваться с такими же людьми, как ты</li></ul>`,
   },
   {
-    label: 'Аудитория по ценностям',
-    text: 'здесь собираются люди, близкие по взглядам, стилю жизни и внутренней культуре',
+    id: 'about-3',
+    tone: 'blue',
+    wide: false,
+    title: 'НАШЕ ПРОСТРАНСТВО, ДЛЯ:',
+    text: `<ul><li>активных и современных людей, которым хочется больше жизни, эмоций и близкого общения без формальностей и натянутости</li><li>тех, кто устал от шаблонных встреч и бесконечных экранов телефона и телевизора</li><li>тех, кто хочет настоящих впечатлений, лёгкости и искренних связей</li></ul>`,
   },
   {
-    label: 'Удобное участие',
-    text: 'всё просто - выбрать событие, зарегистрироваться, прийти и быть собой',
+    id: 'about-4',
+    tone: 'white',
+    wide: true,
+    title: 'Что такое ПРОСТРАНСТВО «ПОЛОВИНКА УСПЕХА»?',
+    text: `<p>Это пространство живых встреч - вечера, выезды, мастер-классы, игры, прогулки, автоквесты, путешествия. Мы объединяем людей, которые хотят проводить время интересно и по-настоящему: улыбаться, смеяться, открываться, вдохновляться, учиться новому и наполняться энергией общения. Здесь нет цели «кого-то найти», зато часто случаются новые дружбы, тёплые связи и даже истории, с которых начинается что-то большее.</p>`,
+  },
+  {
+    id: 'about-5',
+    tone: 'burgundy',
+    wide: false,
+    title: 'Что получает участник нашего ПРОСТРАНСТВА:',
+    text: `<ul><li>атмосферу лёгкости, принятия и живого интереса</li><li>ощущение сопричастности и «своей стаи»</li><li>новые впечатления, вдохновение и энергию жизни</li><li>возможность раскрыться, почувствовать себя естественно и уверенно</li><li>расширение круга общения - органично, без давления и формальностей</li></ul>`,
+  },
+  {
+    id: 'about-6',
+    tone: 'blue',
+    wide: false,
+    title: 'ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:',
+    text: `<ul><li><strong>Сбалансированные форматы:</strong> мероприятия под настроение от камерных игр до выездов на природу</li><li><strong>Тонкая модерация:</strong> ведущие создают атмосферу вовлечённости и лёгкости, помогая каждому раскрыться</li><li><strong>Аудитория по ценностям:</strong> здесь собираются люди, близкие по взглядам, стилю жизни и внутренней культуре</li><li><strong>Удобное участие:</strong> всё просто - выбрать событие, зарегистрироваться, прийти и быть собой</li></ul>`,
+  },
+  {
+    id: 'about-7',
+    tone: 'white',
+    wide: true,
+    title: 'КОГДА ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:',
+    text: `<ul><li>Когда хочется добавить в жизнь лёгкости, новых эмоций и спонтанных встреч</li><li>Когда наступает момент «я всё делаю правильно, но хочу чувствовать больше»</li><li>Когда появляется желание жить ярче — не меняя всё вокруг, а просто меняя пространство, в котором ты общаешься</li></ul>`,
   },
 ]
+
 
 const MONTHS_FULL = [
   'января',
@@ -154,6 +188,48 @@ const navItems = [
 ]
 
 const spacesNavItems = [{ id: 'spaces', label: 'Наши пространства' }]
+const ABOUT_TONE_CLASSES = {
+  white: 'bg-white text-[#2b1b21]',
+  burgundy:
+    'bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] text-white',
+  blue: 'bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] text-[#0b2230]',
+}
+const ABOUT_TONE_SHADOW = {
+  white: 'shadow-[0_20px_45px_rgba(0,0,0,0.08)]',
+  burgundy: 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]',
+  blue: 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]',
+}
+const hexToRgb = (hex) => {
+  if (typeof hex !== 'string') return null
+  const cleaned = hex.replace('#', '').trim()
+  if (cleaned.length !== 6) return null
+  const r = parseInt(cleaned.slice(0, 2), 16)
+  const g = parseInt(cleaned.slice(2, 4), 16)
+  const b = parseInt(cleaned.slice(4, 6), 16)
+  if ([r, g, b].some((val) => Number.isNaN(val))) return null
+  return { r, g, b }
+}
+const getLuminance = (hex) => {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return 1
+  const toLinear = (value) => {
+    const v = value / 255
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+  }
+  const r = toLinear(rgb.r)
+  const g = toLinear(rgb.g)
+  const b = toLinear(rgb.b)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+const getTextTone = (color1, color2) => {
+  const lum1 = getLuminance(color1)
+  const lum2 = color2 ? getLuminance(color2) : lum1
+  const avg = (lum1 + lum2) / 2
+  if (avg < 0.5) {
+    return { textClass: 'text-white', titleClass: 'text-white' }
+  }
+  return { textClass: 'text-[#2b1b21]', titleClass: 'text-[#4b0f1c]' }
+}
 
 export default function Index2Page() {
   const [activeDay, setActiveDay] = useState(null)
@@ -178,6 +254,23 @@ export default function Index2Page() {
     const items = siteSettings?.spaceStats
     if (!Array.isArray(items) || items.length === 0) return DEFAULT_STATS
     return [...items].sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+  }, [siteSettings])
+  const aboutCards = useMemo(() => {
+    const items = siteSettings?.aboutSpaceCards
+    if (!Array.isArray(items) || items.length === 0) return DEFAULT_ABOUT_CARDS
+    return [...items]
+      .map((item, index) => ({
+        id: item.id ?? `about-${index}`,
+        title: item.title ?? '',
+        text: item.text ?? '',
+        wide: Boolean(item.wide),
+        tone: item.tone ?? 'white',
+        bgMode: item.bgMode ?? null,
+        bgColor1: item.bgColor1 ?? null,
+        bgColor2: item.bgColor2 ?? null,
+        index: typeof item.index === 'number' ? item.index : index,
+      }))
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
   }, [siteSettings])
 
   useEffect(() => {
@@ -676,129 +769,88 @@ export default function Index2Page() {
         </section>
 
         <Section id="about" title="О нашем пространстве">
-          <div
-            className="rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
-            data-reveal
-          >
-            <p>
-              Каждый день похож на предыдущий: работа, заботы, спорт, домашние
-              дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но
-              чего-то не хватает тепла, спонтанности, человеческого контакта.
-              Тебе хочется просто расслабиться и побыть среди «своих» самим
-              собой, где не нужно играть роли и подбирать слова?
-            </p>
-            <p className="mt-4">
-              <strong>ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»</strong> —
-              это пространство лёгкости и живого общения.
-            </p>
-          </div>
-
-          <div className="grid gap-6 mt-6 lg:grid-cols-2">
-            <div
-              className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-              data-reveal
-            >
-              <h3 className="text-[18px] text-white">
-                <strong>
-                  УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:
-                </strong>
-              </h3>
-              <HeartList
-                items={[
-                  'просто быть самим собой',
-                  'отдыхать от суеты и дел',
-                  'наслаждаться общением',
-                  'открывать для себя новых людей естественно, без ожиданий и масок',
-                  'встретить свою вторую половинку',
-                  'обрести новых друзей и единомышленников в своих увлечениях',
-                  'расширить круг деловых связей и партнеров',
-                  'научиться чему-то новому и получить новый опыт и эмоции',
-                  'весело провести время и просто потусоваться с такими же людьми, как ты',
-                ]}
-              />
-            </div>
-            <div className="rounded-3xl bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
-              <h3 className="text-[18px] text-[#0b2230]">
-                <strong>НАШЕ ПРОСТРАНСТВО, ДЛЯ:</strong>
-              </h3>
-              <HeartList
-                items={[
-                  'активных и современных людей, которым хочется больше жизни, эмоций и близкого общения без формальностей и натянутости',
-                  'тех, кто устал от шаблонных встреч и бесконечных экранов телефона и телевизора',
-                  'тех, кто хочет настоящих впечатлений, лёгкости и искренних связей',
-                ]}
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]">
-            <h3 className="text-[22px] text-[#4b0f1c]">
-              Что такое <strong>ПРОСТРАНСТВО «ПОЛОВИНКА УСПЕХА»?</strong>
-            </h3>
-            <p className="mt-4">
-              Это пространство живых встреч - вечера, выезды, мастер-классы,
-              игры, прогулки, автоквесты, путешествия. Мы объединяем людей,
-              которые хотят проводить время интересно и по-настоящему:
-              улыбаться, смеяться, открываться, вдохновляться, учиться новому и
-              наполняться энергией общения. Здесь нет цели «кого-то найти», зато
-              часто случаются новые дружбы, тёплые связи и даже истории, с
-              которых начинается что-то большее.
-            </p>
-          </div>
-
-          <div className="grid gap-6 mt-6 lg:grid-cols-2">
-            <div className="rounded-3xl bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] p-6 text-white shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
-              <h3 className="text-[18px] text-white">
-                <strong>Что получает участник нашего ПРОСТРАНСТВА:</strong>
-              </h3>
-              <HeartList
-                items={[
-                  'атмосферу лёгкости, принятия и живого интереса',
-                  'ощущение сопричастности и «своей стаи»',
-                  'новые впечатления, вдохновение и энергию жизни',
-                  'возможность раскрыться, почувствовать себя естественно и уверенно',
-                  'расширение круга общения - органично, без давления и формальностей',
-                ]}
-                double
-              />
-            </div>
-            <div
-              className="rounded-3xl bg-[linear-gradient(145deg,#4fb0e8_0%,#4fb0e8_55%,#6bc2f0_100%)] p-6 text-[#0b2230] shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-              data-reveal
-            >
-              <h3 className="text-[18px] text-[#0b2230]">
-                <strong>ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
-              </h3>
-              <HeartList
-                items={reasonsItems.map(
-                  (item) => `${item.label}: ${item.text}`
-                )}
-                renderItem={(item) => {
-                  const [label, ...rest] = item.split(': ')
-                  return (
-                    <>
-                      <strong>{label}</strong>: {rest.join(': ')}
-                    </>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {aboutCards.map((card, index) => {
+              const tone = ABOUT_TONE_CLASSES[card.tone] ? card.tone : 'white'
+              const hasCustomBg =
+                (card.bgMode === 'solid' && card.bgColor1) ||
+                (card.bgMode === 'gradient' &&
+                  card.bgColor1 &&
+                  card.bgColor2)
+              const textTone = hasCustomBg
+                ? getTextTone(
+                    card.bgColor1,
+                    card.bgMode === 'gradient' ? card.bgColor2 : null
                   )
-                }}
-              />
-            </div>
-          </div>
-
-          <div
-            className="mt-6 rounded-3xl bg-white p-7 shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-            data-reveal
-          >
-            <h3 className="text-[18px] text-[#4b0f1c]">
-              <strong>КОГДА ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:</strong>
-            </h3>
-            <HeartList
-              items={[
-                'Когда хочется добавить в жизнь лёгкости, новых эмоций и спонтанных встреч',
-                'Когда наступает момент «я всё делаю правильно, но хочу чувствовать больше»',
-                'Когда появляется желание жить ярче — не меняя всё вокруг, а просто меняя пространство, в котором ты общаешься',
-              ]}
-            />
+                : { textClass: '', titleClass: '' }
+              const backgroundStyle = hasCustomBg
+                ? card.bgMode === 'gradient'
+                  ? {
+                      backgroundImage: `linear-gradient(145deg,${card.bgColor1} 0%, ${card.bgColor2} 100%)`,
+                    }
+                  : { backgroundColor: card.bgColor1 }
+                : undefined
+              return (
+                <div
+                  key={card.id ?? `${card.title}-${index}`}
+                  className={`rounded-3xl p-6 ${
+                    hasCustomBg ? textTone.textClass : ABOUT_TONE_CLASSES[tone]
+                  } ${
+                    hasCustomBg
+                      ? 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]'
+                      : ABOUT_TONE_SHADOW[tone]
+                  } ${card.wide ? 'lg:col-span-2' : ''}`}
+                  style={backgroundStyle}
+                  data-reveal
+                >
+                  {card.wide ? (
+                    <div className="flex flex-col gap-3">
+                      {card.title ? (
+                        <h3
+                          className={`text-[18px] ${
+                            hasCustomBg
+                              ? textTone.titleClass
+                              : tone === 'white'
+                                ? 'text-[#4b0f1c]'
+                                : ''
+                          }`}
+                        >
+                          <strong>{card.title}</strong>
+                        </h3>
+                      ) : null}
+                      <div
+                        className="about-card-content text-[16px] leading-relaxed"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(card.text || ''),
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      {card.title ? (
+                        <h3
+                          className={`text-[18px] ${
+                            hasCustomBg
+                              ? textTone.titleClass
+                              : tone === 'white'
+                                ? 'text-[#4b0f1c]'
+                                : ''
+                          }`}
+                        >
+                          <strong>{card.title}</strong>
+                        </h3>
+                      ) : null}
+                      <div
+                        className="about-card-content mt-3 text-[16px] leading-relaxed"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(card.text || ''),
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
 
           <div className="mt-8">
@@ -1283,6 +1335,32 @@ export default function Index2Page() {
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
+        .about-card-content p + p {
+          margin-top: 0.75rem;
+        }
+        .about-card-content ul {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          display: grid;
+          gap: 0.6rem;
+        }
+        .about-card-content li {
+          position: relative;
+          padding-left: 1.25rem;
+        }
+        .about-card-content li::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0.65em;
+          width: 0.45rem;
+          height: 0.45rem;
+          border-radius: 999px;
+          background: currentColor;
+          opacity: 0.75;
+          transform: translateY(-50%);
+        }
         html {
           scroll-behavior: smooth;
         }
@@ -1311,36 +1389,6 @@ Section.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
-}
-
-function HeartList({ items, double = false, renderItem }) {
-  return (
-    <ul className="mt-3 grid gap-3 font-futura text-[18px] leading-relaxed">
-      {items.map((item) => (
-        <li key={item} className="flex items-start gap-2">
-          <img
-            src="/img/logo_heart_16x20px.png"
-            alt=""
-            className="w-5 h-5 mt-1"
-          />
-          <span className="flex-1">{renderItem ? renderItem(item) : item}</span>
-          {double ? (
-            <img
-              src="/img/logo_heart_16x20px.png"
-              alt=""
-              className="w-5 h-5 mt-1"
-            />
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-HeartList.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.string).isRequired,
-  double: PropTypes.bool,
-  renderItem: PropTypes.func,
 }
 
 function SpaceCard({ space, style, onMore }) {

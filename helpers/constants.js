@@ -96,6 +96,9 @@ const ContactsContent = dynamic(
 const TitleBlockContent = dynamic(
   () => import('@layouts/content/TitleBlockContent')
 )
+const AboutSpaceContent = dynamic(
+  () => import('@layouts/content/AboutSpaceContent')
+)
 const HistoriesContent = dynamic(
   () => import('@layouts/content/HistoriesContent')
 )
@@ -817,6 +820,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   vk: '',
   codeSendService: 'telefonip',
   spaceStats: [],
+  aboutSpaceCards: [],
   referralProgram: {
     enabled: false,
     enabledForCenter: false,
@@ -1946,6 +1950,11 @@ export const CONTENTS = Object.freeze({
     name: 'Сайт / Пространства',
     roleAccess: (role) => role?.generalPage?.directions,
   },
+  aboutSpace: {
+    Component: AboutSpaceContent,
+    name: 'Сайт / О нашем пространстве',
+    roleAccess: (role) => role?.generalPage?.aboutSpace || role?.dev,
+  },
   reviews: {
     Component: ReviewsContent,
     name: 'Сайт / Отзывы',
@@ -2314,6 +2323,14 @@ export const pages = [
     icon: faKey,
     // accessRoles: CONTENTS['directions'].accessRoles,
     roleAccess: CONTENTS['directions'].roleAccess,
+  },
+  {
+    id: 9.1,
+    group: 4,
+    name: 'О нашем пространстве',
+    href: 'aboutSpace',
+    icon: faHome,
+    roleAccess: CONTENTS['aboutSpace'].roleAccess,
   },
   {
     id: 9.5,

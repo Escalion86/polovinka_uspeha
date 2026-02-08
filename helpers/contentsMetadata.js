@@ -4,6 +4,7 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   servicesUsers: 'Услуги / Заявки на услуги',
   myServices: 'Услуги / Мои заявки на услуги',
   directions: 'Сайт / Пространства',
+  aboutSpace: 'Сайт / О нашем пространстве',
   reviews: 'Сайт / Отзывы',
   additionalBlocks: 'Сайт / Доп. блоки',
   spaceStats: 'Сайт / Пространство в цифрах',
