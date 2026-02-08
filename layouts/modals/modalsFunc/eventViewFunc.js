@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import EventCardButtons from '@components/cardButtons/EventCardButtons'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import Divider from '@components/Divider'
@@ -73,9 +73,8 @@ const NamesOfUsersAssistantsOfEvent = (props) => {
 }
 
 const CardButtonsComponent = ({ event, isEventClosed }) => (
-  <CardButtons
+  <EventCardButtons
     item={event}
-    typeOfItem="event"
     forForm
     showEditButton={!isEventClosed}
     showDeleteButton={false}

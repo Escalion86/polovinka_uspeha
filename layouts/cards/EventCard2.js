@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import CardButtons from '@components/CardButtons'
+import EventCardButtons from '@components/cardButtons/EventCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventButtonSignIn from '@components/EventButtonSignIn'
@@ -132,9 +132,8 @@ const EventCard2 = ({
               ) : null}
             </div>
             {!noButtons && (
-              <CardButtons
+              <EventCardButtons
                 item={event}
-                typeOfItem="event"
                 showOnSiteOnClick={() => {
                   itemFunc.event.set({
                     _id: event._id,

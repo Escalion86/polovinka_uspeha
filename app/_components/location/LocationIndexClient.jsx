@@ -8,6 +8,10 @@ import {
   LOCATIONS,
   LOCATIONS_KEYS_VISIBLE,
 } from '@helpers/constants'
+import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
+import { AdditionalBlockCardContent } from '@layouts/cards/AdditionalBlockCard'
+import { DirectionCardView } from '@layouts/cards/DirectionCard'
+import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
@@ -149,7 +153,6 @@ const DEFAULT_ABOUT_CARDS = [
   },
 ]
 
-
 const MONTHS_FULL = [
   'января',
   'февраля',
@@ -188,48 +191,6 @@ const navItems = [
 ]
 
 const spacesNavItems = [{ id: 'spaces', label: 'Наши пространства' }]
-const ABOUT_TONE_CLASSES = {
-  white: 'bg-white text-[#2b1b21]',
-  burgundy:
-    'bg-[linear-gradient(145deg,#4b101b_0%,#6b1f2a_55%,#7b2a35_100%)] text-white',
-  blue: 'bg-[linear-gradient(145deg,#3aa3e0_0%,#4fb0e8_55%,#6bc2f0_100%)] text-[#0b2230]',
-}
-const ABOUT_TONE_SHADOW = {
-  white: 'shadow-[0_20px_45px_rgba(0,0,0,0.08)]',
-  burgundy: 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]',
-  blue: 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]',
-}
-const hexToRgb = (hex) => {
-  if (typeof hex !== 'string') return null
-  const cleaned = hex.replace('#', '').trim()
-  if (cleaned.length !== 6) return null
-  const r = parseInt(cleaned.slice(0, 2), 16)
-  const g = parseInt(cleaned.slice(2, 4), 16)
-  const b = parseInt(cleaned.slice(4, 6), 16)
-  if ([r, g, b].some((val) => Number.isNaN(val))) return null
-  return { r, g, b }
-}
-const getLuminance = (hex) => {
-  const rgb = hexToRgb(hex)
-  if (!rgb) return 1
-  const toLinear = (value) => {
-    const v = value / 255
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
-  }
-  const r = toLinear(rgb.r)
-  const g = toLinear(rgb.g)
-  const b = toLinear(rgb.b)
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-const getTextTone = (color1, color2) => {
-  const lum1 = getLuminance(color1)
-  const lum2 = color2 ? getLuminance(color2) : lum1
-  const avg = (lum1 + lum2) / 2
-  if (avg < 0.5) {
-    return { textClass: 'text-white', titleClass: 'text-white' }
-  }
-  return { textClass: 'text-[#2b1b21]', titleClass: 'text-[#4b0f1c]' }
-}
 
 export default function LocationIndexClient({ location }) {
   const [activeDay, setActiveDay] = useState(null)
@@ -240,8 +201,7 @@ export default function LocationIndexClient({ location }) {
   const [directionsData, setDirectionsData] = useState([])
   const [eventsUsers, setEventsUsers] = useState([])
   const [reviewsPerView, setReviewsPerView] = useState(3)
-  const defaultLocation =
-    location || (LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk')
+  const defaultLocation = location || (LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk')
   const reviewsContainerRef = useRef(null)
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
@@ -771,87 +731,14 @@ export default function LocationIndexClient({ location }) {
 
         <Section id="about" title="О нашем пространстве">
           <div className="grid gap-6 lg:grid-cols-2">
-            {aboutCards.map((card, index) => {
-              const tone = ABOUT_TONE_CLASSES[card.tone] ? card.tone : 'white'
-              const hasCustomBg =
-                (card.bgMode === 'solid' && card.bgColor1) ||
-                (card.bgMode === 'gradient' &&
-                  card.bgColor1 &&
-                  card.bgColor2)
-              const textTone = hasCustomBg
-                ? getTextTone(
-                    card.bgColor1,
-                    card.bgMode === 'gradient' ? card.bgColor2 : null
-                  )
-                : { textClass: '', titleClass: '' }
-              const backgroundStyle = hasCustomBg
-                ? card.bgMode === 'gradient'
-                  ? {
-                      backgroundImage: `linear-gradient(145deg,${card.bgColor1} 0%, ${card.bgColor2} 100%)`,
-                    }
-                  : { backgroundColor: card.bgColor1 }
-                : undefined
-              return (
-                <div
-                  key={card.id ?? `${card.title}-${index}`}
-                  className={`rounded-3xl p-6 ${
-                    hasCustomBg ? textTone.textClass : ABOUT_TONE_CLASSES[tone]
-                  } ${
-                    hasCustomBg
-                      ? 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]'
-                      : ABOUT_TONE_SHADOW[tone]
-                  } ${card.wide ? 'lg:col-span-2' : ''}`}
-                  style={backgroundStyle}
-                  data-reveal
-                >
-                  {card.wide ? (
-                    <div className="flex flex-col gap-3">
-                      {card.title ? (
-                        <h3
-                          className={`text-[18px] ${
-                            hasCustomBg
-                              ? textTone.titleClass
-                              : tone === 'white'
-                                ? 'text-[#4b0f1c]'
-                                : ''
-                          }`}
-                        >
-                          <strong>{card.title}</strong>
-                        </h3>
-                      ) : null}
-                      <div
-                        className="about-card-content text-[16px] leading-relaxed"
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(card.text || ''),
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      {card.title ? (
-                        <h3
-                          className={`text-[18px] ${
-                            hasCustomBg
-                              ? textTone.titleClass
-                              : tone === 'white'
-                                ? 'text-[#4b0f1c]'
-                                : ''
-                          }`}
-                        >
-                          <strong>{card.title}</strong>
-                        </h3>
-                      ) : null}
-                      <div
-                        className="about-card-content mt-3 text-[16px] leading-relaxed"
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(card.text || ''),
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            {aboutCards.map((card, index) => (
+              <AboutSpaceCard
+                key={card.id ?? `${card.title}-${index}`}
+                card={card}
+                showButtons={false}
+                reveal
+              />
+            ))}
           </div>
 
           <div className="mt-8">
@@ -860,18 +747,12 @@ export default function LocationIndexClient({ location }) {
             </h3>
             <div className="grid gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-3">
               {spaceStats.map((stat, index) => (
-                <div
+                <SpaceStatsCard
                   key={stat.id ?? `${stat.number}-${index}`}
-                  className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
-                  data-reveal
-                >
-                  <div className="font-futura font-semibold text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
-                    {stat.number}
-                  </div>
-                  <div className="mt-2 font-futura text-[18px] leading-relaxed">
-                    {stat.text}
-                  </div>
-                </div>
+                  stat={stat}
+                  showButtons={false}
+                  reveal
+                />
               ))}
             </div>
           </div>
@@ -892,16 +773,27 @@ export default function LocationIndexClient({ location }) {
               </p>
             </div>
           </div>
+          <div className="flex justify-center px-[6vw] pt-20">
+            <Link
+              href="/login"
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+            >
+              Присоединиться к нам
+            </Link>
+          </div>
         </Section>
 
         <Section id="spaces" title="Наши пространства">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {spacesFromDirections.map((space, index) => (
-              <SpaceCard
+            {spacesFromDirections.map((space) => (
+              <DirectionCardView
                 key={space.id}
-                space={space}
+                direction={{
+                  ...space,
+                  shortDescription: space.description,
+                }}
                 onMore={() => setActiveSpace(space)}
-                style={{ transitionDelay: `${index * 80}ms` }}
+                reveal
               />
             ))}
           </div>
@@ -974,7 +866,16 @@ export default function LocationIndexClient({ location }) {
               />
             ))}
           </div>
+          <div className="flex justify-center px-[6vw] pt-20">
+            <Link
+              href="/login"
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+            >
+              Присоединиться к нам
+            </Link>
+          </div>
         </Section>
+
         {index2AdditionalBlocks.map((block) => (
           <AdditionalBlockSection key={block._id} block={block} />
         ))}
@@ -1006,6 +907,15 @@ export default function LocationIndexClient({ location }) {
             </Link>
           </div>
         </Section>
+
+        <div className="flex justify-center px-[6vw] pb-10">
+          <Link
+            href="/login"
+            className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+          >
+            Присоединиться к нам
+          </Link>
+        </div>
 
         <Section id="announcements" title="Анонс наших мероприятий">
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1392,46 +1302,6 @@ Section.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-function SpaceCard({ space, style, onMore }) {
-  const hasDetails = Boolean(space.fullDescription?.trim())
-
-  return (
-    <div
-      className="flex h-full flex-col rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
-      data-reveal
-      style={style}
-    >
-      <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
-        {space.title}
-      </h3>
-      <div className="flex flex-col h-full p-5 gap-y-1">
-        <p className="text-[18px] text-[#4b3a40]">{space.description}</p>
-        {hasDetails ? (
-          <button
-            type="button"
-            onClick={onMore}
-            className="cursor-pointer mt-auto inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
-          >
-            Подробнее
-          </button>
-        ) : null}
-      </div>
-    </div>
-  )
-}
-
-SpaceCard.propTypes = {
-  space: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    fullDescription: PropTypes.string,
-    images: PropTypes.arrayOf(PropTypes.string),
-  }).isRequired,
-  style: PropTypes.object,
-  onMore: PropTypes.func,
-}
-
 function ServiceCard({ service, style }) {
   const tileStyle = service?.color
     ? ADDITIONAL_BLOCK_TILE_COLORS.find(
@@ -1496,58 +1366,9 @@ ServiceCard.propTypes = {
 }
 
 function AdditionalBlockSection({ block }) {
-  const tiles = Array.isArray(block.tiles) ? block.tiles : []
-  const hasDescription = Boolean(block.description)
-  const blockStyle =
-    block.blockBgMode === 'gradient'
-      ? {
-          background: `linear-gradient(135deg, ${
-            block.blockBgColor1 || '#ffffff'
-          }, ${block.blockBgColor2 || '#f6f3f1'})`,
-        }
-      : {
-          backgroundColor: block.blockBgColor1 || '#ffffff',
-        }
-
   return (
     <section className="px-[6vw] py-[70px] even:bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))]">
-      <div className="mb-8">
-        <h2 className="font-lora text-[clamp(26px,3vw,38px)] text-[#6b1f2a]">
-          {block.title}
-        </h2>
-      </div>
-      <div
-        className="rounded-3xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
-        style={blockStyle}
-      >
-        {hasDescription ? (
-          <div
-            className="rounded-2xl bg-white/70 p-5 shadow-[0_12px_24px_rgba(0,0,0,0.08)]"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(block.description),
-            }}
-          />
-        ) : null}
-        {tiles.length > 0 ? (
-          <div
-            className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
-              hasDescription ? 'mt-6' : ''
-            }`}
-          >
-            {tiles.map((tile, index) => (
-              <ServiceCard
-                key={`${tile.title ?? 'tile'}-${index}`}
-                service={{
-                  title: tile.title,
-                  description: tile.description,
-                  image: tile.image,
-                  color: tile.color,
-                }}
-              />
-            ))}
-          </div>
-        ) : null}
-      </div>
+      <AdditionalBlockCardContent block={block} showButtons={false} reveal />
     </section>
   )
 }
@@ -1568,8 +1389,6 @@ AdditionalBlockSection.propTypes = {
   }).isRequired,
 }
 
-
 LocationIndexClient.propTypes = {
   location: PropTypes.string,
 }
-

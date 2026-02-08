@@ -1,11 +1,6 @@
 'use client'
 
-import CardButtons from '@components/CardButtons'
-import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/faTrashAlt'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import AboutSpaceCardButtons from '@components/cardButtons/AboutSpaceCardButtons'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
 
@@ -69,6 +64,8 @@ const AboutSpaceCard = ({
   onMoveDown,
   onClone,
   onDelete,
+  showButtons = true,
+  reveal = false,
 }) => {
   if (!card) return null
 
@@ -87,49 +84,6 @@ const AboutSpaceCard = ({
       : { backgroundColor: card.bgColor1 }
     : undefined
 
-  const customButtons = [
-    {
-      key: 'up',
-      icon: faArrowUp,
-      tooltipText: 'Переместить выше',
-      color: 'blue',
-      onClick: onMoveUp,
-      disabled: !onMoveUp,
-    },
-    {
-      key: 'down',
-      icon: faArrowDown,
-      tooltipText: 'Переместить ниже',
-      color: 'blue',
-      onClick: onMoveDown,
-      disabled: !onMoveDown,
-    },
-    {
-      key: 'edit',
-      icon: faPencilAlt,
-      tooltipText: 'Редактировать',
-      color: 'green',
-      onClick: onEdit,
-      disabled: !onEdit,
-    },
-    {
-      key: 'clone',
-      icon: faCopy,
-      tooltipText: 'Клонировать',
-      color: 'general',
-      onClick: onClone,
-      disabled: !onClone,
-    },
-    {
-      key: 'delete',
-      icon: faTrashAlt,
-      tooltipText: 'Удалить',
-      color: 'red',
-      onClick: onDelete,
-      disabled: !onDelete,
-    },
-  ]
-
   return (
     <div
       className={cn(
@@ -140,26 +94,30 @@ const AboutSpaceCard = ({
       )}
       style={backgroundStyle}
       onClick={onEdit}
+      {...(reveal ? { 'data-reveal': true } : {})}
     >
-      <div
-        className="absolute right-3 top-3 z-10"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <CardButtons
-          item={card}
-          typeOfItem="aboutSpace"
-          customButtons={customButtons}
-          customOnly
-          alwaysCompact
-          triggerClassName={
-            hasCustomBg
-              ? textTone.textClass === 'text-white'
-                ? 'text-white'
-                : 'text-[#6b1f2a]'
-              : toneTrigger[tone]
-          }
-        />
-      </div>
+      {showButtons ? (
+        <div
+          className="absolute right-3 top-3 z-10"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <AboutSpaceCardButtons
+            card={card}
+            onEdit={onEdit}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
+            onClone={onClone}
+            onDelete={onDelete}
+            triggerClassName={
+              hasCustomBg
+                ? textTone.textClass === 'text-white'
+                  ? 'text-white'
+                  : 'text-[#6b1f2a]'
+                : toneTrigger[tone]
+            }
+          />
+        </div>
+      ) : null}
       {card.wide ? (
         <div className="flex flex-col gap-3">
           {card.title ? (

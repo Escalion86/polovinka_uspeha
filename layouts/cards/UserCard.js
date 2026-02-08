@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import UserCardButtons from '@components/cardButtons/UserCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
@@ -157,7 +157,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                         АДМИНИСТРАТОР
                       </span>
                     )} */}
-                    <CardButtons item={user} typeOfItem="user" />
+                    <UserCardButtons item={user} />
                   </div>
                   <div className="flex tablet:h-full">
                     <img
@@ -287,7 +287,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   </div>
                 </div>
                 {/* <div className="flex flex-col items-end justify-between">
-                  <CardButtons item={user} typeOfItem="user" />
+                  <UserCardButtons item={user} />
                   {seeSumOfPaymentsWithoutEventOnCard && (
                     <UserSumOfPaymentsWithoutEvent userId={userId} />
                   )}

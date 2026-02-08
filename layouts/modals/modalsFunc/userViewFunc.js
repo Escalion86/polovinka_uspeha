@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import UserCardButtons from '@components/cardButtons/UserCardButtons'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import FormWrapper from '@components/FormWrapper'
 import ImageGallery from '@components/ImageGallery'
@@ -21,9 +21,7 @@ import userSelector from '@state/selectors/userSelector'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 
-const CardButtonsComponent = ({ user }) => (
-  <CardButtons item={user} typeOfItem="user" forForm />
-)
+const CardButtonsComponent = ({ user }) => <UserCardButtons item={user} forForm />
 
 const userViewFunc = (userId, params = {}) => {
   const UserModal = ({
@@ -57,12 +55,7 @@ const userViewFunc = (userId, params = {}) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
-            item={user}
-            typeOfItem="user"
-            forForm
-            showDeleteButton={false}
-          />
+          <UserCardButtons item={user} forForm showDeleteButton={false} />
         ))
     }, [setTopLeftComponent])
 

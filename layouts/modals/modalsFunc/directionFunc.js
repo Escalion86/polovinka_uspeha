@@ -16,7 +16,7 @@ import TabPanel from '@components/Tabs/TabPanel'
 import ComboBox from '@components/ComboBox'
 import compareObjects from '@helpers/compareObjects'
 import compareArrays from '@helpers/compareArrays'
-import CardButtons from '@components/CardButtons'
+import DirectionCardButtons from '@components/cardButtons/DirectionCardButtons'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
@@ -148,9 +148,8 @@ const directionFunc = (directionId, clone = false) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
+          <DirectionCardButtons
             item={direction}
-            typeOfItem="direction"
             forForm
             showEditButton={false}
             showDeleteButton={false}

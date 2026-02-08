@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import AdditionalBlockCardButtons from '@components/cardButtons/AdditionalBlockCardButtons'
 import CheckBox from '@components/CheckBox'
 import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
@@ -185,9 +185,8 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
+          <AdditionalBlockCardButtons
             item={additionalBlock}
-            typeOfItem="additionalBlock"
             forForm
             showEditButton={false}
             showDeleteButton={false}

@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import UserCardButtons from '@components/cardButtons/UserCardButtons'
 import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
@@ -278,12 +278,11 @@ const userFunc = (userId, clone = false) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
+          <UserCardButtons
             item={user}
-            typeOfItem="user"
             forForm
-            noEditButton
-            onDelete={closeModal}
+            showEditButton={false}
+            showDeleteButton={false}
           />
         ))
     }, [setTopLeftComponent])

@@ -43,7 +43,7 @@ const CardWrapper = ({
       {/* <div className="py-0.5"> */}
       <div
         className={cn(
-          'border-t border-b border-gray-400 relative w-full duration-300 shadow-xs hover:shadow-medium-active',
+          'overflow-hidden border border-gray-400 relative w-full duration-300 shadow-xs hover:shadow-medium-active',
           { 'cursor-pointer': !loading },
           {
             'flex flex-col laptop:flex-row items-center laptop:items-stretch':

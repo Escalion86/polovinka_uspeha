@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import NewsletterCardButtons from '@components/cardButtons/NewsletterCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -201,12 +201,7 @@ const NewsletterCard = ({ newsletter, style }) => {
           </div>
         </div>
       </div>
-      <CardButtons
-        item={newsletter}
-        typeOfItem="newsletter"
-        alwaysCompact
-        // {...cardButtonsProps}
-      />
+      <NewsletterCardButtons item={newsletter} alwaysCompact />
     </CardWrapper>
   )
 }

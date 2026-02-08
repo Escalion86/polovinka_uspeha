@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import ReviewCardButtons from '@components/cardButtons/ReviewCardButtons'
 import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -106,9 +106,8 @@ const reviewFunc = (reviewId, clone = false) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
+          <ReviewCardButtons
             item={review}
-            typeOfItem="review"
             forForm
             showEditButton={false}
             showDeleteButton={false}

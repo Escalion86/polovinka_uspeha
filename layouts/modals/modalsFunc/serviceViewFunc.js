@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import CardButtons from '@components/CardButtons'
+import ServiceCardButtons from '@components/cardButtons/ServiceCardButtons'
 import Divider from '@components/Divider'
 import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 
 const CardButtonsComponent = ({ service }) => (
-  <CardButtons item={service} typeOfItem="service" forForm />
+  <ServiceCardButtons item={service} forForm />
 )
 
 const serviceViewFunc = (serviceId) => {

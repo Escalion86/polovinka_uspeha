@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import DirectionCardButtons from '@components/cardButtons/DirectionCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -7,6 +7,62 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useAtomValue } from 'jotai'
 import snackbarAtom from '@state/atoms/snackbarAtom'
+
+export const DirectionCardView = ({
+  direction,
+  onMore,
+  showButtons = false,
+  onToggleShowOnSite,
+  onMoveUp,
+  onMoveDown,
+  triggerClassName,
+  reveal = false,
+}) => {
+  if (!direction) return null
+  const hasDetails = typeof onMore === 'function'
+
+  return (
+    <div
+      className="relative w-full flex h-full flex-col rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+      {...(reveal ? { 'data-reveal': true } : {})}
+    >
+      {showButtons ? (
+        <div
+          className="absolute z-10 right-2 top-1"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <DirectionCardButtons
+            item={direction}
+            showOnSiteOnClick={onToggleShowOnSite}
+            onUpClick={onMoveUp}
+            onDownClick={onMoveDown}
+            alwaysCompact
+            triggerClassName={triggerClassName}
+          />
+        </div>
+      ) : null}
+      <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
+        {direction.title}
+      </h3>
+      <div className="flex flex-col h-full p-5 gap-y-1">
+        <p className="text-[18px] text-[#4b3a40] whitespace-pre-line">
+          {direction.shortDescription ||
+            direction.description ||
+            'Описание пространства пока не добавлено.'}
+        </p>
+        {hasDetails ? (
+          <button
+            type="button"
+            onClick={onMore}
+            className="cursor-pointer mt-auto inline-flex items-center justify-center rounded-full border border-[#4fb0e8] px-4 py-2 text-sm font-semibold text-[#1f6e9c] transition hover:bg-[#4fb0e8] hover:text-white"
+          >
+            Подробнее
+          </button>
+        ) : null}
+      </div>
+    </div>
+  )
+}
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -111,39 +167,21 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       style={style}
       className="rounded-2xl"
     >
-      <div className="relative w-full flex h-full flex-col rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
-        <div
-          className="absolute z-10 right-2 top-1"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <CardButtons
-            item={direction}
-            typeOfItem="direction"
-            showOnSiteOnClick={() => {
-              itemFunc.direction.set({
-                _id: direction._id,
-                showOnSite: !direction.showOnSite,
-              })
-            }}
-            onUpClick={direction.index > 0 ? setUp : undefined}
-            onDownClick={
-              direction.index < directions.length - 1 ? setDown : undefined
-            }
-            alwaysCompact
-            triggerClassName="text-white"
-          />
-        </div>
-        <h3 className="py-2 text-center rounded-t-2xl font-bold text-[20px] bg-[#6b1f2a] text-white/85">
-          {direction.title}
-        </h3>
-        <div className="flex flex-col h-full p-5 gap-y-1">
-          <p className="text-[18px] text-[#4b3a40] whitespace-pre-line">
-            {direction.shortDescription ||
-              direction.description ||
-              'Описание пространства пока не добавлено.'}
-          </p>
-        </div>
-      </div>
+      <DirectionCardView
+        direction={direction}
+        showButtons
+        onToggleShowOnSite={() => {
+          itemFunc.direction.set({
+            _id: direction._id,
+            showOnSite: !direction.showOnSite,
+          })
+        }}
+        onMoveUp={direction.index > 0 ? setUp : undefined}
+        onMoveDown={
+          direction.index < directions.length - 1 ? setDown : undefined
+        }
+        triggerClassName="text-white"
+      />
     </CardWrapper>
   )
 }

@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import PaymentCardButtons from '@components/cardButtons/PaymentCardButtons'
 import CheckBox from '@components/CheckBox'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
@@ -309,9 +309,8 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
           clone
             ? undefined
             : () => (
-                <CardButtons
+                <PaymentCardButtons
                   item={payment}
-                  typeOfItem="payment"
                   forForm
                   showEditButton={false}
                   showDeleteButton={false}

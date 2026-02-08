@@ -369,7 +369,8 @@ const eventUsersFunc = (eventId) => {
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
     const seeHistory = loggedUserActiveRole?.eventsUsers?.seeHistory
     const copyListToClipboard =
-      loggedUserActiveRole?.eventsUsers?.copyListToClipboard
+      loggedUserActiveRole?.eventsUsers?.copyListToClipboard ||
+      loggedUserActiveRole?.dev
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
     const [isSortingByGenderAndName, setIsSortingByGenderAndName] =

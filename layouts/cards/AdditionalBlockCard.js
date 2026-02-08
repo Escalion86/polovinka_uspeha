@@ -1,5 +1,6 @@
-import CardButtons from '@components/CardButtons'
+import AdditionalBlockCardButtons from '@components/cardButtons/AdditionalBlockCardButtons'
 import CardWrapper from '@components/CardWrapper'
+import { ADDITIONAL_BLOCK_TILE_COLORS } from '@helpers/constants'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
@@ -8,6 +9,96 @@ import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
 import snackbarAtom from '@state/atoms/snackbarAtom'
+
+export const AdditionalBlockCardContent = ({
+  block,
+  showButtons = true,
+  onToggleShowOnSite,
+  onMoveUp,
+  onMoveDown,
+  buttonsAlwaysCompact = false,
+  reveal = false,
+}) => {
+  if (!block) return null
+  const tiles = Array.isArray(block.tiles) ? block.tiles : []
+  const hasDescription = Boolean(block.description)
+  const hasImage = Boolean(block.image)
+  const blockStyle =
+    block.blockBgMode === 'gradient'
+      ? {
+          background: `linear-gradient(135deg, ${
+            block.blockBgColor1 || '#ffffff'
+          }, ${block.blockBgColor2 || '#f6f3f1'})`,
+        }
+      : {
+          backgroundColor: block.blockBgColor1 || '#ffffff',
+        }
+
+  return (
+    <div className="w-full" {...(reveal ? { 'data-reveal': true } : {})}>
+      <div className="flex items-center gap-2 px-2 pb-3">
+        <div className="flex-1">
+          <h3 className="font-lora text-[clamp(22px,2.6vw,32px)] text-[#6b1f2a]">
+            {block.title}
+          </h3>
+        </div>
+        {showButtons ? (
+          <AdditionalBlockCardButtons
+            item={block}
+            showOnSiteOnClick={onToggleShowOnSite}
+            onUpClick={onMoveUp}
+            onDownClick={onMoveDown}
+            alwaysCompact={buttonsAlwaysCompact}
+          />
+        ) : null}
+      </div>
+      <div
+        className="rounded-3xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+        style={blockStyle}
+      >
+        {hasDescription || hasImage ? (
+          <div
+            className={`flex flex-col gap-4 ${
+              hasImage ? 'lg:flex-row lg:items-start' : ''
+            }`}
+          >
+            {hasImage ? (
+              <img
+                src={block.image}
+                alt=""
+                className="w-full max-h-[220px] rounded-2xl object-cover lg:w-[280px] lg:h-[260px]"
+              />
+            ) : null}
+            {hasDescription ? (
+              <div
+                className={`flex-1 rounded-2xl bg-white/70 p-5 shadow-[0_12px_24px_rgba(0,0,0,0.08)] ${
+                  hasImage ? 'lg:min-h-[220px]' : ''
+                }`}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(block.description),
+                }}
+              />
+            ) : null}
+          </div>
+        ) : null}
+        {tiles.length > 0 ? (
+          <div
+            className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
+              hasDescription ? 'mt-6' : ''
+            }`}
+          >
+            {tiles.map((tile, index) => (
+              <AdditionalBlockTile
+                key={`${tile.title ?? 'tile'}-${index}`}
+                tile={tile}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  )
+}
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -110,48 +201,73 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
       showOnSite={additionalBlock.showOnSite}
       hidden={hidden}
       style={style}
+      outerClassName="px-3 tablet:px-4 py-3"
+      className="rounded-2xl border border-[rgba(107,31,42,0.18)] shadow-[0_12px_26px_rgba(0,0,0,0.08)]"
+      bgClassName="bg-white"
     >
-      {additionalBlock?.image && (
-        // <div className="flex justify-center w-full tablet:w-auto">
-        <img
-          className="object-cover h-full w-36 tablet:w-48 max-h-60 tablet:max-h-72"
-          src={additionalBlock.image}
-          alt="additionalBlock"
-          // width={48}
-          // height={48}
-        />
-        // </div>
-      )}
-      <div className="w-full">
-        <div className="flex">
-          <div className="flex-1 px-2 py-1 text-xl font-bold ">
-            {additionalBlock.title}
-          </div>
-          <CardButtons
-            item={additionalBlock}
-            typeOfItem="additionalBlock"
-            showOnSiteOnClick={() => {
-              itemFunc.additionalBlock.set({
-                _id: additionalBlock._id,
-                showOnSite: !additionalBlock.showOnSite,
-              })
-            }}
-            onUpClick={additionalBlock.index > 0 && setUp}
-            onDownClick={
-              additionalBlock.index < additionalBlocks.length - 1 && setDown
-            }
-          />
-        </div>
-        {/* <div>{direction.description}</div> */}
-        <div
-          className="w-full max-w-full px-2 py-1 overflow-hidden text-sm textarea ql"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(additionalBlock.description),
-          }}
-        />
-      </div>
+      <AdditionalBlockCardContent
+        block={additionalBlock}
+        showButtons
+        onToggleShowOnSite={() => {
+          itemFunc.additionalBlock.set({
+            _id: additionalBlock._id,
+            showOnSite: !additionalBlock.showOnSite,
+          })
+        }}
+        onMoveUp={additionalBlock.index > 0 ? setUp : undefined}
+        onMoveDown={
+          additionalBlock.index < additionalBlocks.length - 1 ? setDown : undefined
+        }
+        buttonsAlwaysCompact
+      />
     </CardWrapper>
   )
 }
 
 export default AdditionalBlockCard
+
+const AdditionalBlockTile = ({ tile }) => {
+  const tileStyle = tile?.color
+    ? ADDITIONAL_BLOCK_TILE_COLORS.find((option) => option.value === tile.color)
+    : null
+  const isCustomColor =
+    typeof tile?.color === 'string' && tile.color.startsWith('#') && !tileStyle
+
+  return (
+    <div
+      className={`rounded-2xl p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)] ${
+        tileStyle
+          ? tileStyle.bgClassName
+          : tile?.color
+            ? 'text-white'
+            : 'bg-white'
+      }`}
+      style={isCustomColor ? { backgroundColor: tile.color } : undefined}
+    >
+      <div className="flex items-center gap-x-2">
+        {tile?.image ? (
+          <img
+            src={tile.image}
+            alt=""
+            className="object-cover w-12 h-12 rounded-full"
+          />
+        ) : null}
+        <h3
+          className={`flex-1 text-center text-[18px] ${
+            tileStyle?.titleClassName ?? (isCustomColor ? 'text-white' : '')
+          }`}
+        >
+          {tile?.title}
+        </h3>
+      </div>
+      <p
+        className={`mt-2 ${
+          tileStyle?.descriptionClassName ??
+          (isCustomColor ? 'text-white/90' : '')
+        }`}
+      >
+        {tile?.description}
+      </p>
+    </div>
+  )
+}

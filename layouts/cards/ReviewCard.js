@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import ReviewCardButtons from '@components/cardButtons/ReviewCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import { getNounAges } from '@helpers/getNoun'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -38,9 +38,8 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
           {review.author}
           {review.authorAge ? ', ' + getNounAges(review.authorAge) : ''}
         </div>
-        <CardButtons
+        <ReviewCardButtons
           item={review}
-          typeOfItem="review"
           showOnSiteOnClick={() => {
             itemFunc.review.set({
               _id: review._id,

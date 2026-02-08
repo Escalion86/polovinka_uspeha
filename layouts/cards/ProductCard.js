@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import ProductCardButtons from '@components/cardButtons/ProductCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLinesLimiter from '@components/TextLinesLimiter'
@@ -99,9 +99,8 @@ const ProductCard = ({ productId, hidden = false, style }) => {
           >
             {product?.title ?? '[неизвестный товар]'}
           </TextLinesLimiter>
-          <CardButtons
+          <ProductCardButtons
             item={product}
-            typeOfItem="product"
             showOnSiteOnClick={() => {
               itemFunc.product.set({
                 _id: product._id,

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import CardButtons from '@components/CardButtons'
+import ScheduledMessageCardButtons from '@components/cardButtons/ScheduledMessageCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import formatDateTime from '@helpers/formatDateTime'
@@ -156,12 +156,7 @@ const ScheduledMessageCard = ({
           </TextLinesLimiter>
         )}
       </div>
-      <CardButtons
-        item={message}
-        customButtons={customButtons}
-        customOnly
-        alwaysCompact
-      />
+      <ScheduledMessageCardButtons buttons={customButtons} isCompact />
     </CardWrapper>
   )
 }

@@ -1,7 +1,21 @@
-// import cn from 'classnames'
 import useIsTouchDevice from '@helpers/useIsTouchDevice'
 import cn from 'classnames'
-import { Dropdown } from 'flowbite-react'
+import {
+  FloatingFocusManager,
+  FloatingPortal,
+  autoUpdate,
+  flip,
+  offset,
+  safePolygon,
+  shift,
+  useClick,
+  useDismiss,
+  useFloating,
+  useHover,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react'
+import { useState } from 'react'
 // import { useRef } from 'react'
 const DropDown = ({
   trigger,
@@ -15,6 +29,29 @@ const DropDown = ({
   placement = 'left-start',
 }) => {
   const isTouchDevice = useIsTouchDevice()
+  const [open, setOpen] = useState(false)
+  const { refs, floatingStyles, context } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement,
+    whileElementsMounted: autoUpdate,
+    middleware: [offset(6), flip(), shift({ padding: 8 })],
+  })
+
+  const hover = useHover(context, {
+    enabled: openOnHover && !isTouchDevice,
+    move: false,
+    handleClose: safePolygon({ buffer: 8 }),
+  })
+  const click = useClick(context, { enabled: !openOnHover || isTouchDevice })
+  const dismiss = useDismiss(context)
+  const role = useRole(context, { role: 'menu' })
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    hover,
+    click,
+    dismiss,
+    role,
+  ])
   // const ref = useRef()
   // const padding =
   //   menuPadding === 'md'
@@ -39,25 +76,25 @@ const DropDown = ({
   //     ? '[--placement:top]'
   //     : ''
   return (
-    <Dropdown
-      // ref={ref}
-      trigger={openOnHover && !isTouchDevice ? 'hover' : 'click'}
-      // label="Dropdown button"
-      // dismissOnClick={false}
-      renderTrigger={() => trigger}
-      className={cn('bg-transparent border-0', className)}
-      theme={{ content: '' }}
-      placement={placement}
-    >
-      {/* <div onClick={() => ref.current.hide()}> */}
-      {/* <Dropdown.Item>Dashboard</Dropdown.Item>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Earnings</Dropdown.Item>
-      <Dropdown.Item>Sign out</Dropdown.Item> */}
-      {/* <Dropdown.Item className="p-0">{children}</Dropdown.Item> */}
-      {children}
-      {/* </div> */}
-    </Dropdown>
+    <div className={cn('bg-transparent border-0', className)}>
+      <div ref={refs.setReference} {...getReferenceProps()}>
+        {trigger}
+      </div>
+      {open && (
+        <FloatingPortal>
+          <FloatingFocusManager context={context} modal={false}>
+            <div
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className="z-[9999]"
+              {...getFloatingProps()}
+            >
+              <div className="overflow-hidden rounded-lg">{children}</div>
+            </div>
+          </FloatingFocusManager>
+        </FloatingPortal>
+      )}
+    </div>
   )
 
   // return (

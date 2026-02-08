@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import ServiceUserCardButtons from '@components/cardButtons/ServiceUserCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import { UserItem } from '@components/ItemCards'
 import PriceDiscount from '@components/PriceDiscount'
@@ -57,9 +57,8 @@ const ServiceUserCardView = ({
           >
             {service?.title ?? '[неизвестная услуга]'}
           </TextLinesLimiter>
-          <CardButtons
+          <ServiceUserCardButtons
             item={serviceUser}
-            typeOfItem="serviceUser"
             onEditQuestionnaire={
               service &&
               (servicesUsersEdit ||

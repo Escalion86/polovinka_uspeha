@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import CardButtons from '@components/CardButtons'
+import ServiceCardButtons from '@components/cardButtons/ServiceCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import DirectionTitleById from '@components/DirectionTitleById'
 import PriceDiscount from '@components/PriceDiscount'
@@ -112,9 +112,8 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
           {/* <div className="flex-1 px-2 py-1 text-xl font-bold ">
             {service.title}
           </div> */}
-          <CardButtons
+          <ServiceCardButtons
             item={service}
-            typeOfItem="service"
             showOnSiteOnClick={() => {
               itemFunc.service.set({
                 _id: service._id,

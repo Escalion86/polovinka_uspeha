@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+import PaymentCardButtons from '@components/cardButtons/PaymentCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import IconWithTooltip from '@components/IconWithTooltip'
 import PayTypeIcon from '@components/PayTypeIcon'
@@ -228,9 +228,8 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
             <PayTypeIcon payment={payment} />
           </div>
         </div>
-        <CardButtons
+        <PaymentCardButtons
           item={payment}
-          typeOfItem="payment"
           alwaysCompact
           {...cardButtonsProps}
         />
