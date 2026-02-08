@@ -65,7 +65,7 @@ export const userKeys = {
   orientation: 'Ориентация',
   phone: 'Телефон',
   whatsapp: 'Whatsapp',
-  viber: 'Viber',
+  ok: 'Одноклассники',
   telegram: 'Telegram',
   instagram: 'Instagram',
   vk: 'ВКонтакте',

@@ -131,7 +131,7 @@ const selectUsersFunc = (
 
     const searchByFields = useMemo(() => {
       const addSearchProps = seeAllContacts
-        ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
+        ? ['phone', 'whatsapp', 'ok', 'instagram', 'telegram', 'vk', 'email']
         : []
       const addDevSearchProps = isLoggedUserDev ? ['_id'] : []
 

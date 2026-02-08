@@ -79,7 +79,7 @@ const userFunc = (userId, clone = false) => {
     const [whatsapp, setWhatsapp] = useState(
       user?.whatsapp ?? DEFAULT_USER.whatsapp
     )
-    const [viber, setViber] = useState(user?.viber ?? DEFAULT_USER.viber)
+    const [ok, setOk] = useState(user?.ok ?? DEFAULT_USER.ok)
     const [telegram, setTelegram] = useState(
       user?.telegram ?? DEFAULT_USER.telegram
     )
@@ -125,7 +125,6 @@ const userFunc = (userId, clone = false) => {
           secondName,
           gender,
           phone,
-          viber,
           whatsapp,
           email,
           birthday,
@@ -150,7 +149,7 @@ const userFunc = (userId, clone = false) => {
             email,
             phone,
             whatsapp,
-            viber,
+            ok,
             telegram,
             instagram,
             vk,
@@ -234,7 +233,7 @@ const userFunc = (userId, clone = false) => {
         (user?.email ?? DEFAULT_USER.email) !== email ||
         (user?.phone ?? DEFAULT_USER.phone) !== phone ||
         (user?.whatsapp ?? DEFAULT_USER.whatsapp) !== whatsapp ||
-        (user?.viber ?? DEFAULT_USER.viber) !== viber ||
+        (user?.ok ?? DEFAULT_USER.ok) !== ok ||
         (user?.telegram ?? DEFAULT_USER.telegram) !== telegram ||
         (user?.instagram ?? DEFAULT_USER.instagram) !== instagram ||
         (user?.vk ?? DEFAULT_USER.vk) !== vk ||
@@ -263,7 +262,7 @@ const userFunc = (userId, clone = false) => {
       email,
       phone,
       whatsapp,
-      viber,
+      ok,
       telegram,
       instagram,
       vk,
@@ -426,19 +425,12 @@ const userFunc = (userId, clone = false) => {
           </div>
         </FormWrapper>
         <FormWrapper twoColumns>
-          <div className="flex items-center gap-x-1">
-            <PhoneInput
-              label="Viber"
-              value={viber}
-              onChange={setViber}
-              error={errors.viber}
-            />
-            <CopyPasteButtons
-              onPaste={setViber}
-              copyText={viber ? `+${viber}` : undefined}
-              pastePhone
-            />
-          </div>
+          <Input
+            label="Одноклассники"
+            prefix="ok.ru/profile/"
+            value={ok}
+            onChange={setOk}
+          />
           <Input
             prefix="@"
             label="Telegram"

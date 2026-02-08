@@ -21,6 +21,10 @@ const reviewsSchema = {
     type: Boolean,
     default: true,
   },
+  index: {
+    type: Number,
+    default: null,
+  },
 }
 
 export default reviewsSchema

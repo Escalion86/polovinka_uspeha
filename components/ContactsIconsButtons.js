@@ -5,7 +5,6 @@ import { useAtomValue } from 'jotai'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons/faEnvelope'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
-import { faViber } from '@fortawesome/free-brands-svg-icons/faViber'
 import { faTelegramPlane } from '@fortawesome/free-brands-svg-icons/faTelegramPlane'
 import { faInstagram } from '@fortawesome/free-brands-svg-icons/faInstagram'
 import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
@@ -82,7 +81,6 @@ const ContactsIconsButtons = ({
     if (
       !user.security?.showPhone &&
       !user.security?.showWhatsapp &&
-      !user.security?.showViber &&
       !user.security?.showTelegram &&
       !user.security?.showInstagram &&
       !user.security?.showVk &&
@@ -147,18 +145,6 @@ const ContactsIconsButtons = ({
               title={'+' + user.phone}
             />
           )}
-      {!message &&
-        user?.viber &&
-        ((isMemberAndUserIsMember && user.security?.showViber) ||
-          canSeeAllContacts) && (
-          <Btn
-            icon={faViber}
-            className="text-purple-600"
-            url={'viber://chat?number=' + user.viber}
-            title={'+' + user.viber}
-          />
-        )}
-
       {!message &&
         (user?.telegram
           ? ((isMemberAndUserIsMember && user.security?.showTelegram) ||

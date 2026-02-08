@@ -14,8 +14,8 @@ const siteSettingsSchema = {
     type: Number,
     default: null,
   },
-  viber: {
-    type: Number,
+  ok: {
+    type: String,
     default: null,
   },
   telegram: {

@@ -25,8 +25,10 @@ const UserKeyValueItem = ({ objKey, value }) =>
       'personalStatus',
     ].includes(objKey) ? (
     value
-  ) : ['phone', 'whatsapp', 'viber'].includes(objKey) ? (
+  ) : ['phone', 'whatsapp'].includes(objKey) ? (
     `+${value}`
+  ) : objKey === 'ok' ? (
+    `ok.ru/profile/${value}`
   ) : ['birthday', 'lastActivityAt', 'prevActivityAt'].includes(objKey) ? (
     formatDateTime(value)
   ) : objKey === 'password' ? (
@@ -78,7 +80,6 @@ const UserKeyValueItem = ({ objKey, value }) =>
         title="Показывать Whatsapp"
         text={value.showWhatsapp ? 'Да' : 'Нет'}
       />
-      <Item title="Показывать Viber" text={value.showViber ? 'Да' : 'Нет'} />
       <Item
         title="Показывать Телеграм"
         text={value.showTelegram ? 'Да' : 'Нет'}

@@ -7,12 +7,35 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 
-const ReviewCard = ({ reviewId, hidden = false, style }) => {
+const ReviewCard = ({ reviewId, hidden = false, style, onMoveUp, onMoveDown }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const review = useAtomValue(reviewSelector(reviewId))
   const loading = useAtomValue(loadingAtom('review' + reviewId))
   const itemFunc = useAtomValue(itemsFuncAtom)
+  const customButtons = []
+  if (onMoveUp || onMoveDown) {
+    customButtons.push(
+      {
+        key: 'up',
+        icon: faArrowUp,
+        tooltipText: 'Переместить выше',
+        color: 'blue',
+        onClick: onMoveUp,
+        disabled: !onMoveUp,
+      },
+      {
+        key: 'down',
+        icon: faArrowDown,
+        tooltipText: 'Переместить ниже',
+        color: 'blue',
+        onClick: onMoveDown,
+        disabled: !onMoveDown,
+      }
+    )
+  }
 
   return (
     <CardWrapper
@@ -40,6 +63,7 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
         </div>
         <ReviewCardButtons
           item={review}
+          customButtons={customButtons}
           showOnSiteOnClick={() => {
             itemFunc.review.set({
               _id: review._id,

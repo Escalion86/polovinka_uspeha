@@ -6,7 +6,7 @@ const siteSettingsAtom = atom({
   email: null,
   phone: null,
   whatsapp: null,
-  viber: null,
+  ok: null,
   telegram: null,
   instagram: null,
   vk: null,

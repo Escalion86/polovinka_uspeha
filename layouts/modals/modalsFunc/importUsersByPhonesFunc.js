@@ -24,7 +24,7 @@ const extractPhonesFromText = (text) => {
   return Array.from(new Set(normalized))
 }
 
-const PHONE_FIELDS = ['phone', 'whatsapp', 'viber']
+const PHONE_FIELDS = ['phone', 'whatsapp']
 
 const importUsersByPhonesFunc = ({ usersSource, onConfirm }) => {
   const ImportUsersByPhonesModal = ({

@@ -119,7 +119,7 @@ const ServicesUsersContent = () => {
         'thirdName',
         'phone',
         'whatsapp',
-        'viber',
+        'ok',
         'instagram',
         'telegram',
         'vk',

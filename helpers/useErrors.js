@@ -177,11 +177,6 @@ const useErrors = () => {
         data && `${data}`.length !== 11
           ? setError({ phone: 'Некорректно введен номер телефона' })
           : null,
-      viber: (data) => {
-        return data && `${data}`.length !== 11
-          ? setError({ viber: 'Некорректно введен номер viber' })
-          : null
-      },
       whatsapp: (data) =>
         data && `${data}`.length !== 11
           ? setError({ whatsapp: 'Некорректно введен номер whatsapp' })

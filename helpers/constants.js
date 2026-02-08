@@ -578,7 +578,6 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
   // showContacts: null,
   showPhone: false,
   showWhatsapp: false,
-  showViber: false,
   showTelegram: false,
   showInstagram: false,
   showVk: false,
@@ -598,7 +597,7 @@ export const DEFAULT_USER = Object.freeze({
   email: '',
   phone: null,
   whatsapp: null,
-  viber: null,
+  ok: '',
   telegram: '',
   vk: '',
   instagram: '',
@@ -718,6 +717,7 @@ export const DEFAULT_REVIEW = Object.freeze({
   authorAge: null,
   image: null,
   showOnSite: true,
+  index: null,
 })
 
 export const DEFAULT_PAYMENT = Object.freeze({
@@ -814,7 +814,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   email: '',
   phone: '',
   whatsapp: '',
-  viber: '',
+  ok: '',
   telegram: '',
   instagram: '',
   vk: '',

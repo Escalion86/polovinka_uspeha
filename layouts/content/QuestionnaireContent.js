@@ -105,9 +105,6 @@ const QuestionnaireContent = (props) => {
   const [whatsapp, setWhatsapp] = useState(
     loggedUserActive?.whatsapp ?? DEFAULT_USER.whatsapp
   )
-  const [viber, setViber] = useState(
-    loggedUserActive?.viber ?? DEFAULT_USER.viber
-  )
   const [telegram, setTelegram] = useState(
     loggedUserActive?.telegram ?? DEFAULT_USER.telegram
   )
@@ -191,7 +188,6 @@ const QuestionnaireContent = (props) => {
     loggedUserActive?.email !== email ||
     loggedUserActive?.phone !== phone ||
     loggedUserActive?.whatsapp !== whatsapp ||
-    loggedUserActive?.viber !== viber ||
     loggedUserActive?.telegram !== telegram ||
     loggedUserActive?.instagram !== instagram ||
     loggedUserActive?.vk !== vk ||
@@ -212,7 +208,6 @@ const QuestionnaireContent = (props) => {
         thirdName: thirdName.trim(),
         gender,
         phone,
-        viber,
         whatsapp,
         email,
         birthday,
@@ -240,7 +235,6 @@ const QuestionnaireContent = (props) => {
           email,
           phone,
           whatsapp,
-          viber,
           telegram,
           instagram,
           vk,
@@ -628,20 +622,6 @@ const QuestionnaireContent = (props) => {
             </ShowWrapper>
           </FormWrapper>
           <FormWrapper twoColumns>
-            <ShowWrapper
-              securytyKey="showViber"
-              value={security.showViber}
-              setSecurytyKey={setSecurytyKey}
-            >
-              <PhoneInput
-                label="Viber"
-                value={viber}
-                onChange={setViber}
-                error={errors.viber}
-                copyPasteButtons
-                noMargin
-              />
-            </ShowWrapper>
             <ShowWrapper
               securytyKey="showTelegram"
               value={security.showTelegram}

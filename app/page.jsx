@@ -295,22 +295,26 @@ export default function Index2Page() {
   const visibleReviews = useMemo(() => {
     const normalized = (reviewsData || [])
       .filter((review) => review?.showOnSite)
-      .map((review) => ({
+      .map((review, index) => ({
         name: review.author,
         age: review.authorAge,
         text: review.review,
         photo: review.image,
         id: review._id,
+        orderIndex: typeof review.index === 'number' ? review.index : index,
       }))
+      .sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
 
-    return normalized.length > 0 ? normalized : reviews
+    return normalized.length > 0
+      ? normalized.map(({ orderIndex, ...rest }) => rest)
+      : reviews
   }, [reviewsData])
 
   const contactsData = useMemo(() => {
     const phone = siteSettings?.phone || ''
     const email = siteSettings?.email || ''
     const whatsapp = siteSettings?.whatsapp || ''
-    const viber = siteSettings?.viber || ''
+    const ok = siteSettings?.ok || ''
     const telegram = siteSettings?.telegram || ''
     const instagram = siteSettings?.instagram || ''
     const vk = siteSettings?.vk || ''
@@ -340,12 +344,12 @@ export default function Index2Page() {
         badge: 'WA',
         tone: 'bg-[#25d366] text-white',
       },
-      viber && {
-        label: 'Viber',
-        value: viber,
-        href: `viber://chat?number=${normalizePhone(viber)}`,
-        badge: 'VB',
-        tone: 'bg-[#7360f2] text-white',
+      ok && {
+        label: 'Одноклассники',
+        value: `ok.ru/profile/${normalizeHandle(ok)}`,
+        href: `https://ok.ru/profile/${normalizeHandle(ok)}`,
+        badge: 'OK',
+        tone: 'bg-[#f7931e] text-white',
       },
       telegram && {
         label: 'Telegram',
@@ -1108,7 +1112,7 @@ export default function Index2Page() {
               <div className="absolute w-32 h-32 rounded-full pointer-events-none -right-10 top-6 bg-white/20 blur-2xl" />
               <div className="absolute w-24 h-24 rounded-full pointer-events-none -bottom-10 left-10 bg-white/10 blur-2xl" />
               <h3 className="text-xl font-semibold">
-                Свяжитесь с нами напрямую
+                Свяжитесь с нами в Вашем городе
               </h3>
               <p className="mt-2 text-sm text-white/80">
                 Подскажем формат, ответим на вопросы и поможем выбрать событие.

@@ -295,22 +295,26 @@ export default function LocationIndexClient({ location }) {
   const visibleReviews = useMemo(() => {
     const normalized = (reviewsData || [])
       .filter((review) => review?.showOnSite)
-      .map((review) => ({
+      .map((review, index) => ({
         name: review.author,
         age: review.authorAge,
         text: review.review,
         photo: review.image,
         id: review._id,
+        orderIndex: typeof review.index === 'number' ? review.index : index,
       }))
+      .sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
 
-    return normalized.length > 0 ? normalized : reviews
+    return normalized.length > 0
+      ? normalized.map(({ orderIndex, ...rest }) => rest)
+      : reviews
   }, [reviewsData])
 
   const contactsData = useMemo(() => {
     const phone = siteSettings?.phone || ''
     const email = siteSettings?.email || ''
     const whatsapp = siteSettings?.whatsapp || ''
-    const viber = siteSettings?.viber || ''
+    const ok = siteSettings?.ok || ''
     const telegram = siteSettings?.telegram || ''
     const instagram = siteSettings?.instagram || ''
     const vk = siteSettings?.vk || ''
@@ -340,12 +344,12 @@ export default function LocationIndexClient({ location }) {
         badge: 'WA',
         tone: 'bg-[#25d366] text-white',
       },
-      viber && {
-        label: 'Viber',
-        value: viber,
-        href: `viber://chat?number=${normalizePhone(viber)}`,
-        badge: 'VB',
-        tone: 'bg-[#7360f2] text-white',
+      ok && {
+        label: 'Одноклассники',
+        value: `ok.ru/profile/${normalizeHandle(ok)}`,
+        href: `https://ok.ru/profile/${normalizeHandle(ok)}`,
+        badge: 'OK',
+        tone: 'bg-[#f7931e] text-white',
       },
       telegram && {
         label: 'Telegram',
@@ -662,7 +666,7 @@ export default function LocationIndexClient({ location }) {
             ))}
             <Link
               href={`/${defaultLocation}/login`}
-              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
+              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
               onClick={() => setMenuOpen(false)}
             >
               Войти в пространство
@@ -723,7 +727,7 @@ export default function LocationIndexClient({ location }) {
           <div className="flex justify-center mt-8">
             <Link
               href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
             >
               Присоединиться к нам
             </Link>
@@ -777,7 +781,7 @@ export default function LocationIndexClient({ location }) {
           <div className="flex justify-center px-[6vw] pt-20">
             <Link
               href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
             >
               Присоединиться к нам
             </Link>
@@ -857,7 +861,7 @@ export default function LocationIndexClient({ location }) {
           </div>
         ) : null}
 
-        <Section id="services" title="Пространство товаров">
+        {/* <Section id="services" title="Пространство товаров">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
               <ServiceCard
@@ -866,16 +870,17 @@ export default function LocationIndexClient({ location }) {
                 style={{ transitionDelay: `${index * 80}ms` }}
               />
             ))}
-          </div>
-          <div className="flex justify-center px-[6vw] pt-20">
-            <Link
-              href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-            >
-              Присоединиться к нам
-            </Link>
-          </div>
-        </Section>
+          </div>         
+        </Section> */}
+
+        <div className="flex justify-center px-[6vw] ">
+          <Link
+            href={`/${defaultLocation}/register`}
+            className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+          >
+            Присоединиться к нам
+          </Link>
+        </div>
 
         {index2AdditionalBlocks.map((block) => (
           <AdditionalBlockSection key={block._id} block={block} />
@@ -908,15 +913,6 @@ export default function LocationIndexClient({ location }) {
             </Link>
           </div>
         </Section>
-
-        <div className="flex justify-center px-[6vw] pb-10">
-          <Link
-            href={`/${defaultLocation}/register`}
-            className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-          >
-            Присоединиться к нам
-          </Link>
-        </div>
 
         <Section id="announcements" title="Анонс наших мероприятий">
           <div className="grid gap-6 lg:grid-cols-2">
@@ -995,6 +991,14 @@ export default function LocationIndexClient({ location }) {
                 </div>
               )}
             </div>
+          </div>
+          <div className="flex justify-center px-[6vw] pt-20">
+            <Link
+              href={`/${defaultLocation}/register`}
+              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+            >
+              Присоединиться к нам
+            </Link>
           </div>
         </Section>
 
@@ -1129,7 +1133,7 @@ export default function LocationIndexClient({ location }) {
               <div className="absolute w-32 h-32 rounded-full pointer-events-none -right-10 top-6 bg-white/20 blur-2xl" />
               <div className="absolute w-24 h-24 rounded-full pointer-events-none -bottom-10 left-10 bg-white/10 blur-2xl" />
               <h3 className="text-xl font-semibold">
-                Свяжитесь с нами напрямую
+                Свяжитесь с нами в Вашем городе
               </h3>
               <p className="mt-2 text-sm text-white/80">
                 Подскажем формат, ответим на вопросы и поможем выбрать событие.

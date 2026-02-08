@@ -19,7 +19,7 @@ const ContactsContent = (props) => {
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [phone, setPhone] = useState(siteSettings?.phone)
   const [whatsapp, setWhatsapp] = useState(siteSettings?.whatsapp || '')
-  const [viber, setViber] = useState(siteSettings?.viber || '')
+  const [ok, setOk] = useState(siteSettings?.ok || '')
   const [telegram, setTelegram] = useState(siteSettings?.telegram || '')
   const [instagram, setInstagram] = useState(siteSettings?.instagram || '')
   const [vk, setVk] = useState(siteSettings?.vk || '')
@@ -33,7 +33,7 @@ const ContactsContent = (props) => {
   const formChanged =
     siteSettings?.phone !== phone ||
     (siteSettings?.whatsapp || '') !== whatsapp ||
-    (siteSettings?.viber || '') !== viber ||
+    (siteSettings?.ok || '') !== ok ||
     (siteSettings?.telegram || '') !== telegram ||
     (siteSettings?.instagram || '') !== instagram ||
     (siteSettings?.vk || '') !== vk ||
@@ -43,7 +43,6 @@ const ContactsContent = (props) => {
     if (
       !checkErrors({
         phoneNoRequired: phone,
-        viber,
         whatsapp,
         email,
       })
@@ -53,7 +52,7 @@ const ContactsContent = (props) => {
         {
           phone,
           whatsapp,
-          viber,
+          ok,
           telegram,
           instagram,
           vk,
@@ -123,11 +122,11 @@ const ContactsContent = (props) => {
           />
         </FormWrapper>
         <FormWrapper twoColumns>
-          <PhoneInput
-            label="Viber"
-            value={viber}
-            onChange={setViber}
-            error={errors.viber}
+          <Input
+            label="Одноклассники"
+            prefix="ok.ru/profile/"
+            value={ok}
+            onChange={setOk}
             copyPasteButtons
           />
           <Input

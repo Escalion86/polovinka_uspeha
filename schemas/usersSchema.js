@@ -99,9 +99,9 @@ const usersSchema = {
     type: Number,
     default: null,
   },
-  viber: {
-    type: Number,
-    default: null,
+  ok: {
+    type: String,
+    default: '',
   },
   telegram: {
     type: String,
