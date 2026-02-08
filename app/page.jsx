@@ -288,7 +288,7 @@ export default function Index2Page() {
 
   const index2AdditionalBlocks = useMemo(() => {
     return (additionalBlocks || [])
-      .filter((block) => block?.showOnIndex2)
+      .filter((block) => block?.showOnSite)
       .sort((a, b) => (a.index < b.index ? -1 : 1))
   }, [additionalBlocks])
 
@@ -664,7 +664,7 @@ export default function Index2Page() {
               className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
               onClick={() => setMenuOpen(false)}
             >
-              Войти в пространство!
+              Войти в пространство
             </Link>
           </nav>
         </div>

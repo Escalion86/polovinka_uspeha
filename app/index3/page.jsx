@@ -129,7 +129,7 @@ export default function Index3Page() {
 
   const index3AdditionalBlocks = useMemo(() => {
     return (additionalBlocks || [])
-      .filter((block) => block?.showOnIndex2)
+      .filter((block) => block?.showOnSite)
       .sort((a, b) => (a.index < b.index ? -1 : 1))
   }, [additionalBlocks])
 

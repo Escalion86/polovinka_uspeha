@@ -57,9 +57,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       additionalBlock?.showOnSite ?? DEFAULT_ADDITIONAL_BLOCK.showOnSite
     )
-    const [showOnIndex2, setShowOnIndex2] = useState(
-      additionalBlock?.showOnIndex2 ?? DEFAULT_ADDITIONAL_BLOCK.showOnIndex2
-    )
     const normalizeTiles = (value) =>
       (value ?? []).map((tile) => ({
         ...tile,
@@ -123,7 +120,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             title,
             description,
             showOnSite,
-            showOnIndex2,
             image,
             menuName,
             index: additionalBlock?.index ?? additionalBlocks.length,
@@ -142,7 +138,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
         additionalBlock?.title !== title ||
         additionalBlock?.description !== description ||
         additionalBlock?.showOnSite !== showOnSite ||
-        additionalBlock?.showOnIndex2 !== showOnIndex2 ||
         additionalBlock?.image !== image ||
         additionalBlock?.menuName !== menuName ||
         additionalBlock?.blockBgMode !== blockBgMode ||
@@ -158,7 +153,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
       title,
       description,
       showOnSite,
-      showOnIndex2,
       image,
       menuName,
       tiles,
@@ -245,12 +239,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           // labelClassName="w-40"
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
-        />
-        <CheckBox
-          checked={showOnIndex2}
-          labelPos="left"
-          onClick={() => setShowOnIndex2((checked) => !checked)}
-          label="Показывать на тестовой главной странице"
         />
         <div className="flex flex-col gap-3">
           <div className="font-semibold">Фон блока</div>
