@@ -40,6 +40,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import EventName, { EventNameById } from '@components/EventName'
 import UserName from '@components/UserName'
+import PaymentCardSkeleton from './Skeletons/PaymentCardSkeleton'
 
 const PaySum = ({ payment }) => {
   const isExpenses = [
@@ -67,7 +68,7 @@ const PaySum = ({ payment }) => {
 
 const PayText = ({ payment, sector }) => {
   return (
-    <div className="flex flex-col items-start flex-1 h-full ml-1 text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
+    <div className="flex flex-col items-start flex-1 h-full pr-1 ml-1 text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
       {sector === 'event' && (
         <EventPayDirectionIconText value={payment.payDirection} />
       )}
@@ -423,15 +424,17 @@ const PaymentCard = ({ paymentId, hidden = false, style, payment }) => {
     <CardWrapper
       loading={loading}
       onClick={() => !loading && modalsFunc.payment.edit(paymentState._id)}
-      className="flex items-stretch h-14 tablet:h-16"
+      className="flex items-stretch h-14 tablet:h-16 rounded-[18px] border border-[rgba(107,31,42,0.18)] shadow-[0_10px_20px_rgba(0,0,0,0.08)]"
+      bgClassName="bg-white/95"
       flex={false}
       hidden={hidden}
       style={style}
       gap={false}
+      outerClassName="px-3 py-2"
     >
       <div
         className={cn(
-          'flex items-center justify-center w-7 tablet:w-8 text-white',
+          'flex items-center justify-center w-8 tablet:w-9 text-white rounded-l-[18px]',
           sectorProps ? 'bg-' + sectorProps.color : 'bg-gray-400'
         )}
       >
@@ -451,4 +454,10 @@ const PaymentCard = ({ paymentId, hidden = false, style, payment }) => {
   )
 }
 
-export default PaymentCard
+const PaymentCardWrapper = (props) => (
+  <Suspense fallback={<PaymentCardSkeleton {...props} />}>
+    <PaymentCard {...props} />
+  </Suspense>
+)
+
+export default PaymentCardWrapper

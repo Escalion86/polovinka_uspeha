@@ -76,10 +76,10 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 //   </Suspense>
 // )
 
-const UserCard = ({ userId, hidden = false, style }) => {
+const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const user = useAtomValue(userCutedSelector(userId))
+  const user = userProp ?? useAtomValue(userCutedSelector(userId))
   const loading = useAtomValue(loadingAtom('user' + userId))
   // const eventUsers = useAtomValue(eventsUsersSignedUpByUserIdSelector(userId))
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -94,6 +94,23 @@ const UserCard = ({ userId, hidden = false, style }) => {
 
   const userGender =
     user?.gender && GENDERS.find((gender) => gender.value === user?.gender)
+  const rawAvatarSrc = getUserAvatarSrc(user)
+  const normalizeAvatarSrc = (value) => {
+    if (typeof value !== 'string') return '/img/users/null.jpg'
+    const trimmed = value.trim()
+    if (!trimmed) return '/img/users/null.jpg'
+    if (
+      trimmed.startsWith('/') ||
+      trimmed.startsWith('http://') ||
+      trimmed.startsWith('https://') ||
+      trimmed.startsWith('data:') ||
+      trimmed.startsWith('blob:') ||
+      trimmed.startsWith('//')
+    )
+      return trimmed
+    return '/img/users/null.jpg'
+  }
+  const avatarSrc = normalizeAvatarSrc(rawAvatarSrc)
 
   // const userStatusArr = USERS_STATUSES.find(
   //   (userStatus) => userStatus.value === user.status
@@ -105,11 +122,14 @@ const UserCard = ({ userId, hidden = false, style }) => {
       onClick={user ? () => modalsFunc.user.view(user._id) : undefined}
       hidden={hidden}
       style={style}
+      className="rounded-[22px] border border-[rgba(107,31,42,0.16)] shadow-[0_16px_30px_rgba(0,0,0,0.1)]"
+      bgClassName="bg-white/95"
+      outerClassName="px-3 py-2"
     >
       <div className="flex w-full">
         <div
           className={cn(
-            'w-8 flex justify-center items-center',
+            'w-8 flex justify-center items-center rounded-l-[22px]',
             userGender ? 'bg-' + userGender.color : 'bg-gray-400'
           )}
         >
@@ -121,8 +141,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <Image
-              className="hidden object-cover tablet:block w-[92px] h-[92px] min-w-[92px] min-h-[92px]"
-              src={getUserAvatarSrc(user)}
+              className="hidden object-cover tablet:block w-[92px] h-[92px] min-w-[92px] min-h-[92px] rounded-[16px] border border-[#f0e5ea] bg-white/80 m-2"
+              src={avatarSrc}
               alt="Аватар пользователя"
               width={92}
               height={92}
@@ -131,7 +151,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
-                  <div className="flex h-8 max-h-8 flex-nowrap items-start pl-1 py-0.5 leading-6 gap-x-1">
+                  <div className="tablet:rounded-bl-[30px] flex h-10 pl-3 max-h-10 flex-nowrap items-center px-2 py-0.5 leading-6 gap-x-2 rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
                     <div className="flex items-center flex-1 h-7 max-h-7 flex-nowrap">
                       <UserRelationshipIcon
                         relationship={user?.relationship}
@@ -161,13 +181,43 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   </div>
                   <div className="flex tablet:h-full">
                     <img
-                      className="object-cover w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden"
-                      src={getUserAvatarSrc(user)}
+                      className="object-cover w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden rounded-[12px] border border-[#f0e5ea] bg-white/80 m-2"
+                      src={avatarSrc}
                       alt="user"
                       // width={48}
                       // height={48}
                     />
-                    <div className="flex flex-col justify-end h-full px-1">
+                    <div className="flex flex-col justify-end h-full pb-1 mt-1 tablet:px-2">
+                      <div className="flex flex-wrap items-center gap-1 mb-1">
+                        {user?.birthday &&
+                          (seeBirthday ||
+                            user?.security?.showBirthday === true ||
+                            user?.security?.showBirthday === 'full') && (
+                            <span className="inline-flex items-center rounded-full border border-[#f0e5ea] bg-white/80 px-2 py-0.5 text-[10px] tablet:text-[12px] font-semibold uppercase tracking-[0.1em] text-[#6b1f2a]">
+                              {birthDateToAge(
+                                user?.birthday,
+                                serverDate,
+                                true,
+                                false,
+                                true
+                              )}
+                              <span className="ml-1.5 flex items-center text-[#6b1f2a]">
+                                <span className="scale-90 tablet:hidden">
+                                  <ZodiacIcon date={user?.birthday} small />
+                                </span>
+                                <span className="hidden tablet:inline-block">
+                                  <ZodiacIcon date={user?.birthday} small />
+                                </span>
+                              </span>
+                            </span>
+                          )}
+                        {typeof user?.signedUpEventsCount === 'number' && (
+                          <span className="inline-flex items-center rounded-full border border-[#f0e5ea] bg-white/80 px-2 py-0.5 text-[10px] tablet:text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1f6e9c]">
+                            {user?.signedUpEventsCount}
+                            <span className="ml-1 opacity-70">событий</span>
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center flex-1">
                         <TextLinesLimiter
                           className="text-sm italic font-normal leading-3.5 text-general"
@@ -181,49 +231,12 @@ const UserCard = ({ userId, hidden = false, style }) => {
                       {user?.birthday &&
                         (seeBirthday ||
                           user?.security?.showBirthday === true ||
-                          user?.security?.showBirthday === 'full') && (
-                          <div className="flex text-sm leading-4 gap-x-2 ">
-                            <span className="flex items-center font-bold">
-                              Возраст:
-                            </span>
-                            <div className="flex items-center text-sm font-normal whitespace-nowrap gap-x-2">
-                              <span className="leading-4">
-                                {birthDateToAge(
-                                  user?.birthday,
-                                  serverDate,
-                                  true,
-                                  false,
-                                  true
-                                )}
-                              </span>
-                              <ZodiacIcon date={user?.birthday} small />
-                            </div>
-                          </div>
-                        )}
-
-                      {/* <div className="flex text-sm leading-4 gap-x-2 ">
-                        <span className="font-bold">Зарегистрирован:</span>
-                        <span className="font-normal">
-                          {formatDate(user.createdAt)}
-                        </span>
-                      </div> */}
-                      {typeof user.signedUpEventsCount === 'number' && (
-                        <div className="flex text-sm leading-4 gap-x-2">
-                          <span className="font-bold">
-                            Посетил мероприятий:
-                          </span>
-                          {/* <FinishedCount userId={userId} /> */}
-                          <span className="font-normal">
-                            {user?.signedUpEventsCount}
-                          </span>
-                          {/* <span className="font-bold">Записан:</span> */}
-                          {/* <SignedUpCount userId={userId} /> */}
-                        </div>
-                      )}
+                          user?.security?.showBirthday === 'full') &&
+                        null}
                     </div>
-                    <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
+                    <div className="flex items-end justify-end flex-1 py-2 pr-3 gap-x-1">
                       {seeNotificationIcon && (
-                        <div className="flex items-center justify-end gap-x-1">
+                        <div className="absolute flex items-center justify-end bottom-2 right-3 gap-x-1">
                           {!user?.notifications?.telegram?.active ? (
                             //  && !user.notifications?.whatsapp?.active
                             <FontAwesomeIcon
@@ -281,7 +294,13 @@ const UserCard = ({ userId, hidden = false, style }) => {
                         </div>
                       )}
                       {seeSumOfPaymentsWithoutEventOnCard && (
-                        <UserSumOfPaymentsWithoutEvent userId={userId} />
+                        <Suspense
+                          fallback={
+                            <div className="h-5 w-16 rounded-full bg-gray-200" />
+                          }
+                        >
+                          <UserSumOfPaymentsWithoutEvent userId={userId} />
+                        </Suspense>
                       )}
                     </div>
                   </div>

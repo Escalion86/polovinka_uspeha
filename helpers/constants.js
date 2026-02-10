@@ -123,6 +123,12 @@ const ServicesUsersContent = dynamic(
 const ServicesLoggedUserContent = dynamic(
   () => import('@layouts/content/ServicesLoggedUserContent')
 )
+const ProductsUsersContent = dynamic(
+  () => import('@layouts/content/ProductsUsersContent')
+)
+const ProductsLoggedUserContent = dynamic(
+  () => import('@layouts/content/ProductsLoggedUserContent')
+)
 const ToolsAnonsContent = dynamic(
   () => import('@layouts/content/ToolsAnonsContent')
 )
@@ -153,7 +159,6 @@ const ToolsNewsletterContent = dynamic(
 const LoggedUserNotificationsContent = dynamic(
   () => import('@layouts/content/LoggedUserNotificationsContent')
 )
-const TestingContent = dynamic(() => import('@layouts/content/TestingContent'))
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
 )
@@ -210,7 +215,6 @@ import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import badgeUnviewedAchievementsSelector from '@state/selectors/badgeUnviewedAchievementsSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
-import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
 // const colors = [
 //   'border-blue-400',
 //   'border-red-400',
@@ -806,6 +810,13 @@ export const DEFAULT_SERVICE_USER = Object.freeze({
   userId: '',
   serviceId: '',
   answers: {},
+  status: 'active',
+})
+
+export const DEFAULT_PRODUCT_USER = Object.freeze({
+  userId: '',
+  productId: '',
+  comment: '',
   status: 'active',
 })
 
@@ -1944,6 +1955,16 @@ export const CONTENTS = Object.freeze({
     name: 'Услуги / Мои заявки на услуги',
     roleAccess: (role) => role?.services?.see,
   },
+  productsUsers: {
+    Component: ProductsUsersContent,
+    name: 'Товары / Заявки на товары',
+    roleAccess: (role) => role?.productsUsers?.see,
+  },
+  myProducts: {
+    Component: ProductsLoggedUserContent,
+    name: 'Товары / Мои заявки на товары',
+    roleAccess: (role) => role?.products?.see,
+  },
   directions: {
     Component: DirectionsContent,
     name: 'Сайт / Пространства',
@@ -2052,16 +2073,6 @@ export const CONTENTS = Object.freeze({
   dev: {
     Component: DevContent,
     name: 'Разработчик',
-    roleAccess: (role) => role?.dev,
-  },
-  testing: {
-    Component: TestingContent,
-    name: 'Тестирование',
-    roleAccess: (role) => role?.dev,
-  },
-  whatsappMessaging: {
-    Component: WhatsappMessagesContent,
-    name: 'Рассылка WhatsApp',
     roleAccess: (role) => role?.dev,
   },
   toolsTextEventsAnons: {
@@ -2265,6 +2276,22 @@ export const pages = [
     href: 'products',
     icon: faShoppingBag,
     roleAccess: CONTENTS['products'].roleAccess,
+  },
+  {
+    id: 4.6,
+    group: 2.5,
+    name: 'Заявки на товары',
+    href: 'productsUsers',
+    icon: faHands,
+    roleAccess: CONTENTS['productsUsers'].roleAccess,
+  },
+  {
+    id: 4.7,
+    group: 2.5,
+    name: 'Мои заявки на товары',
+    href: 'myProducts',
+    icon: faHands,
+    roleAccess: CONTENTS['myProducts'].roleAccess,
   },
   {
     id: 5,
@@ -2656,16 +2683,6 @@ export const pages = [
     // accessRoles: CONTENTS['remindDates'].accessRoles,
     roleAccess: CONTENTS['remindDates'].roleAccess,
   },
-
-  {
-    id: 97,
-    group: 99,
-    name: 'Рассылка WhatsApp',
-    href: 'whatsappMessaging',
-    icon: faWhatsapp,
-    // accessRoles: CONTENTS['dev'].accessRoles,
-    roleAccess: CONTENTS['dev'].roleAccess,
-  },
   {
     id: 98,
     group: 99,
@@ -2674,14 +2691,6 @@ export const pages = [
     icon: faBug,
     // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
-  },
-  {
-    id: 100,
-    group: 99,
-    name: 'Тестирование',
-    href: 'testing',
-    icon: faBug,
-    roleAccess: CONTENTS['testing'].roleAccess,
   },
 ]
 

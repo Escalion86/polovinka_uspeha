@@ -13,6 +13,7 @@ import { AdditionalBlockCardContent } from '@layouts/cards/AdditionalBlockCard'
 import { DirectionCardView } from '@layouts/cards/DirectionCard'
 import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import { getNounYears } from '@helpers/getNoun'
+import NoOrphanText from '@components/NoOrphanText'
 import {
   fetchingAdditionalBlocks,
   fetchingDirections,
@@ -843,15 +844,14 @@ export default function Index2Page() {
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
                   {activeSpace.title}
                 </h3>
-                <div
+                <NoOrphanText
+                  as="div"
                   className="mt-3 min-h-0 overflow-y-auto text-[16px] leading-relaxed text-[#3a2c33] whitespace-pre-line"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(
-                      activeSpace.fullDescription ||
-                        activeSpace.description ||
-                        ''
-                    ),
-                  }}
+                  html={DOMPurify.sanitize(
+                    activeSpace.fullDescription ||
+                      activeSpace.description ||
+                      ''
+                  )}
                 />
               </div>
             </div>
@@ -1326,14 +1326,14 @@ function ServiceCard({ service, style }) {
           {service.title}
         </h3>
       </div>
-      <p
+      <NoOrphanText
+        as="p"
         className={`mt-2 ${
           tileStyle?.descriptionClassName ??
           (isCustomColor ? 'text-white/90' : '')
         }`}
-      >
-        {service.description}
-      </p>
+        text={service.description}
+      />
     </div>
   )
 }

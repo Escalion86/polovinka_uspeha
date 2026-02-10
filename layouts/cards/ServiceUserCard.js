@@ -47,11 +47,14 @@ const ServiceUserCardView = ({
       gap={false}
       hidden={hidden}
       style={style}
+      outerClassName="px-3 py-2"
+      className="rounded-[24px] border border-[rgba(107,31,42,0.16)] shadow-[0_14px_28px_rgba(0,0,0,0.1)]"
+      bgClassName="bg-white/95"
     >
-      <div className={cn('flex flex-col w-full')}>
-        <div className="flex w-full">
+      <div className={cn('flex flex-col w-full h-full overflow-hidden')}>
+        <div className="flex items-center w-full px-4 py-2 bg-[linear-gradient(135deg,rgba(107,31,42,0.1),rgba(79,176,232,0.16))]">
           <TextLinesLimiter
-            className="flex-1 px-2 py-1 text-base font-bold tablet:text-lg text-general"
+            className="flex-1 text-base font-bold tablet:text-lg text-[#4b0f1c]"
             lines={1}
             textCenter={false}
           >
@@ -81,29 +84,37 @@ const ServiceUserCardView = ({
         </div>
 
         {showUser && (
-          <div className="flex-1 border-t border-gray-400">
+          <div className="flex-1 border-t border-[#f0e5ea]">
             <UserItem item={user} userId={serviceUser.userId} />
           </div>
         )}
-        <div className="flex gap-x-2 items-center py-0.5 px-1 h-10 border-t border-gray-400">
+        <div className="flex items-center justify-between px-3 py-2 border-t border-[#f0e5ea] gap-x-2">
           {service && (
             <>
-              <div className="flex-1 text-sm">
+              <div className="flex-1 text-xs font-semibold text-[#6b1f2a]/70">
                 {formatDateTime(serviceUser?.createdAt)}
               </div>
-              {serviceUser.status === 'active' ? (
-                <QuestionnaireAnswersFill
-                  answers={serviceUser.answers}
-                  questionnaireData={service.questionnaire?.data}
-                  small
-                />
-              ) : serviceUser.status === 'closed' ? (
-                <div className="font-bold text-success">ИСПОЛНЕНО</div>
-              ) : (
-                <div className="font-bold text-danger">ОТМЕНЕНО</div>
-              )}
+              <div className="flex items-center gap-x-2">
+                {serviceUser.status === 'active' ? (
+                  <QuestionnaireAnswersFill
+                    answers={serviceUser.answers}
+                    questionnaireData={service.questionnaire?.data}
+                    small
+                  />
+                ) : serviceUser.status === 'closed' ? (
+                  <span className="inline-flex rounded-full bg-green-500/15 px-3 py-1 text-xs font-semibold text-green-700">
+                    ИСПОЛНЕНО
+                  </span>
+                ) : (
+                  <span className="inline-flex rounded-full bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-700">
+                    ОТМЕНЕНО
+                  </span>
+                )}
+              </div>
               {user && (
-                <PriceDiscount item={service} priceForStatus={user.status} />
+                <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+                  <PriceDiscount item={service} priceForStatus={user.status} />
+                </div>
               )}
             </>
           )}

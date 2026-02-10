@@ -3,6 +3,7 @@ import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import DirectionSelector from './ComboBox/DirectionSelector'
 import ServiceSelector from './ComboBox/ServiceSelector'
+import ProductSelector from './ComboBox/ProductSelector'
 import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
 
 const Filter = ({
@@ -60,6 +61,17 @@ const Filter = ({
           value={componentValue}
           onChange={(value) => onChangeComponent(key, value)}
           placeholder="ВСЕ УСЛУГИ"
+          activePlaceholder
+          fullWidth
+        />
+      )
+    } else if (key === 'products') {
+      return (
+        <ProductSelector
+          key="productsFilter"
+          value={componentValue}
+          onChange={(value) => onChangeComponent(key, value)}
+          placeholder="ВСЕ ТОВАРЫ"
           activePlaceholder
           fullWidth
         />

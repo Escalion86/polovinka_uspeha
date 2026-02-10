@@ -9,6 +9,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
+import productsAtom from '@state/atoms/productsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
@@ -17,6 +18,7 @@ import {
   DirectionItem,
   EventItem,
   PaymentItem,
+  ProductItem,
   ServiceItem,
   UserItem,
 } from './ItemCards'
@@ -369,6 +371,78 @@ export const SelectService = ({
                     modalTitle
                   )
               : (user) => modalsFunc.service.view(user._id)
+            : null
+        }
+        onNoChoose={onDelete}
+      />
+    </SelectItemContainer>
+  )
+}
+
+export const SelectProduct = ({
+  onChange,
+  onDelete,
+  selectedId = null,
+  exceptedIds = [],
+  required = false,
+  clearButton = null,
+  label,
+  filter,
+  error,
+  bordered = true,
+  modalTitle,
+  buttons,
+  rounded = true,
+  readOnly,
+}) => {
+  const products = useAtomValue(productsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+
+  const filteredProducts = filterWithRules(products, filter)
+
+  const onClickClearButton =
+    selectedId && clearButton
+      ? onDelete
+        ? () => onDelete()
+        : () => onChange(null)
+      : null
+
+  return (
+    <SelectItemContainer
+      required={required}
+      label={label}
+      onClickClearButton={onClickClearButton}
+      bordered={bordered}
+      error={error}
+      rounded={rounded}
+      buttons={buttons}
+      selectedId={selectedId}
+    >
+      <SelectItem
+        items={filteredProducts}
+        itemComponent={ProductItem}
+        componentHeight={40}
+        selectedId={selectedId}
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
+        )}
+        exceptedIds={exceptedIds}
+        onClick={
+          !readOnly
+            ? onChange
+              ? () =>
+                  modalsFunc.selectProducts(
+                    [selectedId],
+                    filter,
+                    (data) => onChange(data[0]),
+                    [],
+                    null,
+                    1,
+                    false,
+                    modalTitle
+                  )
+              : (item) => modalsFunc.product.view(item._id)
             : null
         }
         onNoChoose={onDelete}

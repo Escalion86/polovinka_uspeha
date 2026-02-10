@@ -32,6 +32,7 @@ import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsT
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
+import productSelector from '@state/selectors/productSelector'
 import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
@@ -355,12 +356,10 @@ export const DirectionItem = ({ item, onClick = null, active }) => (
       </div>
       <div className="flex items-center text-xs text-gray-600 gap-x-2">
         <TextLinesLimiter
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(item.description),
-          }}
           className="w-full overflow-hidden textarea ql flex-1 max-w-full leading-[0.85rem]"
           lines={2}
           textCenter={false}
+          html={DOMPurify.sanitize(item.description)}
         />
       </div>
     </div>
@@ -416,9 +415,64 @@ export const ServiceItem = ({
           className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
           textCenter={false}
-        >
-          {item.shortDescription}
-        </TextLinesLimiter>
+          text={item.shortDescription}
+        />
+      </div>
+    </div>
+  </ItemContainer>
+)
+
+export const ProductItemFromId = ({
+  productId,
+  onClick = null,
+  active,
+  bordered = false,
+}) => {
+  const product = useAtomValue(productSelector(productId))
+  return (
+    <ProductItem
+      item={product}
+      active={active}
+      onClick={onClick}
+      bordered={bordered}
+    />
+  )
+}
+
+export const ProductItem = ({
+  item,
+  onClick = null,
+  active,
+  className,
+  noBorder,
+  style,
+}) => (
+  <ItemContainer
+    onClick={onClick}
+    active={active}
+    className={cn('flex h-[50px]', className)}
+    noPadding
+    noBorder={noBorder}
+    style={style}
+  >
+    {item?.images && item?.images.length > 0 && (
+      <img
+        className="object-cover h-[50px] aspect-1"
+        src={item.images[0]}
+        alt="product"
+      />
+    )}
+    <div className="px-1">
+      <div className="h-5 text-sm font-bold text-gray-800 truncate">
+        {item.title}
+      </div>
+      <div className="flex items-center text-xs text-gray-600 gap-x-2">
+        <TextLinesLimiter
+          className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
+          lines={2}
+          textCenter={false}
+          text={item.shortDescription}
+        />
       </div>
     </div>
   </ItemContainer>

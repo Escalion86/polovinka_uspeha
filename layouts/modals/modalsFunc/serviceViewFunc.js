@@ -4,6 +4,7 @@ import Divider from '@components/Divider'
 import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
+import NoOrphanText from '@components/NoOrphanText'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
@@ -56,11 +57,10 @@ const serviceViewFunc = (serviceId) => {
                 <CardButtonsComponent service={service} />
               </div>
             )}
-            <div
+            <NoOrphanText
+              as="div"
               className="w-full max-w-full overflow-hidden list-disc ql textarea"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(service?.description),
-              }}
+              html={DOMPurify.sanitize(service?.description)}
             />
 
             {isLoggedUserDev && (
@@ -72,11 +72,12 @@ const serviceViewFunc = (serviceId) => {
           </div>
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
-            <PriceDiscount
-              item={service}
-              className="px-2"
-              prefix="Стоимость:"
-            />
+            <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+              <PriceDiscount
+                item={service}
+                className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+              />
+            </div>
             <Button
               name="Подать заявку"
               stopPropagation

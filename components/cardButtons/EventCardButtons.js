@@ -12,6 +12,7 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
+import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
 import { EVENT_STATUSES } from '@helpers/constants'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
@@ -77,15 +78,27 @@ const EventCardButtons = ({
         tooltipText: 'Скопировать ID',
       })
     }
-    if (typeof window !== 'undefined' && window.location?.origin) {
-      buttons.push({
-        key: 'share',
-        icon: faShareAlt,
-        onClick: () => copyLink && copyLink(),
-        color: 'blue',
-        tooltipText: 'Скопировать ссылку на мероприятие',
-      })
-    }
+    buttons.push({
+      key: 'share',
+      icon: faShareAlt,
+      onClick: () => copyLink && copyLink(),
+      color: 'blue',
+      tooltipText: 'Скопировать ссылку на мероприятие',
+    })
+    buttons.push({
+      key: 'qr-code',
+      icon: faQrcode,
+      onClick: () => {
+        if (typeof window === 'undefined' || !window.location?.origin) return
+        const link = `${window.location.origin}/${location}/event/${item._id}`
+        modalsFunc.external.qrCodeGenerator({
+          title: 'QR-код на мероприятие',
+          link,
+        })
+      },
+      color: 'blue',
+      tooltipText: 'QR-код на мероприятие',
+    })
     if (canSeeHistory) {
       buttons.push({
         key: 'history',

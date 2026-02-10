@@ -11,7 +11,7 @@ const NewslettersList = ({ newsletters }) => {
     <ListWrapper
       itemCount={newsletters?.length}
       itemSize={widthNum > 2 ? 77 : 77}
-      className="bg-general/15"
+      wrapperClassName="bg-general/15"
       itemData={newsletters}
       itemKey={(index, data) => data?.[index]?._id ?? index}
     >

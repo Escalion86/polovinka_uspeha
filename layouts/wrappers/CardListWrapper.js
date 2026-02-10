@@ -3,7 +3,7 @@ import ListWrapper from './ListWrapper'
 
 const CardListWrapper = ({ children, className }) => {
   return (
-    <ListWrapper className={cn('bg-general/15', className)}>
+    <ListWrapper wrapperClassName={cn('bg-general/15', className)}>
       {children}
     </ListWrapper>
   )

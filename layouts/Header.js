@@ -33,9 +33,9 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
   const setMenuOpen = useSetAtom(menuOpenAtom)
   return (
     <li className="flex flex-1">
-      <a
+  <a
         href={href}
-        className="flex-1 px-2 py-1 text-2xl duration-300 rounded-sm cursor-pointer whitespace-nowrap hover:bg-general hover:text-white"
+        className="flex-1 px-2 py-1 text-[22px] font-semibold duration-300 rounded-sm cursor-pointer whitespace-nowrap hover:bg-general hover:text-white"
         onClick={() => setMenuOpen(false)}
       >
         {text}
@@ -154,11 +154,11 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
           </ul>
           <div
             className={cn(
-              'overflow-hidden laptop:hidden absolute z-0 left-0 top-0 bg-white rounded-br-3xl border-r border-b shadow-2xl border-general duration-300',
+              'overflow-hidden laptop:hidden absolute z-0 left-0 top-[4.5rem] bg-white rounded-br-3xl border-r border-b shadow-2xl border-general duration-300',
               menuOpen ? 'w-60' : 'w-0'
             )}
           >
-            <div className="pt-20 pb-4 w-60">
+            <div className="pt-4 pb-4 w-60">
               {location && (
                 <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
                   {loggedUserActive?._id ? (

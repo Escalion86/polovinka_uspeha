@@ -11,6 +11,7 @@ import TextLine from '@components/TextLine'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
+import NoOrphanText from '@components/NoOrphanText'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
@@ -158,11 +159,10 @@ const EventViewModal = ({
           <div className="flex justify-center w-full text-3xl font-bold text-center whitespace-pre-line">
             {event?.title}
           </div>
-          <div
+          <NoOrphanText
+            as="div"
             className="w-full max-w-full overflow-hidden list-disc textarea ql"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(event?.description),
-            }}
+            html={DOMPurify.sanitize(event?.description)}
           />
           <Divider thin light />
           {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
@@ -257,17 +257,20 @@ const EventViewModal = ({
                   <strong>{subEvent.title}</strong>
                 </div>
               )}
-              <div className="flex gap-x-1">
-                <div>Стоимость:</div>
-                <PriceDiscount item={subEvent} />
+              <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+                <PriceDiscount
+                  item={subEvent}
+                  className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+                />
               </div>
             </>
           ) : (
-            <PriceDiscount
-              item={subEventSum}
-              className="px-2"
-              prefix="Стоимость:"
-            />
+            <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+              <PriceDiscount
+                item={subEventSum}
+                className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+              />
+            </div>
           )}
           <EventButtonSignIn eventId={event?._id} noBorders />
         </div>

@@ -271,6 +271,7 @@ const EventsContent = ({ mode = 'all' }) => {
       {/* <CardListWrapper> */}
       <EventsList
         events={filteredAndSortedEvents}
+        persistScrollKey={mode === 'past' ? 'events-past' : undefined}
         onTagClick={(tag) => {
           setFilterOptions((state) => ({ ...state, tags: [tag] }))
           setShowFilter(true)

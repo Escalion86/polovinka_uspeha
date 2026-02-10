@@ -5,7 +5,7 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
-const EventsList = ({ events, onTagClick }) => {
+const EventsList = ({ events, onTagClick, persistScrollKey }) => {
   const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   return (
@@ -15,7 +15,8 @@ const EventsList = ({ events, onTagClick }) => {
         widthNum > 3 ? 270 : widthNum === 3 ? 270 : widthNum === 2 ? 310 : 310
       }
       itemKey={(index) => events[index]?._id ?? index}
-      className="bg-general/15"
+      wrapperClassName="bg-general/15"
+      persistScrollKey={persistScrollKey}
     >
       {({ index, style }) => (
         <EventCard

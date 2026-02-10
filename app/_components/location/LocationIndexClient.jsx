@@ -12,6 +12,7 @@ import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
 import { AdditionalBlockCardContent } from '@layouts/cards/AdditionalBlockCard'
 import { DirectionCardView } from '@layouts/cards/DirectionCard'
 import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
+import NoOrphanText from '@components/NoOrphanText'
 import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
@@ -634,13 +635,13 @@ export default function LocationIndexClient({ location }) {
           <nav
             className={`ml-auto ${
               menuOpen ? 'flex' : 'hidden'
-            } flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-2xl transition duration-200 absolute top-[72px] left-[5vw] right-[5vw] z-50 lg:static lg:flex lg:flex-row lg:items-center lg:gap-2 lg:bg-transparent lg:p-0 lg:shadow-none lg:rounded-none`}
+            } flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-2xl transition duration-200 absolute top-[100px] left-[5vw] right-[5vw] z-50 lg:static lg:flex lg:flex-row lg:items-center lg:gap-2 lg:bg-transparent lg:p-0 lg:shadow-none lg:rounded-none`}
           >
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500"
+                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500 lg:text-[12px] lg:font-normal"
                 onClick={(event) => {
                   event.preventDefault()
                   setMenuOpen(false)
@@ -654,7 +655,7 @@ export default function LocationIndexClient({ location }) {
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[12px] uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500"
+                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500 lg:text-[12px] lg:font-normal"
                 onClick={(event) => {
                   event.preventDefault()
                   setMenuOpen(false)
@@ -666,7 +667,7 @@ export default function LocationIndexClient({ location }) {
             ))}
             <Link
               href={`/${defaultLocation}/login`}
-              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
               onClick={() => setMenuOpen(false)}
             >
               Войти в пространство
@@ -846,15 +847,12 @@ export default function LocationIndexClient({ location }) {
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
                   {activeSpace.title}
                 </h3>
-                <div
+                <NoOrphanText
+                  as="div"
                   className="mt-3 min-h-0 overflow-y-auto text-[16px] leading-relaxed text-[#3a2c33] whitespace-pre-line"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(
-                      activeSpace.fullDescription ||
-                        activeSpace.description ||
-                        ''
-                    ),
-                  }}
+                  html={DOMPurify.sanitize(
+                    activeSpace.fullDescription || activeSpace.description || ''
+                  )}
                 />
               </div>
             </div>
@@ -894,7 +892,7 @@ export default function LocationIndexClient({ location }) {
             <img
               src="/key.png"
               alt=""
-              className="pointer-events-none absolute right-5 top-30 rotate-15 tablet:top-10 h-[calc(100%-8rem)] tablet:right-8 tablet:h-[calc(100%-5rem)] w-auto object-contain opacity-40"
+              className="pointer-events-none h-36 bottom-20 right-5 phoneH:right-3 phoneH:h-[calc(100%-8rem)] phoneH:bottom-5 tablet:bottom-auto absolute phoneH:right-5 rotate-15 tablet:top-10 tablet:right-8 tablet:h-[calc(100%-5rem)] w-auto object-contain opacity-40"
             />
             <h3 className="text-[22px] text-[#6b1f2a]">
               ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ
@@ -1263,7 +1261,10 @@ export default function LocationIndexClient({ location }) {
         }
         .about-card-content li {
           position: relative;
-          padding-left: 1.25rem;
+          padding-left: 0;
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
         }
         .about-card-content li::before {
           content: '';
@@ -1276,6 +1277,10 @@ export default function LocationIndexClient({ location }) {
           background: currentColor;
           opacity: 0.75;
           transform: translateY(-50%);
+        }
+        .about-card-content li[data-list='bullet']::before {
+          content: none;
+          display: none;
         }
         html {
           scroll-behavior: smooth;
@@ -1347,14 +1352,14 @@ function ServiceCard({ service, style }) {
           {service.title}
         </h3>
       </div>
-      <p
+      <NoOrphanText
+        as="p"
         className={`mt-2 ${
           tileStyle?.descriptionClassName ??
           (isCustomColor ? 'text-white/90' : '')
         }`}
-      >
-        {service.description}
-      </p>
+        text={service.description}
+      />
     </div>
   )
 }

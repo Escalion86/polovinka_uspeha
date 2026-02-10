@@ -3,6 +3,8 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   products: 'Товары / Список товаров',
   servicesUsers: 'Услуги / Заявки на услуги',
   myServices: 'Услуги / Мои заявки на услуги',
+  productsUsers: 'Товары / Заявки на товары',
+  myProducts: 'Товары / Мои заявки на товары',
   directions: 'Сайт / Пространства',
   aboutSpace: 'Сайт / О нашем пространстве',
   reviews: 'Сайт / Отзывы',

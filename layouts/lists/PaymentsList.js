@@ -10,8 +10,8 @@ const PaymentsList = ({ payments }) => {
   return (
     <ListWrapper
       itemCount={payments.length}
-      itemSize={widthNum > 2 ? 68 : 60}
-      className="bg-general/15"
+      itemSize={widthNum > 2 ? 70 : 62}
+      wrapperClassName="bg-general/15"
     >
       {({ index, style }) => (
         <PaymentCard

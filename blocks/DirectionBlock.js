@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { H2 } from '@components/tags'
+import NoOrphanText from '@components/NoOrphanText'
 import TextInRing from '@components/TextInRing'
 import sanitize from '@helpers/sanitize'
 import cn from 'classnames'
@@ -50,9 +51,10 @@ const DirectionBlock = ({
           {image && title && (
             <H2 className="mb-4 tablet:hidden laptop:block">{title}</H2>
           )}
-          <div
+          <NoOrphanText
+            as="div"
             className="w-full max-w-full overflow-hidden textarea"
-            dangerouslySetInnerHTML={{ __html: sanitize(description) }}
+            html={sanitize(description)}
           />
         </div>
       </div>

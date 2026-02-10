@@ -7,8 +7,8 @@ const ServicesUsersList = ({ servicesUsers, showUser = true }) => {
   return (
     <ListWrapper
       itemCount={servicesUsers.length}
-      itemSize={showUser ? 123 : 82}
-      className="bg-general/15"
+      itemSize={showUser ? 156 : 108}
+      wrapperClassName="bg-general/15"
       itemKey={(index) => servicesUsers[index]?._id ?? index}
     >
       {({ index, style }) => (

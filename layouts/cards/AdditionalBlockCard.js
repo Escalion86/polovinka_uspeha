@@ -1,5 +1,6 @@
 import AdditionalBlockCardButtons from '@components/cardButtons/AdditionalBlockCardButtons'
 import CardWrapper from '@components/CardWrapper'
+import NoOrphanText from '@components/NoOrphanText'
 import { ADDITIONAL_BLOCK_TILE_COLORS } from '@helpers/constants'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
@@ -38,7 +39,7 @@ export const AdditionalBlockCardContent = ({
     <div className="w-full" {...(reveal ? { 'data-reveal': true } : {})}>
       <div className="flex items-center gap-2 px-2 pb-3">
         <div className="flex-1">
-          <h3 className="font-lora text-[clamp(22px,2.6vw,32px)] text-[#6b1f2a]">
+          <h3 className="font-lora text-[clamp(26px,3vw,38px)] font-bold text-[#6b1f2a]">
             {block.title}
           </h3>
         </div>
@@ -70,13 +71,12 @@ export const AdditionalBlockCardContent = ({
               />
             ) : null}
             {hasDescription ? (
-              <div
+              <NoOrphanText
+                as="div"
                 className={`flex-1 rounded-2xl bg-white/70 p-5 shadow-[0_12px_24px_rgba(0,0,0,0.08)] ${
                   hasImage ? 'lg:min-h-[220px]' : ''
                 }`}
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(block.description),
-                }}
+                html={DOMPurify.sanitize(block.description)}
               />
             ) : null}
           </div>
@@ -260,14 +260,14 @@ const AdditionalBlockTile = ({ tile }) => {
           {tile?.title}
         </h3>
       </div>
-      <p
+      <NoOrphanText
+        as="p"
         className={`mt-2 ${
           tileStyle?.descriptionClassName ??
           (isCustomColor ? 'text-white/90' : '')
         }`}
-      >
-        {tile?.description}
-      </p>
+        text={tile?.description}
+      />
     </div>
   )
 }

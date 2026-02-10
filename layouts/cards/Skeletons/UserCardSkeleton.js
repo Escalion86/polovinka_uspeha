@@ -6,27 +6,34 @@ import CardWrapper from '@components/CardWrapper'
 
 const UserCardSkeleton = ({ loading, hidden = false, style }) => {
   return (
-    <CardWrapper loading={loading} hidden={hidden} style={style}>
-      <div className="flex w-full h-[92px]">
+    <CardWrapper
+      loading={loading}
+      hidden={hidden}
+      style={style}
+      className="rounded-[22px] border border-[rgba(107,31,42,0.16)] shadow-[0_16px_30px_rgba(0,0,0,0.1)]"
+      bgClassName="bg-white/95"
+      outerClassName="px-3 py-2"
+    >
+      <div className="flex w-full h-[118px] tablet:h-[108px]">
         {/* <div className="flex items-center justify-center w-8 bg-gray-400" /> */}
         <Skeleton
           count={1}
           height="100%"
           borderRadius={0}
-          containerClassName="pb-1 -mt-[3px] w-8"
+          containerClassName="pb-1 -mt-[3px] w-8 rounded-l-[22px] overflow-hidden"
         />
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <Skeleton
               count={1}
               height="100%"
-              borderRadius={0}
-              containerClassName="hidden pb-1 -mt-[3px] w-full max-w-[92px] tablet:block"
+              borderRadius={14}
+              containerClassName="hidden w-[92px] h-[92px] min-w-[92px] min-h-[92px] tablet:block m-2 mt-[4px]"
             />
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
-                  <div className="flex h-8 max-h-8 flex-nowrap items-start pl-1 py-0.5 leading-6 gap-x-1">
+                  <div className="tablet:rounded-bl-[30px] flex h-10 pl-3 max-h-10 flex-nowrap items-center px-2 py-0.5 leading-6 gap-x-2 rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
                     <div className="flex items-center flex-1 h-7 max-h-7 flex-nowrap">
                       {/* <Skeleton
                         count={1}
@@ -42,8 +49,6 @@ const UserCardSkeleton = ({ loading, hidden = false, style }) => {
                       /> */}
                       <Skeleton
                         count={1}
-                        // height="100%"
-                        // borderRadius={0}
                         containerClassName="-mt-[3px] w-full max-w-80"
                       />
                       {/* <UserRelationshipIcon
@@ -73,10 +78,24 @@ const UserCardSkeleton = ({ loading, hidden = false, style }) => {
                     <Skeleton
                       count={1}
                       height="100%"
-                      borderRadius={0}
-                      containerClassName="-mt-[5px] w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden"
+                      borderRadius={12}
+                      containerClassName="w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden m-2 mt-[1px]"
                     />
-                    <div className="flex flex-col justify-end h-full px-1">
+                    <div className="flex flex-col justify-start h-full px-2 pb-1 mt-1">
+                      <div className="flex flex-wrap items-center gap-1 mb-1">
+                        <Skeleton
+                          height={14}
+                          width={76}
+                          borderRadius={999}
+                          className="tablet:h-[18px] tablet:w-[88px]"
+                        />
+                        <Skeleton
+                          height={14}
+                          width={82}
+                          borderRadius={999}
+                          className="tablet:h-[18px] tablet:w-[96px]"
+                        />
+                      </div>
                       {/* <div className="flex items-center flex-1">
                         <TextLinesLimiter
                           className="text-sm italic font-normal leading-[14px] text-general"

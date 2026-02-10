@@ -13,7 +13,7 @@ import itemsFuncAtom from '@state/itemsFuncAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import eventCutedSelector from '@state/selectors/eventCutedSelector'
 import Venzel1 from '@svg/venzels/1'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -21,27 +21,15 @@ import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
 import { PriceDiscountByEventId } from '@components/PriceDiscount'
 import loadingAtom from '@state/atoms/loadingAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import TextLinesLimiter from '@components/TextLinesLimiter'
+import EventCard2Skeleton from './Skeletons/EventCard2Skeleton'
+import Skeleton from 'react-loading-skeleton'
 
-const EventCard2 = ({
-  eventId,
-  noButtons,
-  hidden = false,
-  style,
-  changeStyle = 'laptop',
-}) => {
-  const widthNum = useAtomValue(windowDimensionsNumSelector)
-  const modalsFunc = useAtomValue(modalsFuncAtom)
-  const event = useAtomValue(eventCutedSelector(eventId))
+const badgeClassName =
+  'inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]'
 
-  const eventStatus = eventStatusFunc(event)
-
-  const direction = useAtomValue(directionSelector(event?.directionId))
-  const loading = useAtomValue(loadingAtom('event' + eventId))
-  const error = useAtomValue(errorAtom('event' + eventId))
-  const itemFunc = useAtomValue(itemsFuncAtom)
-  const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
-  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const canEdit = loggedUserActiveRole?.events?.edit
+const EventParticipantsBadge = ({ event }) => {
+  const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(event?._id))
 
   const participantsCount = useMemo(
     () =>
@@ -71,6 +59,32 @@ const EventCard2 = ({
     return null
   }, [event])
 
+  return (
+    <div className={badgeClassName}>
+      {maxParticipants
+        ? `Свободных мест ${Math.max(
+            0,
+            (maxParticipants ?? 0) - (participantsCount ?? 0)
+          )} из ${maxParticipants}`
+        : 'Количество мест не ограничено'}
+    </div>
+  )
+}
+
+const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventCutedSelector(eventId))
+
+  const eventStatus = eventStatusFunc(event)
+
+  const direction = useAtomValue(directionSelector(event?.directionId))
+  const loading = useAtomValue(loadingAtom('event' + eventId))
+  const error = useAtomValue(errorAtom('event' + eventId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const canEdit = loggedUserActiveRole?.events?.edit
+
   if (!event) return null
 
   if (event.blank)
@@ -96,9 +110,7 @@ const EventCard2 = ({
       ? 'Отменено'
       : ['finished', 'closed'].includes(eventStatus)
         ? 'Завершено'
-        : !event.showOnSite
-          ? 'Скрыто'
-          : null
+        : null
 
   const previewImage = Array.isArray(event?.images)
     ? event.images[0]
@@ -160,9 +172,16 @@ const EventCard2 = ({
             </div>
             <div className="flex-1">
               <div className="flex items-start justify-between w-full gap-3">
-                <div className="text-[clamp(20px,2.6vw,28px)] font-bold leading-6 text-[#4b0f1c] whitespace-pre-line max-h-[72px] overflow-hidden">
+                <TextLinesLimiter
+                  className="text-[clamp(20px,2.6vw,28px)] font-bold leading-7 text-[#4b0f1c] max-h-[72px]"
+                  textCenter={false}
+                  lines={2}
+                >
                   {event.title}
-                </div>
+                </TextLinesLimiter>
+                {/* <div className="text-[clamp(20px,2.6vw,28px)] font-bold leading-7 text-[#4b0f1c] whitespace-pre-line max-h-[72px]">
+                  
+                </div> */}
                 <div className="hidden tablet:inline-flex rounded-full bg-[#f7f1f4] px-3 py-1 laptop:hidden">
                   <PriceDiscountByEventId
                     eventId={eventId}
@@ -194,14 +213,15 @@ const EventCard2 = ({
             </div>
             <div className="laptop:hidden mt-auto flex flex-col tablet:flex-row w-full flex-wrap items-center justify-between gap-3 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
               <div className="flex items-center justify-between w-full tablet:w-auto gap-x-1">
-                <div className="inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]">
-                  {maxParticipants
-                    ? `Свободных мест ${Math.max(
-                        0,
-                        (maxParticipants ?? 0) - (participantsCount ?? 0)
-                      )} из ${maxParticipants}`
-                    : 'Количество мест не ограничено'}
-                </div>
+              <Suspense
+                fallback={
+                  <div className={badgeClassName}>
+                    <Skeleton height={16} width={180} />
+                  </div>
+                }
+              >
+                <EventParticipantsBadge event={event} />
+              </Suspense>
                 <div className="tablet:hidden rounded-full bg-[#f7f1f4] px-3">
                   <PriceDiscountByEventId
                     eventId={eventId}
@@ -209,32 +229,55 @@ const EventCard2 = ({
                   />
                 </div>
               </div>
-              <EventButtonSignIn
-                eventId={eventId}
-                noButtonIfAlreadySignIn
-                className="rounded-full"
-              />
+              <Suspense
+                fallback={
+                  <Skeleton
+                    height={28}
+                    width={140}
+                    className="rounded-full"
+                  />
+                }
+              >
+                <EventButtonSignIn
+                  eventId={eventId}
+                  noButtonIfAlreadySignIn
+                  className="rounded-full"
+                />
+              </Suspense>
             </div>
           </div>
         </div>
         <div className="rounded-[30px] overflow-hidden hidden laptop:flex w-full flex-wrap items-center justify-between gap-3 border border-[#f0e5ea] bg-white/90 px-4 py-3 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
-          <div className="inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]">
-            {maxParticipants
-              ? `Свободных мест ${Math.max(
-                  0,
-                  (maxParticipants ?? 0) - (participantsCount ?? 0)
-                )} из ${maxParticipants}`
-              : 'Количество мест не ограничено'}
-          </div>
-          <EventButtonSignIn
-            eventId={eventId}
-            noButtonIfAlreadySignIn
-            className="rounded-full"
-          />
+          <Suspense
+            fallback={
+              <div className={badgeClassName}>
+                <Skeleton height={16} width={180} />
+              </div>
+            }
+          >
+            <EventParticipantsBadge event={event} />
+          </Suspense>
+          <Suspense
+            fallback={
+              <Skeleton height={30} width={140} className="rounded-full" />
+            }
+          >
+            <EventButtonSignIn
+              eventId={eventId}
+              noButtonIfAlreadySignIn
+              className="rounded-full"
+            />
+          </Suspense>
         </div>
       </div>
     </CardWrapper>
   )
 }
 
-export default EventCard2
+const EventCard2Wrapper = (props) => (
+  <Suspense fallback={<EventCard2Skeleton {...props} />}>
+    <EventCard2 {...props} />
+  </Suspense>
+)
+
+export default EventCard2Wrapper

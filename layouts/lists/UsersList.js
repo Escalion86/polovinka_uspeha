@@ -10,14 +10,16 @@ const UsersList = ({ users }) => {
   return (
     <ListWrapper
       itemCount={users.length}
-      itemSize={widthNum > 2 ? 98 : 101}
-      className="bg-general/15"
+      itemSize={widthNum > 2 ? 116 : 124}
+      wrapperClassName="bg-general/15"
+      className="p-2"
     >
       {({ index, style }) => (
         <UserCard
           style={style}
           key={users[index]._id}
           userId={users[index]._id}
+          user={users[index]}
         />
       )}
     </ListWrapper>

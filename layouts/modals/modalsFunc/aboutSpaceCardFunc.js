@@ -3,7 +3,7 @@ import BackgroundPicker from '@components/BackgroundPicker'
 import EditableTextarea from '@components/EditableTextarea'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const DEFAULT_BG_BY_TONE = {
   white: { mode: 'solid', color1: '#ffffff', color2: '#ffffff' },
@@ -15,7 +15,12 @@ const aboutSpaceCardFunc = (card = null, onConfirm) => {
   const isEdit = Boolean(card)
   const toneFallback = DEFAULT_BG_BY_TONE[card?.tone] ?? DEFAULT_BG_BY_TONE.white
 
-  const AboutSpaceCardModal = ({ closeModal }) => {
+  const AboutSpaceCardModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+  }) => {
     const [title, setTitle] = useState(card?.title ?? '')
     const [text, setText] = useState(card?.text ?? '')
     const [wide, setWide] = useState(Boolean(card?.wide))
@@ -50,6 +55,23 @@ const aboutSpaceCardFunc = (card = null, onConfirm) => {
       closeModal && closeModal()
     }
 
+    const isFormChanged =
+      (card?.title ?? '') !== title ||
+      (card?.text ?? '') !== text ||
+      Boolean(card?.wide) !== wide ||
+      (card?.bgMode ?? toneFallback.mode ?? 'solid') !== bgMode ||
+      (card?.bgColor1 ?? toneFallback.color1 ?? '#ffffff') !== bgColor1 ||
+      (card?.bgColor2 ?? toneFallback.color2 ?? '#ffffff') !== bgColor2
+
+    const isValid = String(text || '').trim().length > 0
+
+    useEffect(() => {
+      setOnConfirmFunc && setOnConfirmFunc(handleConfirm)
+      setOnShowOnCloseConfirmDialog &&
+        setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm && setDisableConfirm(!isFormChanged || !isValid)
+    }, [title, text, wide, bgMode, bgColor1, bgColor2])
+
     return (
       <FormWrapper className="flex flex-col gap-y-3">
         <Input
@@ -74,23 +96,15 @@ const aboutSpaceCardFunc = (card = null, onConfirm) => {
           labelPos="right"
         />
         {error && <div className="text-sm text-danger">{error}</div>}
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={handleConfirm}
-            className="rounded-md bg-general px-4 py-2 text-sm font-semibold text-white"
-          >
-            {isEdit ? 'Сохранить' : 'Создать'}
-          </button>
-        </div>
       </FormWrapper>
     )
   }
 
   return {
     title: isEdit ? 'Редактирование карточки' : 'Новая карточка',
-    confirmButtonShow: false,
-    declineButtonShow: false,
+    confirmButtonName: 'Применить',
+    declineButtonShow: true,
+    declineButtonName: 'Закрыть',
     closeButtonShow: true,
     crossShow: true,
     Children: AboutSpaceCardModal,

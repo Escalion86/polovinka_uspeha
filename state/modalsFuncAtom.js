@@ -261,6 +261,30 @@ const modalsFuncGenerator = (get, set) => {
           showCountNumber
         )
       ),
+    selectProducts: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxProducts,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('../layouts/modals/modalsFunc/selectProductsFunc').default(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxProducts,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
     selectPayments: (
       itemsId,
       filterRules,
@@ -733,6 +757,41 @@ const modalsFuncGenerator = (get, set) => {
         addModal(
           require('../layouts/modals/modalsFunc/productFunc').default(productId)
         ),
+      view: (productId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productViewFunc').default(
+            productId
+          )
+        ),
+      apply: (productId) => {
+        if (!loggedUser?._id) {
+          addModal({
+            title: 'Необходимо зарегистрироваться и авторизироваться',
+            text: 'Для покупки товара, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            confirmButtonName2: 'Зарегистрироваться',
+            onConfirm: () =>
+              router.push(`${locationPrefix}/login?product=${productId}`, '', {
+                shallow: true,
+              }),
+            onConfirm2: () =>
+              router.push(`${locationPrefix}/register`, '', { shallow: true }),
+          })
+        } else if (!isUserQuestionnaireFilled(loggedUser))
+          addModal({
+            title: 'Необходимо заполнить профиль',
+            text: 'Для покупки товара, необходимо сначала заполнить профиль',
+            confirmButtonName: 'Заполнить',
+            onConfirm: () =>
+              router.push(`/cabinet/questionnaire`, '', { shallow: true }),
+          })
+        else
+          addModal(
+            require('../layouts/modals/modalsFunc/productApplyFunc').default(
+              productId
+            )
+          )
+      },
       delete: (productId) =>
         addModal({
           title: 'Удаление товара',
@@ -838,6 +897,41 @@ const modalsFuncGenerator = (get, set) => {
         addModal(
           require('../layouts/modals/modalsFunc/serviceUserStatusEditFunc').default(
             serviceUserId
+          )
+        ),
+    },
+    productUser: {
+      add: (productId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productUserFunc').default(
+            productId,
+            true
+          )
+        ),
+      edit: (productUserId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productUserFunc').default(
+            productUserId
+          )
+        ),
+      view: (productUserId, showQuestionnaireOnly, title) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productUserViewFunc').default(
+            productUserId,
+            showQuestionnaireOnly,
+            title
+          )
+        ),
+      delete: (productUserId) =>
+        addModal({
+          title: 'Удаление заявки на товар',
+          text: 'Вы уверены, что хотите удалить заявку на товар?',
+          onConfirm: async () => itemsFunc.productsUser.delete(productUserId),
+        }),
+      statusEdit: (productUserId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/productUserStatusEditFunc').default(
+            productUserId
           )
         ),
     },

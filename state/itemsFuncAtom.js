@@ -34,6 +34,8 @@ import serviceEditSelector from './selectors/serviceEditSelector'
 import serviceDeleteSelector from './selectors/serviceDeleteSelector'
 import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
+import productsUsersEditSelector from './selectors/productsUsersEditSelector'
+import productsUsersDeleteSelector from './selectors/productsUsersDeleteSelector'
 import setEventsUsersSelector from './async/setEventsUsersSelector'
 import signOutUserSelector from './async/signOutUserSelector'
 import signUpUserSelector from './async/signUpUserSelector'
@@ -211,6 +213,20 @@ const messages = {
       error: 'Не удалось удалить заявку на услугу',
     },
   },
+  productsUser: {
+    update: {
+      success: 'Заявка на товар обновлена',
+      error: 'Не удалось обновить заявку на товар',
+    },
+    add: {
+      success: 'Заявка на товар создана',
+      error: 'Не удалось создать заявку на товар',
+    },
+    delete: {
+      success: 'Заявка на товар удалена',
+      error: 'Не удалось удалить заявку на товар',
+    },
+  },
   newsletter: {
     update: {
       success: 'Рассылка обновлена',
@@ -255,6 +271,7 @@ const array = [
   'service',
   'eventsUser',
   'servicesUser',
+  'productsUser',
   'eventsTag',
   'newsletter',
   'individualWedding',
@@ -314,6 +331,8 @@ const itemsFuncGenerator = (get, set) => {
     deleteService: setFunc(serviceDeleteSelector),
     setServicesUser: setFunc(servicesUsersEditSelector),
     deleteServicesUser: setFunc(servicesUsersDeleteSelector),
+    setProductsUser: setFunc(productsUsersEditSelector),
+    deleteProductsUser: setFunc(productsUsersDeleteSelector),
     setRoles: setFunc(rolesAtom),
   }
 

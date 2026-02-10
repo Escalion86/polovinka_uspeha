@@ -24,6 +24,8 @@ const collectionCheck = (collection) => {
       return 'PhoneConfirms'
     case 'products':
       return 'Products'
+    case 'productsusers':
+      return 'ProductsUsers'
     case 'questionnaires':
       return 'Questionnaires'
     case 'questionnairesusers':

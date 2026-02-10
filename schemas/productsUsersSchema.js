@@ -7,9 +7,9 @@ const productsUsersSchema = {
     type: String,
     required: [true, 'Необходимо выбрать пользователя'],
   },
-  answers: {
-    type: Map,
-    default: null,
+  comment: {
+    type: String,
+    default: '',
   },
   status: {
     type: String,

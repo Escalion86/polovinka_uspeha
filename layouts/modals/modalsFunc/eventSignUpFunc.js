@@ -1,6 +1,7 @@
 import CheckBox from '@components/CheckBox'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormWrapper from '@components/FormWrapper'
+import NoOrphanText from '@components/NoOrphanText'
 import PriceDiscount from '@components/PriceDiscount'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
@@ -188,11 +189,10 @@ const eventSignUpFunc = (
                       )}
                   </div>
                   {props?.description && (
-                    <div
+                    <NoOrphanText
+                      as="div"
                       className="w-full max-w-full px-2 py-1 overflow-hidden list-disc border-b border-gray-300 textarea ql"
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(props?.description),
-                      }}
+                      html={DOMPurify.sanitize(props?.description)}
                     />
                   )}
                   <div className="flex items-center flex-1 px-2 py-2 gap-x-12">

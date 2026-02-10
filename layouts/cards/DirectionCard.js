@@ -1,4 +1,5 @@
 import DirectionCardButtons from '@components/cardButtons/DirectionCardButtons'
+import NoOrphanText from '@components/NoOrphanText'
 import CardWrapper from '@components/CardWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -45,11 +46,15 @@ export const DirectionCardView = ({
         {direction.title}
       </h3>
       <div className="flex flex-col h-full p-5 gap-y-1">
-        <p className="text-[18px] text-[#4b3a40] whitespace-pre-line">
-          {direction.shortDescription ||
+        <NoOrphanText
+          as="p"
+          className="text-[18px] text-[#4b3a40] whitespace-pre-line"
+          text={
+            direction.shortDescription ||
             direction.description ||
-            'Описание пространства пока не добавлено.'}
-        </p>
+            'Описание пространства пока не добавлено.'
+          }
+        />
         {hasDetails ? (
           <button
             type="button"
@@ -166,7 +171,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       hidden={hidden}
       style={style}
       outerClassName="h-full"
-      className="rounded-2xl h-full"
+      className="h-full rounded-2xl"
     >
       <DirectionCardView
         direction={direction}

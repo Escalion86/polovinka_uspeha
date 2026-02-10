@@ -1,6 +1,7 @@
 'use client'
 
 import AboutSpaceCardButtons from '@components/cardButtons/AboutSpaceCardButtons'
+import NoOrphanText from '@components/NoOrphanText'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
 
@@ -134,11 +135,10 @@ const AboutSpaceCard = ({
               <strong>{card.title}</strong>
             </h3>
           ) : null}
-          <div
+          <NoOrphanText
+            as="div"
             className="about-card-content text-[16px] leading-relaxed"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(card.text || ''),
-            }}
+            html={DOMPurify.sanitize(card.text || '')}
           />
         </div>
       ) : (
@@ -157,11 +157,10 @@ const AboutSpaceCard = ({
               <strong>{card.title}</strong>
             </h3>
           ) : null}
-          <div
+          <NoOrphanText
+            as="div"
             className="about-card-content mt-3 text-[16px] leading-relaxed"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(card.text || ''),
-            }}
+            html={DOMPurify.sanitize(card.text || '')}
           />
         </div>
       )}

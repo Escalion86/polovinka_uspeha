@@ -112,7 +112,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     }
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ title, description, image })) {
+      if (!checkErrors({ title, description })) {
         closeModal()
         setAdditionalBlock(
           {
@@ -198,8 +198,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             removeError('image')
             setImage(value)
           }}
-          required
-          error={errors.image}
         />
         <Input
           label="Название"

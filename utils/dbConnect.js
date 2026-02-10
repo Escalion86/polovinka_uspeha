@@ -13,6 +13,7 @@ import clientErrorLogsSchema from '@schemas/clientErrorLogsSchema'
 import paymentsSchema from '@schemas/paymentsSchema'
 import phoneConfirmsSchema from '@schemas/phoneConfirmsSchema'
 import productsSchema from '@schemas/productsSchema'
+import productsUsersSchema from '@schemas/productsUsersSchema'
 import questionnairesSchema from '@schemas/questionnairesSchema'
 import questionnairesUsersSchema from '@schemas/questionnairesUsersSchema'
 import remindDatesSchema from '@schemas/remindDatesSchema'
@@ -245,6 +246,10 @@ async function dbConnect(location) {
     connections[location].model(
       'Products',
       mongoose.Schema(productsSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'ProductsUsers',
+      mongoose.Schema(productsUsersSchema, { timestamps: true })
     )
     connections[location].model(
       'Questionnaires',

@@ -1,4 +1,5 @@
 import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
+import NoOrphanText from '@components/NoOrphanText'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
 
@@ -29,11 +30,10 @@ const directionViewFunc = (directionId) => {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
-            <div
+            <NoOrphanText
+              as="div"
               className="w-full max-w-full overflow-hidden list-disc textarea ql"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(direction?.description),
-              }}
+              html={DOMPurify.sanitize(direction?.description)}
             />
           </div>
         </div>
