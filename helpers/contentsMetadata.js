@@ -19,8 +19,10 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   members: 'Участники клуба',
   payments: 'Транзакции / Все транзакции',
   paymentsNotParticipantsEvent: 'Транзакции / Не пришли на мероприятие',
-  paymentsForNotExistedEvents: 'Транзакции / Со ссылками на несуществующие мероприятия',
-  paymentsFromNotExistedUsers: 'Транзакции / Со ссылками на несуществующих пользователей',
+  paymentsForNotExistedEvents:
+    'Транзакции / Со ссылками на несуществующие мероприятия',
+  paymentsFromNotExistedUsers:
+    'Транзакции / Со ссылками на несуществующих пользователей',
   dev: 'Разработчик',
   whatsappMessaging: 'Рассылка WhatsApp',
   toolsTextEventsAnons: 'Инструменты / Генератор текста анонса мероприятий',
@@ -46,8 +48,6 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   userStatistics: 'Моя статистика',
   referrals: 'Реферальная программа',
   referralsAdmin: 'Реферальная программа / Администрирование',
-  imagesServer: 'Сервер картинок',
   likes: 'Лайки',
   remindDates: 'Особые даты ПУ',
 })
-

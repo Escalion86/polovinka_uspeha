@@ -204,7 +204,6 @@ import ZodiacScorpio from '@svg/zodiac/ZodiacScorpio'
 import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
 
 import { uid } from 'uid'
-import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
 import ReferralsAdminContent from '@layouts/content/ReferralsAdminContent'
 import ReferralsContent from '@layouts/content/ReferralsContent'
@@ -2198,11 +2197,6 @@ export const CONTENTS = Object.freeze({
     name: 'Реферальная программа / Администрирование',
     roleAccess: (role) => role?.payments?.see,
   },
-  imagesServer: {
-    Component: ImagesServerContent,
-    name: 'Сервер картинок',
-    roleAccess: (role) => role?.dev,
-  },
   likes: {
     Component: LikesContent,
     name: 'Лайки',
@@ -2688,15 +2682,6 @@ export const pages = [
     href: 'testing',
     icon: faBug,
     roleAccess: CONTENTS['testing'].roleAccess,
-  },
-  {
-    id: 99,
-    group: 99,
-    name: 'Сервер картинок',
-    href: 'imagesServer',
-    icon: faImages,
-    // accessRoles: CONTENTS['dev'].accessRoles,
-    roleAccess: CONTENTS['dev'].roleAccess,
   },
 ]
 
