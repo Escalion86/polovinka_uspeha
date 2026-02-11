@@ -195,6 +195,16 @@ blockquote {
   font-size: 0.67em;
 }
 
+.ql ol,
+.ql-editor ol {
+  padding-left: 1rem !important;
+}
+
+.ql ol li,
+.ql-editor ol li {
+  margin-top: 4.5px !important;
+}
+
 .ql ul li,
 .ql ol li {
   list-style: none;
@@ -327,13 +337,15 @@ li[data-list='bullet'] span.ql-ui:before {
 .about-card-content li[data-list='bullet'] {
   display: flex;
   align-items: start;
-  gap: 8px;
+  gap: 12px;
+  margin-left: 4;
 }
 
 .about-card-content li[data-list='bullet'] span.ql-ui {
-  /* position: relative;
+  /* position: relative; */
   display: flex;
-  align-items: center; */
+  align-items: center;
+  justify-content: center;
   width: 24px;
   min-width: 24px;
   max-width: 24px;
@@ -342,6 +354,9 @@ li[data-list='bullet'] span.ql-ui:before {
 .about-card-content li[data-list='bullet'] span.ql-ui:before {
   /* position: absolute;
   top: -9; */
+  display: block;
+  margin-top: 4;
+  margin-bottom: -4;
   margin-left: 0 !important;
   margin-right: 0 !important;
   width: 24px;
