@@ -16,6 +16,7 @@ const ValuePicker = ({
   defaultValue,
   readOnly,
   disabledValues = [],
+  noMargin,
 }) => {
   const [state, setState] = useState(defaultValue)
   return (
@@ -27,6 +28,7 @@ const ValuePicker = ({
       required={required}
       paddingY
       fitWidth
+      noMargin={noMargin}
     >
       <div className="relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit">
         {error && (

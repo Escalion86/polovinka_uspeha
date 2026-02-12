@@ -32,6 +32,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import CheckBox from '@components/CheckBox'
+import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { UserItem } from '@components/ItemCards'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
@@ -373,8 +374,7 @@ const eventUsersFunc = (eventId) => {
       loggedUserActiveRole?.dev
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
-    const [isSortingByGenderAndName, setIsSortingByGenderAndName] =
-      useState(true)
+    const [sortType, setSortType] = useState('genderAndFirstName')
     const users = useAtomValue(usersAtomAsync)
     useEffect(() => {
       if (isDataChanged) setDataChanged(true)
@@ -408,7 +408,7 @@ const eventUsersFunc = (eventId) => {
       eventLoadable.state === 'hasData' ? eventLoadable.data : eventCached
     const eventUsers =
       eventUsersLoadable.state === 'hasData'
-        ? eventUsersLoadable.data ?? []
+        ? (eventUsersLoadable.data ?? [])
         : eventUsersCached
     const eventIdValue = event?._id ?? eventId
     const subEvents = event?.subEvents ?? []
@@ -494,16 +494,17 @@ const eventUsersFunc = (eventId) => {
 
     const sortFuncFull = useMemo(
       () =>
-        isSortingByGenderAndName
+        sortType === 'genderAndFirstName'
           ? sortUsersByGenderAndFirstNameFull
           : sortUsersByCreatedAtFull,
-      [isSortingByGenderAndName]
+      [sortType]
     )
 
-    const sortAllByCreatedAt = useCallback((sortByCreatedAt) => {
-      const sortFunc = sortByCreatedAt
-        ? sortFunctions.eventUserCreatedAt.asc
-        : sortFunctions.genderAndFirstName.asc
+    const sortAllBySortType = useCallback((nextSortType) => {
+      const sortFunc =
+        nextSortType === 'createdAt'
+          ? sortFunctions.eventUserCreatedAt.asc
+          : sortFunctions.genderAndFirstName.asc
       setParticipants((state) => {
         const tempParticipant = {}
         for (const participantKey in state) {
@@ -645,79 +646,78 @@ const eventUsersFunc = (eventId) => {
     }, [objParticipants, objReserve, arrayAssistants, arrayBanned])
 
     useEffect(() => {
-        if (
-          (statusEdit || copyListToClipboard) &&
-          setTopLeftComponent &&
-          event
-        )
-        setTopLeftComponent(() => (
-          <div className="flex">
-            {statusEdit &&
-              (() => {
-                const status = event.status ?? 'active'
-                const { icon, color, name } = EVENT_STATUSES.find(
-                  ({ value }) => value === status
-                )
-                return (
-                  <CardButton
-                    icon={icon}
-                    onClick={() => modalsFunc.event.statusEdit(event._id)}
-                    color={
-                      color.indexOf('-') > 0
-                        ? color.slice(0, color.indexOf('-'))
-                        : color
-                    }
-                    tooltipText={`${name} (изменить статус)`}
-                  />
-                )
-              })()}
-            {copyListToClipboard && (
-              <CardButton
-                icon={faListCheck}
-                onClick={() => {
-                  modalsFunc.event.copyUsersList(event._id)
-                  // useCopyUserListToClipboard({
-                  //   mans: users.filter((user) => mansIds.includes(user._id)),
-                  //   womans: users.filter((user) =>
-                  //     womansIds.includes(user._id)
-                  //   ),
-                  // })
+      const hasTopButtons =
+        statusEdit || copyListToClipboard || seeHistory || showLikes
 
-                  // info('Список участников скопирован в буфер обмена')
-                }}
-                color="purple"
-                tooltipText="Скопировать в буфер список участников"
-              />
-            )}
-            {seeHistory && (
-              <CardButton
-                icon={faHistory}
-                onClick={() => {
-                  modalsFunc.event.historyEventUsers(event._id)
-                }}
-                color="orange"
-                tooltipText="История записей"
-              />
-            )}
-            {showLikes && (
-              <CardButton
-                icon={faHeartCirclePlus}
-                onClick={() => modalsFunc.event.viewLikes(event._id)}
-                color="pink"
-                tooltipText='Калькулятор "Быстрые свидания"'
-              />
-            )}
-          </div>
-        ))
+      if (!hasTopButtons || !setTopLeftComponent || !event) return
+
+      setTopLeftComponent(() => (
+        <div className="flex">
+          {statusEdit &&
+            (() => {
+              const status = event.status ?? 'active'
+              const { icon, color, name } = EVENT_STATUSES.find(
+                ({ value }) => value === status
+              )
+              return (
+                <CardButton
+                  icon={icon}
+                  onClick={() => modalsFunc.event.statusEdit(event._id)}
+                  color={
+                    color.indexOf('-') > 0
+                      ? color.slice(0, color.indexOf('-'))
+                      : color
+                  }
+                  tooltipText={`${name} (изменить статус)`}
+                />
+              )
+            })()}
+          {copyListToClipboard && (
+            <CardButton
+              icon={faListCheck}
+              onClick={() => {
+                modalsFunc.event.copyUsersList(event._id)
+                // useCopyUserListToClipboard({
+                //   mans: users.filter((user) => mansIds.includes(user._id)),
+                //   womans: users.filter((user) =>
+                //     womansIds.includes(user._id)
+                //   ),
+                // })
+
+                // info('Список участников скопирован в буфер обмена')
+              }}
+              color="purple"
+              tooltipText="Скопировать в буфер список участников"
+            />
+          )}
+          {seeHistory && (
+            <CardButton
+              icon={faHistory}
+              onClick={() => {
+                modalsFunc.event.historyEventUsers(event._id)
+              }}
+              color="orange"
+              tooltipText="История записей"
+            />
+          )}
+          {showLikes && (
+            <CardButton
+              icon={faHeartCirclePlus}
+              onClick={() => modalsFunc.event.viewLikes(event._id)}
+              color="pink"
+              tooltipText='Калькулятор "Быстрые свидания"'
+            />
+          )}
+        </div>
+      ))
     }, [
       statusEdit,
       copyListToClipboard,
+      seeHistory,
+      showLikes,
       setTopLeftComponent,
-      // participants,
-      // reserve,
-      // assistants,
-      // banned,
-      // event,
+      event,
+      modalsFunc.event,
     ])
 
     const onClickConfirm = async () => {
@@ -807,10 +807,7 @@ const eventUsersFunc = (eventId) => {
       }
 
       const isFormChanged =
-        !reserveCheck ||
-        !participantsCheck ||
-        !assistantsCheck ||
-        !bannedCheck
+        !reserveCheck || !participantsCheck || !assistantsCheck || !bannedCheck
 
       const shouldShowConfirm = hasUserEdited && isFormChanged
 
@@ -1002,14 +999,31 @@ const eventUsersFunc = (eventId) => {
           </div>
         )}
         {event && canEdit && (
-          <CheckBox
-            label="Сортировать по дате создания записи"
-            checked={!isSortingByGenderAndName}
-            onChange={() => {
-              sortAllByCreatedAt(isSortingByGenderAndName)
-              setIsSortingByGenderAndName((checked) => !checked)
-            }}
-          />
+          <div className="flex justify-center w-full mt-2">
+            <ValuePicker
+              label="Сортировка"
+              name="eventUsersSort"
+              value={sortType}
+              valuesArray={[
+                {
+                  value: 'genderAndFirstName',
+                  name: 'По полу и имени',
+                  color: 'general',
+                },
+                {
+                  value: 'createdAt',
+                  name: 'По дате создания записи',
+                  color: 'general',
+                },
+              ]}
+              onChange={(nextSortType) => {
+                if (!nextSortType) return
+                sortAllBySortType(nextSortType)
+                setSortType(nextSortType)
+              }}
+              noMargin
+            />
+          </div>
         )}
         {event && canEdit && isEventClosed && (
           <Note type="warning">
@@ -1041,67 +1055,71 @@ const eventUsersFunc = (eventId) => {
             />
           </div>
         )}
-        {event && <TabContext value="Участники">
-          <TabPanel
-            tabName="Участники"
-            tabAddToLabel={`(${participantsCount})`}
-            className="flex flex-col mt-1 gap-y-5"
-          >
-            {subEvents.map((subEvent) => {
-              const { id, title } = subEvent
-              const otherSubEventsPartisipantsIds = subEvents.reduce(
-                (sum, { id }) => {
-                  if (id !== subEvent.id)
-                    return [...sum, ...participantsIds[id]]
-                  return sum
-                },
-                []
-              )
-              return (
-                <Wrapper
-                  key={'Участники' + id}
-                  label={title || 'Основной тип участия'}
-                >
-                  <div className="flex justify-center">
-                    <EventUsersCounterAndAge
+        {event && (
+          <TabContext value="Участники">
+            <TabPanel
+              tabName="Участники"
+              tabAddToLabel={`(${participantsCount})`}
+              className="flex flex-col mt-1 gap-y-5"
+            >
+              {subEvents.map((subEvent) => {
+                const { id, title } = subEvent
+                const otherSubEventsPartisipantsIds = subEvents.reduce(
+                  (sum, { id }) => {
+                    if (id !== subEvent.id)
+                      return [...sum, ...participantsIds[id]]
+                    return sum
+                  },
+                  []
+                )
+                return (
+                  <Wrapper
+                    key={'Участники' + id}
+                    label={title || 'Основной тип участия'}
+                  >
+                    <div className="flex justify-center">
+                      <EventUsersCounterAndAge
+                        event={event}
+                        subEvent={subEvent}
+                        eventUsersToUse={eventUsersToUse[id] ?? []}
+                        // showNoviceAndMemberSum
+                        showAges={false}
+                        dontShowLabel
+                      />
+                    </div>
+                    <EventUsers2
+                      modalTitle="Выбор участников"
+                      selectedUsers={participants[id] ?? []}
                       event={event}
-                      subEvent={subEvent}
-                      eventUsersToUse={eventUsersToUse[id] ?? []}
-                      // showNoviceAndMemberSum
-                      showAges={false}
-                      dontShowLabel
+                      setSelectedUsers={(selectedUsers) =>
+                        setParticipantsStateFull(id, selectedUsers)
+                      }
+                      toReserveFunc={(newUser) => {
+                        setReserveStateFull(id, [
+                          ...(reserve[id] || []),
+                          newUser,
+                        ])
+                      }}
+                      readOnly={readOnly}
+                      exceptedIds={[
+                        ...reserveIdsAll,
+                        ...assistantsIds,
+                        ...bannedIds,
+                        ...otherSubEventsPartisipantsIds,
+                      ]}
+                      subEventId={id}
+                      onChangeSubEvent={(user, newSubEventId) => {
+                        setParticipantsStateFull(
+                          id,
+                          participants[id].filter(({ _id }) => _id !== user._id)
+                        )
+                        setParticipantsStateFull(newSubEventId, [
+                          ...participants[newSubEventId],
+                          user,
+                        ])
+                      }}
                     />
-                  </div>
-                  <EventUsers2
-                    modalTitle="Выбор участников"
-                    selectedUsers={participants[id] ?? []}
-                    event={event}
-                    setSelectedUsers={(selectedUsers) =>
-                      setParticipantsStateFull(id, selectedUsers)
-                    }
-                    toReserveFunc={(newUser) => {
-                      setReserveStateFull(id, [...(reserve[id] || []), newUser])
-                    }}
-                    readOnly={readOnly}
-                    exceptedIds={[
-                      ...reserveIdsAll,
-                      ...assistantsIds,
-                      ...bannedIds,
-                      ...otherSubEventsPartisipantsIds,
-                    ]}
-                    subEventId={id}
-                    onChangeSubEvent={(user, newSubEventId) => {
-                      setParticipantsStateFull(
-                        id,
-                        participants[id].filter(({ _id }) => _id !== user._id)
-                      )
-                      setParticipantsStateFull(newSubEventId, [
-                        ...participants[newSubEventId],
-                        user,
-                      ])
-                    }}
-                  />
-                  {/* <EventsUsers
+                    {/* <EventsUsers
                     event={event}
                     modalTitle="Выбор участников"
                     selectedIds={participantsIds[id]}
@@ -1120,65 +1138,65 @@ const eventUsersFunc = (eventId) => {
                       canEdit ? eventUsersCreatedAtObject : undefined
                     }
                   /> */}
-                </Wrapper>
-              )
-            })}
-          </TabPanel>
-          {canEdit && subEventsSummator(subEvents)?.isReserveActive && (
-            <TabPanel
-              tabName="Резерв"
-              tabAddToLabel={`(${reserveCount})`}
-              className="flex flex-col gap-y-5"
-            >
-              {subEvents.map((subEvent) => {
-                const { id, title } = subEvent
-
-                const otherSubEventsReserveIds = subEvents.reduce(
-                  (sum, { id }) => {
-                    if (id !== subEvent.id) return [...sum, ...reserveIds[id]]
-                    return sum
-                  },
-                  []
+                  </Wrapper>
                 )
+              })}
+            </TabPanel>
+            {canEdit && subEventsSummator(subEvents)?.isReserveActive && (
+              <TabPanel
+                tabName="Резерв"
+                tabAddToLabel={`(${reserveCount})`}
+                className="flex flex-col gap-y-5"
+              >
+                {subEvents.map((subEvent) => {
+                  const { id, title } = subEvent
 
-                return (
-                  <Wrapper
-                    key={'Резерв' + id}
-                    label={title || 'Основной тип участия'}
-                  >
-                    <EventUsers2
-                      modalTitle="Выбор резерва"
-                      selectedUsers={reserve[id] ?? []}
-                      event={event}
-                      setSelectedUsers={(selectedUsers) =>
-                        setReserveStateFull(id, selectedUsers)
-                      }
-                      fromReserveFunc={(newUser) => {
-                        setParticipantsStateFull(id, [
-                          ...(participants[id] || []),
-                          newUser,
-                        ])
-                      }}
-                      readOnly={readOnly}
-                      exceptedIds={[
-                        ...participantsIdsAll,
-                        ...assistantsIds,
-                        ...bannedIds,
-                        ...otherSubEventsReserveIds,
-                      ]}
-                      subEventId={id}
-                      onChangeSubEvent={(user, newSubEventId) => {
-                        setReserveStateFull(
-                          id,
-                          reserve[id].filter(({ _id }) => _id !== user._id)
-                        )
-                        setReserveStateFull(newSubEventId, [
-                          ...reserve[newSubEventId],
-                          user,
-                        ])
-                      }}
-                    />
-                    {/* <EventsUsers
+                  const otherSubEventsReserveIds = subEvents.reduce(
+                    (sum, { id }) => {
+                      if (id !== subEvent.id) return [...sum, ...reserveIds[id]]
+                      return sum
+                    },
+                    []
+                  )
+
+                  return (
+                    <Wrapper
+                      key={'Резерв' + id}
+                      label={title || 'Основной тип участия'}
+                    >
+                      <EventUsers2
+                        modalTitle="Выбор резерва"
+                        selectedUsers={reserve[id] ?? []}
+                        event={event}
+                        setSelectedUsers={(selectedUsers) =>
+                          setReserveStateFull(id, selectedUsers)
+                        }
+                        fromReserveFunc={(newUser) => {
+                          setParticipantsStateFull(id, [
+                            ...(participants[id] || []),
+                            newUser,
+                          ])
+                        }}
+                        readOnly={readOnly}
+                        exceptedIds={[
+                          ...participantsIdsAll,
+                          ...assistantsIds,
+                          ...bannedIds,
+                          ...otherSubEventsReserveIds,
+                        ]}
+                        subEventId={id}
+                        onChangeSubEvent={(user, newSubEventId) => {
+                          setReserveStateFull(
+                            id,
+                            reserve[id].filter(({ _id }) => _id !== user._id)
+                          )
+                          setReserveStateFull(newSubEventId, [
+                            ...reserve[newSubEventId],
+                            user,
+                          ])
+                        }}
+                      />
+                      {/* <EventsUsers
                       event={event}
                       modalTitle="Выбор резерва"
                       selectedIds={reserveIds[id]}
@@ -1200,31 +1218,31 @@ const eventUsersFunc = (eventId) => {
                       }
                       createdAtObject={eventUsersCreatedAtObject}
                     /> */}
-                  </Wrapper>
-                )
-              })}
-            </TabPanel>
-          )}
-          <TabPanel
-            tabName="Ведущие"
-            tabAddToLabel={`(${assistantsCount})`}
-            className="flex flex-col mt-2 gap-y-5"
-          >
-            <EventUsers2
-              modalTitle="Выбор ведущих"
-              selectedUsers={assistants ?? []}
-              setSelectedUsers={(selectedUsers) =>
-                setAssistantsStateFull(selectedUsers)
-              }
-              event={event}
-              readOnly={readOnly}
-              exceptedIds={[
-                ...participantsIdsAll,
-                ...reserveIdsAll,
-                ...bannedIds,
-              ]}
-            />
-            {/* <EventsUsers
+                    </Wrapper>
+                  )
+                })}
+              </TabPanel>
+            )}
+            <TabPanel
+              tabName="Ведущие"
+              tabAddToLabel={`(${assistantsCount})`}
+              className="flex flex-col mt-2 gap-y-5"
+            >
+              <EventUsers2
+                modalTitle="Выбор ведущих"
+                selectedUsers={assistants ?? []}
+                setSelectedUsers={(selectedUsers) =>
+                  setAssistantsStateFull(selectedUsers)
+                }
+                event={event}
+                readOnly={readOnly}
+                exceptedIds={[
+                  ...participantsIdsAll,
+                  ...reserveIdsAll,
+                  ...bannedIds,
+                ]}
+              />
+              {/* <EventsUsers
               event={event}
               modalTitle="Выбор ведущих"
               selectedIds={assistantsIds}
@@ -1237,28 +1255,28 @@ const eventUsersFunc = (eventId) => {
               canEdit={canEdit}
               noButtons
             /> */}
-          </TabPanel>
-          {canEdit && (
-            <TabPanel
-              tabName="Бан"
-              tabAddToLabel={`(${bannedCount})`}
-              className="flex flex-col mt-2 gap-y-5"
-            >
-              <EventUsers2
-                modalTitle="Выбор забаненых участников"
-                selectedUsers={banned ?? []}
-                setSelectedUsers={(selectedUsers) =>
-                  setBannedStateFull(selectedUsers)
-                }
-                event={event}
-                readOnly={readOnly}
-                exceptedIds={[
-                  ...participantsIdsAll,
-                  ...reserveIdsAll,
-                  ...assistantsIds,
-                ]}
-              />
-              {/* <EventsUsers
+            </TabPanel>
+            {canEdit && (
+              <TabPanel
+                tabName="Бан"
+                tabAddToLabel={`(${bannedCount})`}
+                className="flex flex-col mt-2 gap-y-5"
+              >
+                <EventUsers2
+                  modalTitle="Выбор забаненых участников"
+                  selectedUsers={banned ?? []}
+                  setSelectedUsers={(selectedUsers) =>
+                    setBannedStateFull(selectedUsers)
+                  }
+                  event={event}
+                  readOnly={readOnly}
+                  exceptedIds={[
+                    ...participantsIdsAll,
+                    ...reserveIdsAll,
+                    ...assistantsIds,
+                  ]}
+                />
+                {/* <EventsUsers
                 event={event}
                 modalTitle="Выбор забаненых участников"
                 selectedIds={bannedIds}
@@ -1271,9 +1289,10 @@ const eventUsersFunc = (eventId) => {
                 canEdit={canEdit}
                 noButtons
               /> */}
-            </TabPanel>
-          )}
-        </TabContext>}
+              </TabPanel>
+            )}
+          </TabContext>
+        )}
       </>
     )
   }
@@ -1284,9 +1303,7 @@ const eventUsersFunc = (eventId) => {
     const dataLoadable = useAtomValue(
       loadable(asyncEventsUsersByEventIdAtom(eventId))
     )
-    const refreshEventState = useSetAtom(
-      asyncEventsUsersByEventIdAtom(eventId)
-    )
+    const refreshEventState = useSetAtom(asyncEventsUsersByEventIdAtom(eventId))
     const [prevData, setPrevData] = useState(null)
     const [currentData, setCurrentData] = useState(null)
     // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -1395,7 +1412,10 @@ const eventUsersFunc = (eventId) => {
         })
       const changedIds = []
       for (const [userId, signature] of currentStatusMap.entries()) {
-        if (prevStatusMap.has(userId) && prevStatusMap.get(userId) !== signature)
+        if (
+          prevStatusMap.has(userId) &&
+          prevStatusMap.get(userId) !== signature
+        )
           changedIds.push(userId)
       }
       return { addedItems, removedItems, changedIds }

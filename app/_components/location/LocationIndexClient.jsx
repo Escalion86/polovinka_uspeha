@@ -546,11 +546,19 @@ export default function LocationIndexClient({ location }) {
 
       const daysInMonth = new Date(year, month + 1, 0).getDate()
       const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+      const locationTownLower = (
+        LOCATIONS?.[defaultLocation]?.townRu || ''
+      ).toLowerCase()
       const eventsByDayMap = monthEvents.reduce((acc, event) => {
         const day = event.dateStart.getDate()
         const address = event.address || {}
+        const addressTownLower = (address.town || '').trim().toLowerCase()
         const addressParts = [
-          address.town,
+          addressTownLower &&
+          locationTownLower &&
+          addressTownLower === locationTownLower
+            ? null
+            : address.town,
           address.street,
           address.house,
         ].filter(Boolean)
@@ -667,7 +675,7 @@ export default function LocationIndexClient({ location }) {
             ))}
             <Link
               href={`/${defaultLocation}/login`}
-              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+              className="text-center rounded-full btn-gradient-hover px-3.5 py-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-white"
               onClick={() => setMenuOpen(false)}
             >
               Войти в пространство
@@ -728,7 +736,7 @@ export default function LocationIndexClient({ location }) {
           <div className="flex justify-center mt-8">
             <Link
               href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
             >
               Присоединиться к нам
             </Link>
@@ -782,7 +790,7 @@ export default function LocationIndexClient({ location }) {
           <div className="flex justify-center px-[6vw] pt-20">
             <Link
               href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
             >
               Присоединиться к нам
             </Link>
@@ -874,7 +882,7 @@ export default function LocationIndexClient({ location }) {
         <div className="flex justify-center px-[6vw] ">
           <Link
             href={`/${defaultLocation}/register`}
-            className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+            className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
           >
             Присоединиться к нам
           </Link>
@@ -993,7 +1001,7 @@ export default function LocationIndexClient({ location }) {
           <div className="flex justify-center px-[6vw] pt-20">
             <Link
               href={`/${defaultLocation}/register`}
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white transition duration-300 hover:bg-[linear-gradient(135deg,#6b1f2a,#8dcff2)]"
+              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
             >
               Присоединиться к нам
             </Link>

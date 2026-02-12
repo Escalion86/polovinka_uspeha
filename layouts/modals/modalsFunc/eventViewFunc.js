@@ -18,8 +18,10 @@ import formatDateTime from '@helpers/formatDateTime'
 import formatMinutes from '@helpers/formatMinutes'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import { LOCATIONS } from '@helpers/constants'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import locationAtom from '@state/atoms/locationAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import eventSelector from '@state/selectors/eventSelector'
@@ -101,6 +103,7 @@ const EventViewModal = ({
   const canEdit = loggedUserActiveRole?.events?.edit
   const seeEventsUsers = loggedUserActiveRole?.eventsUsers?.see
   const isLoggedUserDev = loggedUserActiveRole?.dev
+  const location = useAtomValue(locationAtom)
 
   const direction = useAtomValue(directionSelector(event?.directionId))
   const organizer = useAtomValue(userSelector(event?.organizerId))
@@ -179,7 +182,11 @@ const EventViewModal = ({
 
           {event?.address && (
             <TextLine label="Адрес">
-              {formatAddress(event?.address, '[не указан]')}
+              {formatAddress(
+                event?.address,
+                '[не указан]',
+                LOCATIONS?.[location]?.townRu
+              )}
             </TextLine>
           )}
           {event?.address &&

@@ -8,9 +8,17 @@ import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const Item = ({ towns = [], checked, location, isRegister }) => {
+  const targetPath =
+    typeof isRegister === 'string'
+      ? isRegister
+      : isRegister
+        ? 'register'
+        : 'login'
+  const href = targetPath ? `/${location}/${targetPath}` : `/${location}`
+
   return (
     <a
-      href={isRegister ? `/${location}/register` : `/${location}/login`}
+      href={href}
       className={cn(
         checked
           ? 'border-success bg-green-300/50'
@@ -109,7 +117,7 @@ const browseLocationFunc = (props) => {
                 towns={LOCATIONS[location].towns}
                 location={location}
                 // onClick={() => setSelectedLocation(location)}
-                isRegister={props.isRegister}
+                isRegister={props.targetPath ?? props.isRegister}
               />
             ))}
             {/* <Item

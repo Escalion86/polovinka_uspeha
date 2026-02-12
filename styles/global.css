@@ -655,3 +655,35 @@ li[data-list='bullet'] span.ql-ui:before {
 .MuiSlider-track {
   color: var(--color-general);
 }
+
+.btn-gradient-hover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn-gradient-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #4fb0e8;
+  z-index: -2;
+}
+
+.btn-gradient-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(135deg, #6b1f2a, #8dcff2);
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  z-index: -1;
+}
+
+.btn-gradient-hover:hover {
+  background-color: transparent;
+}
+
+.btn-gradient-hover:hover::after {
+  opacity: 1;
+}

@@ -1,9 +1,19 @@
-const formatAddress = (address, textIfNoAddress) => {
+const formatAddress = (address, textIfNoAddress, hiddenTown) => {
   if (!address?.town && !address?.street) return textIfNoAddress ?? ''
+
+  const normalizedTown = (address?.town || '').toString().trim().toLowerCase()
+  const normalizedHiddenTown = (hiddenTown || '')
+    .toString()
+    .trim()
+    .toLowerCase()
+  const shouldHideTown =
+    normalizedTown &&
+    normalizedHiddenTown &&
+    normalizedTown === normalizedHiddenTown
 
   return (
     [
-      address?.town,
+      shouldHideTown ? null : address?.town,
       address?.street,
       // [address?.house, address?.flat].filter((data) => data).join(' - '),
       address?.house ? `дом ${address?.house}` : '',

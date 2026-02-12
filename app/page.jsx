@@ -196,6 +196,7 @@ const spacesNavItems = [{ id: 'spaces', label: 'Наши пространств�
 export default function Index2Page() {
   const [activeDay, setActiveDay] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [showLocationModal, setShowLocationModal] = useState(false)
   const [events, setEvents] = useState([])
   const [additionalBlocks, setAdditionalBlocks] = useState([])
   const [reviewsData, setReviewsData] = useState([])
@@ -475,6 +476,11 @@ export default function Index2Page() {
     window.scrollTo({ top: offsetTop, behavior: 'smooth' })
   }
 
+  const openLocationSelector = () => {
+    setMenuOpen(false)
+    setShowLocationModal(true)
+  }
+
   const { calendarDays, activeDays, eventsByDay, monthLabel, monthName } =
     useMemo(() => {
       const now = new Date()
@@ -546,11 +552,19 @@ export default function Index2Page() {
 
       const daysInMonth = new Date(year, month + 1, 0).getDate()
       const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+      const locationTownLower = (
+        LOCATIONS?.[defaultLocation]?.townRu || ''
+      ).toLowerCase()
       const eventsByDayMap = monthEvents.reduce((acc, event) => {
         const day = event.dateStart.getDate()
         const address = event.address || {}
+        const addressTownLower = (address.town || '').toLowerCase()
         const addressParts = [
-          address.town,
+          addressTownLower &&
+          locationTownLower &&
+          addressTownLower === locationTownLower
+            ? null
+            : address.town,
           address.street,
           address.house,
         ].filter(Boolean)
@@ -664,13 +678,13 @@ export default function Index2Page() {
                 {item.label}
               </a>
             ))}
-            <Link
-              href="/login"
-              className="text-center rounded-full bg-[#4fb0e8] px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
-              onClick={() => setMenuOpen(false)}
+            <button
+              type="button"
+              className="text-center rounded-full btn-gradient-hover px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white"
+              onClick={openLocationSelector}
             >
               Войти в пространство
-            </Link>
+            </button>
           </nav>
         </div>
       </header>
@@ -684,6 +698,44 @@ export default function Index2Page() {
       />
 
       <main>
+        {showLocationModal ? (
+          <div
+            className="fixed inset-0 z-[95] flex items-center justify-center bg-black/45 px-4"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setShowLocationModal(false)
+            }}
+          >
+            <div
+              className="w-full max-w-[560px] rounded-[28px] bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <div className="mb-3 text-xl font-bold text-[#6b1f2a]">
+                Выберите город
+              </div>
+              <div className="grid gap-2">
+                {Object.keys(LOCATIONS)
+                  .filter((locKey) => !LOCATIONS[locKey]?.hidden)
+                  .map((locKey) => (
+                    <a
+                      key={locKey}
+                      href={`/${locKey}`}
+                      className="rounded-xl border border-[rgba(107,31,42,0.2)] bg-[linear-gradient(135deg,rgba(107,31,42,0.04),rgba(79,176,232,0.12))] px-4 py-3 font-semibold text-[#4b0f1c] transition hover:bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.18))]"
+                    >
+                      {LOCATIONS[locKey]?.towns?.[0] || locKey}
+                    </a>
+                  ))}
+              </div>
+              <button
+                type="button"
+                className="mt-4 rounded-full border border-[rgba(107,31,42,0.25)] px-4 py-2 text-sm font-semibold text-[#6b1f2a]"
+                onClick={() => setShowLocationModal(false)}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        ) : null}
+
         <section className="bg-[linear-gradient(135deg,rgba(107,31,42,0.05),transparent_60%)] px-[6vw] pb-16 pt-6">
           <div className="grid min-h-[60vh] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
             <div className="order-last flex flex-col justify-center overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-10 text-white lg:order-none">
@@ -725,12 +777,13 @@ export default function Index2Page() {
           </div>
 
           <div className="flex justify-center mt-8">
-            <Link
-              href="/login"
-              className="rounded-full bg-[#4fb0e8] px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+            <button
+              type="button"
+              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+              onClick={openLocationSelector}
             >
               Присоединиться к нам
-            </Link>
+            </button>
           </div>
         </section>
 

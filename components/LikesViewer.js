@@ -117,24 +117,24 @@ const UserLikesItem = ({
         {!event.likesProcessActive && (
           <div
             className={cn(
-              'w-6 min-w-6 tablet:w-8 tablet:min-w-8 flex justify-center items-center',
+              'w-6 min-h-6 tablet:w-8 tablet:min-h-8 flex justify-center items-center',
               seeLikes ? 'text-success' : 'text-danger'
             )}
           >
             <FontAwesomeIcon
-              className="w-5 h-5 tablet:w-6 tablet:min-w-6"
+              className="w-5 h-5 min-h-5 tablet:w-6 tablet:min-h-6"
               icon={seeLikes ? faEye : faEyeSlash}
             />
           </div>
         )}
         <div
           className={cn(
-            'w-6 min-w-6 tablet:w-8 tablet:min-w-8 flex justify-center items-center',
+            'w-6 min-h-6 tablet:w-8 tablet:min-h-8 flex justify-center items-center',
             selectedIds === null ? 'text-gray-400' : 'text-success'
           )}
         >
           <FontAwesomeIcon
-            className="w-5 h-5 tablet:w-6 tablet:min-w-6"
+            className="w-5 h-5 min-h-5 tablet:w-6 tablet:min-h-6"
             icon={selectedIds === null ? faGenderless : faCheck}
           />
         </div>
@@ -191,13 +191,13 @@ const UserLikesItem = ({
             </span> */}
             <div className="relative">
               <FontAwesomeIcon
-                className="mt-0.5 tablet:mt-1 w-7 h-7 tablet:w-8 tablet:h-8"
+                className="mt-0.5 tablet:mt-1 w-7 h-7 min-h-7 tablet:min-h-8 tablet:w-8 tablet:h-8"
                 icon={faHeart}
                 color={coincidenceCount > 0 ? '#EC4899' : '#9ca3af'}
               />
               {coincidenceCount > 0 && (
                 <FontAwesomeIcon
-                  className="absolute bottom-0 left-0 right-0 top-1 w-7 h-7 tablet:w-8 tablet:h-8 animate-ping"
+                  className="absolute bottom-0 left-0 right-0 top-1 w-7 h-7 min-h-7 tablet:min-h-8 tablet:w-8 tablet:h-8 animate-ping"
                   icon={faHeart}
                   color="#EC4899"
                 />
@@ -223,7 +223,7 @@ const UserLikesItem = ({
             }
           >
             <FontAwesomeIcon
-              className="w-5 h-5 duration-300 group-hover:scale-110"
+              className="w-5 w-6 h-5 duration-300 min-h-5 tablet: tablet:min-h-6 tablet:h-6 group-hover:scale-110"
               icon={faPencil}
             />
           </div>

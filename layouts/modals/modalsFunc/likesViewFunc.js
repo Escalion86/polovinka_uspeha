@@ -1,4 +1,5 @@
 import Button from '@components/Button'
+import CardButton from '@components/CardButton'
 import DateTimeEvent from '@components/DateTimeEvent'
 import LikesViewer from '@components/LikesViewer'
 import Note from '@components/Note'
@@ -7,6 +8,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/itemsFuncAtom'
@@ -14,6 +16,9 @@ import { useAtomValue } from 'jotai'
 import CheckBox from '@components/CheckBox'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import eventSelector from '@state/selectors/eventSelector'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import { useEffect } from 'react'
 
 const LikesToggle = ({ eventId }) => {
   const event = useAtomValue(eventSelector(eventId))
@@ -52,6 +57,11 @@ const likesViewFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const event = useAtomValue(eventSelector(eventId))
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+    const copyListToClipboard =
+      loggedUserActiveRole?.eventsUsers?.copyListToClipboard ||
+      loggedUserActiveRole?.dev
     // const [likesNumSort, setLikesNumSort] = useState(event.likesNumSort)
     const likesNumSort = event.likesNumSort
     const eventUsers = useAtomValue(
@@ -59,6 +69,27 @@ const likesViewFunc = (eventId) => {
     )
     const setEvent = useAtomValue(itemsFuncAtom).event.set
     const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
+
+    useEffect(() => {
+      if (!setTopLeftComponent) return
+      if (!copyListToClipboard || !event?._id) {
+        setTopLeftComponent()
+        return
+      }
+
+      setTopLeftComponent(() => (
+        <div className="flex">
+          <CardButton
+            icon={faListCheck}
+            onClick={() => modalsFunc.event.copyUsersList(event._id)}
+            color="purple"
+            tooltipText="Скопировать в буфер список участников"
+          />
+        </div>
+      ))
+
+      return () => setTopLeftComponent()
+    }, [copyListToClipboard, event?._id, modalsFunc.event, setTopLeftComponent])
 
     const likesNumSortToggle = () => {
       if (!likesNumSort) {

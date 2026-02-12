@@ -12,7 +12,7 @@ import useSnackbar from '@helpers/useSnackbar'
 // import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 // import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
@@ -46,9 +46,45 @@ const copyEventUserListFunc = (eventId) => {
     const [showAssistants, setShowAssistants] = useState(false)
     const [showReserve, setShowReserve] = useState(false)
     const [sort, setSort] = useState('firstName')
+    const isSortByParticipantsNumber = sort === 'likesNumSort'
 
-    const textFormer = ({ user, status }, index) =>
-      `${index + 1}. ${
+    useEffect(() => {
+      if (isSortByParticipantsNumber && !splitByGender) setSplitByGender(true)
+    }, [isSortByParticipantsNumber, splitByGender])
+
+    useEffect(() => {
+      if (!event?.likesNumSort && isSortByParticipantsNumber) {
+        setSort('firstName')
+      }
+    }, [event?.likesNumSort, isSortByParticipantsNumber])
+
+    const sortEventUsers = (list) =>
+      [...list].sort((a, b) => {
+        if (sort === 'likesNumSort') {
+          const aNum =
+            typeof a?.likeSortNum === 'number'
+              ? a.likeSortNum
+              : Number.MAX_SAFE_INTEGER
+          const bNum =
+            typeof b?.likeSortNum === 'number'
+              ? b.likeSortNum
+              : Number.MAX_SAFE_INTEGER
+          if (aNum !== bNum) return aNum - bNum
+        }
+
+        if (sort === 'createdAt') {
+          const aDate = a?.createdAt ? new Date(a.createdAt).getTime() : 0
+          const bDate = b?.createdAt ? new Date(b.createdAt).getTime() : 0
+          return aDate - bDate
+        }
+
+        const aValue = (a?.user?.[sort] || '').toString()
+        const bValue = (b?.user?.[sort] || '').toString()
+        return aValue.localeCompare(bValue, 'ru', { sensitivity: 'base' })
+      })
+
+    const textFormer = ({ user, status }, index, withNumber = true) =>
+      `${withNumber ? `${index + 1}. ` : ''}${
         status === 'assistant'
           ? `[Ведущий] `
           : status === 'reserve'
@@ -58,15 +94,38 @@ const copyEventUserListFunc = (eventId) => {
         showMember && user.status === 'member' ? ' (клуб)' : ''
       }${showAges ? ` - ${birthDateToAge(user.birthday)}` : ''}`
 
+    const sortItems = useMemo(() => {
+      const items = [
+        { value: 'firstName', name: 'По имени' },
+        { value: 'secondName', name: 'По фамилии' },
+        { value: 'createdAt', name: 'По дате регистрации' },
+      ]
+      if (event?.likesNumSort) {
+        items.push({
+          value: 'likesNumSort',
+          name: 'По нумерации участников',
+        })
+      }
+      return items
+    }, [event?.likesNumSort])
+
     var formatedText = ''
 
     event.subEvents.forEach((subEvent, index) => {
       if (index > 0) formatedText += `\n\n`
       if (event.subEvents.length > 1)
         formatedText += `--- ${subEvent.title} ---\n`
-      const eventUsersOfSubEvent = eventUsers.filter(
-        ({ subEventId }) => subEventId === subEvent.id
+      const eventUsersOfSubEventWithoutAssistants = eventUsers.filter(
+        ({ subEventId, status }) =>
+          status !== 'assistant' && subEventId === subEvent.id
       )
+      const assistants = showAssistants
+        ? eventUsers.filter(({ status }) => status === 'assistant')
+        : []
+      const eventUsersOfSubEvent =
+        showAssistants && index === 0
+          ? [...eventUsersOfSubEventWithoutAssistants, ...assistants]
+          : eventUsersOfSubEventWithoutAssistants
       const eventUsersPrepared =
         showAssistants && showReserve
           ? eventUsersOfSubEvent
@@ -76,9 +135,7 @@ const copyEventUserListFunc = (eventId) => {
                 (showReserve || status !== 'reserve')
             )
 
-      const eventUsersSorted = [...eventUsersPrepared].sort((a, b) =>
-        a.user[sort] > b.user[sort] ? 1 : -1
-      )
+      const eventUsersSorted = sortEventUsers(eventUsersPrepared)
 
       if (splitByGender) {
         const mans = eventUsersSorted.filter(
@@ -88,12 +145,44 @@ const copyEventUserListFunc = (eventId) => {
           ({ user }) => user.gender === 'famale'
         )
 
-        const mansNames = mans.map(textFormer)
-        const womansNames = womans.map(textFormer)
-        const mansText =
-          mansNames.length > 0 ? `${mansNames.join(`\n`)}` : 'нет'
-        const womansText =
-          womansNames.length > 0 ? `${womansNames.join(`\n`)}` : 'нет'
+        const renderGenderBlock = (usersByGender) => {
+          if (!isSortByParticipantsNumber) {
+            const usersNames = usersByGender.map(textFormer)
+            return usersNames.length > 0 ? `${usersNames.join(`\n`)}` : 'нет'
+          }
+
+          const numberedUsers = usersByGender.filter(
+            ({ status }) => status === 'participant'
+          )
+          const notNumberedUsers = usersByGender.filter(
+            ({ status }) => status !== 'participant'
+          )
+
+          const numberedText =
+            numberedUsers.length > 0
+              ? numberedUsers
+                  .map((eventUser, idx) => {
+                    const number =
+                      typeof eventUser?.likeSortNum === 'number'
+                        ? eventUser.likeSortNum
+                        : idx
+                    return textFormer(eventUser, number)
+                  })
+                  .join('\n')
+              : 'нет'
+
+          const notNumberedText =
+            notNumberedUsers.length > 0
+              ? `\nБез нумерации:\n${notNumberedUsers
+                  .map((eventUser) => textFormer(eventUser, 0, false))
+                  .join('\n')}`
+              : ''
+
+          return `${numberedText}${notNumberedText}`
+        }
+
+        const mansText = renderGenderBlock(mans)
+        const womansText = renderGenderBlock(womans)
 
         formatedText += `Мужчины:\n${mansText}\nЖенщины:\n${womansText}`
       } else {
@@ -150,6 +239,7 @@ const copyEventUserListFunc = (eventId) => {
             checked={splitByGender}
             labelPos="left"
             onClick={() => setSplitByGender((checked) => !checked)}
+            disabled={isSortByParticipantsNumber}
             label="Разбить список по полу"
           />
           <CheckBox
@@ -166,11 +256,8 @@ const copyEventUserListFunc = (eventId) => {
           />
           <ComboBox
             label="Сортировка"
-            className="min-w-24 max-w-40"
-            items={[
-              { value: 'firstName', name: 'По имени' },
-              { value: 'secondName', name: 'По фамилии' },
-            ]}
+            className="min-w-24 max-w-60"
+            items={[...sortItems]}
             value={sort}
             onChange={setSort}
           />
