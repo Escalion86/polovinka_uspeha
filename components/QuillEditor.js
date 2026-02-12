@@ -63,6 +63,24 @@ const toolbarOptions = {
     // },
   },
   container: [
+    [
+      {
+        font: [
+          'futura',
+          'lora',
+          'ceraroundpro',
+          'arial',
+          'times-new-roman',
+          'courier-new',
+          'georgia',
+          'tahoma',
+          'verdana',
+          'sans-serif',
+          'serif',
+          'monospace',
+        ],
+      },
+    ],
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
     [
@@ -206,6 +224,23 @@ const QuillEditor = forwardRef(
                   ...customButtons.container,
                 ],
               }
+
+          const Font = Quill.import('formats/font')
+          Font.whitelist = [
+            'futura',
+            'lora',
+            'ceraroundpro',
+            'arial',
+            'times-new-roman',
+            'courier-new',
+            'georgia',
+            'tahoma',
+            'verdana',
+            'sans-serif',
+            'serif',
+            'monospace',
+          ]
+          Quill.register(Font, true)
 
           if (customButtons) {
             const icons = Quill.import('ui/icons')

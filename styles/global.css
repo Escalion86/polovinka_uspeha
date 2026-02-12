@@ -379,6 +379,142 @@ li[data-list='bullet'] span.ql-ui:before {
   border: 0px !important;
 }
 
+.ql-font-futura {
+  font-family: var(--font-futura), sans-serif;
+}
+
+.ql-font-lora {
+  font-family: var(--font-lora), serif;
+}
+
+.ql-font-ceraroundpro {
+  font-family: 'CeraRoundPro', sans-serif;
+}
+
+.ql-font-arial {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.ql-font-times-new-roman {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-courier-new {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.ql-font-georgia {
+  font-family: Georgia, serif;
+}
+
+.ql-font-tahoma {
+  font-family: Tahoma, Verdana, sans-serif;
+}
+
+.ql-font-verdana {
+  font-family: Verdana, Tahoma, sans-serif;
+}
+
+.ql-font-sans-serif {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.ql-font-serif {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-monospace {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='futura']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='futura']::before {
+  content: 'Futura PT' !important;
+  font-family: var(--font-futura), sans-serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='lora']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='lora']::before {
+  content: 'Lora' !important;
+  font-family: var(--font-lora), serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='ceraroundpro']::before,
+.ql-snow
+  .ql-picker.ql-font
+  .ql-picker-label[data-value='ceraroundpro']::before {
+  content: 'Cera Round Pro' !important;
+  font-family: 'CeraRoundPro', sans-serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='arial']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='arial']::before {
+  content: 'Arial' !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.ql-snow
+  .ql-picker.ql-font
+  .ql-picker-item[data-value='times-new-roman']::before,
+.ql-snow
+  .ql-picker.ql-font
+  .ql-picker-label[data-value='times-new-roman']::before {
+  content: 'Times New Roman' !important;
+  font-family: 'Times New Roman', Times, serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='courier-new']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='courier-new']::before {
+  content: 'Courier New' !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='georgia']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='georgia']::before {
+  content: 'Georgia' !important;
+  font-family: Georgia, serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='tahoma']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='tahoma']::before {
+  content: 'Tahoma' !important;
+  font-family: Tahoma, Verdana, sans-serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='verdana']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='verdana']::before {
+  content: 'Verdana' !important;
+  font-family: Verdana, Tahoma, sans-serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='sans-serif']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='sans-serif']::before {
+  content: 'Sans Serif' !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='serif']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='serif']::before {
+  content: 'Serif' !important;
+  font-family: 'Times New Roman', Times, serif !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='monospace']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='monospace']::before {
+  content: 'Monospace' !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.ql-toolbar .ql-formats .ql-picker.ql-font {
+  width: 160px !important;
+}
+
+.ql-toolbar .ql-formats .ql-picker.ql-font .ql-picker-label,
+.ql-toolbar .ql-formats .ql-picker.ql-font .ql-picker-item,
+.ql-toolbar .ql-formats .ql-picker.ql-font .ql-picker-options {
+  width: 160px !important;
+}
+
 /* .ql-polovinkauspeha {
   background-image: url("/img/logo_heart_16x20px.png") !important;
   background-repeat: no-repeat !important;
