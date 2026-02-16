@@ -589,7 +589,7 @@ const Register3Inner = ({ location }) => {
                 href={`/${location}/login`}
                 className="font-semibold text-[#6b1f2a]"
               >
-                Войти
+                Войти в пространство
               </Link>
             </div>
             <div className="mt-3 text-center text-sm text-[#5d4a52]">

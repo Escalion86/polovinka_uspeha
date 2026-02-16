@@ -64,7 +64,7 @@ const TitleBlock = () => {
         />
         <div className="flex flex-col justify-between gap-y-2">
           <H1 style={{ textShadow: '1px 1px 2px black' }}>
-            {townRu ? siteSettings.title : 'Центр серьёзных знакомств'}
+            {townRu ? siteSettings.title : 'Пространство живых встреч'}
           </H1>
 
           {townRu && (
@@ -94,9 +94,9 @@ const TitleBlock = () => {
               ))
             ) : (
               <>
-                Уникальные форматы знакомств
+                Уникальные форматы живых встреч
                 <br />
-                для поиска своей второй половинки
+                для общения, дружбы, деловых и личных знакомств
               </>
             )}
           </H3>
@@ -117,7 +117,7 @@ const TitleBlock = () => {
           >
             <PulseButton
               className="mt-4"
-              title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
+              title={userIsLogged ? 'Мой кабинет' : 'Присоединиться к нам'}
               noPulse={userIsLogged}
             />
           </Link>
@@ -125,7 +125,7 @@ const TitleBlock = () => {
           <>
             <PulseButton
               className="mt-4"
-              title="Зарегистрироваться"
+              title="Присоединиться к нам"
               onClick={() => modalsFunc.browseLocation({ isRegister: true })}
             />
             <div
@@ -136,7 +136,7 @@ const TitleBlock = () => {
             </div>
             <PulseButton
               className="mt-4"
-              title="Авторизироваться"
+              title="Войти в пространство"
               onClick={() => modalsFunc.browseLocation({ isRegister: false })}
             />
           </>
