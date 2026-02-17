@@ -9,15 +9,11 @@ import { postData } from '@helpers/CRUD'
 import phoneValidator from '@helpers/phoneValidator'
 import passwordValidator from '@helpers/passwordValidator'
 import {
+  normalizePhoneMaskState,
   PHONE_MASK,
   PHONE_REPLACEMENT,
-  normalizePhoneFromPaste,
   normalizePhoneValue,
 } from '@helpers/phoneUtils'
-import {
-  GoogleReCaptchaProvider,
-  useGoogleReCaptcha,
-} from 'react-google-recaptcha-v3'
 
 const buildMaskedPhone = (phone, focused) => {
   const rawPhoneValue = phone ? String(phone) : ''
@@ -35,37 +31,14 @@ const buildMaskedPhone = (phone, focused) => {
   }
 }
 
-const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
-  fetch('/api/enquiry', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      gRecaptchaToken: gReCaptchaToken,
-    }),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res?.status === 'success') {
-        onSuccess()
-      } else {
-        onError()
-      }
-    })
-}
-
 const defaultErrors = {
   phone: '',
   password: '',
   general: '',
-  agreement: '',
 }
 
-const Register3Inner = ({ location }) => {
+export default function LocationRecoveryClient({ location }) {
   const router = useRouter()
-  const { executeRecaptcha } = useGoogleReCaptcha()
   const [phone, setPhone] = useState('')
   const [phoneFocused, setPhoneFocused] = useState(false)
   const [password, setPassword] = useState('')
@@ -74,21 +47,12 @@ const Register3Inner = ({ location }) => {
   const [step, setStep] = useState(1)
   const [waiting, setWaiting] = useState(false)
   const [backCallRes, setBackCallRes] = useState(null)
-  const [checkHave18Years, setCheckHave18Years] = useState(false)
-  const [checkAgreement, setCheckAgreement] = useState(false)
-  const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
   const pollTimerRef = useRef(null)
 
   const { phoneMask, phoneReplacement, maskedValue } = useMemo(
     () => buildMaskedPhone(phone, phoneFocused),
     [phone, phoneFocused]
   )
-
-  const referralId = useMemo(() => {
-    const value = router.query?.ref ?? router.query?.referrer
-    if (Array.isArray(value)) return value[0]
-    return typeof value === 'string' ? value : undefined
-  }, [router.query])
 
   const clearErrors = () => setErrors(defaultErrors)
 
@@ -102,16 +66,7 @@ const Register3Inner = ({ location }) => {
   useEffect(() => () => stopPolling(), [stopPolling])
 
   const handlePhoneChange = useCallback((event) => {
-    setPhone(normalizePhoneValue(event.target.value))
-  }, [])
-
-  const handlePhonePaste = useCallback((event) => {
-    const pastedValue = normalizePhoneFromPaste(
-      event?.clipboardData?.getData('text')
-    )
-    if (!pastedValue) return
-    event.preventDefault()
-    setPhone(pastedValue)
+    setPhone(normalizePhoneMaskState(event.target.value))
   }, [])
 
   const startPolling = useCallback(
@@ -165,91 +120,54 @@ const Register3Inner = ({ location }) => {
       return
     }
 
-    if (!checkHave18Years || !checkAgreement) {
-      setErrors({
-        ...defaultErrors,
-        agreement: 'Подтвердите обязательные согласия',
-      })
-      return
-    }
-
-    if (!executeRecaptcha) {
-      setErrors({
-        ...defaultErrors,
-        general: 'Система проверки недоступна. Попробуйте позже.',
-      })
-      return
-    }
-
     setWaiting(true)
-    executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken) => {
-      submitEnquiryForm(
-        gReCaptchaToken,
-        async () => {
-          const res = await postData(
-            '/api/telefonip',
-            {
-              phone: normalizedPhone,
-              location,
-              backCall: true,
-            },
-            null,
-            null,
-            false,
-            null,
-            true
-          )
+    const res = await postData(
+      '/api/telefonip',
+      {
+        phone: normalizedPhone,
+        location,
+        forgotPassword: true,
+        backCall: true,
+      },
+      null,
+      null,
+      false,
+      null,
+      true
+    )
 
-          if (!res) {
-            setWaiting(false)
-            setErrors({
-              ...defaultErrors,
-              general: 'Не удалось отправить запрос. Попробуйте еще раз.',
-            })
-            return
-          }
+    if (!res) {
+      setWaiting(false)
+      setErrors({
+        ...defaultErrors,
+        general: 'Не удалось отправить запрос. Попробуйте еще раз.',
+      })
+      return
+    }
 
-          if (res?.error) {
-            setWaiting(false)
-            setErrors({ ...defaultErrors, phone: res.error.message })
-            return
-          }
+    if (res?.error) {
+      setWaiting(false)
+      setErrors({ ...defaultErrors, phone: res.error.message })
+      return
+    }
 
-          const responseData = res?.data ?? res
-          if (!responseData?.id) {
-            setWaiting(false)
-            setErrors({
-              ...defaultErrors,
-              general: 'Не удалось получить номер для звонка. Попробуйте позже.',
-            })
-            return
-          }
+    const responseData = res?.data ?? res
+    if (!responseData?.id) {
+      setWaiting(false)
+      setErrors({
+        ...defaultErrors,
+        general: 'Не удалось получить номер для звонка. Попробуйте позже.',
+      })
+      return
+    }
 
-          setStep(2)
-          setBackCallRes(responseData)
-          setWaiting(true)
-          startPolling(responseData.id)
-        },
-        () => {
-          setWaiting(false)
-          setErrors({
-            ...defaultErrors,
-            general: 'Похоже что вы робот, сработала защита от спама.',
-          })
-        }
-      )
-    })
-  }, [
-    checkAgreement,
-    checkHave18Years,
-    clearErrors,
-    executeRecaptcha,
-    location,
-    phone,
-    startPolling,
-  ])
+    setStep(2)
+    setBackCallRes(responseData)
+    setWaiting(true)
+    startPolling(responseData.id)
+  }, [location, phone, startPolling])
 
-  const handleRegister = useCallback(async () => {
+  const handleResetPassword = useCallback(async () => {
     clearErrors()
     const normalizedPhone = normalizePhoneValue(phone)
 
@@ -278,8 +196,7 @@ const Register3Inner = ({ location }) => {
         phone: normalizedPhone,
         password,
         location,
-        referrerId: referralId,
-        consentToMailing: checkConsentToMailing,
+        forgotPassword: true,
       },
       null,
       null,
@@ -292,7 +209,7 @@ const Register3Inner = ({ location }) => {
       setWaiting(false)
       setErrors({
         ...defaultErrors,
-        general: 'Не удалось завершить регистрацию. Попробуйте позже.',
+        general: 'Не удалось сохранить пароль. Попробуйте позже.',
       })
       return
     }
@@ -304,16 +221,7 @@ const Register3Inner = ({ location }) => {
     }
 
     router.push(`/${location}/login`)
-  }, [
-    checkConsentToMailing,
-    clearErrors,
-    location,
-    password,
-    passwordRepeat,
-    phone,
-    referralId,
-    router,
-  ])
+  }, [location, password, passwordRepeat, phone, router])
 
   const resetFlow = useCallback(() => {
     stopPolling()
@@ -336,19 +244,19 @@ const Register3Inner = ({ location }) => {
         <div className="grid w-full max-w-[980px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
           <div className="flex-col justify-center hidden gap-6 lg:flex">
             <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
-              Создайте аккаунт для живых встреч
+              Восстановите доступ за пару минут
             </h1>
             <p className="max-w-[520px] text-[16px] leading-relaxed text-[#3a2c33]">
-              Подтвердите номер телефона и задайте пароль, чтобы начать
-              участвовать в событиях.
+              Мы подтвердим номер через бесплатный звонок и поможем задать новый
+              пароль для входа.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
                 <div className="text-sm font-semibold text-[#6b1f2a]">
-                  Защищено
+                  Безопасно
                 </div>
                 <div className="mt-2 text-sm text-[#3a2c33]">
-                  Подтверждение по звонку защищает аккаунт.
+                  Подтверждение по звонку защищает ваш аккаунт.
                 </div>
               </div>
               <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
@@ -356,7 +264,7 @@ const Register3Inner = ({ location }) => {
                   Быстро
                 </div>
                 <div className="mt-2 text-sm text-[#3a2c33]">
-                  Регистрация занимает всего пару минут.
+                  Весь процесс занимает пару минут.
                 </div>
               </div>
             </div>
@@ -371,12 +279,12 @@ const Register3Inner = ({ location }) => {
               />
               <div className="text-center">
                 <div className="text-2xl font-bold text-[#2b1b21]">
-                  Регистрация
+                  Восстановление пароля
                 </div>
                 <div className="text-sm text-[#5d4a52]">
-                  {step === 1 && 'Введите телефон и согласия'}
-                  {step === 2 && 'Подтвердите звонок'}
-                  {step === 3 && 'Создайте пароль'}
+                  {step === 1 && 'Введите телефон для подтверждения'}
+                  {step === 2 && 'Подтвердите звонок, чтобы продолжить'}
+                  {step === 3 && 'Задайте новый пароль'}
                 </div>
               </div>
             </div>
@@ -401,57 +309,12 @@ const Register3Inner = ({ location }) => {
                     onFocus={() => setPhoneFocused(true)}
                     onBlur={() => setPhoneFocused(false)}
                     onChange={handlePhoneChange}
-                    onPaste={handlePhonePaste}
                     placeholder="+7 (___) ___-__-__"
                     className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
                   />
                 </label>
-
-                <div className="grid gap-2 text-sm text-[#3a2c33]">
-                  <label className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={checkHave18Years}
-                      onChange={() => setCheckHave18Years((prev) => !prev)}
-                      className="mt-1 h-4 w-4 accent-[#6b1f2a]"
-                    />
-                    <span>
-                      <span className="text-[#b4232d]">*</span> Мне исполнилось
-                      18 лет
-                    </span>
-                  </label>
-                  <label className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={checkAgreement}
-                      onChange={() => setCheckAgreement((prev) => !prev)}
-                      className="mt-1 h-4 w-4 accent-[#6b1f2a]"
-                    />
-                    <span>
-                      <span className="text-[#b4232d]">*</span> Согласен на
-                      обработку персональных данных
-                    </span>
-                  </label>
-                  <label className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={checkConsentToMailing}
-                      onChange={() =>
-                        setCheckConsentToMailing((prev) => !prev)
-                      }
-                      className="mt-1 h-4 w-4 accent-[#6b1f2a]"
-                    />
-                    <span>Согласен получать рассылку о мероприятиях</span>
-                  </label>
-                </div>
-
                 {errors.phone ? (
                   <div className="text-sm text-[#b4232d]">{errors.phone}</div>
-                ) : null}
-                {errors.agreement ? (
-                  <div className="text-sm text-[#b4232d]">
-                    {errors.agreement}
-                  </div>
                 ) : null}
                 {errors.general ? (
                   <div className="text-sm text-[#b4232d]">
@@ -464,7 +327,7 @@ const Register3Inner = ({ location }) => {
                   aria-busy={waiting}
                   className="h-12 rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_14px_30px_rgba(107,31,42,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(107,31,42,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8dcff2] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {waiting ? 'Отправляем...' : 'Продолжить регистрацию'}
+                  {waiting ? 'Отправляем...' : 'Восстановить пароль'}
                 </button>
               </form>
             )}
@@ -539,14 +402,14 @@ const Register3Inner = ({ location }) => {
                 className="grid gap-4 mt-6"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  handleRegister()
+                  handleResetPassword()
                 }}
               >
                 <label className="grid gap-2 text-sm font-semibold text-[#6b1f2a]">
-                  Пароль
+                  Новый пароль
                   <input
                     type="password"
-                    placeholder="Введите пароль"
+                    placeholder="Введите новый пароль"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
@@ -556,7 +419,7 @@ const Register3Inner = ({ location }) => {
                   Повторите пароль
                   <input
                     type="password"
-                    placeholder="Повторите пароль"
+                    placeholder="Повторите новый пароль"
                     value={passwordRepeat}
                     onChange={(event) => setPasswordRepeat(event.target.value)}
                     className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
@@ -578,18 +441,18 @@ const Register3Inner = ({ location }) => {
                   aria-busy={waiting}
                   className="h-12 rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_14px_30px_rgba(107,31,42,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(107,31,42,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8dcff2] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {waiting ? 'Сохраняем...' : 'Завершить регистрацию'}
+                  {waiting ? 'Сохраняем...' : 'Сохранить пароль'}
                 </button>
               </form>
             )}
 
             <div className="mt-6 text-center text-sm text-[#5d4a52]">
-              Уже есть аккаунт?{' '}
+              Уже вспомнили пароль?{' '}
               <Link
                 href={`/${location}/login`}
                 className="font-semibold text-[#6b1f2a]"
               >
-                Войти в пространство
+                Вернуться к авторизации
               </Link>
             </div>
             <div className="mt-3 text-center text-sm text-[#5d4a52]">
@@ -624,26 +487,6 @@ const Register3Inner = ({ location }) => {
   )
 }
 
-Register3Inner.propTypes = {
+LocationRecoveryClient.propTypes = {
   location: PropTypes.string.isRequired,
 }
-
-const LocationRegister3Client = ({ location }) => (
-  <GoogleReCaptchaProvider
-    reCaptchaKey="6Lcw5bwkAAAAAD1qgHYKcEzcbdATVfdI3lIiO5X2"
-    scriptProps={{
-      async: false,
-      defer: false,
-      appendTo: 'body',
-      nonce: undefined,
-    }}
-  >
-    <Register3Inner location={location} />
-  </GoogleReCaptchaProvider>
-)
-
-LocationRegister3Client.propTypes = {
-  location: PropTypes.string.isRequired,
-}
-
-export default LocationRegister3Client

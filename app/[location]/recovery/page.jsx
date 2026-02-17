@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@server/authOptions'
-import LocationRecovery3Client from '../../_components/location/LocationRecovery3Client'
+import LocationRecoveryClient from '../../_components/location/LocationRecoveryClient'
 
 export const metadata = {
   title: 'Восстановление пароля - Половинка успеха',
@@ -23,5 +23,5 @@ export default async function LocationRecoveryPage({ params }) {
     redirect(`/${location}/cabinet`)
   }
 
-  return <LocationRecovery3Client location={location} />
+  return <LocationRecoveryClient location={location} />
 }

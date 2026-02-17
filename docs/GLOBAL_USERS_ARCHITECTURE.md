@@ -151,3 +151,5 @@
 ## Следующий шаг реализации
 - Реализовать `dbConnectGlobal` и схему `globalUsersSchema`.
 - Добавить минимальный read-path в login/register (без mandatory режима).
+- Использовать runbook `docs/GLOBAL_USERS_MIGRATION_RUNBOOK.md`.
+- Перед любыми write-изменениями запускать `npm run global-users:dry-run` и согласовывать отчет из `docs/reports/*`.

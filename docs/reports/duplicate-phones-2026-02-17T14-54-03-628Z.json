@@ -1,0 +1,3990 @@
+{
+  "mode": "find-duplicates",
+  "startedAt": "2026-02-17T14:54:03.537Z",
+  "finishedAt": "2026-02-17T14:54:03.628Z",
+  "env": {
+    "dbSuffix": null
+  },
+  "summary": {
+    "duplicatesByCityGroups": 58,
+    "duplicatesByCityUsersTotal": 116,
+    "crossCityGroups": 11,
+    "crossCityUsersTotal": 25
+  },
+  "duplicatesByCity": [
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79915434499",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "630c9969523f9a7e4d0dfb63",
+          "firstName": "Анна",
+          "secondName": "Чернова",
+          "rawPhone": 79915434499,
+          "normalizedPhone": "79915434499",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": null,
+          "eventsUsersCount": 0,
+          "createdAt": "2022-08-29T10:48:09.424Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/630c9969523f9a7e4d0dfb63"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6863f6f18a25423a7afa9836",
+          "firstName": "Анна",
+          "secondName": "Чернова",
+          "rawPhone": 79915434499,
+          "normalizedPhone": "79915434499",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5222230347,
+              "active": false,
+              "userName": "AnnaChernovaCardio"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-07-01T14:55:45.305Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6863f6f18a25423a7afa9836"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79029470219",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "633d4198aafe1059aacb51ff",
+          "firstName": "Наталья",
+          "secondName": "Шарапова",
+          "rawPhone": 79029470219,
+          "normalizedPhone": "79029470219",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2022-10-05T08:34:32.400Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/633d4198aafe1059aacb51ff"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68f656c92436ae1aaf6ae263",
+          "firstName": "Наталья",
+          "secondName": "Шарапова",
+          "rawPhone": 79029470219,
+          "normalizedPhone": "79029470219",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 805146135,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-10-20T15:35:37.760Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/68f656c92436ae1aaf6ae263"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79048975316",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6360e4289c673e5a9aa88c6a",
+          "firstName": "Маргарита",
+          "secondName": "Христолюбова",
+          "rawPhone": 79048975316,
+          "normalizedPhone": "79048975316",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2022-11-01T09:17:28.061Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6360e4289c673e5a9aa88c6a"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67e0f7ba40168e46391b75b6",
+          "firstName": "Маргарита",
+          "secondName": "Христолюбова",
+          "rawPhone": 79048975316,
+          "normalizedPhone": "79048975316",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 472280117,
+              "active": false,
+              "userName": "Margo_035"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-24T06:12:10.880Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67e0f7ba40168e46391b75b6"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79135972201",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "63a7096e6bc8a3a5be273a49",
+          "firstName": "Юлия",
+          "secondName": "Краснопеева",
+          "rawPhone": 79135972201,
+          "normalizedPhone": "79135972201",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 14,
+          "createdAt": "2022-12-24T14:15:10.816Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/63a7096e6bc8a3a5be273a49"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67bc8b636c00b724b503a595",
+          "firstName": "Юлия",
+          "secondName": "Strekoza",
+          "rawPhone": 79135972201,
+          "normalizedPhone": "79135972201",
+          "status": "member",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5206084571,
+              "active": true,
+              "userName": "YulaStrekoza"
+            },
+            "settings": {
+              "newEventsByTags": false
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2025-02-24T15:08:19.250Z",
+          "updatedAt": "2026-02-15T18:17:46.257Z",
+          "userUrl": "/krsk/user/67bc8b636c00b724b503a595"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79135994252",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "63db93138eada61cda6175b7",
+          "firstName": "Кристина",
+          "secondName": "М.",
+          "rawPhone": 79135994252,
+          "normalizedPhone": "79135994252",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2023-02-02T10:40:19.698Z",
+          "updatedAt": "2026-01-14T07:18:02.026Z",
+          "userUrl": "/krsk/user/63db93138eada61cda6175b7"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "682f2b53af2cddb2bf179e7c",
+          "firstName": "Кристина Витальевна👩🏼‍⚕️",
+          "secondName": "Митина",
+          "rawPhone": 79135994252,
+          "normalizedPhone": "79135994252",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 152864195,
+              "active": false,
+              "userName": "KristinaMV93"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-05-22T13:49:07.476Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/682f2b53af2cddb2bf179e7c"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79029917791",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "63fcf613bdd34d320ead1eeb",
+          "firstName": "Наталья",
+          "secondName": "Титова",
+          "rawPhone": 79029917791,
+          "normalizedPhone": "79029917791",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": null,
+              "id": 604358910
+            },
+            "settings": {
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 55,
+          "createdAt": "2023-02-27T18:27:31.670Z",
+          "updatedAt": "2026-02-17T06:23:28.842Z",
+          "userUrl": "/krsk/user/63fcf613bdd34d320ead1eeb"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "640065c28c453fb70d53de67",
+          "firstName": "Наталья ",
+          "secondName": "Зимина ",
+          "rawPhone": 79029917791,
+          "normalizedPhone": "79029917791",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2023-03-02T09:00:50.675Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/640065c28c453fb70d53de67"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79131728211",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6457c82440c9b0335a3306fc",
+          "firstName": "Дмитрий",
+          "secondName": "Стышнов",
+          "rawPhone": 79131728211,
+          "normalizedPhone": "79131728211",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2023-05-07T15:47:48.965Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6457c82440c9b0335a3306fc"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "683f0b10168a837e095e34e5",
+          "firstName": "Дмитрий",
+          "secondName": "Стышнов",
+          "rawPhone": 79131728211,
+          "normalizedPhone": "79131728211",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 671481711,
+              "active": false,
+              "userName": "DmitriyStyshnov"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-06-03T14:47:44.412Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/683f0b10168a837e095e34e5"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79135389638",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "64631f2274f58b122c282e6a",
+          "firstName": "Ольга",
+          "secondName": "А.",
+          "rawPhone": 79135389638,
+          "normalizedPhone": "79135389638",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2023-05-16T06:13:54.379Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/64631f2274f58b122c282e6a"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6812b1b963fabd2ec9982576",
+          "firstName": "Олюша",
+          "secondName": "Агеева",
+          "rawPhone": 79135389638,
+          "normalizedPhone": "79135389638",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1699160968,
+              "active": false,
+              "userName": "OLUSHA1965"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-04-30T23:26:49.529Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6812b1b963fabd2ec9982576"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79535865544",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "648860b68a98e41e01354652",
+          "firstName": "Денис",
+          "secondName": "Суге-мадыр",
+          "rawPhone": 79535865544,
+          "normalizedPhone": "79535865544",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 11,
+          "createdAt": "2023-06-13T12:27:34.075Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/648860b68a98e41e01354652"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "687940d18a25423a7a01a52c",
+          "firstName": "Denis",
+          "secondName": "Менеджер",
+          "rawPhone": 79535865544,
+          "normalizedPhone": "79535865544",
+          "status": "member",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 2123031466,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-07-17T18:28:33.320Z",
+          "updatedAt": "2026-02-07T07:53:03.602Z",
+          "userUrl": "/krsk/user/687940d18a25423a7a01a52c"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79509844647",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "649ab7635fc0f2068dbd8f2b",
+          "firstName": "Юлия",
+          "secondName": "Иванова",
+          "rawPhone": 79509844647,
+          "normalizedPhone": "79509844647",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2023-06-27T10:18:11.733Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/649ab7635fc0f2068dbd8f2b"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6817407f30d63f118acc5b44",
+          "firstName": "Юлия",
+          "secondName": "Черняк",
+          "rawPhone": 79509844647,
+          "normalizedPhone": "79509844647",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5384259590,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-05-04T10:25:03.902Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6817407f30d63f118acc5b44"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79082191591",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "64c8f5bd88214bc3837bd0ee",
+          "firstName": "Егор",
+          "secondName": "Немежиков",
+          "rawPhone": 79082191591,
+          "normalizedPhone": "79082191591",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2023-08-01T12:08:29.185Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/64c8f5bd88214bc3837bd0ee"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68ce5c5e7a3095eff0e93ebc",
+          "firstName": "Егор",
+          "secondName": "Немежиков",
+          "rawPhone": 79082191591,
+          "normalizedPhone": "79082191591",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5468111367,
+              "active": false,
+              "userName": "Ez783"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-09-20T07:48:46.066Z",
+          "updatedAt": "2025-12-16T11:47:18.240Z",
+          "userUrl": "/krsk/user/68ce5c5e7a3095eff0e93ebc"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79233398265",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "64da5ad318d70ebf3b698396",
+          "firstName": "Екатерина",
+          "secondName": "Трофимова",
+          "rawPhone": 79233398265,
+          "normalizedPhone": "79233398265",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2023-08-14T16:48:19.170Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/64da5ad318d70ebf3b698396"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68ebc828fcd54cb95817e9f4",
+          "firstName": "Екатерина",
+          "secondName": "Трофимова",
+          "rawPhone": 79233398265,
+          "normalizedPhone": "79233398265",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 536757569,
+              "active": false,
+              "userName": "makow_zwet"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-10-12T15:24:24.894Z",
+          "updatedAt": "2025-12-23T11:05:08.809Z",
+          "userUrl": "/krsk/user/68ebc828fcd54cb95817e9f4"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79232138488",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "650a508cc224face0b3b124f",
+          "firstName": "Юлия",
+          "secondName": "Екимова",
+          "rawPhone": 79232138488,
+          "normalizedPhone": "79232138488",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2023-09-20T01:53:16.935Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/650a508cc224face0b3b124f"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67b01f5f4450a950dd37b8ee",
+          "firstName": "Юлия",
+          "secondName": "Екимова",
+          "rawPhone": 79232138488,
+          "normalizedPhone": "79232138488",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 315554730,
+              "active": false,
+              "userName": "yulia_ekimova999"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-02-15T05:00:15.618Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67b01f5f4450a950dd37b8ee"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79960524662",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65163d4d991c9d77de33afdd",
+          "firstName": "Марина",
+          "secondName": "Попова",
+          "rawPhone": 79960524662,
+          "normalizedPhone": "79960524662",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 15,
+          "createdAt": "2023-09-29T02:58:21.129Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65163d4d991c9d77de33afdd"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6601694d44a466bbd82987cc",
+          "firstName": "Марина",
+          "secondName": "Попова",
+          "rawPhone": 79960524662,
+          "normalizedPhone": "79960524662",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1787638552,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-03-25T12:08:45.272Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6601694d44a466bbd82987cc"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79831539149",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "653be88c96f332d692c9f7b8",
+          "firstName": "Ольга",
+          "secondName": "Сенченко",
+          "rawPhone": 79831539149,
+          "normalizedPhone": "79831539149",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2023-10-27T16:42:52.496Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/653be88c96f332d692c9f7b8"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6860dd4b8a25423a7af8938c",
+          "firstName": "Ольга",
+          "secondName": "Сенченко",
+          "rawPhone": 79831539149,
+          "normalizedPhone": "79831539149",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 918732928,
+              "active": false,
+              "userName": "OlS24"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-06-29T06:29:31.328Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6860dd4b8a25423a7af8938c"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79082131999",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65bb1b447a7a83963f21baac",
+          "firstName": "Татьяна",
+          "secondName": "Нестерова",
+          "rawPhone": 79082131999,
+          "normalizedPhone": "79082131999",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-01T04:17:08.051Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65bb1b447a7a83963f21baac"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "682020e9c987f7a73f1cf4ca",
+          "firstName": "Татьяна",
+          "secondName": "Нестерова",
+          "rawPhone": 79082131999,
+          "normalizedPhone": "79082131999",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 604192924,
+              "active": false,
+              "userName": "Im_HellOfACoach"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-05-11T04:00:41.997Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/682020e9c987f7a73f1cf4ca"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79509889919",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65db4bf5afde3de62359a7ee",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79509889919,
+          "normalizedPhone": "79509889919",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-25T14:17:25.182Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65db4bf5afde3de62359a7ee"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68aae1828a25423a7a12ab86",
+          "firstName": "Наталья",
+          "secondName": "Евменова",
+          "rawPhone": 79509889919,
+          "normalizedPhone": "79509889919",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1043939675,
+              "active": true,
+              "userName": "n_12eeee"
+            },
+            "settings": {
+              "newEventsByTags": true,
+              "eventsTags": [
+                "поход",
+                "здоровье",
+                "свидание",
+                "прогулка",
+                "кино",
+                "искусство",
+                "благотворительность",
+                "музыка",
+                "танцы",
+                "баня",
+                "квест",
+                "город",
+                "путешествие",
+                "вечеринка",
+                "психология",
+                "квиз",
+                "театр",
+                "развлечение"
+              ]
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-08-24T09:55:14.467Z",
+          "updatedAt": "2025-12-04T11:05:26.475Z",
+          "userUrl": "/krsk/user/68aae1828a25423a7a12ab86"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79535991139",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65e349268479a54618634580",
+          "firstName": "Верона",
+          "secondName": "Гуржий",
+          "rawPhone": 79535991139,
+          "normalizedPhone": "79535991139",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-03-02T15:43:34.994Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65e349268479a54618634580"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "698169e19b6c526b0850eaa3",
+          "firstName": "Вероника",
+          "secondName": "Гуржий",
+          "rawPhone": 79535991139,
+          "normalizedPhone": "79535991139",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": "veronamyrrr",
+              "id": 434903896
+            },
+            "settings": {
+              "newEvents": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2026-02-03T03:22:09.717Z",
+          "updatedAt": "2026-02-17T01:04:59.857Z",
+          "userUrl": "/krsk/user/698169e19b6c526b0850eaa3"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79333228522",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65e824948c042ef0b866b432",
+          "firstName": "Марина ",
+          "secondName": "Филлипова ",
+          "rawPhone": 79333228522,
+          "normalizedPhone": "79333228522",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 6,
+          "createdAt": "2024-03-06T08:08:52.265Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65e824948c042ef0b866b432"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66043b96515a2a324305fc95",
+          "firstName": "Марина",
+          "secondName": "Филиппова",
+          "rawPhone": 79333228522,
+          "normalizedPhone": "79333228522",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1657704703,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2024-03-27T15:30:30.543Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/66043b96515a2a324305fc95"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79080211775",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "65edbdf68c042ef0b8674c95",
+          "firstName": "Анна",
+          "secondName": "Мартишеня",
+          "rawPhone": 79080211775,
+          "normalizedPhone": "79080211775",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-03-10T14:04:38.375Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/65edbdf68c042ef0b8674c95"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67d107739f5567c2528623b0",
+          "firstName": "Анна",
+          "secondName": "Мартишеня",
+          "rawPhone": 79080211775,
+          "normalizedPhone": "79080211775",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1645404077,
+              "active": false,
+              "userName": "anna_martishenya"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-12T04:02:59.741Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67d107739f5567c2528623b0"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79234511755",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "660f68b58ea434ad6d009aaa",
+          "firstName": "Ольга",
+          "secondName": "Макарова",
+          "rawPhone": 79234511755,
+          "normalizedPhone": "79234511755",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2024-04-05T02:57:57.019Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/660f68b58ea434ad6d009aaa"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67cebc6a91c47953844026ce",
+          "firstName": "Ольга",
+          "secondName": "Макарова",
+          "rawPhone": 79234511755,
+          "normalizedPhone": "79234511755",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5858496482,
+              "active": false,
+              "userName": "oliam878"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-10T10:18:18.476Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67cebc6a91c47953844026ce"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79293557035",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6671dc1f6775304a1e89a20e",
+          "firstName": "Виктория",
+          "secondName": "Браун",
+          "rawPhone": 79293557035,
+          "normalizedPhone": "79293557035",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-06-18T19:12:31.189Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6671dc1f6775304a1e89a20e"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6989f8fa9b6c526b08931662",
+          "firstName": "Виктория",
+          "secondName": "Ворошилова",
+          "rawPhone": 79293557035,
+          "normalizedPhone": "79293557035",
+          "status": "member",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": "Torishaaaaaaa",
+              "id": 1599244528
+            },
+            "settings": {
+              "newEvents": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2026-02-09T15:10:50.050Z",
+          "updatedAt": "2026-02-12T03:07:32.416Z",
+          "userUrl": "/krsk/user/6989f8fa9b6c526b08931662"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79233279525",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66c6cd1b815cda48a4372ae8",
+          "firstName": "Ирина",
+          "secondName": "Родионова",
+          "rawPhone": 79233279525,
+          "normalizedPhone": "79233279525",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-08-22T05:31:07.180Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/66c6cd1b815cda48a4372ae8"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "688447398a25423a7a06a4b4",
+          "firstName": "Ирина",
+          "secondName": "Родионова",
+          "rawPhone": 79233279525,
+          "normalizedPhone": "79233279525",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 420596549,
+              "active": false,
+              "userName": "Irrenka2009"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-07-26T03:10:49.672Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/688447398a25423a7a06a4b4"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79029443196",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66db0641c95e10c178249dde",
+          "firstName": "Ирина",
+          "secondName": "Кононенко",
+          "rawPhone": 79029443196,
+          "normalizedPhone": "79029443196",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2024-09-06T13:40:17.578Z",
+          "updatedAt": "2026-01-22T05:01:19.964Z",
+          "userUrl": "/krsk/user/66db0641c95e10c178249dde"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68d12f657a3095eff0ebb042",
+          "firstName": "Ирина",
+          "secondName": "Кононенко",
+          "rawPhone": 79029443196,
+          "normalizedPhone": "79029443196",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5192980225,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-09-22T11:13:41.236Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/68d12f657a3095eff0ebb042"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79135376971",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66eeee1e88e989dd93f690dc",
+          "firstName": "Елена",
+          "secondName": "Шмакова",
+          "rawPhone": 79135376971,
+          "normalizedPhone": "79135376971",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-09-21T16:02:38.552Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/66eeee1e88e989dd93f690dc"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67bf24666c00b724b5066f42",
+          "firstName": "Елена",
+          "secondName": "Шмакова",
+          "rawPhone": 79135376971,
+          "normalizedPhone": "79135376971",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5815761919,
+              "active": false,
+              "userName": "Leno4ka_Elen"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-02-26T14:25:42.705Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67bf24666c00b724b5066f42"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79538538924",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66faafdf42efc6bafc35aecb",
+          "firstName": "Анастасия",
+          "secondName": "Любимова",
+          "rawPhone": 79538538924,
+          "normalizedPhone": "79538538924",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-09-30T14:04:15.100Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/66faafdf42efc6bafc35aecb"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68823b338a25423a7a0584ae",
+          "firstName": "Анастасия",
+          "secondName": "Любимова",
+          "rawPhone": 79538538924,
+          "normalizedPhone": "79538538924",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5285199224,
+              "active": false,
+              "userName": "Keet843"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-07-24T13:54:59.990Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/68823b338a25423a7a0584ae"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79994462758",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "675c33204972c83724201a2e",
+          "firstName": "Валерия",
+          "secondName": "Лобанова",
+          "rawPhone": 79994462758,
+          "normalizedPhone": "79994462758",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-12-13T13:14:08.939Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/675c33204972c83724201a2e"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6978ec408a3af187080be679",
+          "firstName": "Валерия",
+          "secondName": "Лобанова",
+          "rawPhone": 79994462758,
+          "normalizedPhone": "79994462758",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1218141527,
+              "active": false,
+              "userName": "Mandarinka_0108"
+            },
+            "settings": {
+              "newEvents": false
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2026-01-27T16:48:01.003Z",
+          "updatedAt": "2026-02-17T03:19:27.101Z",
+          "userUrl": "/krsk/user/6978ec408a3af187080be679"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79029275062",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67b613e46c00b724b5fe3946",
+          "firstName": "Елена",
+          "secondName": "Семых",
+          "rawPhone": 79029275062,
+          "normalizedPhone": "79029275062",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2025-02-19T17:24:52.897Z",
+          "updatedAt": "2026-02-15T18:20:19.092Z",
+          "userUrl": "/krsk/user/67b613e46c00b724b5fe3946"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67da58edca0cd5466431d230",
+          "firstName": "Алена",
+          "secondName": "Семых",
+          "rawPhone": 79029275062,
+          "normalizedPhone": "79029275062",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5036170827,
+              "active": false,
+              "userName": "AlenaSemykh"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-19T05:41:01.379Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67da58edca0cd5466431d230"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79233708716",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67c2d8ac460a6acb1dc1dbde",
+          "firstName": "Наталья",
+          "secondName": "Терещекова",
+          "rawPhone": 79233708716,
+          "normalizedPhone": "79233708716",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-03-01T09:51:40.781Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67c2d8ac460a6acb1dc1dbde"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68cacf3e7a3095eff0e65ef1",
+          "firstName": "Наталья",
+          "secondName": "Терещенкова",
+          "rawPhone": 79233708716,
+          "normalizedPhone": "79233708716",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1029076867,
+              "active": false,
+              "userName": "NataTerechenkova"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-09-17T15:09:50.848Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/68cacf3e7a3095eff0e65ef1"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79048905850",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67c655f24938904509d7108c",
+          "firstName": "Елена",
+          "secondName": "Буторина",
+          "rawPhone": 79048905850,
+          "normalizedPhone": "79048905850",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-03-04T01:22:58.415Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67c655f24938904509d7108c"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67c65e174938904509d71816",
+          "firstName": "Елена",
+          "secondName": "Буторина",
+          "rawPhone": 79048905850,
+          "normalizedPhone": "79048905850",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1445286498,
+              "active": false,
+              "userName": "Buteree"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-04T01:57:43.942Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67c65e174938904509d71816"
+        }
+      ]
+    },
+    {
+      "location": "krsk",
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "phone": "79676187391",
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6924332f0f86e1c0746e4df0",
+          "firstName": " Светлана",
+          "secondName": "Дубровина",
+          "rawPhone": 79676187391,
+          "normalizedPhone": "79676187391",
+          "status": "member",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "settings": {
+              "newEvents": false
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-11-24T10:27:59.460Z",
+          "updatedAt": "2025-12-20T04:53:30.327Z",
+          "userUrl": "/krsk/user/6924332f0f86e1c0746e4df0"
+        },
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "694788a768589367874997f8",
+          "firstName": "Светлана",
+          "secondName": "Дубровина",
+          "rawPhone": 79676187391,
+          "normalizedPhone": "79676187391",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": "undefined",
+              "id": 841987357
+            },
+            "settings": {
+              "newEvents": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-12-21T05:41:59.363Z",
+          "updatedAt": "2026-02-07T12:18:58.708Z",
+          "userUrl": "/krsk/user/694788a768589367874997f8"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79132254318",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65b0f53e60fb4129e25d0a92",
+          "firstName": "Далер",
+          "secondName": "Рабиев",
+          "rawPhone": 79132254318,
+          "normalizedPhone": "79132254318",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-01-24T11:32:14.081Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65b0f53e60fb4129e25d0a92"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "666cc444ffe1e0798b48d5ea",
+          "firstName": "Далер",
+          "secondName": "Рабиев",
+          "rawPhone": 79132254318,
+          "normalizedPhone": "79132254318",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5103466778,
+              "active": false,
+              "userName": "Dal0990"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-06-14T22:29:24.955Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/666cc444ffe1e0798b48d5ea"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79514711578",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65bbe50fb1ccaa2338d4e440",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79514711578,
+          "normalizedPhone": "79514711578",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-01T18:38:07.141Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65bbe50fb1ccaa2338d4e440"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66f56a5ae329d38c9cdf7b0b",
+          "firstName": "Nadi",
+          "secondName": "Генералова",
+          "rawPhone": 79514711578,
+          "normalizedPhone": "79514711578",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1163971812,
+              "active": false,
+              "userName": "odd_nadi"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-09-26T14:06:18.831Z",
+          "updatedAt": "2025-12-14T15:56:25.842Z",
+          "userUrl": "/nrsk/user/66f56a5ae329d38c9cdf7b0b"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135305429",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65bc6cc8b1ccaa2338d4e65a",
+          "firstName": "Андрей",
+          "secondName": "Зинченко",
+          "rawPhone": 79135305429,
+          "normalizedPhone": "79135305429",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2024-02-02T04:17:12.372Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65bc6cc8b1ccaa2338d4e65a"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66bb35ad8529c7e16b801223",
+          "firstName": "Андрей",
+          "secondName": "Зинченко",
+          "rawPhone": 79135305429,
+          "normalizedPhone": "79135305429",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 789973859,
+              "active": false,
+              "userName": "Kamenoenebo"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-08-13T10:30:05.534Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66bb35ad8529c7e16b801223"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79131670913",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65c4689baed629abc399e83b",
+          "firstName": "Сергей",
+          "secondName": "Втюрин",
+          "rawPhone": 79131670913,
+          "normalizedPhone": "79131670913",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-02-08T05:37:31.663Z",
+          "updatedAt": "2025-11-27T23:15:30.488Z",
+          "userUrl": "/nrsk/user/65c4689baed629abc399e83b"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67d530b040210b7245826996",
+          "firstName": "Сергей",
+          "secondName": "Втюрин",
+          "rawPhone": 79131670913,
+          "normalizedPhone": "79131670913",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1079411838,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-03-15T07:48:00.505Z",
+          "updatedAt": "2026-02-10T07:24:53.538Z",
+          "userUrl": "/nrsk/user/67d530b040210b7245826996"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79131614194",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65c90789f73f57c8cb35f062",
+          "firstName": "Наталья",
+          "secondName": "Ковешникова",
+          "rawPhone": 79131614194,
+          "normalizedPhone": "79131614194",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-11T17:44:41.032Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65c90789f73f57c8cb35f062"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67e3d416a002ac26889337e9",
+          "firstName": "Наталья",
+          "secondName": "Ковешникова",
+          "rawPhone": 79131614194,
+          "normalizedPhone": "79131614194",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1021425932,
+              "active": false,
+              "userName": "kovesha1"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-26T10:16:54.314Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67e3d416a002ac26889337e9"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79131770315",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65ca48c5f73f57c8cb36090d",
+          "firstName": "Светлана",
+          "secondName": "Колпакова",
+          "rawPhone": 79131770315,
+          "normalizedPhone": "79131770315",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-12T16:35:17.789Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65ca48c5f73f57c8cb36090d"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6705329e37d6c14394f5660e",
+          "firstName": "Светлана",
+          "secondName": "К.",
+          "rawPhone": 79131770315,
+          "normalizedPhone": "79131770315",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5668284918,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-10-08T13:24:46.309Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6705329e37d6c14394f5660e"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79069048910",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65cb01aef73f57c8cb3613aa",
+          "firstName": "Ирина",
+          "secondName": "Вавилова",
+          "rawPhone": 79069048910,
+          "normalizedPhone": "79069048910",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-02-13T05:44:14.812Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65cb01aef73f57c8cb3613aa"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67944c9c313934cc4cdb9372",
+          "firstName": "❄️Ирина❄️",
+          "secondName": "Полякова",
+          "rawPhone": 79069048910,
+          "normalizedPhone": "79069048910",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5050484646,
+              "active": false,
+              "userName": "polyakova93"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-01-25T02:29:48.423Z",
+          "updatedAt": "2026-01-04T15:26:58.016Z",
+          "userUrl": "/nrsk/user/67944c9c313934cc4cdb9372"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135057096",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65e955a502e76ad8628c58fd",
+          "firstName": "Татьяна",
+          "secondName": "Полтавцева",
+          "rawPhone": 79135057096,
+          "normalizedPhone": "79135057096",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-03-07T05:50:29.735Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65e955a502e76ad8628c58fd"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66cf52078529c7e16b809ec9",
+          "firstName": "Татьяна",
+          "secondName": "Полтавцева",
+          "rawPhone": 79135057096,
+          "normalizedPhone": "79135057096",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1027625172,
+              "active": false,
+              "userName": "KaliMa678"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-08-28T16:36:23.579Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66cf52078529c7e16b809ec9"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79029480685",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65efa747db6f31fe72c12a94",
+          "firstName": "Ольга",
+          "secondName": "Крючкова",
+          "rawPhone": 79029480685,
+          "normalizedPhone": "79029480685",
+          "status": "member",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 4,
+          "createdAt": "2024-03-12T00:52:23.617Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65efa747db6f31fe72c12a94"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "675cfbcba0a3118e425a6a7c",
+          "firstName": "Olga",
+          "secondName": "Крю",
+          "rawPhone": 79029480685,
+          "normalizedPhone": "79029480685",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 764080419,
+              "active": false,
+              "userName": "April00262"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-12-14T03:30:19.587Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/675cfbcba0a3118e425a6a7c"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79131696975",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66b00ff58529c7e16b7fecc0",
+          "firstName": "Артем",
+          "secondName": "Донец",
+          "rawPhone": 79131696975,
+          "normalizedPhone": "79131696975",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-08-04T23:34:13.767Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66b00ff58529c7e16b7fecc0"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6794e7be313934cc4cdbd507",
+          "firstName": "Артем",
+          "secondName": "Донец",
+          "rawPhone": 79131696975,
+          "normalizedPhone": "79131696975",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1056111365,
+              "active": false,
+              "userName": "Medvegara"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-01-25T13:31:42.090Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6794e7be313934cc4cdbd507"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79059796366",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66b44b388529c7e16b7ffd5c",
+          "firstName": "Дарья",
+          "secondName": "Карпенко",
+          "rawPhone": 79059796366,
+          "normalizedPhone": "79059796366",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-08-08T04:36:08.771Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66b44b388529c7e16b7ffd5c"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6836a51c168a837e095987c7",
+          "firstName": "Дарья",
+          "secondName": "Дарья",
+          "rawPhone": 79059796366,
+          "normalizedPhone": "79059796366",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 903013112,
+              "active": false,
+              "userName": "DAKarpenko"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-05-28T05:54:36.072Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6836a51c168a837e095987c7"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135314848",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66cb40a68529c7e16b806ea8",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79135314848,
+          "normalizedPhone": "79135314848",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-08-25T14:33:10.171Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66cb40a68529c7e16b806ea8"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "680135b48b32e34e0c8d06d4",
+          "firstName": "Olga_NSK",
+          "secondName": "Беляева",
+          "rawPhone": 79135314848,
+          "normalizedPhone": "79135314848",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 827679081,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-04-17T17:09:08.766Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/680135b48b32e34e0c8d06d4"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135263115",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66d12c32a63be37d49cdd209",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79135263115,
+          "normalizedPhone": "79135263115",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-08-30T02:19:30.289Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66d12c32a63be37d49cdd209"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "68989dde8a25423a7a0e411e",
+          "firstName": "Anastasiya",
+          "secondName": "Жерновская",
+          "rawPhone": 79135263115,
+          "normalizedPhone": "79135263115",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 800514755,
+              "active": false,
+              "userName": "nastena_zhe_ya"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-08-10T13:25:50.597Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/68989dde8a25423a7a0e411e"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79835010007",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66d548d931d3eec039921621",
+          "firstName": "Никита",
+          "secondName": "Панфилов",
+          "rawPhone": 79835010007,
+          "normalizedPhone": "79835010007",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2024-09-02T05:10:49.297Z",
+          "updatedAt": "2026-01-09T21:20:21.302Z",
+          "userUrl": "/nrsk/user/66d548d931d3eec039921621"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "68947d548a25423a7a0d327a",
+          "firstName": "Nikita",
+          "secondName": "Panfilov",
+          "rawPhone": 79835010007,
+          "normalizedPhone": "79835010007",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 376793788,
+              "active": false,
+              "userName": "panfilov2m"
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2025-08-07T10:17:56.142Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/68947d548a25423a7a0d327a"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79050909979",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66edd5b596aa19d9c5649657",
+          "firstName": "Вита",
+          "secondName": "Судейко",
+          "rawPhone": 79050909979,
+          "normalizedPhone": "79050909979",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-09-20T20:06:13.893Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66edd5b596aa19d9c5649657"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67de2f5fbdccad2fdda72f67",
+          "firstName": "Sudeiko",
+          "secondName": "Gulsira",
+          "rawPhone": 79050909979,
+          "normalizedPhone": "79050909979",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 816306246,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-22T03:32:47.571Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67de2f5fbdccad2fdda72f67"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79134931939",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6717440125a296829f400353",
+          "firstName": "Алексей",
+          "secondName": "Морунов",
+          "rawPhone": 79134931939,
+          "normalizedPhone": "79134931939",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-10-22T06:19:45.619Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6717440125a296829f400353"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67b43bc2d343bbbd71800987",
+          "firstName": "Алексей",
+          "secondName": "Морунов",
+          "rawPhone": 79134931939,
+          "normalizedPhone": "79134931939",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1839741553,
+              "active": false,
+              "userName": "morunov88"
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2025-02-18T07:50:26.846Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67b43bc2d343bbbd71800987"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79197035013",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6729adbe25a296829f406d04",
+          "firstName": "Мария",
+          "secondName": "Габова",
+          "rawPhone": 79197035013,
+          "normalizedPhone": "79197035013",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2024-11-05T05:31:42.314Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6729adbe25a296829f406d04"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "680b6ffa0ab562b88be7d57d",
+          "firstName": "Мария",
+          "secondName": "Габова",
+          "rawPhone": 79197035013,
+          "normalizedPhone": "79197035013",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5252780523,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-04-25T11:20:26.784Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/680b6ffa0ab562b88be7d57d"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79509686239",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67665ee4a0a3118e425abec5",
+          "firstName": "Наталья",
+          "secondName": "Штырь",
+          "rawPhone": 79509686239,
+          "normalizedPhone": "79509686239",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-12-21T06:23:32.159Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67665ee4a0a3118e425abec5"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6791ccafadad2cbfd170496f",
+          "firstName": "Наталья",
+          "secondName": "Губская",
+          "rawPhone": 79509686239,
+          "normalizedPhone": "79509686239",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5113612303,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2025-01-23T04:59:27.636Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6791ccafadad2cbfd170496f"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79039297713",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67beacaa6c00b724b505c3ac",
+          "firstName": "Влада",
+          "secondName": "Пугина",
+          "rawPhone": 79039297713,
+          "normalizedPhone": "79039297713",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-02-26T05:54:50.805Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67beacaa6c00b724b505c3ac"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67c86b334938904509d8ff7a",
+          "firstName": "Влада",
+          "secondName": "Пугина",
+          "rawPhone": 79039297713,
+          "normalizedPhone": "79039297713",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5267015172,
+              "active": false,
+              "userName": "VladaPugina"
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2025-03-05T15:18:11.546Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67c86b334938904509d8ff7a"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135061825",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67c32e2d460a6acb1dc237bb",
+          "firstName": "Артем",
+          "secondName": "Валтышев",
+          "rawPhone": 79135061825,
+          "normalizedPhone": "79135061825",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-01T15:56:29.336Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67c32e2d460a6acb1dc237bb"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67c58244fc38b4a6885a0389",
+          "firstName": "Артём",
+          "secondName": "Валтышев",
+          "rawPhone": 79135061825,
+          "normalizedPhone": "79135061825",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1257718280,
+              "active": false,
+              "userName": "Artem_Valtyshev"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-03T10:19:48.404Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67c58244fc38b4a6885a0389"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79134960502",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67d94a27ca0cd54664309775",
+          "firstName": "Алёна",
+          "secondName": "Казанцева",
+          "rawPhone": 79134960502,
+          "normalizedPhone": "79134960502",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-03-18T10:25:43.947Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67d94a27ca0cd54664309775"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "681b5248c987f7a73f1a775a",
+          "firstName": "АЛЁНА",
+          "secondName": "Казанцева",
+          "rawPhone": 79134960502,
+          "normalizedPhone": "79134960502",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 5157414018,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-05-07T12:30:00.144Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/681b5248c987f7a73f1a775a"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135254346",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67dad330ca0cd5466432dbe6",
+          "firstName": "Галина",
+          "secondName": "Каурова",
+          "rawPhone": 79135254346,
+          "normalizedPhone": "79135254346",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-03-19T14:22:40.260Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67dad330ca0cd5466432dbe6"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "688d98578a25423a7a0a607a",
+          "firstName": "Галина",
+          "secondName": "Каурова",
+          "rawPhone": 79135254346,
+          "normalizedPhone": "79135254346",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 6111511906,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-08-02T04:47:19.802Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/688d98578a25423a7a0a607a"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79029440323",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6810fb69b0d597f8dc0720f0",
+          "firstName": "Леночка",
+          "secondName": "Комаров",
+          "rawPhone": 79029440323,
+          "normalizedPhone": "79029440323",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2025-04-29T16:16:41.031Z",
+          "updatedAt": "2026-01-07T10:56:15.482Z",
+          "userUrl": "/nrsk/user/6810fb69b0d597f8dc0720f0"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "689a10c18a25423a7a0eba92",
+          "firstName": "Елена",
+          "secondName": "Комарува",
+          "rawPhone": 79029440323,
+          "normalizedPhone": "79029440323",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1042595164,
+              "active": false,
+              "userName": "komarovaen"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-08-11T15:48:17.391Z",
+          "updatedAt": "2026-01-07T10:56:16.703Z",
+          "userUrl": "/nrsk/user/689a10c18a25423a7a0eba92"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79135000177",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6874b4f68a25423a7affba2f",
+          "firstName": "Аркадий",
+          "secondName": "Жданов",
+          "rawPhone": 79135000177,
+          "normalizedPhone": "79135000177",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 6498216021,
+              "active": false,
+              "userName": "undefined"
+            }
+          },
+          "eventsUsersCount": 5,
+          "createdAt": "2025-07-14T07:42:46.884Z",
+          "updatedAt": "2026-02-10T13:38:25.065Z",
+          "userUrl": "/nrsk/user/6874b4f68a25423a7affba2f"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6874bd6d8a25423a7affcd18",
+          "firstName": "Аркадий",
+          "secondName": "Жданов",
+          "rawPhone": 79135000177,
+          "normalizedPhone": "79135000177",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-07-14T08:18:53.337Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6874bd6d8a25423a7affcd18"
+        }
+      ]
+    },
+    {
+      "location": "nrsk",
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "phone": "79134998712",
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "68e5197d92fee8384e7ca561",
+          "firstName": "Лилич",
+          "secondName": "Нестеренко",
+          "rawPhone": 79134998712,
+          "normalizedPhone": "79134998712",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-10-07T13:45:33.115Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/68e5197d92fee8384e7ca561"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "68eb63fff0c8628f21892a66",
+          "firstName": "Лилия",
+          "secondName": "Нестеренко",
+          "rawPhone": 79134998712,
+          "normalizedPhone": "79134998712",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 966584037,
+              "active": false,
+              "userName": "lilja1987"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-10-12T08:17:03.182Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/68eb63fff0c8628f21892a66"
+        }
+      ]
+    },
+    {
+      "location": "ekb",
+      "dbName": "polovinka_uspeha_ekb_dev",
+      "phone": "79506459206",
+      "count": 2,
+      "users": [
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "6856305c3b9f8a6a77d23c4a",
+          "firstName": "Яна",
+          "secondName": "Чалая-Копытцева",
+          "rawPhone": 79506459206,
+          "normalizedPhone": "79506459206",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-06-21T04:09:00.727Z",
+          "updatedAt": "2025-11-26T10:24:15.285Z",
+          "userUrl": "/ekb/user/6856305c3b9f8a6a77d23c4a"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "6873381c8a25423a7aff36c4",
+          "firstName": "Яна",
+          "secondName": "Чалая-копытцева",
+          "rawPhone": 79506459206,
+          "normalizedPhone": "79506459206",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 754513625,
+              "active": true,
+              "userName": "yana3005"
+            },
+            "settings": {
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-07-13T04:37:48.659Z",
+          "updatedAt": "2025-11-26T10:24:15.285Z",
+          "userUrl": "/ekb/user/6873381c8a25423a7aff36c4"
+        }
+      ]
+    },
+    {
+      "location": "ekb",
+      "dbName": "polovinka_uspeha_ekb_dev",
+      "phone": "79049856360",
+      "count": 2,
+      "users": [
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "685632d53b9f8a6a77d23e05",
+          "firstName": "Светлана",
+          "secondName": "Махневв",
+          "rawPhone": 79049856360,
+          "normalizedPhone": "79049856360",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-06-21T04:19:33.619Z",
+          "updatedAt": "2025-11-26T10:24:15.285Z",
+          "userUrl": "/ekb/user/685632d53b9f8a6a77d23e05"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "68733cb68a25423a7aff38d8",
+          "firstName": "Светлана",
+          "secondName": "Махнева",
+          "rawPhone": 79049856360,
+          "normalizedPhone": "79049856360",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 702670437,
+              "active": false,
+              "userName": "SVMahneva"
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2025-07-13T04:57:26.313Z",
+          "updatedAt": "2025-11-26T10:24:15.285Z",
+          "userUrl": "/ekb/user/68733cb68a25423a7aff38d8"
+        }
+      ]
+    }
+  ],
+  "crossCityDuplicates": [
+    {
+      "phone": "79138370020",
+      "cities": [
+        "krsk",
+        "nrsk",
+        "ekb"
+      ],
+      "count": 3,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6252f733183ed7f8da6baa54",
+          "firstName": "Алексей",
+          "secondName": "Белинский",
+          "rawPhone": 79138370020,
+          "normalizedPhone": "79138370020",
+          "status": "member",
+          "role": "dev",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null,
+              "username": "Escalion"
+            },
+            "settings": {
+              "newEvents": false,
+              "remindDates": true,
+              "birthdays": true,
+              "time": "11:00",
+              "newEventsByTags": true,
+              "serviceRegistration": true,
+              "eventRegistration": true,
+              "newUserRegistred": true
+            }
+          },
+          "eventsUsersCount": 263,
+          "createdAt": "2022-04-10T15:26:43.674Z",
+          "updatedAt": "2026-02-17T06:23:28.820Z",
+          "userUrl": "/krsk/user/6252f733183ed7f8da6baa54"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "6252f733183ed7f8da6baa54",
+          "firstName": "Алексей",
+          "secondName": "Белинский",
+          "rawPhone": 79138370020,
+          "normalizedPhone": "79138370020",
+          "status": "member",
+          "role": "dev",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "id": 261102161
+            },
+            "settings": {
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "newEventsByTags": true,
+              "eventsTags": [],
+              "time": "11:00",
+              "birthdays": true
+            },
+            "active": false
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2022-04-10T15:26:43.674Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/6252f733183ed7f8da6baa54"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "6252f733183ed7f8da6baa54",
+          "firstName": "Алексей",
+          "secondName": "Белинский",
+          "rawPhone": 79138370020,
+          "normalizedPhone": "79138370020",
+          "status": "member",
+          "role": "dev",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "id": 261102161,
+              "username": "Escalion",
+              "active": true
+            },
+            "settings": {
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "serviceRegistration": true,
+              "newEventsByTags": true,
+              "time": "11:00",
+              "birthdays": true,
+              "remindDates": true
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2022-04-10T15:26:43.674Z",
+          "updatedAt": "2025-11-26T10:24:15.285Z",
+          "userUrl": "/ekb/user/6252f733183ed7f8da6baa54"
+        }
+      ]
+    },
+    {
+      "phone": "79504280891",
+      "cities": [
+        "krsk",
+        "nrsk",
+        "ekb"
+      ],
+      "count": 3,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6301f3d3cb2a25298f1b3e55",
+          "firstName": "Надежда",
+          "secondName": "Губина",
+          "rawPhone": 79504280891,
+          "normalizedPhone": "79504280891",
+          "status": "member",
+          "role": "president",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": "polovinka_krsk",
+              "id": 1984922390
+            },
+            "settings": {
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "time": "10:00",
+              "birthdays": true,
+              "serviceRegistration": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 398,
+          "createdAt": "2022-08-21T08:58:59.301Z",
+          "updatedAt": "2026-02-17T14:35:13.162Z",
+          "userUrl": "/krsk/user/6301f3d3cb2a25298f1b3e55"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65edfa1b6d06ac967580246b",
+          "firstName": "Надежда",
+          "secondName": "Губина",
+          "rawPhone": 79504280891,
+          "normalizedPhone": "79504280891",
+          "status": "member",
+          "role": "president",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": true,
+              "userName": "polovinka_krsk",
+              "id": 1984922390
+            },
+            "settings": {
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "time": "10:00",
+              "birthdays": true,
+              "serviceRegistration": true
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2022-08-21T08:58:59.301Z",
+          "updatedAt": "2026-02-17T14:39:19.406Z",
+          "userUrl": "/nrsk/user/65edfa1b6d06ac967580246b"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "65edfa1b6d06ac967580246b",
+          "firstName": "Надежда",
+          "secondName": "Губина",
+          "rawPhone": 79504280891,
+          "normalizedPhone": "79504280891",
+          "status": "member",
+          "role": "president",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2022-08-21T08:58:59.301Z",
+          "updatedAt": "2026-02-17T11:02:54.432Z",
+          "userUrl": "/ekb/user/65edfa1b6d06ac967580246b"
+        }
+      ]
+    },
+    {
+      "phone": "79134957500",
+      "cities": [
+        "krsk",
+        "nrsk",
+        "ekb"
+      ],
+      "count": 3,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "64ec488c18d70ebf3b6b36fa",
+          "firstName": "Александр",
+          "secondName": "Шу",
+          "rawPhone": 79134957500,
+          "normalizedPhone": "79134957500",
+          "status": "member",
+          "role": "supervisor",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 2,
+          "createdAt": "2023-08-28T07:11:08.274Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/64ec488c18d70ebf3b6b36fa"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "65967e42b04e7803bd23981b",
+          "firstName": "Александр",
+          "secondName": "Шу",
+          "rawPhone": 79134957500,
+          "normalizedPhone": "79134957500",
+          "status": "member",
+          "role": "supervisor",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": 693745730
+            },
+            "settings": {
+              "birthdays": true,
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "newEventsByTags": true,
+              "eventsTags": []
+            }
+          },
+          "eventsUsersCount": 8,
+          "createdAt": "2024-01-04T09:45:38.223Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/65967e42b04e7803bd23981b"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "65967e42b04e7803bd23981b",
+          "firstName": "Александр",
+          "secondName": "Шу",
+          "rawPhone": 79134957500,
+          "normalizedPhone": "79134957500",
+          "status": "member",
+          "role": "supervisor",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "id": 693745730,
+              "username": "AlexShu87",
+              "active": true
+            },
+            "settings": {
+              "birthdays": true,
+              "remindDates": true,
+              "time": "15:00",
+              "newUserRegistred": true,
+              "eventRegistration": true,
+              "serviceRegistration": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 14,
+          "createdAt": "2024-01-04T09:45:38.223Z",
+          "updatedAt": "2026-02-17T11:13:40.207Z",
+          "userUrl": "/ekb/user/65967e42b04e7803bd23981b"
+        }
+      ]
+    },
+    {
+      "phone": "79135038525",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "66fcddf442efc6bafc35ce06",
+          "firstName": "Илья",
+          "secondName": "Хасанов",
+          "rawPhone": 79135038525,
+          "normalizedPhone": "79135038525",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-10-02T05:45:24.196Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/66fcddf442efc6bafc35ce06"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66fe93f6e329d38c9cdfc6f1",
+          "firstName": "Илья",
+          "secondName": "Хасанов",
+          "rawPhone": 79135038525,
+          "normalizedPhone": "79135038525",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-10-03T12:54:14.908Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66fe93f6e329d38c9cdfc6f1"
+        }
+      ]
+    },
+    {
+      "phone": "79832683404",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6751a3f94972c837241e7a4c",
+          "firstName": "Евгений",
+          "secondName": "Галькевич",
+          "rawPhone": 79832683404,
+          "normalizedPhone": "79832683404",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-12-05T13:00:41.663Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6751a3f94972c837241e7a4c"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "675af0c4a0a3118e425a4ce5",
+          "firstName": "Евгений",
+          "secondName": "Галькевич",
+          "rawPhone": 79832683404,
+          "normalizedPhone": "79832683404",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2024-12-12T14:18:44.981Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/675af0c4a0a3118e425a4ce5"
+        }
+      ]
+    },
+    {
+      "phone": "79050939679",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "678eff92753f241a9c1aec80",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79050939679,
+          "normalizedPhone": "79050939679",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-01-21T01:59:46.957Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/678eff92753f241a9c1aec80"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "676e3d9d73b11294f4cd9cfb",
+          "firstName": "Кристина",
+          "secondName": "Кузнецова",
+          "rawPhone": 79050939679,
+          "normalizedPhone": "79050939679",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 1,
+          "createdAt": "2024-12-27T05:39:41.769Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/676e3d9d73b11294f4cd9cfb"
+        }
+      ]
+    },
+    {
+      "phone": "79131605865",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "6792451badad2cbfd1709182",
+          "firstName": "",
+          "secondName": "",
+          "rawPhone": 79131605865,
+          "normalizedPhone": "79131605865",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-01-23T13:33:15.888Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/6792451badad2cbfd1709182"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67924627adad2cbfd17092ae",
+          "firstName": "Елена",
+          "secondName": "Злобина",
+          "rawPhone": 79131605865,
+          "normalizedPhone": "79131605865",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-01-23T13:37:43.499Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67924627adad2cbfd17092ae"
+        }
+      ]
+    },
+    {
+      "phone": "79135084553",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "67935c74adad2cbfd170f008",
+          "firstName": "Александр",
+          "secondName": "Стрелков",
+          "rawPhone": 79135084553,
+          "normalizedPhone": "79135084553",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-01-24T09:25:08.480Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/67935c74adad2cbfd170f008"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "67936550adad2cbfd170fc18",
+          "firstName": "Александр",
+          "secondName": "Стрелков",
+          "rawPhone": 79135084553,
+          "normalizedPhone": "79135084553",
+          "status": "member",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1226502932,
+              "active": true,
+              "userName": "undefined"
+            },
+            "settings": {
+              "newEventsByTags": false
+            }
+          },
+          "eventsUsersCount": 3,
+          "createdAt": "2025-01-24T10:02:56.084Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/67936550adad2cbfd170fc18"
+        }
+      ]
+    },
+    {
+      "phone": "79134907454",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "68629cbf8a25423a7af99f92",
+          "firstName": "ксения",
+          "secondName": "Абрамова",
+          "rawPhone": 79134907454,
+          "normalizedPhone": "79134907454",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "id": 1071668324,
+              "active": false,
+              "userName": "Abramova_Kseniia"
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2025-06-30T14:18:39.203Z",
+          "updatedAt": "2025-11-26T04:44:43.969Z",
+          "userUrl": "/krsk/user/68629cbf8a25423a7af99f92"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "66f2cf8296aa19d9c564bd83",
+          "firstName": "ксения",
+          "secondName": "Зырянова",
+          "rawPhone": 79134907454,
+          "normalizedPhone": "79134907454",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "id": 1071668324,
+              "active": false,
+              "userName": "Abramova_Kseniia"
+            }
+          },
+          "eventsUsersCount": 4,
+          "createdAt": "2024-09-24T14:41:06.859Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/66f2cf8296aa19d9c564bd83"
+        }
+      ]
+    },
+    {
+      "phone": "79080317527",
+      "cities": [
+        "krsk",
+        "nrsk"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "krsk",
+          "dbName": "polovinka_uspeha_krsk_dev",
+          "userId": "696a6a686ff75296aafe4853",
+          "firstName": "Margo",
+          "secondName": "Goz",
+          "rawPhone": 79080317527,
+          "normalizedPhone": "79080317527",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": false,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": "margogoz",
+              "id": 7564429048
+            },
+            "settings": {
+              "newEvents": true,
+              "newEventsByTags": true
+            }
+          },
+          "eventsUsersCount": 0,
+          "createdAt": "2026-01-16T16:42:16.186Z",
+          "updatedAt": "2026-01-16T16:45:16.328Z",
+          "userUrl": "/krsk/user/696a6a686ff75296aafe4853"
+        },
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "687313008a25423a7aff2f7f",
+          "firstName": "Маргарита",
+          "secondName": "Гоз",
+          "rawPhone": 79080317527,
+          "normalizedPhone": "79080317527",
+          "status": "novice",
+          "role": "client",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "active": false,
+              "userName": null,
+              "id": null
+            },
+            "whatsapp": {
+              "active": true
+            }
+          },
+          "eventsUsersCount": 5,
+          "createdAt": "2025-07-13T01:59:28.381Z",
+          "updatedAt": "2025-11-27T17:02:37.617Z",
+          "userUrl": "/nrsk/user/687313008a25423a7aff2f7f"
+        }
+      ]
+    },
+    {
+      "phone": "79069048688",
+      "cities": [
+        "nrsk",
+        "ekb"
+      ],
+      "count": 2,
+      "users": [
+        {
+          "location": "nrsk",
+          "dbName": "polovinka_uspeha_nrsk_dev",
+          "userId": "666efa062be949fdb9839f83",
+          "firstName": "Алиса",
+          "secondName": "Шу",
+          "rawPhone": 79069048688,
+          "normalizedPhone": "79069048688",
+          "status": "member",
+          "role": "supervisor",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "id": 392191368,
+              "username": "Shu_video",
+              "active": true
+            },
+            "settings": {
+              "newEventsByTags": false,
+              "serviceRegistration": false,
+              "eventRegistration": false,
+              "newUserRegistred": false
+            }
+          },
+          "eventsUsersCount": 4,
+          "createdAt": "2024-06-16T14:43:18.145Z",
+          "updatedAt": "2025-11-26T14:49:46.813Z",
+          "userUrl": "/nrsk/user/666efa062be949fdb9839f83"
+        },
+        {
+          "location": "ekb",
+          "dbName": "polovinka_uspeha_ekb_dev",
+          "userId": "666efa062be949fdb9839f83",
+          "firstName": "Алиса",
+          "secondName": "Шу",
+          "rawPhone": 79069048688,
+          "normalizedPhone": "79069048688",
+          "status": "member",
+          "role": "supervisor",
+          "hasPassword": true,
+          "notifications": {
+            "telegram": {
+              "id": 392191368,
+              "username": "Shu_video",
+              "active": true
+            },
+            "settings": {
+              "eventRegistration": true,
+              "newUserRegistred": true,
+              "serviceRegistration": true,
+              "newEventsByTags": true,
+              "birthdays": false,
+              "remindDates": false,
+              "time": "13:00"
+            }
+          },
+          "eventsUsersCount": 14,
+          "createdAt": "2024-06-16T14:43:18.145Z",
+          "updatedAt": "2025-12-17T07:27:01.025Z",
+          "userUrl": "/ekb/user/666efa062be949fdb9839f83"
+        }
+      ]
+    }
+  ]
+}

@@ -1,12 +1,17 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
     "lint": "eslint .",
+    "db:clone-prod-to-test": "node scripts/clone-prod-dbs-to-test.cjs",
+    "global-users:dry-run": "node scripts/global-users-dry-run.cjs",
+    "global-users:dry-run:test": "cross-env GLOBAL_USERS_DRY_RUN_DB_SUFFIX=_test node scripts/global-users-dry-run.cjs",
+    "duplicates:phones": "node scripts/find-duplicate-phones.cjs",
+    "duplicates:phones:test": "cross-env FIND_DUPLICATES_DB_SUFFIX=_test node scripts/find-duplicate-phones.cjs",
     "analyze": "ANALYZE=true npm run build",
     "knip": "knip",
     "postinstall": "flowbite-react build"

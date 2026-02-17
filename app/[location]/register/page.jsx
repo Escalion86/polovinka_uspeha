@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@server/authOptions'
-import LocationRegister3Client from '../../_components/location/LocationRegister3Client'
+import LocationRegisterClient from '../../_components/location/LocationRegisterClient'
 
 export const metadata = {
   title: 'Регистрация - Половинка успеха',
@@ -23,5 +23,5 @@ export default async function LocationRegisterPage({ params }) {
     redirect(`/${location}/cabinet`)
   }
 
-  return <LocationRegister3Client location={location} />
+  return <LocationRegisterClient location={location} />
 }

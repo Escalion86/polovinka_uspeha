@@ -1,5 +1,12 @@
-export const PHONE_MASK = '+7 (___) ___-____'
-export const PHONE_REPLACEMENT = { _: /\d/ }
+export const PHONE_MASK = '+_ (A__) ___-____'
+export const PHONE_REPLACEMENT = { A: /[1-9]/, _: /\d/ }
+
+export const normalizePhoneMaskState = (rawValue) => {
+  const digits = String(rawValue ?? '').replace(/\D/g, '')
+  if (!digits) return '7'
+  if (digits === '77' || digits === '78') return '7'
+  return digits.slice(0, 11)
+}
 
 export const normalizePhoneValue = (rawValue) => {
   if (!rawValue) return ''
@@ -23,14 +30,7 @@ export const normalizePhoneValue = (rawValue) => {
 }
 
 export const normalizePhoneFromPaste = (clipboardText) => {
-  const digits = String(clipboardText ?? '').replace(/\D/g, '')
-  if (!digits) return ''
-
-  if (digits.length >= 11 && ['7', '8'].includes(digits[0])) {
-    return normalizePhoneValue(digits.slice(0, 11))
-  }
-
-  return normalizePhoneValue(digits)
+  return normalizePhoneMaskState(clipboardText)
 }
 
 export const getPhoneAnomalyReasons = (rawValue) => {
