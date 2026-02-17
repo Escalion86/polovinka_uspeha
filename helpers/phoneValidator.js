@@ -1,5 +1,5 @@
 const phoneValidator = (phone) => {
-  return phone?.toString().length === 11
+  return /^7\d{10}$/.test(String(phone ?? ''))
 }
 
 export default phoneValidator

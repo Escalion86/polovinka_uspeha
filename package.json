@@ -1,11 +1,12 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.7",
+  "version": "2.0.10",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
+    "lint": "eslint .",
     "analyze": "ANALYZE=true npm run build",
     "knip": "knip",
     "postinstall": "flowbite-react build"
@@ -79,6 +80,7 @@
     "undici": "^7.16.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@svgr/webpack": "^8.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.17.0",

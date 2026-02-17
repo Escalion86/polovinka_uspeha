@@ -477,7 +477,7 @@ const ToolsEventAnonsInstagramContent = () => {
         {/* tablet:max-w-[calc(100%-48px)] max-h-[calc(100vh-160px)]  */}
         <ReactImageGallery
           items={[Image]}
-          renderItem={(Image) => <Image />}
+          renderItem={(Image) => <Image alt="Предпросмотр анонса Instagram" />}
           showPlayButton={false}
           showFullscreenButton={true}
           // useBrowserFullscreen={false}

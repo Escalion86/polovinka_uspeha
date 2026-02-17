@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import {

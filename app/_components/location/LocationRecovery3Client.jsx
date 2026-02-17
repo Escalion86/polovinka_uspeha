@@ -8,32 +8,25 @@ import useRouter from '@utils/useRouter'
 import { postData } from '@helpers/CRUD'
 import phoneValidator from '@helpers/phoneValidator'
 import passwordValidator from '@helpers/passwordValidator'
-
-const normalizePhoneValue = (rawValue) => {
-  if (!rawValue) return ''
-  let digits = String(rawValue).replace(/\D/g, '')
-  if (!digits) return ''
-  if (digits.length > 11) digits = digits.slice(-11)
-  if (digits[0] === '8') return `7${digits.slice(1)}`
-  if (digits[0] === '7') return digits
-  if (digits.length === 10) return `7${digits}`
-  return `7${digits}`
-}
+import {
+  PHONE_MASK,
+  PHONE_REPLACEMENT,
+  normalizePhoneFromPaste,
+  normalizePhoneValue,
+} from '@helpers/phoneUtils'
 
 const buildMaskedPhone = (phone, focused) => {
-  const phoneMask = '+_ (A__) ___-____'
-  const phoneReplacement = { A: /[1-9]/, _: /\d/ }
   const rawPhoneValue = phone ? String(phone) : ''
   const displayDigits = rawPhoneValue || (focused ? '7' : '')
   const maskedValue = displayDigits
     ? format(displayDigits, {
-        mask: phoneMask,
-        replacement: phoneReplacement,
+        mask: PHONE_MASK,
+        replacement: PHONE_REPLACEMENT,
       })
     : ''
   return {
-    phoneMask,
-    phoneReplacement,
+    phoneMask: PHONE_MASK,
+    phoneReplacement: PHONE_REPLACEMENT,
     maskedValue,
   }
 }
@@ -73,10 +66,16 @@ export default function LocationRecovery3Client({ location }) {
   useEffect(() => () => stopPolling(), [stopPolling])
 
   const handlePhoneChange = useCallback((event) => {
-    const digits = event.target.value.replace(/\D/g, '')
-    setPhone(
-      !digits ? '7' : digits === '77' || digits === '78' ? '7' : Number(digits)
+    setPhone(normalizePhoneValue(event.target.value))
+  }, [])
+
+  const handlePhonePaste = useCallback((event) => {
+    const pastedValue = normalizePhoneFromPaste(
+      event?.clipboardData?.getData('text')
     )
+    if (!pastedValue) return
+    event.preventDefault()
+    setPhone(pastedValue)
   }, [])
 
   const startPolling = useCallback(
@@ -319,6 +318,7 @@ export default function LocationRecovery3Client({ location }) {
                     onFocus={() => setPhoneFocused(true)}
                     onBlur={() => setPhoneFocused(false)}
                     onChange={handlePhoneChange}
+                    onPaste={handlePhonePaste}
                     placeholder="+7 (___) ___-__-__"
                     className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
                   />

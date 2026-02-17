@@ -9,6 +9,7 @@ import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
 import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
 import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
+import { getPhoneAnomalyReasons, normalizePhoneValue } from '@helpers/phoneUtils'
 
 const token = process.env.TELEFONIP
 
@@ -94,6 +95,8 @@ export default async function handler(req, res) {
         referrerId,
         consentToMailing: consentToMailingRaw,
       } = body
+      const normalizedPhone = normalizePhoneValue(phone)
+      const phoneAnomalyReasons = getPhoneAnomalyReasons(phone)
       const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
 
       const db = await dbConnect(location)
@@ -110,11 +113,11 @@ export default async function handler(req, res) {
         console.log('-----------response :>> ', response)
         if (response?.success) {
           var phone1 = String(response.data.phone).substring(1)
-          var phone2 = String(phone).substring(1)
+          var phone2 = String(normalizedPhone).substring(1)
           if (phone1 === phone2) {
             await db
               .model('PhoneConfirms')
-              .findOneAndUpdate({ phone }, { confirmed: true })
+              .findOneAndUpdate({ phone: normalizedPhone }, { confirmed: true })
             // await db.model('PhoneConfirms').findOneAndDelete({ phone })
           }
         }
@@ -147,7 +150,7 @@ export default async function handler(req, res) {
           },
         })
 
-      if (!phoneValidator(phone))
+      if (!phoneValidator(normalizedPhone))
         return res?.status(200).json({
           success: false,
           data: {
@@ -158,8 +161,22 @@ export default async function handler(req, res) {
           },
         })
 
+      if (phoneAnomalyReasons.includes('double_country_code_7'))
+        return res?.status(200).json({
+          success: false,
+          data: {
+            error: {
+              message:
+                'Похоже, номер введен некорректно (лишняя 7 после кода страны). Проверьте телефон.',
+              type: 'phone',
+            },
+          },
+        })
+
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
-      const existingUser = await db.model('Users').findOne({ phone })
+      const existingUser = await db
+        .model('Users')
+        .findOne({ phone: normalizedPhone })
 
       let resolvedReferrerId = null
       if (referrerId && mongoose.Types.ObjectId.isValid(referrerId)) {
@@ -200,7 +217,7 @@ export default async function handler(req, res) {
       }
 
       if (backCall) {
-        var formatedPhone = '8' + String(phone).substring(1)
+        var formatedPhone = '8' + String(normalizedPhone).substring(1)
         const url = `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get?phone=${formatedPhone}`
         const response = await fetch(url, { method: 'GET' }).then((response) =>
           response.json()
@@ -211,7 +228,7 @@ export default async function handler(req, res) {
           const phoneConfirm = await db
             .model('PhoneConfirms')
             .findOneAndUpdate(
-              { phone },
+              { phone: normalizedPhone },
               { callId: response.data.id },
               { upsert: true }
             )
@@ -227,7 +244,7 @@ export default async function handler(req, res) {
       // Теперь проверяем есть ли уже запрос на подтверждение номера
       const existingPhoneConfirm = await db
         .model('PhoneConfirms')
-        .findOne({ phone })
+        .findOne({ phone: normalizedPhone })
       // console.log('existingPhoneConfirm', existingPhoneConfirm)
 
       // TODO Временно удаленный код для смс авторизации
@@ -327,7 +344,9 @@ export default async function handler(req, res) {
 
       // Если код уже подтвержден, то создаем пользователя
       if (password && existingPhoneConfirm?.confirmed === true) {
-        await db.model('PhoneConfirms').findOneAndDelete({ phone })
+        await db
+          .model('PhoneConfirms')
+          .findOneAndDelete({ phone: normalizedPhone })
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
           const hashedPassword = await hashPassword(password)
@@ -340,7 +359,9 @@ export default async function handler(req, res) {
           }
           const updatedUser = await db
             .model('Users')
-            .findOneAndUpdate({ phone }, updateData, { new: true })
+            .findOneAndUpdate({ phone: normalizedPhone }, updateData, {
+              new: true,
+            })
 
           if (updatedUser) {
             try {
@@ -359,7 +380,7 @@ export default async function handler(req, res) {
         } else {
           const hashedPassword = await hashPassword(password)
           const newUser = await db.model('Users').create({
-            phone,
+            phone: normalizedPhone,
             password: hashedPassword,
             referrerId: resolvedReferrerId,
             consentToMailing,
@@ -380,7 +401,7 @@ export default async function handler(req, res) {
             userId: newUser._id,
           })
           await userRegisterTelegramNotification({
-            phone,
+            phone: normalizedPhone,
             location,
             referrerId: resolvedReferrerId
               ? resolvedReferrerId.toString()

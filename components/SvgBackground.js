@@ -297,6 +297,7 @@ export const SvgBackgroundInput = ({
               <div className="relative overflow-hidden border-2 border-gray-500 w-fit">
                 <img
                   src={src}
+                  alt="Предпросмотр фонового изображения"
                   className="w-24 object-fit"
                   style={{ aspectRatio: imageAspect || 1 }}
                 />

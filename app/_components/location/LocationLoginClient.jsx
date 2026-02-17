@@ -6,17 +6,12 @@ import { signIn } from 'next-auth/react'
 import { InputMask, format } from '@react-input/mask'
 import useRouter from '@utils/useRouter'
 import { useCallback, useMemo, useState } from 'react'
-
-const normalizePhoneValue = (rawValue) => {
-  if (!rawValue) return ''
-  let digits = String(rawValue).replace(/\D/g, '')
-  if (!digits) return ''
-  if (digits.length > 11) digits = digits.slice(-11)
-  if (digits[0] === '8') return `7${digits.slice(1)}`
-  if (digits[0] === '7') return digits
-  if (digits.length === 10) return `7${digits}`
-  return `7${digits}`
-}
+import {
+  PHONE_MASK,
+  PHONE_REPLACEMENT,
+  normalizePhoneFromPaste,
+  normalizePhoneValue,
+} from '@helpers/phoneUtils'
 
 const routeAfterLogin = (router, location) => {
   if (router.query?.page) {
@@ -48,14 +43,12 @@ export default function LocationLoginClient({ location }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const phoneMask = '+_ (A__) ___-____'
-  const phoneReplacement = { A: /[1-9]/, _: /\d/ }
   const rawPhoneValue = phone ? String(phone) : ''
   const displayDigits = rawPhoneValue || (phoneFocused ? '7' : '')
   const phoneDisplayValue = displayDigits
     ? format(displayDigits, {
-        mask: phoneMask,
-        replacement: phoneReplacement,
+        mask: PHONE_MASK,
+        replacement: PHONE_REPLACEMENT,
       })
     : ''
 
@@ -123,6 +116,19 @@ export default function LocationLoginClient({ location }) {
     )
   }, [router, location, baseQuery])
 
+  const handlePhoneChange = useCallback((event) => {
+    setPhone(normalizePhoneValue(event.target.value))
+  }, [])
+
+  const handlePhonePaste = useCallback((event) => {
+    const pastedValue = normalizePhoneFromPaste(
+      event?.clipboardData?.getData('text')
+    )
+    if (!pastedValue) return
+    event.preventDefault()
+    setPhone(pastedValue)
+  }, [])
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f7f7fb] text-[#1d1b1f]">
       <div className="absolute inset-0 z-0">
@@ -185,22 +191,14 @@ export default function LocationLoginClient({ location }) {
                 <InputMask
                   name="phone"
                   type="tel"
-                  mask={phoneMask}
-                  replacement={phoneReplacement}
+                  mask={PHONE_MASK}
+                  replacement={PHONE_REPLACEMENT}
                   showMask={phoneFocused}
                   value={phoneDisplayValue}
                   onFocus={() => setPhoneFocused(true)}
                   onBlur={() => setPhoneFocused(false)}
-                  onChange={(event) => {
-                    const digits = event.target.value.replace(/\D/g, '')
-                    setPhone(
-                      !digits
-                        ? '7'
-                        : digits === '77' || digits === '78'
-                          ? '7'
-                          : Number(digits)
-                    )
-                  }}
+                  onChange={handlePhoneChange}
+                  onPaste={handlePhonePaste}
                   placeholder="+7 (___) ___-__-__"
                   className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
                 />
