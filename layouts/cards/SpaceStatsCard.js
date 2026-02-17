@@ -38,7 +38,7 @@ const SpaceStatsCard = ({
       <div className="font-futura font-semibold text-[clamp(40px,5vw,64px)] text-[#6b1f2a]">
         {stat.number}
       </div>
-      <div className="mt-2 font-futura text-[22px] leading-relaxed">
+      <div className="mt-2 font-futura text-[24px] leading-relaxed">
         {stat.text}
       </div>
     </div>

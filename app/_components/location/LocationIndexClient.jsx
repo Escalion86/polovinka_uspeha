@@ -912,7 +912,7 @@ export default function LocationIndexClient({ location }) {
               открытых мероприятиях.
             </p>
             <Link
-              href="/login"
+              href={`/${defaultLocation}/login`}
               className="mt-4 inline-flex rounded-full bg-[#4fb0e8] px-6 py-2 text-white"
             >
               Узнать условия доступа

@@ -132,7 +132,9 @@ const AboutSpaceCard = ({
                     : ''
               )}
             >
-              <strong>{card.title}</strong>
+              <strong>
+                <NoOrphanText as="span" text={card.title} />
+              </strong>
             </h3>
           ) : null}
           <NoOrphanText
@@ -154,7 +156,9 @@ const AboutSpaceCard = ({
                     : ''
               )}
             >
-              <strong>{card.title}</strong>
+              <strong>
+                <NoOrphanText as="span" text={card.title} />
+              </strong>
             </h3>
           ) : null}
           <NoOrphanText
