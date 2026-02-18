@@ -15,6 +15,10 @@ import {
   normalizePhoneValue,
 } from '@helpers/phoneUtils'
 import {
+  captureAttributionFromBrowser,
+  getAttributionPayload,
+} from '@helpers/attribution'
+import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
@@ -100,6 +104,9 @@ const Register3Inner = ({ location }) => {
   }, [])
 
   useEffect(() => () => stopPolling(), [stopPolling])
+  useEffect(() => {
+    captureAttributionFromBrowser()
+  }, [])
 
   const handlePhoneChange = useCallback((event) => {
     setPhone(normalizePhoneMaskState(event.target.value))
@@ -263,6 +270,7 @@ const Register3Inner = ({ location }) => {
     }
 
     setWaiting(true)
+    const attribution = getAttributionPayload()
     const res = await postData(
       '/api/telefonip',
       {
@@ -271,6 +279,7 @@ const Register3Inner = ({ location }) => {
         location,
         referrerId: referralId,
         consentToMailing: checkConsentToMailing,
+        attribution,
       },
       null,
       null,

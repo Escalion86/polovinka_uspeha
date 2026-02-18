@@ -14,6 +14,7 @@ import {
   PHONE_REPLACEMENT,
   normalizePhoneValue,
 } from '@helpers/phoneUtils'
+import { captureAttributionFromBrowser } from '@helpers/attribution'
 
 const buildMaskedPhone = (phone, focused) => {
   const rawPhoneValue = phone ? String(phone) : ''
@@ -64,6 +65,9 @@ export default function LocationRecoveryClient({ location }) {
   }, [])
 
   useEffect(() => () => stopPolling(), [stopPolling])
+  useEffect(() => {
+    captureAttributionFromBrowser()
+  }, [])
 
   const handlePhoneChange = useCallback((event) => {
     setPhone(normalizePhoneMaskState(event.target.value))

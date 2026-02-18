@@ -24,6 +24,7 @@ import {
 } from '@helpers/fetchers'
 import subEventsSummator from '@helpers/subEventsSummator'
 import DOMPurify from 'isomorphic-dompurify'
+import { captureAttributionFromBrowser } from '@helpers/attribution'
 
 const heroImages = [
   '/img/general/1.jpg',
@@ -213,6 +214,9 @@ export default function Index2Page() {
   const [activeSpace, setActiveSpace] = useState(null)
   const reviewTextRefs = useRef(new Map())
   const [reviewOverflowMap, setReviewOverflowMap] = useState({})
+  useEffect(() => {
+    captureAttributionFromBrowser()
+  }, [])
   const spaceStats = useMemo(() => {
     const items = siteSettings?.spaceStats
     if (!Array.isArray(items) || items.length === 0) return DEFAULT_STATS

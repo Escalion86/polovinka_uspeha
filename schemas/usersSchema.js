@@ -152,6 +152,11 @@ const usersSchema = {
     // of: Any,
     default: DEFAULT_USERS_SECURITY,
   },
+  attribution: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: null,
+  },
   notifications: {
     type: Map,
     of: Schema.Types.Mixed,

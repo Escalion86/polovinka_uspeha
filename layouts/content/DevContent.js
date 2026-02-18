@@ -64,6 +64,9 @@ const DevContent = () => {
   const [mergingPhone, setMergingPhone] = useState('')
   const [previewLoadingPhone, setPreviewLoadingPhone] = useState('')
   const [previewByPhone, setPreviewByPhone] = useState({})
+  const [loadingAttribution, setLoadingAttribution] = useState(false)
+  const [attributionError, setAttributionError] = useState('')
+  const [attributionSummary, setAttributionSummary] = useState(null)
 
   const initMergeSelections = (groups) => {
     const nextPrimary = {}
@@ -251,6 +254,31 @@ const DevContent = () => {
     setPhoneAnomalies(response?.data?.items || [])
   }
 
+  const loadAttributionSummary = async () => {
+    if (!location || loadingAttribution) return
+
+    setLoadingAttribution(true)
+    setAttributionError('')
+    const response = await getData(
+      `/api/${location}/users/attribution-summary`,
+      {},
+      null,
+      null,
+      true
+    )
+    setLoadingAttribution(false)
+
+    if (!response?.success) {
+      setAttributionSummary(null)
+      setAttributionError(
+        response?.data?.error?.message || 'Не удалось получить UTM-отчет'
+      )
+      return
+    }
+
+    setAttributionSummary(response?.data || null)
+  }
+
   return (
     <div className="flex flex-col gap-y-3">
       <Button name="AI" onClick={() => modalsFunc.external.ai()} />
@@ -272,12 +300,24 @@ const DevContent = () => {
         onClick={loadDuplicateUsers}
         disabled={!location || loadingDuplicates}
       />
+      <Button
+        name={
+          loadingAttribution
+            ? 'Собираем UTM-отчет...'
+            : 'UTM-отчет по пользователям'
+        }
+        onClick={loadAttributionSummary}
+        disabled={!location || loadingAttribution}
+      />
 
       {phoneScanError ? (
         <div className="text-sm text-red-600">{phoneScanError}</div>
       ) : null}
       {duplicatesError ? (
         <div className="text-sm text-red-600">{duplicatesError}</div>
+      ) : null}
+      {attributionError ? (
+        <div className="text-sm text-red-600">{attributionError}</div>
       ) : null}
 
       {!loadingPhones && phoneAnomalies.length > 0 ? (
@@ -490,6 +530,48 @@ const DevContent = () => {
                 </div>
               )
             })}
+          </div>
+        </div>
+      ) : null}
+
+      {attributionSummary ? (
+        <div className="rounded border border-sky-200 bg-sky-50/40 p-3 text-sm">
+          <div className="font-semibold text-sky-800">UTM-сводка ({location})</div>
+          <div className="mt-1 text-sky-900">
+            Всего пользователей: <b>{attributionSummary.totalUsers}</b>
+          </div>
+          <div className="text-sky-900">
+            С атрибуцией: <b>{attributionSummary.withAttribution}</b>
+          </div>
+          <div className="text-sky-900">
+            Без атрибуции: <b>{attributionSummary.withoutAttribution}</b>
+          </div>
+
+          <div className="mt-2 grid gap-2 md:grid-cols-3">
+            <div>
+              <div className="font-semibold text-sky-800">Top Source</div>
+              {(attributionSummary.topSources || []).map((item) => (
+                <div key={`src-${item.key}`} className="text-xs text-sky-900">
+                  {item.key}: {item.count}
+                </div>
+              ))}
+            </div>
+            <div>
+              <div className="font-semibold text-sky-800">Top Medium</div>
+              {(attributionSummary.topMediums || []).map((item) => (
+                <div key={`med-${item.key}`} className="text-xs text-sky-900">
+                  {item.key}: {item.count}
+                </div>
+              ))}
+            </div>
+            <div>
+              <div className="font-semibold text-sky-800">Top Campaign</div>
+              {(attributionSummary.topCampaigns || []).map((item) => (
+                <div key={`cmp-${item.key}`} className="text-xs text-sky-900">
+                  {item.key}: {item.count}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}

@@ -5,13 +5,14 @@ import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import { InputMask, format } from '@react-input/mask'
 import useRouter from '@utils/useRouter'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   normalizePhoneMaskState,
   PHONE_MASK,
   PHONE_REPLACEMENT,
   normalizePhoneValue,
 } from '@helpers/phoneUtils'
+import { captureAttributionFromBrowser } from '@helpers/attribution'
 
 const routeAfterLogin = (router, location) => {
   if (router.query?.page) {
@@ -58,6 +59,10 @@ export default function LocationLoginClient({ location }) {
     delete nextQuery.registration
     return nextQuery
   }, [router.query])
+
+  useEffect(() => {
+    captureAttributionFromBrowser()
+  }, [])
 
   const handleSubmit = useCallback(
     async (event) => {

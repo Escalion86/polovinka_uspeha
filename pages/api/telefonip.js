@@ -12,6 +12,38 @@ import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import { getPhoneAnomalyReasons, normalizePhoneValue } from '@helpers/phoneUtils'
 
 const token = process.env.TELEFONIP
+const ATTRIBUTION_KEYS = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'firstVisitAt',
+  'firstLandingPath',
+  'firstReferrer',
+  'lastVisitAt',
+  'lastLandingPath',
+  'lastReferrer',
+]
+
+const toSafeString = (value, max = 500) => {
+  if (value === null || value === undefined) return null
+  const normalized = String(value).trim()
+  if (!normalized) return null
+  return normalized.slice(0, max)
+}
+
+const sanitizeAttribution = (rawAttribution) => {
+  if (!rawAttribution || typeof rawAttribution !== 'object') return null
+
+  const result = {}
+  ATTRIBUTION_KEYS.forEach((key) => {
+    const safeValue = toSafeString(rawAttribution[key])
+    if (safeValue) result[key] = safeValue
+  })
+
+  return Object.keys(result).length > 0 ? result : null
+}
 
 // const fetchCode = async (phone) => {
 //   const formatedPhone = '8' + String(phone).substring(1)
@@ -94,10 +126,12 @@ export default async function handler(req, res) {
         location,
         referrerId,
         consentToMailing: consentToMailingRaw,
+        attribution: attributionRaw,
       } = body
       const normalizedPhone = normalizePhoneValue(phone)
       const phoneAnomalyReasons = getPhoneAnomalyReasons(phone)
       const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
+      const attribution = sanitizeAttribution(attributionRaw)
 
       const db = await dbConnect(location)
       if (!db)
@@ -356,6 +390,9 @@ export default async function handler(req, res) {
           }
           if (!forgotPassword) {
             updateData.consentToMailing = consentToMailing
+            if (attribution) {
+              updateData.attribution = attribution
+            }
           }
           const updatedUser = await db
             .model('Users')
@@ -384,6 +421,7 @@ export default async function handler(req, res) {
             password: hashedPassword,
             referrerId: resolvedReferrerId,
             consentToMailing,
+            attribution,
           })
 
           try {
