@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import globalUsersSchema from '@schemas/globalUsersSchema'
+import globalContentSchema from '@schemas/globalContentSchema'
 
 const GLOBAL_CONNECTION_KEY = 'global'
 
@@ -39,6 +40,10 @@ async function dbConnectGlobal() {
     connections[GLOBAL_CONNECTION_KEY].model(
       'GlobalUsers',
       mongoose.Schema(globalUsersSchema, { timestamps: true })
+    )
+    connections[GLOBAL_CONNECTION_KEY].model(
+      'GlobalContent',
+      mongoose.Schema(globalContentSchema, { timestamps: true })
     )
   }
 

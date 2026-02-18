@@ -4,72 +4,17 @@ import ContentHeader from '@components/ContentHeader'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { postData } from '@helpers/CRUD'
+import { getData, postData } from '@helpers/CRUD'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import locationAtom from '@state/atoms/locationAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useAtom, useAtomValue } from 'jotai'
-import { useCallback, useMemo, useState } from 'react'
-
-const DEFAULT_ABOUT_CARDS = [
-  {
-    id: 'about-1',
-    tone: 'white',
-    wide: true,
-    title: '',
-    text: `<p>Каждый день похож на предыдущий: работа, заботы, спорт, домашние дела, дети, редкие встречи с друзьями. Жизнь вроде идёт, но чего-то не хватает тепла, спонтанности, человеческого контакта. Тебе хочется просто расслабиться и побыть среди «своих» самим собой, где не нужно играть роли и подбирать слова?</p><p><strong>ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ «ПОЛОВИНКА УСПЕХА»</strong> — это пространство лёгкости и живого общения.</p>`,
-  },
-  {
-    id: 'about-2',
-    tone: 'burgundy',
-    wide: false,
-    title: 'УЖЕ БОЛЕЕ ЧЕТЫРЕХ ЛЕТ МЫ СОЗДАЁМ АТМОСФЕРУ, ГДЕ МОЖНО:',
-    text: `<ul><li>просто быть самим собой</li><li>отдыхать от суеты и дел</li><li>наслаждаться общением</li><li>открывать для себя новых людей естественно, без ожиданий и масок</li><li>встретить свою вторую половинку</li><li>обрести новых друзей и единомышленников в своих увлечениях</li><li>расширить круг деловых связей и партнеров</li><li>научиться чему-то новому и получить новый опыт и эмоции</li><li>весело провести время и просто потусоваться с такими же людьми, как ты</li></ul>`,
-  },
-  {
-    id: 'about-3',
-    tone: 'blue',
-    wide: false,
-    title: 'НАШЕ ПРОСТРАНСТВО, ДЛЯ:',
-    text: `<ul><li>активных и современных людей, которым хочется больше жизни, эмоций и близкого общения без формальностей и натянутости</li><li>тех, кто устал от шаблонных встреч и бесконечных экранов телефона и телевизора</li><li>тех, кто хочет настоящих впечатлений, лёгкости и искренних связей</li></ul>`,
-  },
-  {
-    id: 'about-4',
-    tone: 'white',
-    wide: true,
-    title: 'Что такое ПРОСТРАНСТВО «ПОЛОВИНКА УСПЕХА»?',
-    text: `<p>Это пространство живых встреч - вечера, выезды, мастер-классы, игры, прогулки, автоквесты, путешествия. Мы объединяем людей, которые хотят проводить время интересно и по-настоящему: улыбаться, смеяться, открываться, вдохновляться, учиться новому и наполняться энергией общения. Здесь нет цели «кого-то найти», зато часто случаются новые дружбы, тёплые связи и даже истории, с которых начинается что-то большее.</p>`,
-  },
-  {
-    id: 'about-5',
-    tone: 'burgundy',
-    wide: false,
-    title: 'Что получает участник нашего ПРОСТРАНСТВА:',
-    text: `<ul><li>атмосферу лёгкости, принятия и живого интереса</li><li>ощущение сопричастности и «своей стаи»</li><li>новые впечатления, вдохновение и энергию жизни</li><li>возможность раскрыться, почувствовать себя естественно и уверенно</li><li>расширение круга общения - органично, без давления и формальностей</li></ul>`,
-  },
-  {
-    id: 'about-6',
-    tone: 'blue',
-    wide: false,
-    title: 'ПОЧЕМУ ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:',
-    text: `<ul><li><strong>Сбалансированные форматы:</strong> мероприятия под настроение от камерных игр до выездов на природу</li><li><strong>Тонкая модерация:</strong> ведущие создают атмосферу вовлечённости и лёгкости, помогая каждому раскрыться</li><li><strong>Аудитория по ценностям:</strong> здесь собираются люди, близкие по взглядам, стилю жизни и внутренней культуре</li><li><strong>Удобное участие:</strong> всё просто - выбрать событие, зарегистрироваться, прийти и быть собой</li></ul>`,
-  },
-  {
-    id: 'about-7',
-    tone: 'white',
-    wide: true,
-    title: 'КОГДА ЛЮДИ ПРИХОДЯТ В НАШЕ ПРОСТРАНСТВО:',
-    text: `<ul><li>Когда хочется добавить в жизнь лёгкости, новых эмоций и спонтанных встреч</li><li>Когда наступает момент «я всё делаю правильно, но хочу чувствовать больше»</li><li>Когда появляется желание жить ярче — не меняя всё вокруг, а просто меняя пространство, в котором ты общаешься</li></ul>`,
-  },
-]
+import { useAtomValue } from 'jotai'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const createId = () => `${Date.now()}-${Math.round(Math.random() * 1e6)}`
 
 const normalizeCards = (cards) => {
-  const source =
-    Array.isArray(cards) && cards.length > 0 ? cards : DEFAULT_ABOUT_CARDS
+  const source = Array.isArray(cards) ? cards : []
   return [...source]
     .map((item, index) => ({
       id: item.id ?? `about-${index}`,
@@ -86,26 +31,45 @@ const normalizeCards = (cards) => {
 }
 
 const AboutSpaceContent = () => {
-  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [isSaving, setIsSaving] = useState(false)
+  const [globalCards, setGlobalCards] = useState(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadGlobalCards = async () => {
+      const data = await getData('/api/global/content/about-space-cards')
+      if (!isMounted) return
+      if (Array.isArray(data?.aboutSpaceCards) && data.aboutSpaceCards.length) {
+        setGlobalCards(data.aboutSpaceCards)
+      } else {
+        setGlobalCards([])
+      }
+    }
+
+    loadGlobalCards()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const cards = useMemo(
-    () => normalizeCards(siteSettings?.aboutSpaceCards),
-    [siteSettings]
+    () => normalizeCards(globalCards),
+    [globalCards]
   )
 
-  const canEdit =
-    loggedUserActiveRole?.generalPage?.aboutSpace || loggedUserActiveRole?.dev
+  const canEdit = Boolean(
+    loggedUserActiveRole?.dev || loggedUserActiveRole?.president
+  )
 
   const saveCards = useCallback(
     async (nextCards) => {
-      if (!location) return
-      const prevSettings = siteSettings
       setIsSaving(true)
+      const prevGlobalCards = globalCards
       const prepared = nextCards.map((item, index) => ({
         id: item.id ?? createId(),
         title: item.title ?? '',
@@ -118,35 +82,29 @@ const AboutSpaceContent = () => {
         index,
       }))
 
-      setSiteSettings((prev) => ({
-        ...(prev || {}),
-        aboutSpaceCards: prepared,
-      }))
+      setGlobalCards(prepared)
 
-      await postData(
-        `/api/${location}/site`,
+      const globalData = await postData(
+        '/api/global/content/about-space-cards',
         {
           aboutSpaceCards: prepared,
         },
-        (data) => {
-          setSiteSettings((prev) => ({
-            ...(prev || {}),
-            ...(data || {}),
-            aboutSpaceCards: Array.isArray(data?.aboutSpaceCards)
-              ? data.aboutSpaceCards
-              : prepared,
-          }))
-          setIsSaving(false)
-        },
-        () => {
-          if (prevSettings) setSiteSettings(prevSettings)
-          setIsSaving(false)
-        },
+        null,
+        null,
         false,
         loggedUserActive?._id
       )
+
+      if (Array.isArray(globalData?.aboutSpaceCards)) {
+        setGlobalCards(globalData.aboutSpaceCards)
+        setIsSaving(false)
+        return
+      }
+
+      setGlobalCards(prevGlobalCards ?? [])
+      setIsSaving(false)
     },
-    [location, loggedUserActive?._id, setSiteSettings, siteSettings]
+    [globalCards, loggedUserActive?._id]
   )
 
   const handleAdd = useCallback(() => {

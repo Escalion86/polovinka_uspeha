@@ -197,7 +197,7 @@ blockquote {
 
 .ql ol,
 .ql-editor ol {
-  padding-left: 1rem !important;
+  padding-left: 1.5rem !important;
 }
 
 .ql ol li,
@@ -298,78 +298,34 @@ li[data-list='bullet'] span.ql-ui:before {
   background-position: 6px 1px !important;
 }
 
-.about-card-content ul,
-.about-card-content ol {
-  padding-left: 0 !important;
-  margin-left: 0;
+li[data-list='bullet'] {
   list-style: none !important;
-  list-style-type: none !important;
+  position: relative;
+  padding-left: 3rem;
 }
 
-.about-card-content li {
-  list-style: none !important;
-  list-style-type: none !important;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.about-card-content li[data-list='bullet']::before {
+li[data-list='bullet']::before {
   content: '' !important;
+  display: block !important;
+  position: absolute;
+  left: 1.1rem;
+  top: 0.1em;
+  width: 20px;
+  height: 20px;
+  background-image: url('/img/logo_heart_16x20px.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 }
 
-.about-card-content ol > li::before,
-.about-card-content ul > li::before {
-  content: '' !important;
+.ql-editor ol li[data-list='bullet']::before {
+  left: -0.2rem;
+  top: 0;
 }
 
-.about-card-content li::before {
-  content: none !important;
+li[data-list='bullet'] > span.ql-ui,
+li[data-list='bullet'] > span.ql-ui:before {
   display: none !important;
-}
-
-.about-card-content ol > li::marker,
-.about-card-content ul > li::marker,
-.about-card-content li::marker {
-  content: '' !important;
-}
-
-.about-card-content li[data-list='bullet'] {
-  display: flex;
-  align-items: start;
-  gap: 12px;
-  margin-left: 4;
-}
-
-.about-card-content li[data-list='bullet'] span.ql-ui {
-  /* position: relative; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  min-width: 24px;
-  max-width: 24px;
-}
-
-.about-card-content li[data-list='bullet'] span.ql-ui:before {
-  /* position: absolute;
-  top: -9; */
-  display: block;
-  margin-top: 4;
-  margin-bottom: -4;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  width: 24px;
-  min-width: 24px;
-  max-width: 24px;
-}
-
-.about-card-content ul > li::before {
-  content: '' !important;
-}
-
-.about-card-content ul > li::marker {
-  content: '' !important;
 }
 
 .ql-container {

@@ -129,6 +129,16 @@ export async function fetchingSiteSettings(location) {
   return resp
 }
 
+export async function fetchingGlobalAboutSpaceCards() {
+  const resp = await fetch('/api/global/content/about-space-cards')
+    .then((res) => res.json())
+    .then((json) => json.data)
+    .catch((error) =>
+      console.log('fetchingGlobalAboutSpaceCards ERROR:', error)
+    )
+  return resp
+}
+
 export async function fetchingHistories(location) {
   const resp = await fetch(`/api/${location}/histories`)
     .then((res) => res.json())

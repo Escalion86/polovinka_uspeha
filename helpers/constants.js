@@ -1973,7 +1973,7 @@ export const CONTENTS = Object.freeze({
   aboutSpace: {
     Component: AboutSpaceContent,
     name: 'Сайт / О нашем пространстве',
-    roleAccess: (role) => role?.generalPage?.aboutSpace || role?.dev,
+    roleAccess: (role) => role?.dev || role?.president,
   },
   reviews: {
     Component: ReviewsContent,

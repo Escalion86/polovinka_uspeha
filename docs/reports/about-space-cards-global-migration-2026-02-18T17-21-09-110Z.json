@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-02-18T17:21:09.080Z",
+  "finishedAt": "2026-02-18T17:21:09.110Z",
+  "mode": "dry-run",
+  "source": {
+    "dbName": "polovinka_uspeha_krsk_dev",
+    "collection": "sitesettings",
+    "cardsCount": 7
+  },
+  "target": {
+    "dbName": "polovinka_uspeha_dev",
+    "collection": "globalcontents",
+    "key": "about-space-cards",
+    "previousCardsCount": 1,
+    "newCardsCount": 7
+  }
+}
