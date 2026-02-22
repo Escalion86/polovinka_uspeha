@@ -451,6 +451,10 @@ const Register3Inner = ({ location }) => {
                     <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
                       или зарегистрируйтесь по номеру телефона
                     </div>
+                    <div className="-mt-2 text-center text-[11px] leading-relaxed text-[#5d4a52]">
+                      Регистрация через VK ID доступна только после подтверждения
+                      обязательных согласий.
+                    </div>
                   </>
                 ) : null}
 
@@ -493,7 +497,8 @@ const Register3Inner = ({ location }) => {
                     />
                     <span>
                       <span className="text-[#b4232d]">*</span> Согласен на
-                      обработку персональных данных
+                      обработку персональных данных (включая данные из VK ID при
+                      входе через VK)
                     </span>
                   </label>
                   <label className="flex items-start gap-3">

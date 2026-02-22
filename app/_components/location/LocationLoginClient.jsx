@@ -223,6 +223,9 @@ export default function LocationLoginClient({ location }) {
                   <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
                     или войдите по номеру телефона
                   </div>
+                  <div className="-mt-2 text-center text-[11px] leading-relaxed text-[#5d4a52]">
+                    При входе через VK ID используются данные вашего VK-профиля.
+                  </div>
                 </>
               ) : null}
 

@@ -114,6 +114,10 @@ const syncGlobalLinkSafe = async ({ location, user, source }) => {
   }
 }
 
+const throwVkAuthError = (code) => {
+  throw new Error(code)
+}
+
 export const authOptions = {
   secret: process.env.SECRET,
   providers: [
@@ -226,12 +230,18 @@ export const authOptions = {
           personalDataAgreementAccepted: personalDataAgreementAcceptedRaw,
         } = credentials ?? {}
 
-        if (!code || !deviceId || !location) return null
+        if (!code || !deviceId || !location) {
+          throwVkAuthError('VK_BAD_REQUEST')
+        }
 
         const loginGuard = await assertCityOperationAllowed(location, 'login')
-        if (!loginGuard.success) return null
+        if (!loginGuard.success) {
+          throwVkAuthError('VK_LOGIN_BLOCKED')
+        }
         const vkAuthGuard = await assertCityOperationAllowed(location, 'vk_auth')
-        if (!vkAuthGuard.success) return null
+        if (!vkAuthGuard.success) {
+          throwVkAuthError('VK_AUTH_DISABLED')
+        }
 
         const exchangeResult = await exchangeVkCode({
           code,
@@ -241,26 +251,32 @@ export const authOptions = {
         })
         if (!exchangeResult.success) {
           console.log('VK exchange error:', exchangeResult?.data)
-          return null
+          throwVkAuthError('VK_EXCHANGE_FAILED')
         }
 
         const accessToken = exchangeResult?.data?.access_token
-        if (!accessToken) return null
+        if (!accessToken) {
+          throwVkAuthError('VK_EXCHANGE_FAILED')
+        }
 
         const userInfoResult = await fetchVkUserInfo({ accessToken })
         if (!userInfoResult.success) {
           console.log('VK userInfo error:', userInfoResult?.data)
-          return null
+          throwVkAuthError('VK_USERINFO_FAILED')
         }
 
         const vkUser = userInfoResult?.data?.user || {}
         const vkId =
           normalizeVkId(vkUser?.user_id) ||
           normalizeVkId(exchangeResult?.data?.user_id)
-        if (!vkId) return null
+        if (!vkId) {
+          throwVkAuthError('VK_PROFILE_INVALID')
+        }
 
         const db = await dbConnect(location)
-        if (!db) return null
+        if (!db) {
+          throwVkAuthError('VK_SERVER_UNAVAILABLE')
+        }
         await ensureConsentToMailingField(db, location)
 
         const usersModel = db.model('Users')
@@ -315,7 +331,7 @@ export const authOptions = {
 
         if (phoneCandidates.length === 0) {
           console.log('VK auth: phone is required for auto-link/register')
-          return null
+          throwVkAuthError('VK_PHONE_REQUIRED')
         }
 
         if (phoneCandidates.length > 0) {
@@ -352,18 +368,22 @@ export const authOptions = {
           }
         }
 
-        if (mode === 'login') return null
+        if (mode === 'login') {
+          throwVkAuthError('VK_ACCOUNT_NOT_FOUND')
+        }
 
         const registrationGuard = await assertCityOperationAllowed(
           location,
           'registration'
         )
-        if (!registrationGuard.success) return null
+        if (!registrationGuard.success) {
+          throwVkAuthError('VK_REGISTRATION_BLOCKED')
+        }
         if (!isAdultConfirmed || !personalDataAgreementAccepted) {
           console.log(
             'VK auth: required agreements are not accepted for registration'
           )
-          return null
+          throwVkAuthError('VK_AGREEMENTS_REQUIRED')
         }
 
         const resolvedReferrerId = await resolveReferrerId(db, referrerId)

@@ -1,0 +1,103 @@
+{
+  "track": "VK-T6",
+  "date": "2026-02-22",
+  "mode": "static-smoke",
+  "summary": {
+    "status": "in_progress",
+    "checksPassed": 9,
+    "checksFailed": 0,
+    "manualChecksPending": 6
+  },
+  "checks": [
+    {
+      "id": "vk-001",
+      "name": "Default VK auth policy is disabled",
+      "status": "passed",
+      "evidence": [
+        "server/getCityPolicy.js",
+        "server/citiesCatalog.js",
+        "schemas/globalContentSchema.js"
+      ]
+    },
+    {
+      "id": "vk-002",
+      "name": "Server guard supports vk_auth operation",
+      "status": "passed",
+      "evidence": [
+        "server/assertCityOperationAllowed.js"
+      ]
+    },
+    {
+      "id": "vk-003",
+      "name": "VK provider enforces vk_auth and login guards",
+      "status": "passed",
+      "evidence": [
+        "server/authOptions.js"
+      ]
+    },
+    {
+      "id": "vk-004",
+      "name": "VK provider returns explicit error codes",
+      "status": "passed",
+      "evidence": [
+        "server/authOptions.js"
+      ]
+    },
+    {
+      "id": "vk-005",
+      "name": "Client maps VK error codes to user-friendly text",
+      "status": "passed",
+      "evidence": [
+        "app/_components/location/VkIdOneTapAuth.jsx"
+      ]
+    },
+    {
+      "id": "vk-006",
+      "name": "Login page gates VK by vk-status endpoint",
+      "status": "passed",
+      "evidence": [
+        "app/_components/location/LocationLoginClient.jsx",
+        "pages/api/global/auth/vk-status.js"
+      ]
+    },
+    {
+      "id": "vk-007",
+      "name": "Register page gates VK by vk-status endpoint",
+      "status": "passed",
+      "evidence": [
+        "app/_components/location/LocationRegisterClient.jsx",
+        "pages/api/global/auth/vk-status.js"
+      ]
+    },
+    {
+      "id": "vk-008",
+      "name": "Recovery flow does not depend on VK",
+      "status": "passed",
+      "evidence": [
+        "app/_components/location/LocationRecoveryClient.jsx",
+        "pages/api/telefonip.js"
+      ]
+    },
+    {
+      "id": "vk-009",
+      "name": "Project builds successfully with VK changes",
+      "status": "passed",
+      "evidence": [
+        "npx next build"
+      ]
+    }
+  ],
+  "manualChecksPending": [
+    "Runtime check with allowVkAuth=false: VK widget hidden on /{location}/login",
+    "Runtime check with allowVkAuth=false: VK widget hidden on /{location}/register",
+    "Runtime check with allowVkAuth=true: VK widget visible on /{location}/login",
+    "Runtime check with allowVkAuth=true: VK widget visible on /{location}/register",
+    "VK successful sign-in for already linked vk_id in at least one location",
+    "VK failure path from real provider returns expected user message"
+  ],
+  "notes": [
+    "Environment policy blocks persistent background process launch for live browser/API smoke in this session.",
+    "Manual runtime checklist remains required for final VK-T6 completion."
+  ]
+}
+

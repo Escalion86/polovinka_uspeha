@@ -43,6 +43,31 @@ const getVkRedirectUrl = () => {
 
 const getVkScope = () => process.env.NEXT_PUBLIC_VK_ID_SCOPE || 'phone email'
 
+const VK_SIGNIN_ERROR_MESSAGES = {
+  VK_BAD_REQUEST: 'Неполные данные для входа через VK ID. Обновите страницу.',
+  VK_LOGIN_BLOCKED: 'Вход в выбранном городе сейчас ограничен.',
+  VK_AUTH_DISABLED: 'Вход через VK ID временно отключен для этого города.',
+  VK_EXCHANGE_FAILED:
+    'VK ID временно недоступен. Попробуйте позже или войдите по телефону.',
+  VK_USERINFO_FAILED:
+    'Не удалось получить профиль VK. Попробуйте позже или войдите по телефону.',
+  VK_PROFILE_INVALID: 'Профиль VK ID передан некорректно.',
+  VK_SERVER_UNAVAILABLE: 'Сервис авторизации временно недоступен.',
+  VK_PHONE_REQUIRED:
+    'VK ID не передал номер телефона. Завершите вход через телефон.',
+  VK_ACCOUNT_NOT_FOUND:
+    'Аккаунт не найден. Зарегистрируйтесь по телефону или через VK с подтверждением.',
+  VK_REGISTRATION_BLOCKED: 'Регистрация в выбранном городе сейчас ограничена.',
+  VK_AGREEMENTS_REQUIRED:
+    'Для регистрации через VK ID подтвердите обязательные согласия.',
+  CredentialsSignin:
+    'Не удалось завершить вход через VK ID. Попробуйте снова или войдите по телефону.',
+}
+
+const mapVkSignInError = (errorCode) =>
+  VK_SIGNIN_ERROR_MESSAGES[errorCode] ||
+  'Не удалось выполнить вход через VK ID. Попробуйте позже.'
+
 export default function VkIdOneTapAuth({
   location,
   mode = 'auto',
@@ -88,7 +113,7 @@ export default function VkIdOneTapAuth({
           showAlternativeLogin: true,
         })
         .on(VKID.WidgetEvents.ERROR, () => {
-          onError('Ошибка виджета VK ID')
+          onError('Ошибка виджета VK ID. Попробуйте вход по телефону.')
         })
         .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async (vkPayload) => {
           if (!isMounted) return
@@ -115,7 +140,7 @@ export default function VkIdOneTapAuth({
 
           setIsLoading(false)
           if (result?.error) {
-            onError('Не удалось войти через VK ID')
+            onError(mapVkSignInError(result.error))
             return
           }
 
