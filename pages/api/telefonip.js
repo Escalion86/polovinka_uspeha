@@ -10,6 +10,8 @@ import mongoose from 'mongoose'
 import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
 import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import { getPhoneAnomalyReasons, normalizePhoneValue } from '@helpers/phoneUtils'
+import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
+import ensureLocalUserFromGlobalByPhone from '@server/ensureLocalUserFromGlobalByPhone'
 
 const token = process.env.TELEFONIP
 const ATTRIBUTION_KEYS = [
@@ -131,12 +133,31 @@ export default async function handler(req, res) {
       const normalizedPhone = normalizePhoneValue(phone)
       const phoneAnomalyReasons = getPhoneAnomalyReasons(phone)
       const consentToMailing = parseBooleanFromInput(consentToMailingRaw)
+      const isForgotPassword =
+        forgotPassword === true || forgotPassword === 'true'
       const attribution = sanitizeAttribution(attributionRaw)
+
+      if (!isForgotPassword) {
+        const registrationGuard = await assertCityOperationAllowed(
+          location,
+          'registration'
+        )
+        if (!registrationGuard.success) {
+          return res?.status(403).json(registrationGuard)
+        }
+      }
 
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
       await ensureConsentToMailingField(db, location)
+
+      await ensureLocalUserFromGlobalByPhone({
+        db,
+        location,
+        phone: normalizedPhone,
+        source: isForgotPassword ? 'recovery-read' : 'register-read',
+      })
 
       if (checkBackCallId) {
         const response = await fetch(
@@ -224,7 +245,7 @@ export default async function handler(req, res) {
         }
       }
 
-      if (!forgotPassword && existingUser && existingUser.password) {
+      if (!isForgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
           success: false,
           data: {
@@ -237,7 +258,7 @@ export default async function handler(req, res) {
         })
       }
 
-      if (forgotPassword && !existingUser) {
+      if (isForgotPassword && !existingUser) {
         return res?.status(200).json({
           success: false,
           data: {
@@ -382,13 +403,16 @@ export default async function handler(req, res) {
           .model('PhoneConfirms')
           .findOneAndDelete({ phone: normalizedPhone })
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
-        if (existingUser && (!existingUser.password || forgotPassword)) {
+        if (existingUser && (!existingUser.password || isForgotPassword)) {
           const hashedPassword = await hashPassword(password)
-          const updateData = { password: hashedPassword }
+          const updateData = {
+            password: hashedPassword,
+            registrationType: existingUser.registrationType || 'phone',
+          }
           if (resolvedReferrerId && !existingUser.referrerId) {
             updateData.referrerId = resolvedReferrerId
           }
-          if (!forgotPassword) {
+          if (!isForgotPassword) {
             updateData.consentToMailing = consentToMailing
             if (attribution) {
               updateData.attribution = attribution
@@ -396,9 +420,18 @@ export default async function handler(req, res) {
           }
           const updatedUser = await db
             .model('Users')
-            .findOneAndUpdate({ phone: normalizedPhone }, updateData, {
-              new: true,
-            })
+            .findOneAndUpdate(
+              { phone: normalizedPhone },
+              {
+                $set: updateData,
+                $addToSet: {
+                  authProviders: 'phone',
+                },
+              },
+              {
+                new: true,
+              }
+            )
 
           if (updatedUser) {
             try {
@@ -419,6 +452,8 @@ export default async function handler(req, res) {
           const newUser = await db.model('Users').create({
             phone: normalizedPhone,
             password: hashedPassword,
+            registrationType: 'phone',
+            authProviders: ['phone'],
             referrerId: resolvedReferrerId,
             consentToMailing,
             attribution,

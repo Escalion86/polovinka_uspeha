@@ -1,0 +1,16 @@
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@server/authOptions'
+import isUserPresident from '@helpers/isUserPresident'
+
+const getGlobalManagerSession = async () => {
+  const session = await getServerSession(authOptions)
+  const role = session?.user?.role
+  const canManageGlobalContent = isUserPresident(role)
+
+  return {
+    session,
+    canManageGlobalContent,
+  }
+}
+
+export default getGlobalManagerSession

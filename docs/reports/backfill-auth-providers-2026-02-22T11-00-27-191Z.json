@@ -1,0 +1,760 @@
+{
+  "mode": "dry-run",
+  "startedAt": "2026-02-22T11:00:27.135Z",
+  "finishedAt": "2026-02-22T11:00:27.191Z",
+  "env": {
+    "dbSuffix": null
+  },
+  "summary": {
+    "totalUsersRead": 2764,
+    "totalUsersWouldUpdate": 2764,
+    "totalUsersUpdated": 0
+  },
+  "perLocation": {
+    "krsk": {
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "usersRead": 1784,
+      "usersWouldUpdate": 1784,
+      "usersUpdated": 0
+    },
+    "nrsk": {
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "usersRead": 828,
+      "usersWouldUpdate": 828,
+      "usersUpdated": 0
+    },
+    "ekb": {
+      "dbName": "polovinka_uspeha_ekb_dev",
+      "usersRead": 152,
+      "usersWouldUpdate": 152,
+      "usersUpdated": 0
+    }
+  },
+  "changedExamples": [
+    {
+      "location": "krsk",
+      "userId": "6252f733183ed7f8da6baa54",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6301f3d3cb2a25298f1b3e55",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63075cde285a423fedaaa1b0",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63075d3b285a423fedaaa1cf",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63075dfcbf953d8a33533935",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63075e3e53dd2892223e5c3c",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63075e4253dd2892223e5c47",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63076076bf87528dfdf76d9f",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63076093bf87528dfdf76dac",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630760acbf87528dfdf76dc7",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63076282e7a074166ab46e8d",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630765b3e7a074166ab46efd",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630767cc31917c4bcb5d559a",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63076c90d1e86810154418df",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63076cb5b1edf3c208b1d93b",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6307774fc43aad1499d0977c",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630779f3d4cce3d7abb67d62",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63077bef1a2763a1749692e4",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63078085caaf654face57111",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63078253caaf654face57178",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630788561966bd1b2439c056",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63078945157f5bb9d0c1b350",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63078ac6833df5900515c109",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63079b65da0c54c37118f9f9",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63079fc51d25a08690a97f1d",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6307bbf8551e4cadab4786e0",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63084a3acf05b45cd8da6fea",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63084b4a3559613c9421586c",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6308e617f64f83ab2d589167",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6309e98c37b4fe917a04c48d",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6309ee785ef16d84876dd1e6",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630c6bef2cf324539efadfa2",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630c79e8866ae2d8466c2514",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630c9969523f9a7e4d0dfb63",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "telegram",
+        "authProviders": [
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630d6efca4a69b8124944438",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630dfbaba25d044d98a71be4",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630dfe1aa25d044d98a71c28",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630e225f025dd5dce9407800",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630ec2f3ed1610023fb64982",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "630f5d6c6e73bdd9be383f8a",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "631061db105f40e7e1608dc1",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6312227b770be0b814896550",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63133ead3fc5df0aa522c8af",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63136f04ad235032346e010c",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6314bcb9432e91b0a526ff9d",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6316bf5c0a2797e6999ba7c3",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6316fbe49684e10e5b8915a8",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone",
+          "telegram"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "6317754e9684e10e5b891b2a",
+      "from": {
+        "registrationType": "phone",
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "63209049d760b22edb9b5024",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "phone",
+        "authProviders": [
+          "phone"
+        ]
+      }
+    },
+    {
+      "location": "krsk",
+      "userId": "632167c9fc410833cbdd6899",
+      "from": {
+        "registrationType": null,
+        "authProviders": null
+      },
+      "to": {
+        "registrationType": "vk",
+        "authProviders": [
+          "vk"
+        ]
+      }
+    }
+  ]
+}

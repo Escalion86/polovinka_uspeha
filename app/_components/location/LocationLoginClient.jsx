@@ -13,6 +13,7 @@ import {
   normalizePhoneValue,
 } from '@helpers/phoneUtils'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
+import VkIdOneTapAuth from './VkIdOneTapAuth'
 
 const routeAfterLogin = (router, location) => {
   if (router.query?.page) {
@@ -43,6 +44,7 @@ export default function LocationLoginClient({ location }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isVkAuthEnabled, setIsVkAuthEnabled] = useState(false)
 
   const rawPhoneValue = phone ? String(phone) : ''
   const displayDigits = rawPhoneValue || (phoneFocused ? '7' : '')
@@ -63,6 +65,30 @@ export default function LocationLoginClient({ location }) {
   useEffect(() => {
     captureAttributionFromBrowser()
   }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadVkAuthFlag = async () => {
+      try {
+        const response = await fetch(
+          `/api/global/auth/vk-status?location=${location}`
+        )
+        const json = await response.json()
+        if (!isMounted) return
+        setIsVkAuthEnabled(Boolean(json?.data?.allowVkAuth))
+      } catch (fetchError) {
+        if (!isMounted) return
+        setIsVkAuthEnabled(false)
+      }
+    }
+
+    loadVkAuthFlag()
+
+    return () => {
+      isMounted = false
+    }
+  }, [location])
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -182,6 +208,24 @@ export default function LocationLoginClient({ location }) {
             </div>
 
             <form className="grid gap-4 mt-6" onSubmit={handleSubmit}>
+              {isVkAuthEnabled ? (
+                <>
+                  <VkIdOneTapAuth
+                    location={location}
+                    mode="auto"
+                    onSuccess={async () => {
+                      await routeAfterLogin(router, location)
+                    }}
+                    onError={(message) => {
+                      setError(message || 'Не удалось выполнить вход через VK ID')
+                    }}
+                  />
+                  <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
+                    или войдите по номеру телефона
+                  </div>
+                </>
+              ) : null}
+
               <label className="grid gap-2 text-sm font-semibold text-[#6b1f2a]">
                 Телефон
                 <InputMask

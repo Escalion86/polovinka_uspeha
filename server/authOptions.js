@@ -10,6 +10,12 @@ import {
 } from '@helpers/passwordUtils'
 import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
 import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
+import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
+import { normalizePhoneValue } from '@helpers/phoneUtils'
+import { exchangeVkCode, fetchVkUserInfo } from './vkIdAuth'
+import syncGlobalUserLink from './syncGlobalUserLink'
+import ensureLocalUserFromGlobalByPhone from './ensureLocalUserFromGlobalByPhone'
+import resolvePasswordFromGlobalByPhone from './resolvePasswordFromGlobalByPhone'
 
 const parsePhoneNumber = (value) => {
   if (typeof value === 'number') {
@@ -53,6 +59,61 @@ const resolveReferrerId = async (db, referrerId) => {
   return referrer?._id ?? null
 }
 
+const normalizeVkId = (value) => {
+  const normalized = String(value ?? '').trim()
+  return normalized || null
+}
+
+const buildVkProfilePatch = ({ vkUser = {}, vkId, consentToMailing }) => {
+  const firstName = String(vkUser?.first_name ?? '').trim()
+  const secondName = String(vkUser?.last_name ?? '').trim()
+  const thirdName = String(vkUser?.middle_name ?? '').trim()
+  const email = String(vkUser?.email ?? '').trim().toLowerCase()
+  const avatar = String(vkUser?.avatar ?? '').trim()
+
+  return {
+    ...(vkId ? { vk: vkId } : {}),
+    ...(firstName ? { firstName } : {}),
+    ...(secondName ? { secondName } : {}),
+    ...(thirdName ? { thirdName } : {}),
+    ...(email ? { email } : {}),
+    ...(avatar ? { images: [avatar] } : {}),
+    ...(typeof consentToMailing === 'boolean' ? { consentToMailing } : {}),
+  }
+}
+
+const getPhoneCandidates = (phoneRaw) => {
+  const normalized = normalizePhoneValue(phoneRaw)
+  if (!normalized) return []
+  const normalizedNum = Number(normalized)
+  return Number.isFinite(normalizedNum)
+    ? [normalizedNum, normalized]
+    : [normalized]
+}
+
+const parseAttributionInput = (value) => {
+  if (!value) return null
+  if (typeof value === 'object') return value
+  if (typeof value !== 'string') return null
+  try {
+    const parsed = JSON.parse(value)
+    return parsed && typeof parsed === 'object' ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+const syncGlobalLinkSafe = async ({ location, user, source }) => {
+  try {
+    const result = await syncGlobalUserLink({ location, user, source })
+    if (!result?.success) {
+      console.log('syncGlobalUserLink skipped:', result?.data?.error)
+    }
+  } catch (error) {
+    console.log('syncGlobalUserLink error:', error)
+  }
+}
+
 export const authOptions = {
   secret: process.env.SECRET,
   providers: [
@@ -67,18 +128,44 @@ export const authOptions = {
       authorize: async (credentials) => {
         const { phone, password, location } = credentials ?? {}
         if (phone && password && location) {
+          const loginGuard = await assertCityOperationAllowed(location, 'login')
+          if (!loginGuard.success) {
+            return null
+          }
+
           const db = await dbConnect(location)
           if (!db) return null
           await ensureConsentToMailingField(db, location)
 
-          const fetchedUser = await db
+          await ensureLocalUserFromGlobalByPhone({
+            db,
+            location,
+            phone,
+            source: 'login-read',
+          })
+
+          let fetchedUser = await db
             .model('Users')
             .findOne({ phone })
             .lean()
 
-          if (!fetchedUser?.password) {
-            return null
+          if (fetchedUser?._id && !fetchedUser?.password) {
+            const globalPasswordHash = await resolvePasswordFromGlobalByPhone({
+              phone,
+              location,
+            })
+            if (globalPasswordHash) {
+              await db.model('Users').findByIdAndUpdate(fetchedUser._id, {
+                password: globalPasswordHash,
+              })
+              fetchedUser = {
+                ...fetchedUser,
+                password: globalPasswordHash,
+              }
+            }
           }
+
+          if (!fetchedUser?.password) return null
 
           const passwordIsValid = await verifyPassword(
             password,
@@ -103,6 +190,214 @@ export const authOptions = {
         }
 
         return null
+      },
+    }),
+    CredentialsProvider({
+      id: 'vk',
+      name: 'vk',
+      credentials: {
+        code: { label: 'Code', type: 'text' },
+        deviceId: { label: 'DeviceId', type: 'text' },
+        location: { label: 'Location', type: 'text' },
+        mode: { label: 'Mode', type: 'text' },
+        state: { label: 'State', type: 'text' },
+        codeVerifier: { label: 'CodeVerifier', type: 'text' },
+        referrerId: { label: 'ReferrerId', type: 'text' },
+        consentToMailing: { label: 'consentToMailing', type: 'text' },
+        attribution: { label: 'Attribution', type: 'text' },
+        isAdultConfirmed: { label: 'isAdultConfirmed', type: 'text' },
+        personalDataAgreementAccepted: {
+          label: 'personalDataAgreementAccepted',
+          type: 'text',
+        },
+      },
+      authorize: async (credentials) => {
+        const {
+          code,
+          deviceId,
+          location,
+          mode,
+          state,
+          codeVerifier,
+          referrerId,
+          consentToMailing: consentToMailingRaw,
+          attribution: attributionRaw,
+          isAdultConfirmed: isAdultConfirmedRaw,
+          personalDataAgreementAccepted: personalDataAgreementAcceptedRaw,
+        } = credentials ?? {}
+
+        if (!code || !deviceId || !location) return null
+
+        const loginGuard = await assertCityOperationAllowed(location, 'login')
+        if (!loginGuard.success) return null
+        const vkAuthGuard = await assertCityOperationAllowed(location, 'vk_auth')
+        if (!vkAuthGuard.success) return null
+
+        const exchangeResult = await exchangeVkCode({
+          code,
+          deviceId,
+          codeVerifier,
+          state,
+        })
+        if (!exchangeResult.success) {
+          console.log('VK exchange error:', exchangeResult?.data)
+          return null
+        }
+
+        const accessToken = exchangeResult?.data?.access_token
+        if (!accessToken) return null
+
+        const userInfoResult = await fetchVkUserInfo({ accessToken })
+        if (!userInfoResult.success) {
+          console.log('VK userInfo error:', userInfoResult?.data)
+          return null
+        }
+
+        const vkUser = userInfoResult?.data?.user || {}
+        const vkId =
+          normalizeVkId(vkUser?.user_id) ||
+          normalizeVkId(exchangeResult?.data?.user_id)
+        if (!vkId) return null
+
+        const db = await dbConnect(location)
+        if (!db) return null
+        await ensureConsentToMailingField(db, location)
+
+        const usersModel = db.model('Users')
+        const consentToMailing =
+          typeof consentToMailingRaw === 'undefined'
+            ? undefined
+            : parseBooleanFromInput(consentToMailingRaw)
+        const isAdultConfirmed = parseBooleanFromInput(isAdultConfirmedRaw)
+        const personalDataAgreementAccepted = parseBooleanFromInput(
+          personalDataAgreementAcceptedRaw
+        )
+        const attribution = parseAttributionInput(attributionRaw)
+        const vkProfilePatch = buildVkProfilePatch({
+          vkUser,
+          vkId,
+          consentToMailing,
+        })
+        const phoneCandidates = getPhoneCandidates(vkUser?.phone)
+        const phoneValueToSet =
+          phoneCandidates.length > 0 && Number.isFinite(Number(phoneCandidates[0]))
+            ? Number(phoneCandidates[0])
+            : null
+
+        const userByVkId = await usersModel.findOne({ vk: vkId }).lean()
+        if (userByVkId?._id) {
+          const updatedUser = await usersModel.findByIdAndUpdate(
+            userByVkId._id,
+            {
+              $set: {
+                ...vkProfilePatch,
+                registrationType: userByVkId.registrationType || 'vk',
+                ...(userByVkId.phone || !phoneValueToSet
+                  ? {}
+                  : { phone: phoneValueToSet }),
+              },
+              $addToSet: {
+                authProviders: 'vk',
+              },
+            },
+            { new: true, lean: true }
+          )
+          await syncGlobalLinkSafe({
+            location,
+            user: updatedUser || userByVkId,
+            source: 'vk-auth-login',
+          })
+          return {
+            name: userByVkId._id,
+            email: location,
+          }
+        }
+
+        if (phoneCandidates.length === 0) {
+          console.log('VK auth: phone is required for auto-link/register')
+          return null
+        }
+
+        if (phoneCandidates.length > 0) {
+          const userByPhone = await usersModel
+            .findOne({
+              phone: { $in: phoneCandidates },
+            })
+            .lean()
+
+          if (userByPhone?._id) {
+            const updatedUser = await usersModel.findByIdAndUpdate(
+              userByPhone._id,
+              {
+                $set: {
+                  ...vkProfilePatch,
+                  registrationType: userByPhone.registrationType || 'vk',
+                  ...(userByPhone.phone ? {} : { phone: phoneValueToSet }),
+                },
+                $addToSet: {
+                  authProviders: 'vk',
+                },
+              },
+              { new: true, lean: true }
+            )
+            await syncGlobalLinkSafe({
+              location,
+              user: updatedUser || userByPhone,
+              source: 'vk-auth-phone-link',
+            })
+            return {
+              name: userByPhone._id,
+              email: location,
+            }
+          }
+        }
+
+        if (mode === 'login') return null
+
+        const registrationGuard = await assertCityOperationAllowed(
+          location,
+          'registration'
+        )
+        if (!registrationGuard.success) return null
+        if (!isAdultConfirmed || !personalDataAgreementAccepted) {
+          console.log(
+            'VK auth: required agreements are not accepted for registration'
+          )
+          return null
+        }
+
+        const resolvedReferrerId = await resolveReferrerId(db, referrerId)
+        const newUser = await usersModel.create({
+          ...vkProfilePatch,
+          registrationType: 'vk',
+          authProviders: ['vk'],
+          referrerId: resolvedReferrerId,
+          phone: phoneValueToSet,
+          ...(attribution ? { attribution } : {}),
+        })
+        await syncGlobalLinkSafe({
+          location,
+          user: newUser,
+          source: 'vk-auth-register',
+        })
+
+        await db.model('Histories').create({
+          schema: 'users',
+          action: 'add',
+          data: newUser,
+          userId: newUser._id,
+        })
+
+        try {
+          await createReferralRegistrationCoupon({ db, user: newUser })
+        } catch (couponError) {
+          console.log('createReferralRegistrationCoupon error :>> ', couponError)
+        }
+
+        return {
+          name: newUser._id,
+          email: location,
+        }
       },
     }),
     CredentialsProvider({
@@ -148,6 +443,11 @@ export const authOptions = {
 
         const telegramIdNum = parseInt(telegramId)
         if (!telegramIdNum || !location) {
+          return null
+        }
+
+        const loginGuard = await assertCityOperationAllowed(location, 'login')
+        if (!loginGuard.success) {
           return null
         }
 
@@ -211,6 +511,9 @@ export const authOptions = {
 
             await usersModel.findByIdAndUpdate(userByPhone._id, {
               $set: telegramUpdate,
+              $addToSet: {
+                authProviders: 'telegram',
+              },
             })
 
             return {
@@ -221,6 +524,14 @@ export const authOptions = {
         }
 
         if (registration === 'true') {
+          const registrationGuard = await assertCityOperationAllowed(
+            location,
+            'registration'
+          )
+          if (!registrationGuard.success) {
+            return null
+          }
+
           const resolvedReferrerId = await resolveReferrerId(db, referrerId)
           const newUser = await usersModel.create({
             notifications: {
@@ -234,6 +545,7 @@ export const authOptions = {
             secondName: last_name === 'undefined' ? undefined : last_name,
             images: [photo_url],
             registrationType: 'telegram',
+            authProviders: ['telegram'],
             ...(phoneNumberNormalized ? { phone: phoneNumberNormalized } : {}),
             referrerId: resolvedReferrerId,
             consentToMailing,
@@ -311,6 +623,7 @@ export const authOptions = {
         session.user.eventAchievements = result.eventAchievements
         session.user.eventsTagsNotification = result.eventsTagsNotification
         session.user.registrationType = result.registrationType
+        session.user.authProviders = result.authProviders
         session.user.referrerId = result.referrerId
         session.user.consentToMailing = result.consentToMailing
         session.user.createdAt = result.createdAt

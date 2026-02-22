@@ -95,6 +95,10 @@ const usersSchema = {
     type: String,
     default: 'phone',
   },
+  authProviders: {
+    type: [String],
+    default: [],
+  },
   whatsapp: {
     type: Number,
     default: null,

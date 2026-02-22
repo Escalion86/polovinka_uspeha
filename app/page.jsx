@@ -29,12 +29,13 @@ const steps = [
 export default function RootPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [showLocationModal, setShowLocationModal] = useState(false)
+  const [globalCities, setGlobalCities] = useState([])
 
   useEffect(() => {
     captureAttributionFromBrowser()
   }, [])
 
-  const locations = useMemo(
+  const fallbackLocations = useMemo(
     () =>
       LOCATIONS_KEYS_VISIBLE.map((key) => {
         const config = LOCATIONS[key] || {}
@@ -48,6 +49,47 @@ export default function RootPage() {
       }),
     []
   )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCities = async () => {
+      try {
+        const response = await fetch('/api/global/cities/public').then((res) =>
+          res.json()
+        )
+        if (!isMounted || !response?.success) return
+
+        const cities = Array.isArray(response?.data?.cities)
+          ? response.data.cities
+          : []
+
+        const prepared = cities.map((city) => {
+          const key = city?.slug
+          const config = LOCATIONS[key] || {}
+          const towns = Array.isArray(config.towns) ? config.towns : []
+
+          return {
+            key,
+            city: city?.title || towns[0] || key?.toUpperCase() || '',
+            nearby: towns.slice(1, 4),
+          }
+        })
+
+        setGlobalCities(prepared.filter((city) => city.key))
+      } catch (error) {
+        console.log('RootPage loadCities error:', error)
+      }
+    }
+
+    loadCities()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const locations = globalCities.length > 0 ? globalCities : fallbackLocations
 
   return (
     <div className="min-h-screen bg-[#f8f5f3] text-[#2b1b21]">

@@ -18,6 +18,7 @@ import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsByLocation'
 import checkLocationValid from './checkLocationValid'
+import assertCityOperationAllowed from './assertCityOperationAllowed'
 import refreshSignedUpEventsCount from './refreshSignedUpEventsCount'
 import recalculateEventAchievements from './recalculateEventAchievements'
 // import { telegramCmdToIndex } from './telegramCmd'
@@ -616,6 +617,16 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'POST':
       try {
+        if (Schema === 'Events') {
+          const eventManagementGuard = await assertCityOperationAllowed(
+            location,
+            'event_management'
+          )
+          if (!eventManagementGuard.success) {
+            return res?.status(403).json(eventManagementGuard)
+          }
+        }
+
         if (id) {
           return res
             ?.status(400)
@@ -684,6 +695,16 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'PUT':
       try {
+        if (Schema === 'Events') {
+          const eventManagementGuard = await assertCityOperationAllowed(
+            location,
+            'event_management'
+          )
+          if (!eventManagementGuard.success) {
+            return res?.status(403).json(eventManagementGuard)
+          }
+        }
+
         if (id) {
           const oldData = await db.model(Schema).findById(id).lean()
           if (!oldData) {
@@ -875,6 +896,16 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'DELETE':
       try {
+        if (Schema === 'Events') {
+          const eventManagementGuard = await assertCityOperationAllowed(
+            location,
+            'event_management'
+          )
+          if (!eventManagementGuard.success) {
+            return res?.status(403).json(eventManagementGuard)
+          }
+        }
+
         if (params) {
           const existingData = await db.model(Schema).find(params)
           data = await db.model(Schema).deleteMany(params)

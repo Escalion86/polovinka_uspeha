@@ -2073,7 +2073,7 @@ export const CONTENTS = Object.freeze({
   dev: {
     Component: DevContent,
     name: 'Разработчик',
-    roleAccess: (role) => role?.dev,
+    roleAccess: (role) => role?.dev || role?.president,
   },
   toolsTextEventsAnons: {
     Component: ToolsTextEventsAnonsContent,

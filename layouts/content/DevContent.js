@@ -2,8 +2,10 @@
 
 import Button from '@components/Button'
 import { getData, postData } from '@helpers/CRUD'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -51,6 +53,8 @@ const formatMergeFieldValue = (fieldKey, item) => {
 }
 
 const DevContent = () => {
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const location = useAtomValue(locationAtom)
   const [loadingPhones, setLoadingPhones] = useState(false)
@@ -67,6 +71,32 @@ const DevContent = () => {
   const [loadingAttribution, setLoadingAttribution] = useState(false)
   const [attributionError, setAttributionError] = useState('')
   const [attributionSummary, setAttributionSummary] = useState(null)
+  const [loadingCityPolicies, setLoadingCityPolicies] = useState(false)
+  const [cityPoliciesError, setCityPoliciesError] = useState('')
+  const [cityPolicies, setCityPolicies] = useState(null)
+  const [loadingCities, setLoadingCities] = useState(false)
+  const [citiesError, setCitiesError] = useState('')
+  const [cities, setCities] = useState([])
+  const [savingCitySlug, setSavingCitySlug] = useState('')
+  const [newCity, setNewCity] = useState({
+    slug: '',
+    title: '',
+    status: 'active',
+    isVisibleInPublicSelector: true,
+    timeZone: '',
+    contactPhone: '',
+    contactTelegram: '',
+    allowRegistration: true,
+    allowLogin: true,
+    allowEventSignup: true,
+    allowEventManagement: true,
+    allowPublicListing: true,
+    allowVkAuth: false,
+  })
+
+  const canManageCities = Boolean(
+    loggedUserActiveRole?.dev || loggedUserActiveRole?.president
+  )
 
   const initMergeSelections = (groups) => {
     const nextPrimary = {}
@@ -279,6 +309,193 @@ const DevContent = () => {
     setAttributionSummary(response?.data || null)
   }
 
+  const loadCityPolicies = async () => {
+    if (!canManageCities || loadingCityPolicies) return
+
+    setLoadingCityPolicies(true)
+    setCityPoliciesError('')
+    const response = await getData(
+      '/api/global/content/city-policies',
+      {},
+      null,
+      null,
+      true
+    )
+    setLoadingCityPolicies(false)
+
+    if (!response?.success) {
+      setCityPolicies(null)
+      setCityPoliciesError(
+        response?.data?.error?.message || 'Не удалось получить политики городов'
+      )
+      return
+    }
+
+    setCityPolicies(response?.data?.cityPolicies || {})
+  }
+
+  const saveCityPolicyPatch = async (citySlug, patch) => {
+    if (!canManageCities || !citySlug || !patch || savingCitySlug) return
+
+    const previous = cityPolicies || {}
+    const nextPolicy = {
+      ...(previous[citySlug] || {}),
+      ...patch,
+    }
+    const nextPolicies = {
+      ...previous,
+      [citySlug]: nextPolicy,
+    }
+
+    setSavingCitySlug(citySlug)
+    setCityPolicies(nextPolicies)
+    setCityPoliciesError('')
+
+    const response = await postData(
+      '/api/global/content/city-policies',
+      {
+        location: citySlug,
+        policy: nextPolicy,
+      },
+      null,
+      null,
+      true,
+      loggedUserActive?._id
+    )
+
+    if (!response?.success) {
+      setCityPolicies(previous)
+      setCityPoliciesError(
+        response?.data?.error?.message || 'Не удалось сохранить политику города'
+      )
+      setSavingCitySlug('')
+      return
+    }
+
+    setCityPolicies(response?.data?.cityPolicies || nextPolicies)
+    setSavingCitySlug('')
+  }
+
+  const loadCities = async () => {
+    if (!canManageCities || loadingCities) return
+
+    setLoadingCities(true)
+    setCitiesError('')
+    const response = await getData('/api/global/cities', {}, null, null, true)
+    setLoadingCities(false)
+
+    if (!response?.success) {
+      setCities([])
+      setCitiesError(
+        response?.data?.error?.message || 'Не удалось получить список городов'
+      )
+      return
+    }
+
+    setCities(response?.data?.cities || [])
+  }
+
+  const saveCity = async (citySlug, cityPatch) => {
+    if (!canManageCities || !citySlug || savingCitySlug) return
+
+    setSavingCitySlug(citySlug)
+    setCitiesError('')
+    const response = await fetch('/api/global/cities', {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          slug: citySlug,
+          city: cityPatch,
+        },
+        userId: loggedUserActive?._id,
+      }),
+    }).then((res) => res.json())
+
+    if (!response?.success) {
+      setCitiesError(
+        response?.data?.error?.message || 'Не удалось обновить параметры города'
+      )
+      setSavingCitySlug('')
+      return
+    }
+
+    setCities(response?.data?.cities || [])
+    setSavingCitySlug('')
+    await loadCityPolicies()
+  }
+
+  const addCity = async () => {
+    if (!canManageCities || savingCitySlug) return
+    const slug = String(newCity.slug || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, '')
+
+    if (!slug) {
+      setCitiesError('Slug нового города обязателен')
+      return
+    }
+
+    setSavingCitySlug(slug)
+    setCitiesError('')
+    const response = await postData(
+      '/api/global/cities',
+      {
+        city: {
+          ...newCity,
+          slug,
+        },
+      },
+      null,
+      null,
+      true,
+      loggedUserActive?._id
+    )
+
+    if (!response?.success) {
+      setCitiesError(
+        response?.data?.error?.message || 'Не удалось добавить город'
+      )
+      setSavingCitySlug('')
+      return
+    }
+
+    setCities(response?.data?.cities || [])
+    setNewCity({
+      slug: '',
+      title: '',
+      status: 'active',
+      isVisibleInPublicSelector: true,
+      timeZone: '',
+      contactPhone: '',
+      contactTelegram: '',
+      allowRegistration: true,
+      allowLogin: true,
+      allowEventSignup: true,
+      allowEventManagement: true,
+      allowPublicListing: true,
+    })
+    setSavingCitySlug('')
+    await loadCityPolicies()
+  }
+
+  const updateCityDraftField = (slug, field, value) => {
+    setCities((prev) =>
+      prev.map((city) =>
+        city.slug === slug
+          ? {
+              ...city,
+              [field]: value,
+            }
+          : city
+      )
+    )
+  }
+
   return (
     <div className="flex flex-col gap-y-3">
       <Button name="AI" onClick={() => modalsFunc.external.ai()} />
@@ -318,6 +535,12 @@ const DevContent = () => {
       ) : null}
       {attributionError ? (
         <div className="text-sm text-red-600">{attributionError}</div>
+      ) : null}
+      {cityPoliciesError ? (
+        <div className="text-sm text-red-600">{cityPoliciesError}</div>
+      ) : null}
+      {citiesError ? (
+        <div className="text-sm text-red-600">{citiesError}</div>
       ) : null}
 
       {!loadingPhones && phoneAnomalies.length > 0 ? (
@@ -571,6 +794,320 @@ const DevContent = () => {
                   {item.key}: {item.count}
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {canManageCities ? (
+        <div className="rounded border border-indigo-200 bg-indigo-50/30 p-3 text-sm">
+          <div className="mb-2 font-semibold text-indigo-900">
+            Управление городами (dev/president)
+          </div>
+
+          <div className="mb-2 flex flex-wrap gap-2">
+            <Button
+              name={
+                loadingCityPolicies
+                  ? 'Загружаем политики городов...'
+                  : 'Загрузить политики городов'
+              }
+              onClick={loadCityPolicies}
+              disabled={loadingCityPolicies || Boolean(savingCitySlug)}
+              outline
+            />
+            <Button
+              name={
+                loadingCities ? 'Загружаем список городов...' : 'Загрузить города'
+              }
+              onClick={loadCities}
+              disabled={loadingCities || Boolean(savingCitySlug)}
+              outline
+            />
+          </div>
+
+          {cityPolicies ? (
+            <div className="mb-3 rounded border border-indigo-100 bg-white p-2">
+              <div className="mb-2 font-semibold text-indigo-800">
+                Политики статусов городов
+              </div>
+              <div className="grid gap-2 md:grid-cols-3">
+                {Object.entries(cityPolicies).map(([citySlug, policy]) => (
+                  <div
+                    key={`policy-${citySlug}`}
+                    className="rounded border border-indigo-100 p-2"
+                  >
+                    <div className="mb-1 font-semibold text-gray-900">
+                      {citySlug}
+                    </div>
+                    <label className="mb-1 block text-xs text-gray-700">
+                      Статус
+                      <select
+                        className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                        value={policy?.status || 'active'}
+                        onChange={(event) =>
+                          saveCityPolicyPatch(citySlug, {
+                            status: event.target.value,
+                          })
+                        }
+                        disabled={Boolean(savingCitySlug)}
+                      >
+                        <option value="active">active</option>
+                        <option value="closing">closing</option>
+                        <option value="archived">archived</option>
+                      </select>
+                    </label>
+                    <div className="grid grid-cols-2 gap-1 text-xs">
+                      {[
+                        ['allowRegistration', 'Регистрация'],
+                        ['allowLogin', 'Логин'],
+                        ['allowEventSignup', 'Запись'],
+                        ['allowEventManagement', 'Управление'],
+                        ['allowPublicListing', 'Публичный листинг'],
+                        ['allowVkAuth', 'VK ID логин'],
+                      ].map(([field, label]) => (
+                        <label key={`${citySlug}-${field}`} className="flex gap-1">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(policy?.[field])}
+                            onChange={(event) =>
+                              saveCityPolicyPatch(citySlug, {
+                                [field]: event.target.checked,
+                              })
+                            }
+                            disabled={Boolean(savingCitySlug)}
+                          />
+                          <span>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {cities.length > 0 ? (
+            <div className="mb-3 rounded border border-indigo-100 bg-white p-2">
+              <div className="mb-2 font-semibold text-indigo-800">
+                Справочник городов
+              </div>
+              <div className="flex flex-col gap-2">
+                {cities.map((city) => (
+                  <div
+                    key={`city-${city.slug}`}
+                    className="rounded border border-indigo-100 p-2"
+                  >
+                    <div className="mb-2 text-xs font-semibold text-gray-900">
+                      {city.slug}
+                    </div>
+                    <div className="grid gap-2 md:grid-cols-3">
+                      <label className="text-xs text-gray-700">
+                        Название
+                        <input
+                          className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                          value={city.title || ''}
+                          onChange={(event) =>
+                            updateCityDraftField(city.slug, 'title', event.target.value)
+                          }
+                        />
+                      </label>
+                      <label className="text-xs text-gray-700">
+                        Часовой пояс
+                        <input
+                          className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                          value={city.timeZone || ''}
+                          onChange={(event) =>
+                            updateCityDraftField(
+                              city.slug,
+                              'timeZone',
+                              event.target.value
+                            )
+                          }
+                        />
+                      </label>
+                      <label className="text-xs text-gray-700">
+                        Статус
+                        <select
+                          className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                          value={city.status || 'active'}
+                          onChange={(event) =>
+                            updateCityDraftField(city.slug, 'status', event.target.value)
+                          }
+                        >
+                          <option value="active">active</option>
+                          <option value="closing">closing</option>
+                          <option value="archived">archived</option>
+                        </select>
+                      </label>
+                      <label className="text-xs text-gray-700">
+                        Контактный телефон
+                        <input
+                          className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                          value={city.contactPhone || ''}
+                          onChange={(event) =>
+                            updateCityDraftField(
+                              city.slug,
+                              'contactPhone',
+                              event.target.value
+                            )
+                          }
+                        />
+                      </label>
+                      <label className="text-xs text-gray-700">
+                        Контактный Telegram
+                        <input
+                          className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                          value={city.contactTelegram || ''}
+                          onChange={(event) =>
+                            updateCityDraftField(
+                              city.slug,
+                              'contactTelegram',
+                              event.target.value
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
+                      {[
+                        ['isVisibleInPublicSelector', 'Виден в селекторе'],
+                        ['allowRegistration', 'Регистрация'],
+                        ['allowLogin', 'Логин'],
+                        ['allowEventSignup', 'Запись'],
+                        ['allowEventManagement', 'Управление'],
+                        ['allowPublicListing', 'Публичный листинг'],
+                        ['allowVkAuth', 'VK ID логин'],
+                      ].map(([field, label]) => (
+                        <label key={`${city.slug}-${field}`} className="flex gap-1">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(city[field])}
+                            onChange={(event) =>
+                              updateCityDraftField(
+                                city.slug,
+                                field,
+                                event.target.checked
+                              )
+                            }
+                          />
+                          <span>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="mt-2">
+                      <Button
+                        name={
+                          savingCitySlug === city.slug
+                            ? 'Сохраняем город...'
+                            : 'Сохранить город'
+                        }
+                        onClick={() => saveCity(city.slug, city)}
+                        disabled={Boolean(savingCitySlug)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="rounded border border-indigo-100 bg-white p-2">
+            <div className="mb-2 font-semibold text-indigo-800">Добавить город</div>
+            <div className="grid gap-2 md:grid-cols-3">
+              <label className="text-xs text-gray-700">
+                Slug
+                <input
+                  className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                  value={newCity.slug}
+                  onChange={(event) =>
+                    setNewCity((prev) => ({ ...prev, slug: event.target.value }))
+                  }
+                  placeholder="spb"
+                />
+              </label>
+              <label className="text-xs text-gray-700">
+                Название
+                <input
+                  className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                  value={newCity.title}
+                  onChange={(event) =>
+                    setNewCity((prev) => ({ ...prev, title: event.target.value }))
+                  }
+                  placeholder="Санкт-Петербург"
+                />
+              </label>
+              <label className="text-xs text-gray-700">
+                Часовой пояс
+                <input
+                  className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                  value={newCity.timeZone}
+                  onChange={(event) =>
+                    setNewCity((prev) => ({ ...prev, timeZone: event.target.value }))
+                  }
+                  placeholder="Europe/Moscow"
+                />
+              </label>
+              <label className="text-xs text-gray-700">
+                Контактный телефон
+                <input
+                  className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                  value={newCity.contactPhone}
+                  onChange={(event) =>
+                    setNewCity((prev) => ({
+                      ...prev,
+                      contactPhone: event.target.value,
+                    }))
+                  }
+                  placeholder="+7..."
+                />
+              </label>
+              <label className="text-xs text-gray-700">
+                Контактный Telegram
+                <input
+                  className="mt-1 block w-full rounded border border-gray-300 p-1 text-xs"
+                  value={newCity.contactTelegram}
+                  onChange={(event) =>
+                    setNewCity((prev) => ({
+                      ...prev,
+                      contactTelegram: event.target.value,
+                    }))
+                  }
+                  placeholder="@citybot"
+                />
+              </label>
+            </div>
+            <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
+              {[
+                ['isVisibleInPublicSelector', 'Виден в селекторе'],
+                ['allowRegistration', 'Регистрация'],
+                ['allowLogin', 'Логин'],
+                ['allowEventSignup', 'Запись'],
+                ['allowEventManagement', 'Управление'],
+                ['allowPublicListing', 'Публичный листинг'],
+                ['allowVkAuth', 'VK ID логин'],
+              ].map(([field, label]) => (
+                <label key={`newcity-${field}`} className="flex gap-1">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(newCity[field])}
+                    onChange={(event) =>
+                      setNewCity((prev) => ({
+                        ...prev,
+                        [field]: event.target.checked,
+                      }))
+                    }
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+            <div className="mt-2">
+              <Button
+                name={savingCitySlug ? 'Сохраняем...' : 'Добавить город'}
+                onClick={addCity}
+                disabled={Boolean(savingCitySlug)}
+              />
             </div>
           </div>
         </div>

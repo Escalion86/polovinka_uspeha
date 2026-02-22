@@ -22,6 +22,7 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
+import VkIdOneTapAuth from './VkIdOneTapAuth'
 
 const buildMaskedPhone = (phone, focused) => {
   const rawPhoneValue = phone ? String(phone) : ''
@@ -81,6 +82,7 @@ const Register3Inner = ({ location }) => {
   const [checkHave18Years, setCheckHave18Years] = useState(false)
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
+  const [isVkAuthEnabled, setIsVkAuthEnabled] = useState(false)
   const pollTimerRef = useRef(null)
 
   const { phoneMask, phoneReplacement, maskedValue } = useMemo(
@@ -93,6 +95,10 @@ const Register3Inner = ({ location }) => {
     if (Array.isArray(value)) return value[0]
     return typeof value === 'string' ? value : undefined
   }, [router.query])
+  const vkAttributionJson = useMemo(() => {
+    const payload = getAttributionPayload()
+    return payload ? JSON.stringify(payload) : ''
+  }, [])
 
   const clearErrors = () => setErrors(defaultErrors)
 
@@ -107,6 +113,30 @@ const Register3Inner = ({ location }) => {
   useEffect(() => {
     captureAttributionFromBrowser()
   }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadVkAuthFlag = async () => {
+      try {
+        const response = await fetch(
+          `/api/global/auth/vk-status?location=${location}`
+        )
+        const json = await response.json()
+        if (!isMounted) return
+        setIsVkAuthEnabled(Boolean(json?.data?.allowVkAuth))
+      } catch (fetchError) {
+        if (!isMounted) return
+        setIsVkAuthEnabled(false)
+      }
+    }
+
+    loadVkAuthFlag()
+
+    return () => {
+      isMounted = false
+    }
+  }, [location])
 
   const handlePhoneChange = useCallback((event) => {
     setPhone(normalizePhoneMaskState(event.target.value))
@@ -389,6 +419,41 @@ const Register3Inner = ({ location }) => {
                   requestBackCall()
                 }}
               >
+                {isVkAuthEnabled ? (
+                  <>
+                    {checkHave18Years && checkAgreement ? (
+                      <VkIdOneTapAuth
+                        location={location}
+                        mode="auto"
+                        payload={{
+                          referrerId: referralId,
+                          consentToMailing: checkConsentToMailing,
+                          isAdultConfirmed: checkHave18Years,
+                          personalDataAgreementAccepted: checkAgreement,
+                          attribution: vkAttributionJson,
+                        }}
+                        onSuccess={() => {
+                          router.push(`/${location}/cabinet`)
+                        }}
+                        onError={(message) => {
+                          setErrors({
+                            ...defaultErrors,
+                            general: message || 'Не удалось выполнить вход через VK ID',
+                          })
+                        }}
+                      />
+                    ) : (
+                      <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/70 px-4 py-3 text-xs text-[#5d4a52]">
+                        Для входа через VK ID сначала подтвердите 18+ и согласие
+                        на обработку персональных данных.
+                      </div>
+                    )}
+                    <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
+                      или зарегистрируйтесь по номеру телефона
+                    </div>
+                  </>
+                ) : null}
+
                 <label className="grid gap-2 text-sm font-semibold text-[#6b1f2a]">
                   Телефон
                   <InputMask

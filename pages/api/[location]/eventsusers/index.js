@@ -3,6 +3,7 @@ import CRUD from '@server/CRUD'
 import eventUsersTelegramNotification from '@server/eventUsersTelegramNotification'
 import userSignIn from '@server/userSignIn'
 import dbConnect from '@utils/dbConnect'
+import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -37,6 +38,14 @@ export default async function handler(req, res) {
 
       // Пакетное изменение
       if (eventUsersStatuses) {
+        const eventManagementGuard = await assertCityOperationAllowed(
+          location,
+          'event_management'
+        )
+        if (!eventManagementGuard.success) {
+          return res?.status(403).json(eventManagementGuard)
+        }
+
         if (typeof eventUsersStatuses !== 'object')
           return res
             ?.status(400)
@@ -150,6 +159,14 @@ export default async function handler(req, res) {
       }
       // Пользователь регистрируется лично
       if (userId && eventId) {
+        const eventSignupGuard = await assertCityOperationAllowed(
+          location,
+          'event_signup'
+        )
+        if (!eventSignupGuard.success) {
+          return res?.status(403).json(eventSignupGuard)
+        }
+
         return await userSignIn({
           req,
           res,
@@ -167,6 +184,14 @@ export default async function handler(req, res) {
   }
   if (method === 'PUT') {
     try {
+      const eventManagementGuard = await assertCityOperationAllowed(
+        location,
+        'event_management'
+      )
+      if (!eventManagementGuard.success) {
+        return res?.status(403).json(eventManagementGuard)
+      }
+
       delete query.location
 
       const db = await dbConnect(location)
@@ -207,6 +232,14 @@ export default async function handler(req, res) {
   }
   if (method === 'DELETE') {
     try {
+      const eventSignupGuard = await assertCityOperationAllowed(
+        location,
+        'event_signup'
+      )
+      if (!eventSignupGuard.success) {
+        return res?.status(403).json(eventSignupGuard)
+      }
+
       delete query.location
 
       const db = await dbConnect(location)
