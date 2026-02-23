@@ -7,6 +7,7 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   myProducts: 'Товары / Мои заявки на товары',
   directions: 'Сайт / Пространства',
   aboutSpace: 'Сайт / О нашем пространстве',
+  closedSpace: 'Сайт / Закрытое пространство',
   reviews: 'Сайт / Отзывы',
   additionalBlocks: 'Сайт / Доп. блоки',
   spaceStats: 'Сайт / Пространство в цифрах',

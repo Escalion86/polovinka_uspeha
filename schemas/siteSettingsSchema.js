@@ -115,6 +115,24 @@ const siteSettingsSchema = {
     ],
     default: [],
   },
+  closedSpace: {
+    type: {
+      directionId: {
+        type: String,
+        default: null,
+      },
+      subtitle: {
+        type: String,
+        default: 'ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ',
+      },
+      description: {
+        type: String,
+        default:
+          'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.',
+      },
+    },
+    default: {},
+  },
   title: {
     type: String,
     default: 'Центр серёзных знакомств',

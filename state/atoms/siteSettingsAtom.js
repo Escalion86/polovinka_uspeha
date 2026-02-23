@@ -18,6 +18,12 @@ const siteSettingsAtom = atom({
     referralCouponAmount: 0,
     requirePaidEvent: false,
   },
+  closedSpace: {
+    directionId: null,
+    subtitle: 'ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ',
+    description:
+      'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.',
+  },
 })
 
 export default siteSettingsAtom

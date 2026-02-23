@@ -99,6 +99,9 @@ const TitleBlockContent = dynamic(
 const AboutSpaceContent = dynamic(
   () => import('@layouts/content/AboutSpaceContent')
 )
+const ClosedSpaceContent = dynamic(
+  () => import('@layouts/content/ClosedSpaceContent')
+)
 const HistoriesContent = dynamic(
   () => import('@layouts/content/HistoriesContent')
 )
@@ -789,6 +792,12 @@ const DEFAULT_SITE_SETTINGS = Object.freeze({
   codeSendService: 'telefonip',
   spaceStats: [],
   aboutSpaceCards: [],
+  closedSpace: {
+    directionId: null,
+    subtitle: 'ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ',
+    description:
+      'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.',
+  },
   referralProgram: {
     enabled: false,
     enabledForCenter: false,
@@ -1933,6 +1942,11 @@ export const CONTENTS = Object.freeze({
     name: 'Сайт / О нашем пространстве',
     roleAccess: (role) => role?.dev || role?.president,
   },
+  closedSpace: {
+    Component: ClosedSpaceContent,
+    name: 'Сайт / Закрытое пространство',
+    roleAccess: (role) => role?.generalPage?.directions,
+  },
   reviews: {
     Component: ReviewsContent,
     name: 'Сайт / Отзывы',
@@ -2311,6 +2325,14 @@ export const pages = [
     href: 'aboutSpace',
     icon: faHome,
     roleAccess: CONTENTS['aboutSpace'].roleAccess,
+  },
+  {
+    id: 9.2,
+    group: 4,
+    name: 'Закрытое пространство',
+    href: 'closedSpace',
+    icon: faLock,
+    roleAccess: CONTENTS['closedSpace'].roleAccess,
   },
   {
     id: 9.5,

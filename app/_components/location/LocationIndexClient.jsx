@@ -142,6 +142,9 @@ const navItems = [
 ]
 
 const spacesNavItems = [{ id: 'spaces', label: 'Наши пространства' }]
+const DEFAULT_CLOSED_SPACE_SUBTITLE = 'ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ'
+const DEFAULT_CLOSED_SPACE_DESCRIPTION =
+  'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.'
 
 export default function LocationIndexClient({ location }) {
   const [activeDay, setActiveDay] = useState(null)
@@ -248,6 +251,19 @@ export default function LocationIndexClient({ location }) {
         images: Array.isArray(direction.images) ? direction.images : [],
       }))
   }, [directionsData])
+
+  const closedSpaceDirectionId = siteSettings?.closedSpace?.directionId ?? null
+  const closedSpaceSubtitle =
+    siteSettings?.closedSpace?.subtitle ?? DEFAULT_CLOSED_SPACE_SUBTITLE
+  const closedSpaceDescription =
+    siteSettings?.closedSpace?.description ?? DEFAULT_CLOSED_SPACE_DESCRIPTION
+  const closedSpaceDirection = useMemo(
+    () =>
+      spacesFromDirections.find(
+        (space) => String(space.id) === String(closedSpaceDirectionId)
+      ) ?? null,
+    [spacesFromDirections, closedSpaceDirectionId]
+  )
 
   const index2AdditionalBlocks = useMemo(() => {
     return (additionalBlocks || [])
@@ -768,7 +784,16 @@ export default function LocationIndexClient({ location }) {
                   ...space,
                   shortDescription: space.description,
                 }}
-                onMore={() => setActiveSpace(space)}
+                onMore={() => {
+                  if (
+                    closedSpaceDirectionId &&
+                    String(space.id) === String(closedSpaceDirectionId)
+                  ) {
+                    scrollToSection('closed')
+                    return
+                  }
+                  setActiveSpace(space)
+                }}
                 reveal
               />
             ))}
@@ -854,33 +879,33 @@ export default function LocationIndexClient({ location }) {
           <AdditionalBlockSection key={block._id} block={block} />
         ))}
 
-        <Section id="closed" title="Закрытое пространство">
-          <div
-            className="relative overflow-hidden rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed"
-            data-reveal
-          >
-            <img
-              src="/key.png"
-              alt=""
-              className="pointer-events-none h-36 bottom-20 right-5 phoneH:right-3 phoneH:h-[calc(100%-8rem)] phoneH:bottom-5 tablet:bottom-auto absolute phoneH:right-5 rotate-15 tablet:top-10 tablet:right-8 tablet:h-[calc(100%-5rem)] w-auto object-contain opacity-40"
-            />
-            <h3 className="text-[22px] text-[#6b1f2a]">
-              ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ
-            </h3>
-            <p className="pr-10 mt-3 tablet:pr-13">
-              Это формат с камерными встречами, где мы собираем небольшие группы
-              по ценностям. Здесь больше глубины, доверия и долгих разговоров.
-              Доступ открывается после знакомства с командой и участия в
-              открытых мероприятиях.
-            </p>
-            <Link
-              href={`/${defaultLocation}/login`}
-              className="mt-4 inline-flex rounded-full bg-[#4fb0e8] px-6 py-2 text-white"
+        {closedSpaceDirection ? (
+          <Section id="closed" title="Закрытое пространство">
+            <div
+              className="relative overflow-hidden rounded-[26px] bg-[linear-gradient(140deg,rgba(79,176,232,0.2),rgba(111,29,43,0.08))] p-8 leading-relaxed"
+              data-reveal
             >
-              Узнать условия доступа
-            </Link>
-          </div>
-        </Section>
+              <img
+                src="/key.png"
+                alt=""
+                className="pointer-events-none h-36 bottom-20 right-5 phoneH:right-3 phoneH:h-[calc(100%-8rem)] phoneH:bottom-5 tablet:bottom-auto absolute phoneH:right-5 rotate-15 tablet:top-10 tablet:right-8 tablet:h-[calc(100%-5rem)] w-auto object-contain opacity-40"
+              />
+              <h3 className="text-[22px] text-[#6b1f2a]">
+                {closedSpaceSubtitle}
+              </h3>
+              <p className="pr-10 mt-3 whitespace-pre-line tablet:pr-13">
+                {closedSpaceDescription}
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveSpace(closedSpaceDirection)}
+                className="mt-4 inline-flex rounded-full bg-[#4fb0e8] px-6 py-2 text-white"
+              >
+                Подробнее
+              </button>
+            </div>
+          </Section>
+        ) : null}
 
         <Section id="announcements" title="Анонс наших мероприятий">
           <div className="grid gap-6 lg:grid-cols-2">
