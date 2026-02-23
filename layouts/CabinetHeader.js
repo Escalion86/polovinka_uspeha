@@ -43,7 +43,8 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const isLoggedUserNovice =
     !loggedUserActiveStatus || loggedUserActiveStatus === 'novice'
   const notificationsVisible =
-    loggedUserActiveRole?.notifications?.newEventsByTags ||
+    (loggedUserActiveRole?.notifications?.newEvents ??
+      loggedUserActiveRole?.notifications?.newEventsByTags) ||
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
     loggedUserActiveRole?.notifications?.eventRegistration
@@ -143,6 +144,11 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         >
           <DevSwitch />
         </Menu>
+      )}
+      {isLoggedUserDev && loggedUserActive?.authDevOnlyMode && (
+        <div className="hidden px-2 py-1 text-xs font-semibold text-yellow-100 border rounded-md border-yellow-300/40 bg-yellow-700/40 tablet:block">
+          ТЕХРЕЖИМ
+        </div>
       )}
       <div className="flex items-center gap-x-4">
         {notificationsVisible && (

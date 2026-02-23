@@ -78,7 +78,8 @@ const UserMenu = () => {
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const notificationsVisible =
-    loggedUserActiveRole?.notifications?.newEventsByTags ||
+    (loggedUserActiveRole?.notifications?.newEvents ??
+      loggedUserActiveRole?.notifications?.newEventsByTags) ||
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
     loggedUserActiveRole?.notifications?.eventRegistration

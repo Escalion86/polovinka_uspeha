@@ -1,0 +1,3265 @@
+{
+  "mode": "dry-run",
+  "startedAt": "2026-02-23T17:31:29.918Z",
+  "finishedAt": "2026-02-23T17:31:29.984Z",
+  "env": {
+    "dbSuffix": null
+  },
+  "summary": {
+    "rolesRead": 0,
+    "rolesWouldUpdate": 0,
+    "rolesUpdated": 0,
+    "usersRead": 2764,
+    "usersWouldUpdate": 379,
+    "usersUpdated": 0,
+    "totalWouldUpdate": 379,
+    "totalUpdated": 0
+  },
+  "perLocation": {
+    "krsk": {
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "roles": {
+        "read": 0,
+        "wouldUpdate": 0,
+        "updated": 0
+      },
+      "users": {
+        "read": 1784,
+        "wouldUpdate": 278,
+        "updated": 0
+      }
+    },
+    "nrsk": {
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "roles": {
+        "read": 0,
+        "wouldUpdate": 0,
+        "updated": 0
+      },
+      "users": {
+        "read": 828,
+        "wouldUpdate": 85,
+        "updated": 0
+      }
+    },
+    "ekb": {
+      "dbName": "polovinka_uspeha_ekb_dev",
+      "roles": {
+        "read": 0,
+        "wouldUpdate": 0,
+        "updated": 0
+      },
+      "users": {
+        "read": 152,
+        "wouldUpdate": 16,
+        "updated": 0
+      }
+    }
+  },
+  "changedExamples": [
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6252f733183ed7f8da6baa54",
+      "phone": 79138370020,
+      "role": "dev",
+      "before": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null,
+          "username": "Escalion"
+        },
+        "settings": {
+          "newEvents": false,
+          "remindDates": true,
+          "birthdays": true,
+          "time": "11:00",
+          "newEventsByTags": true,
+          "serviceRegistration": true,
+          "eventRegistration": true,
+          "newUserRegistred": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null,
+          "username": "Escalion"
+        },
+        "settings": {
+          "newEvents": false,
+          "remindDates": true,
+          "birthdays": true,
+          "time": "11:00",
+          "serviceRegistration": true,
+          "eventRegistration": true,
+          "newUserRegistred": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6301f3d3cb2a25298f1b3e55",
+      "phone": 79504280891,
+      "role": "president",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "polovinka_krsk",
+          "id": 1984922390
+        },
+        "settings": {
+          "newUserRegistred": true,
+          "eventRegistration": true,
+          "time": "10:00",
+          "birthdays": true,
+          "serviceRegistration": true,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "polovinka_krsk",
+          "id": 1984922390
+        },
+        "settings": {
+          "newUserRegistred": true,
+          "eventRegistration": true,
+          "time": "10:00",
+          "birthdays": true,
+          "serviceRegistration": true,
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63075cde285a423fedaaa1b0",
+      "phone": 79233137707,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1268770212,
+          "username": "Shadow_of_cat87",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1268770212,
+          "username": "Shadow_of_cat87",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63076076bf87528dfdf76d9f",
+      "phone": 79029409162,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5279814575
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "азарт",
+            "баня",
+            "настолки",
+            "эзотерика",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5279814575
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "азарт",
+            "баня",
+            "настолки",
+            "эзотерика",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63076282e7a074166ab46e8d",
+      "phone": 79509727673,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1939358883,
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1939358883,
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "630765b3e7a074166ab46efd",
+      "phone": 79135121555,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "Кристина",
+          "id": 396689588
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "природа",
+            "спорт",
+            "баня",
+            "кино",
+            "искусство",
+            "путешествие",
+            "прогулка"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "Кристина",
+          "id": 396689588
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "природа",
+            "спорт",
+            "баня",
+            "кино",
+            "искусство",
+            "путешествие",
+            "прогулка"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63076cb5b1edf3c208b1d93b",
+      "phone": 79131951446,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "Oly0608",
+          "id": 1124364904
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "Oly0608",
+          "id": 1124364904
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63078253caaf654face57178",
+      "phone": 79131940626,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": 1408146874
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": 1408146874
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63078ac6833df5900515c109",
+      "phone": 79607593777,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "fox3737",
+          "id": 920683371
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "fox3737",
+          "id": 920683371
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63079b65da0c54c37118f9f9",
+      "phone": 79029240848,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 777611980,
+          "username": "yuliya111yuliya",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 777611980,
+          "username": "yuliya111yuliya",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6309e98c37b4fe917a04c48d",
+      "phone": 79138352541,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1723551802
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "кино",
+            "прогулка",
+            "природа",
+            "спорт",
+            "азарт",
+            "баня",
+            "настолки",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье",
+            "благотворительность"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1723551802
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "кино",
+            "прогулка",
+            "природа",
+            "спорт",
+            "азарт",
+            "баня",
+            "настолки",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье",
+            "благотворительность"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "630c6bef2cf324539efadfa2",
+      "phone": 79135955178,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "settings": {
+          "newEvents": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "630c79e8866ae2d8466c2514",
+      "phone": 79607745549,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "volochaev91",
+          "id": 5783133523
+        },
+        "active": true,
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "volochaev91",
+          "id": 5783133523
+        },
+        "active": true,
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "630e225f025dd5dce9407800",
+      "phone": 79832826225,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5590692782
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "азарт",
+            "настолки",
+            "эзотерика",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5590692782
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "азарт",
+            "настолки",
+            "эзотерика",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63230396d759305c50613bcf",
+      "phone": 79131757476,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "yana.visnevskaya",
+          "id": 5297616095
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "настолки",
+            "баня"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "yana.visnevskaya",
+          "id": 5297616095
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "кино",
+            "искусство",
+            "природа",
+            "спорт",
+            "город",
+            "развитие",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "настолки",
+            "баня"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63230439d759305c50613bea",
+      "phone": 79135556195,
+      "role": "admin",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 539499346
+        },
+        "settings": {
+          "time": "10:00",
+          "newUserRegistred": true,
+          "eventRegistration": true,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 539499346
+        },
+        "settings": {
+          "time": "10:00",
+          "newUserRegistred": true,
+          "eventRegistration": true,
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63280b2af8791a2648c7d6b8",
+      "phone": 79138375590,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "tainatatatianka",
+          "id": 1466493389
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": []
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "tainatatatianka",
+          "id": 1466493389
+        },
+        "settings": {
+          "eventsTags": [],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "633aceb50746176f23849c8a",
+      "phone": 79832001983,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5371593628
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "азарт",
+            "прогулка",
+            "природа",
+            "квест",
+            "город"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5371593628
+        },
+        "settings": {
+          "eventsTags": [
+            "азарт",
+            "прогулка",
+            "природа",
+            "квест",
+            "город"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "633ae87df43e3e14175cb543",
+      "phone": 79232947940,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1467160260
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1467160260
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "633f9fdbe0b78c495fea3484",
+      "phone": 79138340230,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1771272265
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1771272265
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6345827a90613805b98edae0",
+      "phone": 79607779449,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "id": 1018546951
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "id": 1018546951
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "634c0354674bf94578f73075",
+      "phone": 79233056607,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1869230449,
+          "username": "ElenaVlad919191"
+        },
+        "settings": {
+          "newEvents": false,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1869230449,
+          "username": "ElenaVlad919191"
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "636732953b35957642f35d14",
+      "phone": 79237713184,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1832291533
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1832291533
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "636a406d3b35957642f38526",
+      "phone": 79237840370,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 866801768,
+          "username": "AnnaIzvo",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": []
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 866801768,
+          "username": "AnnaIzvo",
+          "active": true
+        },
+        "settings": {
+          "eventsTags": [],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6390b4ad5dcb5838ce59eb3d",
+      "phone": 79631918447,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1258668031
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1258668031
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63a68e1b6bc8a3a5be2734fb",
+      "phone": 79232991056,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 499859140
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 499859140
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63a690086bc8a3a5be273555",
+      "phone": 79029904878,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 403883298
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "настолки",
+            "азарт",
+            "спорт",
+            "природа",
+            "город",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 403883298
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "здоровье",
+            "свидание",
+            "прогулка",
+            "настолки",
+            "азарт",
+            "спорт",
+            "природа",
+            "город",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63a7096e6bc8a3a5be273a49",
+      "phone": 79135972201,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5206084571,
+          "active": true,
+          "userName": "YulaStrekoza"
+        },
+        "settings": {
+          "newEventsByTags": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5206084571,
+          "active": true,
+          "userName": "YulaStrekoza"
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63a95df96bc8a3a5be274faa",
+      "phone": 79135090103,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1439644420
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "баня"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1439644420
+        },
+        "settings": {
+          "eventsTags": [
+            "баня"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63b559806bc8a3a5be27cd28",
+      "phone": 79029212128,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 568705885
+        },
+        "settings": {
+          "newEvents": false,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 568705885
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63c8c4daee586088550a20f1",
+      "phone": 79607632975,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1235692406
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1235692406
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63d5505887e14a6ba581695c",
+      "phone": 79232845367,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 545683267,
+          "username": "GafnerV",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 545683267,
+          "username": "GafnerV",
+          "active": true
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63eb9034761500452a701382",
+      "phone": 79832838359,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1123798842
+        },
+        "settings": {
+          "newEvents": false,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1123798842
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63eda1ad761500452a703212",
+      "phone": 79135332875,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 812885406
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "природа",
+            "свидание",
+            "кино",
+            "баня",
+            "вечеринка",
+            "город",
+            "застолье",
+            "спорт",
+            "прогулка"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 812885406
+        },
+        "settings": {
+          "eventsTags": [
+            "природа",
+            "свидание",
+            "кино",
+            "баня",
+            "вечеринка",
+            "город",
+            "застолье",
+            "спорт",
+            "прогулка"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "63fcf613bdd34d320ead1eeb",
+      "phone": 79029917791,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 604358910
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 604358910
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6402aa2a8c453fb70d53f780",
+      "phone": 79831478300,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 409036351
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": []
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 409036351
+        },
+        "settings": {
+          "eventsTags": [],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64047dbf8c453fb70d540fe7",
+      "phone": 79135364582,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 541780352
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 541780352
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64082c9f6632afe46df6455c",
+      "phone": 79832044281,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1031923578
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "природа",
+            "поход",
+            "свидание",
+            "кино",
+            "прогулка",
+            "вечеринка",
+            "путешествие",
+            "настолки",
+            "город",
+            "квест",
+            "развитие"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1031923578
+        },
+        "settings": {
+          "eventsTags": [
+            "природа",
+            "поход",
+            "свидание",
+            "кино",
+            "прогулка",
+            "вечеринка",
+            "путешествие",
+            "настолки",
+            "город",
+            "квест",
+            "развитие"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "640a04556632afe46df65b0a",
+      "phone": 79535917311,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1553839990
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1553839990
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64186a21a8d78321ea8c6298",
+      "phone": 79048949350,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5762987181
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5762987181
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "641e7bfc397916ec8cc5c64c",
+      "phone": 79135277952,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1315614923
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1315614923
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "642eae9890027aaf1fc8c8cf",
+      "phone": 79607620075,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1376765021
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1376765021
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64408fbebfa971f697d006a1",
+      "phone": 79504260826,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "Tatiyna_N",
+          "id": 1655410437
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": []
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "Tatiyna_N",
+          "id": 1655410437
+        },
+        "settings": {
+          "eventsTags": [],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6443557cc46e2094ceefdec8",
+      "phone": 79131720807,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 854127982,
+          "username": "NeOnegin7",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 854127982,
+          "username": "NeOnegin7",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64530bd713b8c4899b04b6de",
+      "phone": 79080266583,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "id": 1148794313
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "id": 1148794313
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6464a66ff99bc9e959ed669f",
+      "phone": 79029423433,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 404257880
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 404257880
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "646d96e67ea4387fee16ee58",
+      "phone": 79131705352,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 494429911,
+          "username": "realist_doctorzlo",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 494429911,
+          "username": "realist_doctorzlo",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64706bc27ea4387fee1731ca",
+      "phone": 79659113974,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 930066102,
+          "username": "HelenaFirebird",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 930066102,
+          "username": "HelenaFirebird",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "648c529d028b20a1ea51a9e7",
+      "phone": 79131906712,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 701248110
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 701248110
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "649dbf5110f23e816558d2d7",
+      "phone": 79145614080,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 977578833
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "спорт",
+            "квест",
+            "азарт",
+            "баня",
+            "вечеринка",
+            "настолки",
+            "путешествие",
+            "застолье",
+            "искусство"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 977578833
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "спорт",
+            "квест",
+            "азарт",
+            "баня",
+            "вечеринка",
+            "настолки",
+            "путешествие",
+            "застолье",
+            "искусство"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64aa35d266ed770aae41937f",
+      "phone": 79233633568,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1932642670
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1932642670
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64c22e34b220c3cfe27c0dc7",
+      "phone": 79535866261,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1332270067
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1332270067
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64d3db9588214bc3837caec9",
+      "phone": 79607556955,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 191930039
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 191930039
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64db9c1718d70ebf3b69a787",
+      "phone": 79232867338,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1974284306,
+          "username": "Katya842",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1974284306,
+          "username": "Katya842",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "64ff383d42a55da42a7e4b99",
+      "phone": 79504361155,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 6300151104
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 6300151104
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6505ca933dd340943d082ffc",
+      "phone": 79131813370,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 100450474
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "свидание",
+            "прогулка",
+            "кино",
+            "настолки",
+            "застолье",
+            "вечеринка",
+            "квест"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 100450474
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "свидание",
+            "прогулка",
+            "кино",
+            "настолки",
+            "застолье",
+            "вечеринка",
+            "квест"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "650719911ccf99734e9ed731",
+      "phone": 79607703081,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1789208149
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1789208149
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65087a7a97b9fa4d9cc0b021",
+      "phone": 79048956300,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 791441958
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 791441958
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65213c1eb68caf7c64d1267a",
+      "phone": 79135554402,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1073779072
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "спорт",
+            "развитие",
+            "азарт",
+            "квест",
+            "прогулка",
+            "баня",
+            "вечеринка",
+            "кино",
+            "путешествие",
+            "искусство",
+            "эзотерика",
+            "застолье",
+            "благотворительность",
+            "здоровье"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1073779072
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "спорт",
+            "развитие",
+            "азарт",
+            "квест",
+            "прогулка",
+            "баня",
+            "вечеринка",
+            "кино",
+            "путешествие",
+            "искусство",
+            "эзотерика",
+            "застолье",
+            "благотворительность",
+            "здоровье"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6522ab19b68caf7c64d16a1c",
+      "phone": 79082070800,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 27897049
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 27897049
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "652f5721197838b2f58a864c",
+      "phone": 79135279654,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1202109626
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1202109626
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "653f145a96f332d692ca7939",
+      "phone": 79135972260,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1570651365
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье",
+            "настолки",
+            "баня",
+            "свидание",
+            "прогулка",
+            "кино"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1570651365
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "квест",
+            "вечеринка",
+            "путешествие",
+            "застолье",
+            "настолки",
+            "баня",
+            "свидание",
+            "прогулка",
+            "кино"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "654ae16d9037f35e04e92079",
+      "phone": 79029412934,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1829342717
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1829342717
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "655cbf11a0092ea3c544cedb",
+      "phone": 79135296069,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1653460166
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1653460166
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "655e3259bf6a6121d183ffe3",
+      "phone": 79333204800,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 582237698
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 582237698
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "656b7deaf6d0a6302acb16c2",
+      "phone": 79029476749,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1672118373
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1672118373
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "658c3b326b8f5ecf693587e4",
+      "phone": 79232718141,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 423976391
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 423976391
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "658c4c8e6b8f5ecf69358d15",
+      "phone": 79641132524,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5387434344
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 5387434344
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "659976f04f074d698c193161",
+      "phone": 79607594450,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1292404857
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1292404857
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65aa0a02d05ef526205f0fe9",
+      "phone": 79135070333,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 892532964,
+          "username": "KorNet24",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "здоровье",
+            "спорт",
+            "развитие",
+            "квест",
+            "азарт",
+            "прогулка",
+            "баня",
+            "свидание",
+            "вечеринка",
+            "путешествие",
+            "кино",
+            "искусство",
+            "эзотерика",
+            "застолье",
+            "психология",
+            "благотворительность",
+            "музыка"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 892532964,
+          "username": "KorNet24",
+          "active": true
+        },
+        "settings": {
+          "eventsTags": [
+            "поход",
+            "природа",
+            "город",
+            "здоровье",
+            "спорт",
+            "развитие",
+            "квест",
+            "азарт",
+            "прогулка",
+            "баня",
+            "свидание",
+            "вечеринка",
+            "путешествие",
+            "кино",
+            "искусство",
+            "эзотерика",
+            "застолье",
+            "психология",
+            "благотворительность",
+            "музыка"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65afccf5d05ef5262060278c",
+      "phone": 79607721461,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 361823424
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 361823424
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65afd359d05ef52620602b7f",
+      "phone": 79659125973,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1743603501
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 1743603501
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65bce58018e50f1910819fb9",
+      "phone": 79535999877,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 902857377
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": null,
+          "id": 902857377
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "65eef4088c042ef0b86780c0",
+      "phone": 79339952313,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5222916235,
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5222916235,
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66015d3244a466bbd8298542",
+      "phone": 79135235303,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "undefined",
+          "id": 420504937
+        },
+        "settings": {
+          "newEvents": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "undefined",
+          "id": 420504937
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6601b63b44a466bbd829a79b",
+      "phone": 79996967113,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 132529820,
+          "active": true,
+          "userName": "svetlana_rabota_msk"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 132529820,
+          "active": true,
+          "userName": "svetlana_rabota_msk"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6602e0e1f406b9c6727a8563",
+      "phone": 79233328536,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "NadiCSima",
+          "id": 973441814
+        },
+        "settings": {
+          "newEvents": false,
+          "newEventsByTags": true,
+          "eventsTags": []
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "NadiCSima",
+          "id": 973441814
+        },
+        "settings": {
+          "newEvents": false,
+          "eventsTags": []
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6602fc72b7568c73ba3a55e3",
+      "phone": 79029478585,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 365526085,
+          "active": false,
+          "userName": "ale_ksana"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 365526085,
+          "active": false,
+          "userName": "ale_ksana"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6607fa06b7c148531c4d46d9",
+      "phone": 79659124010,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1102717445,
+          "username": "mia_animo",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1102717445,
+          "username": "mia_animo",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66175242a1f63d8298395acf",
+      "phone": 79082038187,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 515668617,
+          "username": "puzelen",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 515668617,
+          "username": "puzelen",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "661cf0ab6aa365fdb44c917f",
+      "phone": 79293567141,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 6349198683,
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 6349198683,
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66535d22a62c314a042430ba",
+      "phone": 79504187483,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1113214094,
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1113214094,
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "665eb40d6bdda392a9ed77a3",
+      "phone": 79029582237,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 812232414,
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 812232414,
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6688b650b3d55451b90f8661",
+      "phone": 79080246774,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1913433043,
+          "username": "tatianka_lapunova",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1913433043,
+          "username": "tatianka_lapunova",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66a1b97e815cda48a434533a",
+      "phone": 79233100052,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 348137482,
+          "username": "Viktoriy1985",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true,
+          "eventsTags": [
+            "город",
+            "психология",
+            "благотворительность",
+            "природа",
+            "здоровье",
+            "развитие",
+            "квест",
+            "прогулка",
+            "вечеринка",
+            "эзотерика",
+            "музыка",
+            "спорт",
+            "азарт",
+            "кино",
+            "развлечение",
+            "настолки",
+            "искусство",
+            "юмор"
+          ]
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 348137482,
+          "username": "Viktoriy1985",
+          "active": true
+        },
+        "settings": {
+          "eventsTags": [
+            "город",
+            "психология",
+            "благотворительность",
+            "природа",
+            "здоровье",
+            "развитие",
+            "квест",
+            "прогулка",
+            "вечеринка",
+            "эзотерика",
+            "музыка",
+            "спорт",
+            "азарт",
+            "кино",
+            "развлечение",
+            "настолки",
+            "искусство",
+            "юмор"
+          ],
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66b70766815cda48a435a998",
+      "phone": 79138348715,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 2055895689,
+          "username": "TanyshkaSt",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 2055895689,
+          "username": "TanyshkaSt",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "66d559f6c95e10c178242f0c",
+      "phone": 79029244467,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 490535618,
+          "username": "Sergo3835",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 490535618,
+          "username": "Sergo3835",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "671471bbd6ff69ec88c95c12",
+      "phone": 79620730660,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 244088630,
+          "username": "izyabushman",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 244088630,
+          "username": "izyabushman",
+          "active": true
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "671e5e27d6ff69ec88ca9771",
+      "phone": 79130380474,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 908570265,
+          "active": true,
+          "userName": "oxyd76"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 908570265,
+          "active": true,
+          "userName": "oxyd76"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "671f9fe5d6ff69ec88cac44c",
+      "phone": 79831509430,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5234342646,
+          "username": "Anna_Ananina_V",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5234342646,
+          "username": "Anna_Ananina_V",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "6733013fd6ff69ec88cce83a",
+      "phone": 79135270404,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 662382478,
+          "username": "valentina_k20229",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 662382478,
+          "username": "valentina_k20229",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "675bc0fe4972c83724200718",
+      "phone": 79233540788,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "settings": {
+          "newEvents": false
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "676e8b0167ff7a0b3ab0e069",
+      "phone": 79964288203,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5471220814,
+          "username": "Katenalll",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5471220814,
+          "username": "Katenalll",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67910a98281a2991bfcb22f1",
+      "phone": 79659113033,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5789536965,
+          "username": "VeNeRa_88888888",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5789536965,
+          "username": "VeNeRa_88888888",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67b0a6fc4450a950dd38903b",
+      "phone": 79130331669,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 5364500429,
+          "active": true,
+          "userName": "undefined"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 5364500429,
+          "active": true,
+          "userName": "undefined"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67b421b9d343bbbd717fdcfc",
+      "phone": 79232885501,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 1869367928,
+          "username": "AlmaZ1966",
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 1869367928,
+          "username": "AlmaZ1966",
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67b9faf66c00b724b501510e",
+      "phone": 79332004574,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 117280679,
+          "active": true,
+          "userName": "nadechka_holodkova"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 117280679,
+          "active": true,
+          "userName": "nadechka_holodkova"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67d242c2c6188d6f04fe22ef",
+      "phone": 79504236282,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "id": 383575518,
+          "active": true,
+          "userName": "Alisa_Levchenko24"
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "id": 383575518,
+          "active": true,
+          "userName": "Alisa_Levchenko24"
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67dd1535bdccad2fdda61ace",
+      "phone": 79245878945,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": true,
+          "userName": "mari_belochka",
+          "id": 1209683421
+        },
+        "settings": {
+          "newEvents": false,
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": true,
+          "userName": "mari_belochka",
+          "id": 1209683421
+        },
+        "settings": {
+          "newEvents": false
+        }
+      }
+    },
+    {
+      "type": "user",
+      "location": "krsk",
+      "id": "67e2b6b6a002ac2688928673",
+      "phone": 79135198104,
+      "role": "client",
+      "before": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "whatsapp": {
+          "active": true
+        },
+        "settings": {
+          "newEventsByTags": true
+        }
+      },
+      "after": {
+        "telegram": {
+          "active": false,
+          "userName": null,
+          "id": null
+        },
+        "whatsapp": {
+          "active": true
+        },
+        "settings": {
+          "newEvents": true
+        }
+      }
+    }
+  ]
+}

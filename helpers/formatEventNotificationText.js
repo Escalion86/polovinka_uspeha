@@ -91,16 +91,10 @@ const formatEventNotificationText = (
 
   const priceText = getPriceText(event)
 
-  const eventTags =
-    typeof event.tags === 'object' && event.tags?.length > 0
-      ? event.tags.filter((tag) => tag)
-      : []
-  const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
-
   const eventUrl = withEventLink ? getEventUrl(event, location) : undefined
   const linkText = eventUrl ? `\n\n\u{1F4CE} Подробнее: ${eventUrl}` : ''
 
-  return `${textStart}${priceText}${textEnd}${linkText}`
+  return `${textStart}${priceText}${linkText}`
 }
 
 export default formatEventNotificationText

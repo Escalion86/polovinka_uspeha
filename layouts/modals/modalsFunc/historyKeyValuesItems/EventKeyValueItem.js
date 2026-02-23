@@ -1,4 +1,3 @@
-import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DirectionTitleById from '@components/DirectionTitleById'
 import InputImages from '@components/InputImages'
 import SubEvent from '@components/SubEvent'
@@ -34,8 +33,6 @@ const EventKeyValueItem = ({ objKey, value }) =>
     </div>
   ) : objKey === 'directionId' ? (
     <DirectionTitleById directionId={value} className="flex-1" />
-  ) : objKey === 'tags' ? (
-    <EventTagsChipsLine tags={value} className="flex-1" />
   ) : objKey === 'organizerId' ? (
     <UserNameById userId={value} thin trunc={1} />
   ) : objKey === 'dateStart' || objKey === 'dateEnd' ? (

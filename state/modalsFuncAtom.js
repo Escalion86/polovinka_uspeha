@@ -417,12 +417,6 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
     },
-    eventsTags: {
-      edit: () =>
-        addModal(
-          require('../layouts/modals/modalsFunc/eventsTagsFunc').default()
-        ),
-    },
     event: {
       add: (eventId, props) =>
         ensureCityManagementAccess('создание мероприятия').then((allowed) => {

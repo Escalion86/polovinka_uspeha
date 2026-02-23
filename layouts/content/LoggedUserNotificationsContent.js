@@ -2,7 +2,6 @@
 
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
-import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import ComboBox from '@components/ComboBox'
 // import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
@@ -38,7 +37,9 @@ const LoggedUserNotificationsContent = (props) => {
     loggedUserActiveRole?.notifications?.eventRegistration
   const serviceRegistration =
     loggedUserActiveRole?.notifications?.serviceRegistration
-  const newEventsByTags = loggedUserActiveRole?.notifications?.newEventsByTags
+  const newEventsNotificationAllowed =
+    loggedUserActiveRole?.notifications?.newEvents ??
+    loggedUserActiveRole?.notifications?.newEventsByTags
   const isLoggedUserDev = loggedUserActiveRole?.dev
   const setUserInUsersState = useSetAtom(userEditSelector)
 
@@ -89,7 +90,15 @@ const LoggedUserNotificationsContent = (props) => {
       ...state,
       settings: {
         ...(state?.settings ?? {}),
-        [key]: state?.settings ? !state?.settings[key] : true,
+        [key]:
+          key === 'newEvents'
+            ? !(
+                state?.settings?.newEvents ??
+                state?.settings?.newEventsByTags
+              )
+            : state?.settings
+              ? !state?.settings[key]
+              : true,
       },
     }))
 
@@ -114,10 +123,25 @@ const LoggedUserNotificationsContent = (props) => {
 
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
+    const preparedNotifications = {
+      ...notifications,
+      settings: {
+        ...(notifications?.settings ?? {}),
+      },
+    }
+    if (
+      typeof preparedNotifications.settings.newEvents !== 'boolean' &&
+      typeof preparedNotifications.settings.newEventsByTags === 'boolean'
+    ) {
+      preparedNotifications.settings.newEvents =
+        preparedNotifications.settings.newEventsByTags
+    }
+    delete preparedNotifications.settings.newEventsByTags
+
     await putData(
       `/api/${location}/users/${loggedUserActive._id}`,
       {
-        notifications,
+        notifications: preparedNotifications,
         consentToMailing,
       },
       (data) => {
@@ -334,25 +358,14 @@ const LoggedUserNotificationsContent = (props) => {
                     label="Подача заявок пользователей на услуги (модер/админ)"
                   />
                 )}
-                <CheckBox
-                  checked={notifications.settings?.newEventsByTags}
-                  onClick={() => toggleNotificationsSettings('newEventsByTags')}
-                  label="Новые мероприятия (по тэгам мероприятий)"
-                />
-                {newEventsByTags && notifications.settings?.newEventsByTags && (
-                  <EventTagsChipsSelector
-                    placeholder="Мне интересно всё!"
-                    label="Тэги мероприятий которые мне интересны"
-                    onChange={(value) =>
-                      setNotifications((state) => ({
-                        ...state,
-                        settings: {
-                          ...notifications?.settings,
-                          eventsTags: value,
-                        },
-                      }))
-                    }
-                    tags={notifications.settings?.eventsTags}
+                {newEventsNotificationAllowed && (
+                  <CheckBox
+                    checked={Boolean(
+                      notifications.settings?.newEvents ??
+                        notifications.settings?.newEventsByTags
+                    )}
+                    onClick={() => toggleNotificationsSettings('newEvents')}
+                    label="Новые мероприятия"
                   />
                 )}
                 {isLoggedUserDev && (

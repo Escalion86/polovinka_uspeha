@@ -12,6 +12,10 @@ import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import { getPhoneAnomalyReasons, normalizePhoneValue } from '@helpers/phoneUtils'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 import ensureLocalUserFromGlobalByPhone from '@server/ensureLocalUserFromGlobalByPhone'
+import {
+  isAuthDevOnlyModeEnabled,
+  isAuthDevOnlyPhoneAllowed,
+} from '@server/authDevOnlyMode'
 
 const token = process.env.TELEFONIP
 const ATTRIBUTION_KEYS = [
@@ -136,6 +140,23 @@ export default async function handler(req, res) {
       const isForgotPassword =
         forgotPassword === true || forgotPassword === 'true'
       const attribution = sanitizeAttribution(attributionRaw)
+
+      if (
+        isAuthDevOnlyModeEnabled() &&
+        normalizedPhone &&
+        !isAuthDevOnlyPhoneAllowed(normalizedPhone)
+      ) {
+        return res?.status(403).json({
+          success: false,
+          data: {
+            error: {
+              type: 'auth',
+              message:
+                'Авторизация временно ограничена. Обратитесь к администратору.',
+            },
+          },
+        })
+      }
 
       if (!isForgotPassword) {
         const registrationGuard = await assertCityOperationAllowed(

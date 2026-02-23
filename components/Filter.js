@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import DirectionSelector from './ComboBox/DirectionSelector'
 import ServiceSelector from './ComboBox/ServiceSelector'
 import ProductSelector from './ComboBox/ProductSelector'
-import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
 
 const Filter = ({
   show,
@@ -31,19 +30,7 @@ const Filter = ({
       if (componentValue !== value) setComponentValue(value)
     }, [rerender])
 
-    if (key === 'tags') {
-      return (
-        <EventTagsChipsSelector
-          key="tagsFilter"
-          onChange={(tags) => onChangeComponent(key, tags)}
-          tags={filterOptions.tags}
-          canEditChips={false}
-          placeholder="Показывать все тэги"
-          smallMargin
-          fullWidth
-        />
-      )
-    } else if (key === 'directions') {
+    if (key === 'directions') {
       return (
         <DirectionSelector
           key="directionsFilter"

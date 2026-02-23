@@ -45,7 +45,16 @@ const SettingsRolesContent = (props) => {
         temp[index][key] = {}
         temp[index][key][subKey] = true
       } else {
-        temp[index][key][subKey] = !temp[index][key][subKey]
+        if (key === 'notifications' && subKey === 'newEvents') {
+          const currentValue =
+            typeof temp[index][key].newEvents === 'boolean'
+              ? temp[index][key].newEvents
+              : Boolean(temp[index][key].newEventsByTags)
+          temp[index][key].newEvents = !currentValue
+          delete temp[index][key].newEventsByTags
+        } else {
+          temp[index][key][subKey] = !temp[index][key][subKey]
+        }
       }
     } else {
       temp[index][key] = !temp[index][key]
@@ -97,7 +106,9 @@ const SettingsRolesContent = (props) => {
           {filteredRolesTemp.map((role, index) => {
             const checked = subItem
               ? typeof role[item] === 'object'
-                ? role[item][subItem]
+                ? item === 'notifications' && subItem === 'newEvents'
+                  ? (role[item]?.newEvents ?? role[item]?.newEventsByTags)
+                  : role[item][subItem]
                 : false
               : typeof role[item] === 'boolean'
                 ? role[item]
@@ -457,9 +468,9 @@ const SettingsRolesContent = (props) => {
             />
             <SubTitle name="Уведомления" />
             <RoleItem
-              label="Новые мероприятия (по тэгам)"
+              label="Новые мероприятия"
               item="notifications"
-              subItem="newEventsByTags"
+              subItem="newEvents"
             />
             <RoleItem
               label="Дни рождения пользователей"

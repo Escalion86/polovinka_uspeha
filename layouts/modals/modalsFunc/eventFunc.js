@@ -1,6 +1,5 @@
 import AddressPicker from '@components/AddressPicker'
 import Button from '@components/Button'
-import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import DirectionSelector from '@components/ComboBox/DirectionSelector'
 import DateTimePicker from '@components/DateTimePicker'
 import EditableTextarea from '@components/EditableTextarea'
@@ -138,17 +137,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     // const test = splitText(description)
     // console.log('test :>> ', test)
 
-    const defaultTags = useMemo(
-      () =>
-        typeof props?.tags === 'object'
-          ? props.tags
-          : typeof event?.tags === 'object'
-            ? event.tags.filter((tag) => tag)
-            : [],
-      []
-    )
-    const [tags, setTags] = useState(defaultTags)
-
     const defaultDateStart = useMemo(
       () =>
         props?.dateStart !== undefined
@@ -277,7 +265,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
             organizerId,
             dateStart,
             dateEnd,
-            tags,
           })
         : checkErrors({
             title,
@@ -298,7 +285,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
             images: blank ? [] : images,
             title: title.trim(),
             description: blank ? '' : description,
-            tags: blank ? [] : tags,
             showOnSite,
             dateStart,
             dateEnd,
@@ -342,7 +328,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         (props?.description !== undefined
           ? props.description
           : event?.description) !== description ||
-        !compareArrays(defaultTags, tags) ||
         (props?.showOnSite !== undefined
           ? props.showOnSite
           : event?.showOnSite) !== showOnSite ||
@@ -407,7 +392,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     }, [
       title,
       description,
-      tags,
       showOnSite,
       dateStart,
       dateEnd,
@@ -523,18 +507,6 @@ const eventFunc = (eventId, clone = false, props = {}) => {
                   }}
                   required
                   error={errors.description}
-                />
-                <EventTagsChipsSelector
-                  tags={tags}
-                  onChange={(value) => {
-                    removeError('tags')
-                    setTags(value)
-                  }}
-                  canEditChips
-                  required
-                  error={errors.tags}
-                  // readOnly
-                  // className
                 />
               </>
             )}

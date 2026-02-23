@@ -33,6 +33,51 @@ function isJson(str) {
   return true
 }
 
+const normalizeUserNotificationsSettings = (data) => {
+  if (!data || typeof data !== 'object') return data
+  if (!data.notifications || typeof data.notifications !== 'object') return data
+
+  const notifications = { ...data.notifications }
+  const settingsSource = notifications.settings
+  if (!settingsSource || typeof settingsSource !== 'object') {
+    return { ...data, notifications }
+  }
+
+  const settings = { ...settingsSource }
+  if (
+    typeof settings.newEvents !== 'boolean' &&
+    typeof settings.newEventsByTags === 'boolean'
+  ) {
+    settings.newEvents = settings.newEventsByTags
+  }
+  delete settings.newEventsByTags
+
+  notifications.settings = settings
+  return { ...data, notifications }
+}
+
+const normalizeRoleNotificationsSettings = (data) => {
+  if (!data || typeof data !== 'object') return data
+  if (!data.notifications || typeof data.notifications !== 'object') return data
+
+  const notifications = { ...data.notifications }
+  if (
+    typeof notifications.newEvents !== 'boolean' &&
+    typeof notifications.newEventsByTags === 'boolean'
+  ) {
+    notifications.newEvents = notifications.newEventsByTags
+  }
+  delete notifications.newEventsByTags
+
+  return { ...data, notifications }
+}
+
+const normalizeLegacyNotificationKeys = (schema, data) => {
+  if (schema === 'Users') return normalizeUserNotificationsSettings(data)
+  if (schema === 'Roles') return normalizeRoleNotificationsSettings(data)
+  return data
+}
+
 // const test_callback = {
 //   update_id: 173172137,
 //   callback_query: {
@@ -639,8 +684,9 @@ export default async function handler(Schema, req, res, props = {}) {
             ?.status(400)
             .json({ success: false, error: 'No need to set Id' })
         } else {
-          const clearedBody = { ...body.data }
+          let clearedBody = { ...body.data }
           delete clearedBody._id
+          clearedBody = normalizeLegacyNotificationKeys(Schema, clearedBody)
 
           if (
             Schema === 'Users' &&
@@ -718,7 +764,8 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
 
-          const updateData = { ...body.data }
+          let updateData = { ...body.data }
+          updateData = normalizeLegacyNotificationKeys(Schema, updateData)
 
           if (
             Schema === 'Users' &&

@@ -11,6 +11,10 @@ import {
 import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
 import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
+import {
+  isAuthDevOnlyModeEnabled,
+  isAuthDevOnlyUserAllowed,
+} from '@server/authDevOnlyMode'
 import { normalizePhoneValue } from '@helpers/phoneUtils'
 import { exchangeVkCode, fetchVkUserInfo } from './vkIdAuth'
 import syncGlobalUserLink from './syncGlobalUserLink'
@@ -118,6 +122,13 @@ const throwVkAuthError = (code) => {
   throw new Error(code)
 }
 
+const buildSessionPayload = (user, location) => ({
+  name: user?._id,
+  email: location,
+  role: user?.role,
+  phone: user?.phone,
+})
+
 export const authOptions = {
   secret: process.env.SECRET,
   providers: [
@@ -170,6 +181,7 @@ export const authOptions = {
           }
 
           if (!fetchedUser?.password) return null
+          if (!isAuthDevOnlyUserAllowed(fetchedUser, phone)) return null
 
           const passwordIsValid = await verifyPassword(
             password,
@@ -187,10 +199,7 @@ export const authOptions = {
             })
           }
 
-          return {
-            name: fetchedUser._id,
-            email: location,
-          }
+          return buildSessionPayload(fetchedUser, location)
         }
 
         return null
@@ -302,6 +311,9 @@ export const authOptions = {
 
         const userByVkId = await usersModel.findOne({ vk: vkId }).lean()
         if (userByVkId?._id) {
+          if (!isAuthDevOnlyUserAllowed(userByVkId, phoneValueToSet)) {
+            throwVkAuthError('VK_DEV_ONLY_MODE')
+          }
           const updatedUser = await usersModel.findByIdAndUpdate(
             userByVkId._id,
             {
@@ -323,10 +335,7 @@ export const authOptions = {
             user: updatedUser || userByVkId,
             source: 'vk-auth-login',
           })
-          return {
-            name: userByVkId._id,
-            email: location,
-          }
+          return buildSessionPayload(updatedUser || userByVkId, location)
         }
 
         if (phoneCandidates.length === 0) {
@@ -342,6 +351,9 @@ export const authOptions = {
             .lean()
 
           if (userByPhone?._id) {
+            if (!isAuthDevOnlyUserAllowed(userByPhone, phoneValueToSet)) {
+              throwVkAuthError('VK_DEV_ONLY_MODE')
+            }
             const updatedUser = await usersModel.findByIdAndUpdate(
               userByPhone._id,
               {
@@ -361,15 +373,15 @@ export const authOptions = {
               user: updatedUser || userByPhone,
               source: 'vk-auth-phone-link',
             })
-            return {
-              name: userByPhone._id,
-              email: location,
-            }
+            return buildSessionPayload(updatedUser || userByPhone, location)
           }
         }
 
         if (mode === 'login') {
           throwVkAuthError('VK_ACCOUNT_NOT_FOUND')
+        }
+        if (isAuthDevOnlyModeEnabled()) {
+          throwVkAuthError('VK_DEV_ONLY_MODE')
         }
 
         const registrationGuard = await assertCityOperationAllowed(
@@ -414,10 +426,7 @@ export const authOptions = {
           console.log('createReferralRegistrationCoupon error :>> ', couponError)
         }
 
-        return {
-          name: newUser._id,
-          email: location,
-        }
+        return buildSessionPayload(newUser, location)
       },
     }),
     CredentialsProvider({
@@ -488,15 +497,15 @@ export const authOptions = {
           .lean()
 
         if (fetchedUser?._id) {
+          if (!isAuthDevOnlyUserAllowed(fetchedUser, phoneNumberNormalized)) {
+            return null
+          }
           if (phoneNumber && !fetchedUser.phone) {
             await usersModel.findByIdAndUpdate(fetchedUser._id, {
               $set: { phone: phoneNumber },
             })
           }
-          return {
-            name: fetchedUser._id,
-            email: location,
-          }
+          return buildSessionPayload(fetchedUser, location)
         }
 
         if (phoneDigits) {
@@ -509,6 +518,9 @@ export const authOptions = {
             .lean()
 
           if (userByPhone?._id) {
+            if (!isAuthDevOnlyUserAllowed(userByPhone, phoneNumberNormalized)) {
+              return null
+            }
             const existingTelegramNotification =
               userByPhone.notifications?.telegram ??
               userByPhone.notifications?.get?.('telegram')
@@ -536,14 +548,14 @@ export const authOptions = {
               },
             })
 
-            return {
-              name: userByPhone._id,
-              email: location,
-            }
+            return buildSessionPayload(userByPhone, location)
           }
         }
 
         if (registration === 'true') {
+          if (isAuthDevOnlyModeEnabled()) {
+            return null
+          }
           const registrationGuard = await assertCityOperationAllowed(
             location,
             'registration'
@@ -589,10 +601,7 @@ export const authOptions = {
             location,
             referrerId: resolvedReferrerId ? resolvedReferrerId.toString() : undefined,
           })
-          return {
-            name: newUser._id,
-            email: location,
-          }
+          return buildSessionPayload(newUser, location)
         }
 
         return null
@@ -600,6 +609,13 @@ export const authOptions = {
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role
+        token.phone = user.phone
+      }
+      return token
+    },
     async session({ session }) {
       const userId = session.user.name
       const location = session.user.email
@@ -609,6 +625,7 @@ export const authOptions = {
       await ensureConsentToMailingField(db, location)
 
       const result = await db.model('Users').findById(userId)
+      session.user.authDevOnlyMode = isAuthDevOnlyModeEnabled()
 
       if (result) {
         result.prevActivityAt = result.lastActivityAt
@@ -641,7 +658,6 @@ export const authOptions = {
         session.user.security = result.security
         session.user.notifications = result.notifications
         session.user.eventAchievements = result.eventAchievements
-        session.user.eventsTagsNotification = result.eventsTagsNotification
         session.user.registrationType = result.registrationType
         session.user.authProviders = result.authProviders
         session.user.referrerId = result.referrerId

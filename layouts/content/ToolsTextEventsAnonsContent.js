@@ -38,7 +38,6 @@ const textForming = ({
   events,
   socialTag,
   customTag,
-  showTags,
   showDescription,
   showAddress,
   showPrice,
@@ -72,14 +71,6 @@ const textForming = ({
       }).toUpperCase()}`
     )
     elementOfTextArray.push(`<b>"${event.title.toUpperCase()}"</b>`)
-    const eventTags =
-      typeof event.tags === 'object' && event.tags?.length > 0
-        ? event.tags.filter((tag) => tag)
-        : []
-    if (showTags && eventTags.length > 0) {
-      elementOfTextArray.push(`#${eventTags.join(' #')}`)
-    }
-
     if (showDescription) {
       elementOfTextArray.push(`${event.description}`)
       elementOfTextArray.push(``)
@@ -181,7 +172,6 @@ const ToolsTextEventsAnonsContent = () => {
   const location = useAtomValue(locationAtom)
   const [eventsId, setEventsId] = useState([])
   const [text, setText] = useState('')
-  const [showTags, setShowTags] = useState(true)
   const [showDescription, setShowDescription] = useState(true)
   const [showAddress, setShowAddress] = useState(true)
   const [showPrice, setShowPrice] = useState('novice')
@@ -220,7 +210,6 @@ const ToolsTextEventsAnonsContent = () => {
     events: eventsFull,
     socialTag,
     customTag,
-    showTags,
     showDescription,
     showAddress,
     showPrice,
@@ -274,11 +263,6 @@ const ToolsTextEventsAnonsContent = () => {
         }}
         canAddItem
         showCountNumber
-      />
-      <CheckBox
-        checked={showTags}
-        onClick={() => setShowTags((checked) => !checked)}
-        label="Показывать тэги мероприятия"
       />
       <CheckBox
         checked={showDescription}

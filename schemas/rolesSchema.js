@@ -30,7 +30,7 @@ const rolesSchema = {
       birthdays: false,
       newUserRegistred: false,
       eventRegistration: false,
-      newEventsByTags: false,
+      newEvents: false,
       // eventUserMoves: false,
       // eventCancel: false,
     },

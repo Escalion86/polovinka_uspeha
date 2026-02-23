@@ -31,7 +31,6 @@ import { useAtomValue } from 'jotai'
 
 const defaultFilterValue = {
   directions: null,
-  tags: [],
 }
 
 const EventsContent = ({ mode = 'all' }) => {
@@ -164,14 +163,7 @@ const EventsContent = ({ mode = 'all' }) => {
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
         const isEventClosed = isEventClosedFunc(event)
-        const haveEventTag =
-          filterOptions.tags?.length === 0
-            ? true
-            : event.tags
-              ? event.tags.find((tag) => filterOptions.tags.includes(tag))
-              : false
         return (
-          haveEventTag &&
           ((isEventClosed &&
             (statusFilterFull
               ? filter.status.closed
@@ -200,7 +192,7 @@ const EventsContent = ({ mode = 'all' }) => {
     [visibleEvents, sort]
   )
 
-  const isFiltered = filterOptions.directions || filterOptions.tags.length > 0
+  const isFiltered = Boolean(filterOptions.directions)
 
   return (
     <>
@@ -281,10 +273,6 @@ const EventsContent = ({ mode = 'all' }) => {
       <EventsList
         events={filteredAndSortedEvents}
         persistScrollKey={mode === 'past' ? 'events-past' : undefined}
-        onTagClick={(tag) => {
-          setFilterOptions((state) => ({ ...state, tags: [tag] }))
-          setShowFilter(true)
-        }}
       />
       {/* <div className="flex-1 w-full bg-general/15">
         <AutoSizer>

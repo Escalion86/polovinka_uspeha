@@ -56,10 +56,6 @@ const useErrors = () => {
                 'Введите доступ для пользователей по статусу отношений',
             })
           : null,
-      tags: (data) =>
-        !data || data.length === 0
-          ? setError({ tags: 'Укажите хотя бы один тэг' })
-          : null,
       images: (data) =>
         !data || data.length === 0
           ? setError({ images: 'Загрузите хотя бы одно фото' })

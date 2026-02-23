@@ -1,9 +1,6 @@
 import mongoose from 'mongoose'
 
-import {
-  EVENT_ACHIEVEMENTS_CONFIG,
-  normalizeEventTag,
-} from '@helpers/eventAchievementsConfig'
+import { EVENT_ACHIEVEMENTS_CONFIG } from '@helpers/eventAchievementsConfig'
 
 const PARTICIPANT_EXCLUDED_STATUSES = ['reserve', 'ban']
 
@@ -17,27 +14,61 @@ const isEventClosedForAchievements = (event, now = new Date()) => {
   return new Date(event.dateEnd).getTime() <= now.getTime()
 }
 
-const countEventsByTag = (events, tag) => {
-  if (!Array.isArray(events)) return 0
-  if (!tag) return events.length
+const resolveEventDate = (event) => {
+  const source = event?.dateEnd || event?.dateStart
+  if (!source) return null
+  const date = new Date(source)
+  return Number.isNaN(date.getTime()) ? null : date
+}
 
-  const normalizedTag = normalizeEventTag(tag)
-  if (!normalizedTag) return 0
+const countUniqueDirections = (events) => {
+  const directionIds = new Set()
 
+  events.forEach((event) => {
+    if (!event?.directionId) return
+    directionIds.add(String(event.directionId))
+  })
+
+  return directionIds.size
+}
+
+const countActiveMonths = (events) => {
+  const months = new Set()
+
+  events.forEach((event) => {
+    const date = resolveEventDate(event)
+    if (!date) return
+    const monthKey = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}`
+    months.add(monthKey)
+  })
+
+  return months.size
+}
+
+const countWeekendVisits = (events) => {
   return events.reduce((total, event) => {
-    if (!event) return total
-    const tags = Array.isArray(event.tags) ? event.tags : []
-    const hasTag = tags.some(
-      (eventTag) => normalizeEventTag(eventTag) === normalizedTag
-    )
-    return hasTag ? total + 1 : total
+    const date = resolveEventDate(event)
+    if (!date) return total
+    const day = date.getDay()
+    return day === 0 || day === 6 ? total + 1 : total
   }, 0)
+}
+
+const calculateAchievementMetric = (events, metric) => {
+  if (!Array.isArray(events)) return 0
+
+  if (metric === 'uniqueDirections') return countUniqueDirections(events)
+  if (metric === 'activeMonths') return countActiveMonths(events)
+  if (metric === 'weekendVisits') return countWeekendVisits(events)
+  return events.length
 }
 
 const buildUserAchievementsPayload = (events, updatedAt) => {
   return EVENT_ACHIEVEMENTS_CONFIG.map((config) => ({
     key: config.key,
-    value: countEventsByTag(events, config.tag),
+    value: calculateAchievementMetric(events, config.metric),
     updatedAt,
   }))
 }
@@ -110,7 +141,7 @@ const recalculateEventAchievements = async ({ db, eventId }) => {
   const events = await db
     .model('Events')
     .find({ _id: { $in: objectIds } })
-    .select({ status: 1, blank: 1, dateEnd: 1, tags: 1 })
+    .select({ status: 1, blank: 1, dateStart: 1, dateEnd: 1, directionId: 1 })
     .lean()
 
   const eventsMap = new Map(events.map((event) => [String(event._id), event]))

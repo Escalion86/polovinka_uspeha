@@ -21,8 +21,11 @@ const notificateUsersAboutEvent = async (eventId, location) => {
 
   const rolesSettings = await db.model('Roles').find({}).lean()
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
-  const rolesIdsToNewEventsByTagsNotification = allRoles
-    .filter((role) => role?.notifications?.newEventsByTags)
+  const rolesIdsToNewEventsNotification = allRoles
+    .filter(
+      (role) =>
+        role?.notifications?.newEvents ?? role?.notifications?.newEventsByTags
+    )
     .map((role) => role._id)
 
   const users = await db
@@ -31,8 +34,11 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       role:
         process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
           ? 'dev'
-          : { $in: rolesIdsToNewEventsByTagsNotification },
-      'notifications.settings.newEventsByTags': true,
+          : { $in: rolesIdsToNewEventsNotification },
+      $or: [
+        { 'notifications.settings.newEvents': true },
+        { 'notifications.settings.newEventsByTags': true },
+      ],
       'notifications.telegram.active': true,
       'notifications.telegram.id': {
         $exists: true,
@@ -44,15 +50,6 @@ const notificateUsersAboutEvent = async (eventId, location) => {
   const subEventSum = subEventsSummator(event.subEvents)
 
   const usersToNotificate = users.filter((user) => {
-    if (
-      !(
-        !user.eventsTagsNotification ||
-        user.eventsTagsNotification?.length === 0 ||
-        user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
-      )
-    )
-      return false
-
     const userAge = new Number(
       birthDateToAge(user.birthday, undefined, false, false)
     )

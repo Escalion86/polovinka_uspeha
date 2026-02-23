@@ -23,7 +23,6 @@ export const eventKeys = {
   address: 'Адрес',
   status: 'Статус',
   images: 'Картинки',
-  tags: 'Тэги',
   organizerId: 'Организатор',
   price: 'Стоимость',
   maxParticipants: 'Максимум участников',

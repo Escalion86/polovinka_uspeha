@@ -1,6 +1,6 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.29",
+  "version": "2.0.30",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
@@ -14,6 +14,9 @@
     "auth-providers:dry-run": "node scripts/backfill-auth-providers.cjs",
     "auth-providers:apply": "node scripts/backfill-auth-providers.cjs --write",
     "auth-providers:dry-run:test": "cross-env BACKFILL_AUTH_PROVIDERS_DB_SUFFIX=_test node scripts/backfill-auth-providers.cjs",
+    "notifications-new-events:dry-run": "node scripts/migrate-new-events-notifications.cjs",
+    "notifications-new-events:apply": "node scripts/migrate-new-events-notifications.cjs --write",
+    "notifications-new-events:dry-run:test": "cross-env MIGRATE_NEW_EVENTS_DB_SUFFIX=_test node scripts/migrate-new-events-notifications.cjs",
     "duplicates:phones": "node scripts/find-duplicate-phones.cjs",
     "duplicates:phones:test": "cross-env FIND_DUPLICATES_DB_SUFFIX=_test node scripts/find-duplicate-phones.cjs",
     "analyze": "ANALYZE=true npm run build",

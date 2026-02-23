@@ -54,7 +54,7 @@ const recalculateAllEventAchievements = async (db) => {
       ? await db
           .model('Events')
           .find({ _id: { $in: eventIds } })
-          .select({ status: 1, blank: 1, dateEnd: 1, tags: 1 })
+          .select({ status: 1, blank: 1, dateStart: 1, dateEnd: 1, directionId: 1 })
           .lean()
       : []
 

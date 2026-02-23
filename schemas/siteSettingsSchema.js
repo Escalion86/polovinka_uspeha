@@ -34,10 +34,6 @@ const siteSettingsSchema = {
     type: String,
     default: 'telefonip',
   },
-  eventsTags: {
-    type: [{ text: String, color: String }],
-    default: [],
-  },
   custom: {
     type: Map,
     of: Schema.Types.Mixed,

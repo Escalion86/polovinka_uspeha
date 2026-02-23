@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { LOCATIONS, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
 import { fetchingGlobalAboutSpaceCards } from '@helpers/fetchers'
@@ -25,7 +25,7 @@ const valueCards = [
 const steps = [
   'Выберите город и изучите актуальные мероприятия.',
   'Пройдите быструю регистрацию и получите доступ в личный кабинет.',
-  'Запишитесь на встречу и приходите в пространство живого общения.',
+  'Запишитесь на мероприятие и приходите в пространство живого общения.',
 ]
 
 export default function RootPage() {
@@ -33,6 +33,7 @@ export default function RootPage() {
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [globalCities, setGlobalCities] = useState([])
   const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState([])
+  const headerRef = useRef(null)
 
   useEffect(() => {
     captureAttributionFromBrowser()
@@ -112,6 +113,15 @@ export default function RootPage() {
   }, [])
 
   const locations = globalCities.length > 0 ? globalCities : fallbackLocations
+  const scrollToSection = (id) => {
+    const target = document.getElementById(id)
+    if (!target) return
+    const headerHeight = headerRef.current?.offsetHeight ?? 0
+    const offsetTop =
+      target.getBoundingClientRect().top + window.scrollY - headerHeight
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' })
+  }
+
   const aboutCards = useMemo(() => {
     const items = Array.isArray(globalAboutSpaceCards)
       ? globalAboutSpaceCards
@@ -133,7 +143,10 @@ export default function RootPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f3] text-[#2b1b21]">
-      <header className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur">
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur"
+      >
         <div className="mx-auto flex w-full max-w-[1200px] items-center gap-4 px-4 py-3 md:px-6">
           <Link href="/" className="flex items-center gap-3">
             <img
@@ -158,14 +171,22 @@ export default function RootPage() {
             <a
               href="#about"
               className="rounded-full px-3 py-2 text-sm font-semibold text-[#4b0f1c] hover:bg-[#f2e8ec]"
-              onClick={() => setMenuOpen(false)}
+              onClick={(event) => {
+                event.preventDefault()
+                setMenuOpen(false)
+                scrollToSection('about')
+              }}
             >
               О проекте
             </a>
             <a
               href="#cities"
               className="rounded-full px-3 py-2 text-sm font-semibold text-[#4b0f1c] hover:bg-[#f2e8ec]"
-              onClick={() => setMenuOpen(false)}
+              onClick={(event) => {
+                event.preventDefault()
+                setMenuOpen(false)
+                scrollToSection('cities')
+              }}
             >
               Города
             </a>
@@ -196,7 +217,7 @@ export default function RootPage() {
               Платформа объединяет людей 30-50, которые ценят живое общение,
               новые связи и качественный отдых без суеты.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mt-6">
               <button
                 type="button"
                 className="rounded-full bg-[#8dcff2] px-5 py-2.5 text-sm font-semibold text-[#2b1b21]"
@@ -207,6 +228,10 @@ export default function RootPage() {
               <a
                 href="#cities"
                 className="rounded-full border border-white/35 px-5 py-2.5 text-sm font-semibold text-white"
+                onClick={(event) => {
+                  event.preventDefault()
+                  scrollToSection('cities')
+                }}
               >
                 Смотреть города
               </a>
@@ -222,17 +247,22 @@ export default function RootPage() {
           </div>
         </section>
 
-        <section id="about" className="mx-auto w-full max-w-[1200px] px-4 py-6 md:px-6">
+        <section
+          id="about"
+          className="mx-auto w-full max-w-[1200px] px-4 py-6 md:px-6"
+        >
           <h2 className="font-lora text-[clamp(24px,3vw,36px)] font-bold text-[#6b1f2a]">
             О проекте
           </h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 mt-5 md:grid-cols-3">
             {valueCards.map((card) => (
               <article
                 key={card.title}
                 className="rounded-3xl border border-[rgba(107,31,42,0.15)] bg-white p-5 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
               >
-                <h3 className="text-lg font-semibold text-[#4b0f1c]">{card.title}</h3>
+                <h3 className="text-lg font-semibold text-[#4b0f1c]">
+                  {card.title}
+                </h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-[#3a2c33]">
                   {card.text}
                 </p>
@@ -246,7 +276,7 @@ export default function RootPage() {
             О нашем пространстве
           </h2>
           {aboutCards.length > 0 ? (
-            <div className="mt-5 grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 mt-5 lg:grid-cols-2">
               {aboutCards.map((card, index) => (
                 <AboutSpaceCard
                   key={card.id ?? `${card.title}-${index}`}
@@ -267,18 +297,25 @@ export default function RootPage() {
             <h2 className="font-lora text-[clamp(22px,3vw,32px)] font-bold text-[#6b1f2a]">
               Как это работает
             </h2>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 mt-5 md:grid-cols-3">
               {steps.map((step, index) => (
                 <div key={step} className="rounded-2xl bg-[#f9f3f6] p-4">
-                  <div className="text-sm font-bold text-[#6b1f2a]">Шаг {index + 1}</div>
-                  <p className="mt-2 text-sm leading-relaxed text-[#3a2c33]">{step}</p>
+                  <div className="text-sm font-bold text-[#6b1f2a]">
+                    Шаг {index + 1}
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-[#3a2c33]">
+                    {step}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="cities" className="mx-auto w-full max-w-[1200px] px-4 pb-14 md:px-6">
+        <section
+          id="cities"
+          className="mx-auto w-full max-w-[1200px] px-4 pb-14 md:px-6"
+        >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-lora text-[clamp(24px,3vw,36px)] font-bold text-[#6b1f2a]">
               Наши города
@@ -292,7 +329,7 @@ export default function RootPage() {
             </button>
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 mt-5 md:grid-cols-3">
             {locations.map((item) => (
               <article
                 key={item.key}
@@ -301,13 +338,15 @@ export default function RootPage() {
                 <div className="text-xs uppercase tracking-[0.2em] text-[#7b3c48]">
                   {item.key.toUpperCase()}
                 </div>
-                <h3 className="mt-2 text-2xl font-semibold text-[#4b0f1c]">{item.city}</h3>
+                <h3 className="mt-2 text-2xl font-semibold text-[#4b0f1c]">
+                  {item.city}
+                </h3>
                 <p className="mt-2 text-sm text-[#3a2c33]">
                   {item.nearby.length > 0
                     ? `Также рядом: ${item.nearby.join(', ')}`
                     : 'Локальная команда и офлайн-мероприятия в вашем городе.'}
                 </p>
-                <div className="mt-5 flex gap-2">
+                <div className="flex gap-2 mt-5">
                   <Link
                     href={`/${item.key}`}
                     className="rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] px-4 py-2 text-sm font-semibold text-white"
@@ -330,9 +369,9 @@ export default function RootPage() {
               Масштабирование в новые города
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-[#3a2c33]">
-              Главная страница не привязана к данным одного города и масштабируется
-              через единый список локаций. При запуске нового города он появляется
-              в этом блоке и в модальном выборе города.
+              Главная страница не привязана к данным одного города и
+              масштабируется через единый список локаций. При запуске нового
+              города он появляется в этом блоке и в модальном выборе города.
             </p>
           </div>
         </section>
@@ -342,14 +381,17 @@ export default function RootPage() {
         <div
           className="fixed inset-0 z-[95] flex items-center justify-center bg-black/45 px-4"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setShowLocationModal(false)
+            if (event.target === event.currentTarget)
+              setShowLocationModal(false)
           }}
         >
           <div
             className="w-full max-w-[560px] rounded-[28px] bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <div className="mb-3 text-xl font-bold text-[#6b1f2a]">Выберите город</div>
+            <div className="mb-3 text-xl font-bold text-[#6b1f2a]">
+              Выберите город
+            </div>
             <div className="grid gap-2">
               {locations.map((item) => (
                 <Link

@@ -15,7 +15,10 @@ const notificationsConsentFunc = ({ location, user, onUpdateUser }) => {
     const router = useRouter()
     const { error: showError } = useSnackbar()
     const [checked, setChecked] = useState(
-      Boolean(user?.notifications?.settings?.newEvents)
+      Boolean(
+        user?.notifications?.settings?.newEvents ??
+          user?.notifications?.settings?.newEventsByTags
+      )
     )
     const [isSaving, setIsSaving] = useState(false)
 
@@ -57,6 +60,7 @@ const notificationsConsentFunc = ({ location, user, onUpdateUser }) => {
             newEvents: value,
           },
         }
+        delete updatedNotifications.settings.newEventsByTags
 
         const onError = () => {
           showError('Не удалось сохранить настройку уведомлений')

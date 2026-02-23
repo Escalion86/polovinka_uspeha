@@ -1,5 +1,4 @@
 import EventCardButtons from '@components/cardButtons/EventCardButtons'
-import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import Divider from '@components/Divider'
 import EventButtonSignIn from '@components/EventButtonSignIn'
@@ -138,9 +137,6 @@ const EventViewModal = ({
       <div className="flex flex-col flex-1">
         <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
           <div className="flex items-center w-full gap-x-1">
-            {typeof event?.tags === 'object' && event?.tags.length > 0 && (
-              <EventTagsChipsLine tags={event?.tags} className="flex-1" />
-            )}
             {!setTopLeftComponent && (
               <div className="flex justify-end flex-1">
                 <CardButtonsComponent
