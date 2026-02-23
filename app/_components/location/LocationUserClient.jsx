@@ -81,7 +81,6 @@ function UserPage(props) {
     <>
       <StateLoader {...props}>
         <Header noMenu={isPWA} fullLinkInMenu />
-        {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
           {user?._id && canSee && <User user={user} />}
           <div className="flex flex-col items-center">

@@ -1,8 +1,10 @@
 'use client'
 
 import ContentHeader from '@components/ContentHeader'
+import CityManagementBlockedBanner from '@components/CityManagementBlockedBanner'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounProducts } from '@helpers/getNoun'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import ProductCard from '@layouts/cards/ProductCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -16,6 +18,8 @@ const ProductsContent = () => {
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeHidden = loggedUserActiveRole?.products?.seeHidden
   const addButton = loggedUserActiveRole?.products?.add
+  const { loading: cityAccessLoading, allowEventManagement, cityTitle } =
+    useCityManagementAccess()
 
   const filteredProducts = seeHidden
     ? products
@@ -23,12 +27,17 @@ const ProductsContent = () => {
 
   return (
     <>
+      {!cityAccessLoading && !allowEventManagement ? (
+        <CityManagementBlockedBanner cityTitle={cityTitle} />
+      ) : null}
       <ContentHeader>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounProducts(filteredProducts?.length)}
           </div>
-          {addButton && <AddButton onClick={() => modalsFunc.product.edit()} />}
+          {addButton && allowEventManagement ? (
+            <AddButton onClick={() => modalsFunc.product.edit()} />
+          ) : null}
         </div>
       </ContentHeader>
       <CardListWrapper>

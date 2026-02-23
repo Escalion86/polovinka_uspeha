@@ -145,7 +145,6 @@ function EventPage(props) {
       <StateLoader {...props}>
         <Header noMenu={isPWA} fullLinkInMenu />
         <EventBlock event={event} />
-        {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
 
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}

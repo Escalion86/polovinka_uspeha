@@ -544,6 +544,13 @@ export default async function handler(Schema, req, res, props = {}) {
       : { ...(select ?? {}), password: 0 }
 
   const lowercasedSchema = Schema.toLowerCase()
+  const cityManagementRestrictedSchemas = new Set([
+    'Events',
+    'Users',
+    'Services',
+    'Products',
+    'Payments',
+  ])
 
   switch (method) {
     case 'GET':
@@ -617,7 +624,7 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'POST':
       try {
-        if (Schema === 'Events') {
+        if (cityManagementRestrictedSchemas.has(Schema)) {
           const eventManagementGuard = await assertCityOperationAllowed(
             location,
             'event_management'
@@ -695,7 +702,7 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'PUT':
       try {
-        if (Schema === 'Events') {
+        if (cityManagementRestrictedSchemas.has(Schema)) {
           const eventManagementGuard = await assertCityOperationAllowed(
             location,
             'event_management'
@@ -896,7 +903,7 @@ export default async function handler(Schema, req, res, props = {}) {
       break
     case 'DELETE':
       try {
-        if (Schema === 'Events') {
+        if (cityManagementRestrictedSchemas.has(Schema)) {
           const eventManagementGuard = await assertCityOperationAllowed(
             location,
             'event_management'

@@ -27,6 +27,15 @@ const MERGE_FIELDS = [
   { key: 'notifications', label: 'Notifications' },
 ]
 
+const CITY_STATUS_HINTS = {
+  active:
+    'Город активен: публичная воронка и операции доступны по включенным флагам.',
+  closing:
+    'Город в процессе закрытия: новые операции обычно ограничиваются, история сохраняется.',
+  archived:
+    'Город в архиве: используется для хранения истории и обычно скрыт из публичной выдачи.',
+}
+
 const formatMergeFieldValue = (fieldKey, item) => {
   if (fieldKey === 'password') {
     return item?.hasPassword ? '••••••' : '[не установлен]'
@@ -78,6 +87,7 @@ const DevContent = () => {
   const [citiesError, setCitiesError] = useState('')
   const [cities, setCities] = useState([])
   const [savingCitySlug, setSavingCitySlug] = useState('')
+  const [showAddCityModal, setShowAddCityModal] = useState(false)
   const [newCity, setNewCity] = useState({
     slug: '',
     title: '',
@@ -94,9 +104,7 @@ const DevContent = () => {
     allowVkAuth: false,
   })
 
-  const canManageCities = Boolean(
-    loggedUserActiveRole?.dev || loggedUserActiveRole?.president
-  )
+  const canManageCities = Boolean(loggedUserActiveRole?.dev)
 
   const initMergeSelections = (groups) => {
     const nextPrimary = {}
@@ -351,17 +359,22 @@ const DevContent = () => {
     setCityPolicies(nextPolicies)
     setCityPoliciesError('')
 
-    const response = await postData(
-      '/api/global/content/city-policies',
-      {
-        location: citySlug,
-        policy: nextPolicy,
+    const response = await fetch('/api/global/content/city-policies', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-      null,
-      null,
-      true,
-      loggedUserActive?._id
-    )
+      body: JSON.stringify({
+        data: {
+          location: citySlug,
+          policy: nextPolicy,
+        },
+        userId: loggedUserActive?._id,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => null)
 
     if (!response?.success) {
       setCityPolicies(previous)
@@ -478,8 +491,10 @@ const DevContent = () => {
       allowEventSignup: true,
       allowEventManagement: true,
       allowPublicListing: true,
+      allowVkAuth: false,
     })
     setSavingCitySlug('')
+    setShowAddCityModal(false)
     await loadCityPolicies()
   }
 
@@ -801,9 +816,7 @@ const DevContent = () => {
 
       {canManageCities ? (
         <div className="rounded border border-indigo-200 bg-indigo-50/30 p-3 text-sm">
-          <div className="mb-2 font-semibold text-indigo-900">
-            Управление городами (dev/president)
-          </div>
+          <div className="mb-2 font-semibold text-indigo-900">Управление городами (dev)</div>
 
           <div className="mb-2 flex flex-wrap gap-2">
             <Button
@@ -823,6 +836,11 @@ const DevContent = () => {
               onClick={loadCities}
               disabled={loadingCities || Boolean(savingCitySlug)}
               outline
+            />
+            <Button
+              name="Добавить город"
+              onClick={() => setShowAddCityModal(true)}
+              disabled={Boolean(savingCitySlug)}
             />
           </div>
 
@@ -856,6 +874,9 @@ const DevContent = () => {
                         <option value="closing">closing</option>
                         <option value="archived">archived</option>
                       </select>
+                      <div className="mt-1 text-[11px] leading-4 text-gray-500">
+                        {CITY_STATUS_HINTS[policy?.status] || CITY_STATUS_HINTS.active}
+                      </div>
                     </label>
                     <div className="grid grid-cols-2 gap-1 text-xs">
                       {[
@@ -939,6 +960,9 @@ const DevContent = () => {
                           <option value="closing">closing</option>
                           <option value="archived">archived</option>
                         </select>
+                        <div className="mt-1 text-[11px] leading-4 text-gray-500">
+                          {CITY_STATUS_HINTS[city.status] || CITY_STATUS_HINTS.active}
+                        </div>
                       </label>
                       <label className="text-xs text-gray-700">
                         Контактный телефон
@@ -1012,7 +1036,20 @@ const DevContent = () => {
             </div>
           ) : null}
 
-          <div className="rounded border border-indigo-100 bg-white p-2">
+        </div>
+      ) : null}
+
+      {showAddCityModal ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/45 px-4"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowAddCityModal(false)
+          }}
+        >
+          <div
+            className="w-full max-w-[760px] rounded-[24px] bg-white p-4 shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
             <div className="mb-2 font-semibold text-indigo-800">Добавить город</div>
             <div className="grid gap-2 md:grid-cols-3">
               <label className="text-xs text-gray-700">
@@ -1102,11 +1139,16 @@ const DevContent = () => {
                 </label>
               ))}
             </div>
-            <div className="mt-2">
+            <div className="mt-3 flex gap-2">
               <Button
                 name={savingCitySlug ? 'Сохраняем...' : 'Добавить город'}
                 onClick={addCity}
                 disabled={Boolean(savingCitySlug)}
+              />
+              <Button
+                name="Отмена"
+                onClick={() => setShowAddCityModal(false)}
+                outline
               />
             </div>
           </div>

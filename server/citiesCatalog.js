@@ -1,7 +1,7 @@
 import { LOCATIONS_KEYS } from './serverConstants'
 
 export const CITIES_CONTENT_KEY = 'cities'
-export const CITY_STATUSES = ['active', 'closing', 'archived']
+const CITY_STATUSES = ['active', 'closing', 'archived']
 
 const BASE_CITY_DEFAULT = Object.freeze({
   title: '',
@@ -33,6 +33,7 @@ const DEFAULT_CORE_CITIES = Object.freeze([
     allowRegistration: false,
     allowEventSignup: false,
     allowEventManagement: false,
+    allowPublicListing: false,
     index: 1,
   },
   {
@@ -52,7 +53,7 @@ const normalizeString = (value, fallback = null) => {
   return trimmed ? trimmed : fallback
 }
 
-export const normalizeCityStatus = (status, fallback = 'active') =>
+const normalizeCityStatus = (status, fallback = 'active') =>
   CITY_STATUSES.includes(status) ? status : fallback
 
 export const normalizeCity = (city = {}, fallback = {}) => {
@@ -176,4 +177,4 @@ export const buildCityPoliciesFromCities = (cities = []) => {
   return policies
 }
 
-export const getCoreLocationSlugs = () => LOCATIONS_KEYS
+const getCoreLocationSlugs = () => LOCATIONS_KEYS

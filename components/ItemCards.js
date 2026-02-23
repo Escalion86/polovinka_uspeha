@@ -422,7 +422,7 @@ export const ServiceItem = ({
   </ItemContainer>
 )
 
-export const ProductItemFromId = ({
+const ProductItemFromId = ({
   productId,
   onClick = null,
   active,

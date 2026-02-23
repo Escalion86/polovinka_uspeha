@@ -47,8 +47,6 @@
   - `app/_components/location/LocationIndexClient.jsx`
   - `app/_components/location/LocationLoginClient.jsx`
   - `app/_components/location/LocationRegister3Client.jsx`
-  - `blocks/TitleBlock.js`
-  - `blocks/AboutBlock.js`
 - [x] E1-T3 Унификация CTA на первом касании (`Присоединиться к нам`, `Войти в пространство`, `Выбрать мероприятие`)
 - [x] E1-T4 Очистка конфликтующих legacy-формулировок (романтика как единственный сценарий)
 - [x] E1-T5 Согласование контента `siteSettings.aboutSpaceCards` с философией `/<location>` без принудительной унификации между городами
@@ -267,9 +265,10 @@
 - 2026-02-15: добавлены недельные блоки Этапа 1.
 - 2026-02-15: roadmap переведен в формат checklist по этапам (как единый рабочий трек), добавлен принцип отметок `[ ]/[-]/[x]/[*]`.
 - 2026-02-15: завершены E1-T1 и E1-T2, добавлены `docs/POSITIONING_GLOSSARY.md` и `docs/POSITIONING_AUDIT_STAGE1.md`.
-- 2026-02-15: начат E1-T4, обновлены конфликтующие legacy-тексты в `blocks/TitleBlock.js` и `blocks/AboutBlock.js`.
+- 2026-02-15: начат E1-T4, обновлены конфликтующие legacy-тексты в блоках первого касания.
 - 2026-02-15: добавлен E1-T8 — проработка общей главной страницы проекта (city-agnostic) с выбором и масштабированием городов.
-- 2026-02-15: завершены E1-T3 и E1-T4 в активном контуре (`LocationLoginClient`, `LocationRegister3Client`, `TitleBlock`, `AboutBlock`), унифицированы CTA первого касания.
+- 2026-02-15: завершены E1-T3 и E1-T4 в активном контуре (`LocationLoginClient`, `LocationRegister3Client`), унифицированы CTA первого касания.
+- 2026-02-23: удалены неиспользуемые legacy-блоки `blocks/TitleBlock.js` и `blocks/AboutBlock.js` в рамках техочистки.
 - 2026-02-15: завершен E1-T6 — проверен каркас по локациям, устранено расхождение маршрута в `LocationIndexClient` для блока "Закрытое пространство".
 - 2026-02-17: добавлен подробный трек U1 по переходу к единой анкете пользователя между городами через слой `GlobalUsers` с мягкой миграцией.
 - 2026-02-17: добавлен `docs/GLOBAL_USERS_ARCHITECTURE.md`, задача U1-T1 переведена в выполнено, U1-T2 начата.

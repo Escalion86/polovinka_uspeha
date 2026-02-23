@@ -1,6 +1,6 @@
 import cn from 'classnames'
 
-export const H1 = ({ className, style, children, bold = true }) => (
+const H1 = ({ className, style, children, bold = true }) => (
   <h1
     className={cn(
       'text-3xl text-center tablet:text-4xl',

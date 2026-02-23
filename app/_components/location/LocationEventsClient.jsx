@@ -12,6 +12,9 @@ import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
+import CityAccessLoading from '@components/CityAccessLoading'
+import CityAccessUnavailable from '@components/CityAccessUnavailable'
+import useCityAccess from '@hooks/useCityAccess'
 
 function LocationEventsClient(props) {
   const [locationState, setLocationState] = useAtom(locationAtom)
@@ -19,6 +22,16 @@ function LocationEventsClient(props) {
   const hideFab = loggedUserActiveRole?.hideFab
   const isPWA = useAtomValue(isPWAAtom)
   const router = useRouter()
+  const {
+    accessLoading,
+    isAllowed: isEventSignupAllowed,
+    currentCityTitle,
+    alternativeCities: alternativeEventCities,
+  } = useCityAccess({
+    location: props.location,
+    allowField: 'allowEventSignup',
+    alternativesField: 'availableForEventSignup',
+  })
 
   const query = useMemo(() => {
     const newQuery = { ...router.query }
@@ -43,6 +56,44 @@ function LocationEventsClient(props) {
   }
 
   if (!locationState) return null
+
+  if (accessLoading) {
+    return (
+      <StateLoader {...props}>
+        <Header />
+        <div className="mx-auto my-8 flex justify-center px-4">
+          <CityAccessLoading
+            message="Проверяем доступность записи на мероприятия..."
+            className="max-w-[900px]"
+          />
+        </div>
+        <FooterBlock />
+      </StateLoader>
+    )
+  }
+
+  if (!isEventSignupAllowed) {
+    return (
+      <StateLoader {...props}>
+        <Header />
+        <div className="mx-auto my-8 max-w-[900px] px-4">
+          <CityAccessUnavailable
+            heading="Запись на мероприятия приостановлена"
+            description="запись на мероприятия временно недоступна. Вы можете посмотреть мероприятия в других городах, где запись открыта."
+            cityTitle={currentCityTitle}
+            location={location}
+            cities={alternativeEventCities}
+            buildCityHref={(slug) => `/${slug}/events`}
+            emptyMessage="Сейчас нет других публичных городов с открытой записью."
+            showHomeLink={false}
+            className="max-w-[900px]"
+          />
+        </div>
+        <ContactsBlock />
+        <FooterBlock />
+      </StateLoader>
+    )
+  }
 
   return (
     <StateLoader {...props}>

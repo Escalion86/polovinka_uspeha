@@ -1,5 +1,4 @@
 import dbConnectGlobal from '@utils/dbConnectGlobal'
-import checkLocationValid from '@server/checkLocationValid'
 import {
   CITY_POLICIES_KEY,
   normalizeSinglePolicy,
@@ -21,22 +20,22 @@ const prepareIncomingPolicies = (payload) => {
 }
 
 const prepareIncomingPolicyPatch = (payload) => {
-  const location = payload?.location
+  const location = String(payload?.location || '').trim().toLowerCase()
   const policy = payload?.policy
 
-  if (!checkLocationValid(location) || !policy || typeof policy !== 'object') {
+  if (!location || !policy || typeof policy !== 'object') {
     return null
   }
 
   return {
     location,
-    policy: normalizeSinglePolicy(policy),
+    policy,
   }
 }
 
 export default async function handler(req, res) {
   const { method, body } = req
-  const { canManageGlobalContent } = await getGlobalManagerSession()
+  const { canManageGlobalContent } = await getGlobalManagerSession(req, res)
   if (!canManageGlobalContent) {
     return res.status(403).json({
       success: false,
@@ -108,7 +107,13 @@ export default async function handler(req, res) {
         ? preparedPolicies
         : {
             ...basePolicies,
-            [preparedPatch.location]: preparedPatch.policy,
+            [preparedPatch.location]: normalizeSinglePolicy(
+              {
+                ...(basePolicies?.[preparedPatch.location] || {}),
+                ...preparedPatch.policy,
+              },
+              preparedPatch.location
+            ),
           }
 
       const data = await db.model('GlobalContent').findOneAndUpdate(

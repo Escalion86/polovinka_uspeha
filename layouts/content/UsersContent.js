@@ -1,6 +1,7 @@
 'use client'
 
 import ContentHeader from '@components/ContentHeader'
+import CityManagementBlockedBanner from '@components/CityManagementBlockedBanner'
 import UsersFilter from '@components/Filter/UsersFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
@@ -18,6 +19,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import birthDateToAge from '@helpers/birthDateToAge'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 
 const UsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -45,6 +47,8 @@ const UsersContent = () => {
   const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
   const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
   const addButton = loggedUserActiveRole?.users?.add
+  const { loading: cityAccessLoading, allowEventManagement, cityTitle } =
+    useCityManagementAccess()
 
   const [isSearching, setIsSearching] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -148,6 +152,9 @@ const UsersContent = () => {
 
   return (
     <>
+      {!cityAccessLoading && !allowEventManagement ? (
+        <CityManagementBlockedBanner cityTitle={cityTitle} />
+      ) : null}
       <ContentHeader>
         <UsersFilter
           value={filter}
@@ -189,7 +196,9 @@ const UsersContent = () => {
               }}
             />
           </FormControl> */}
-          {addButton && <AddButton onClick={() => modalsFunc.user.edit()} />}
+          {addButton && allowEventManagement ? (
+            <AddButton onClick={() => modalsFunc.user.edit()} />
+          ) : null}
         </div>
       </ContentHeader>
       <Search

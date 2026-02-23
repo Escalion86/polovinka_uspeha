@@ -44,9 +44,14 @@ const getLocationDefaultPolicy = (location) =>
 
 const normalizeSinglePolicy = (policy = {}, location = null) => {
   const locationDefaults = getLocationDefaultPolicy(location)
+  const status = getStatusValue(policy?.status ?? locationDefaults.status)
+  const allowPublicListing = getFlagValue(
+    policy?.allowPublicListing,
+    locationDefaults.allowPublicListing
+  )
 
   return {
-    status: getStatusValue(policy?.status ?? locationDefaults.status),
+    status,
     allowRegistration: getFlagValue(
       policy?.allowRegistration,
       locationDefaults.allowRegistration
@@ -60,10 +65,8 @@ const normalizeSinglePolicy = (policy = {}, location = null) => {
       policy?.allowEventManagement,
       locationDefaults.allowEventManagement
     ),
-    allowPublicListing: getFlagValue(
-      policy?.allowPublicListing,
-      locationDefaults.allowPublicListing
-    ),
+    allowPublicListing:
+      location === 'nrsk' && status !== 'active' ? false : allowPublicListing,
     allowVkAuth: getFlagValue(policy?.allowVkAuth, locationDefaults.allowVkAuth),
   }
 }
@@ -140,10 +143,6 @@ const getCityPolicy = async (location) => {
 
 export {
   CITY_POLICIES_KEY,
-  CITY_POLICY_STATUSES,
-  defaultCityPolicy,
-  LOCATION_POLICY_DEFAULTS,
-  getLocationDefaultPolicy,
   normalizeSinglePolicy,
   normalizePolicies,
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import ContentHeader from '@components/ContentHeader'
+import CityManagementBlockedBanner from '@components/CityManagementBlockedBanner'
 import Filter from '@components/Filter'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
@@ -17,6 +18,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import EventsList from '@layouts/lists/EventsList'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -41,6 +43,8 @@ const EventsContent = ({ mode = 'all' }) => {
   const seeHidden = loggedUserActiveRole?.events?.seeHidden
   const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
   const seeAddButton = loggedUserActiveRole?.events?.add
+  const { loading: cityAccessLoading, allowEventManagement, cityTitle } =
+    useCityManagementAccess()
 
   const isClient = loggedUserActiveRole?._id === 'client'
 
@@ -200,6 +204,9 @@ const EventsContent = ({ mode = 'all' }) => {
 
   return (
     <>
+      {!cityAccessLoading && !allowEventManagement ? (
+        <CityManagementBlockedBanner cityTitle={cityTitle} />
+      ) : null}
       <ContentHeader>
         {statusButtons.length > 0 && (
           <EventStatusToggleButtons
@@ -239,7 +246,9 @@ const EventsContent = ({ mode = 'all' }) => {
               // if (isSearching) setSearchText('')
             }}
           />
-          {seeAddButton && <AddButton onClick={() => modalsFunc.event.add()} />}
+          {seeAddButton && allowEventManagement ? (
+            <AddButton onClick={() => modalsFunc.event.add()} />
+          ) : null}
           {/* <FormControl size="small">
             <ToggleButton
               size="small"

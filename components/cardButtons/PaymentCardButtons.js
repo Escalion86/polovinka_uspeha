@@ -4,6 +4,7 @@ import { faCode } from '@fortawesome/free-solid-svg-icons/faCode'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
@@ -23,14 +24,17 @@ const PaymentCardButtons = ({
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const { allowEventManagement } = useCityManagementAccess()
 
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
 
   if (!item) return null
 
   const rule = loggedUserActiveRole?.payments
-  const canEdit = showEditButton && (rule?.edit || rule === true)
-  const canDelete = showDeleteButton && (rule?.delete || rule === true)
+  const canEdit =
+    allowEventManagement && showEditButton && (rule?.edit || rule === true)
+  const canDelete =
+    allowEventManagement && showDeleteButton && (rule?.delete || rule === true)
   const canSeeHistory = loggedUserActiveRole?.payments?.seeHistory
 
   const buttons = []

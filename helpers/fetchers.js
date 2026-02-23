@@ -1,4 +1,4 @@
-export async function fetchingAll(location, setState = () => {}) {
+async function fetchingAll(location, setState = () => {}) {
   const urls = [`/api/${location}/admin`]
   const result = await Promise.all(
     urls.map(async (url) => {
@@ -44,7 +44,7 @@ export async function fetchingAdditionalBlocks(location) {
   return resp
 }
 
-export async function fetchingProducts(location) {
+async function fetchingProducts(location) {
   const resp = await fetch(`/api/${location}/products`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -52,7 +52,7 @@ export async function fetchingProducts(location) {
   return resp
 }
 
-export async function fetchingPayments(location) {
+async function fetchingPayments(location) {
   const resp = await fetch(`/api/${location}/payments`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -60,7 +60,7 @@ export async function fetchingPayments(location) {
   return resp
 }
 
-export async function fetchingUsers(location) {
+async function fetchingUsers(location) {
   const resp = await fetch(`/api/${location}/users`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -76,7 +76,7 @@ export async function fetchUser(location, id) {
   return resp
 }
 
-export async function fetchingUsersById(id, location) {
+async function fetchingUsersById(id, location) {
   const resp = await fetch(`/api/${location}/users/byId/${id}`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -84,7 +84,7 @@ export async function fetchingUsersById(id, location) {
   return resp
 }
 
-export async function fetchingUserByPhone(phone, location) {
+async function fetchingUserByPhone(phone, location) {
   const resp = await fetch(`/api/${location}/users/byPhone/${phone}`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -92,7 +92,7 @@ export async function fetchingUserByPhone(phone, location) {
   return resp
 }
 
-export async function fetchingLog(data, location) {
+async function fetchingLog(data, location) {
   // console.log('Запущен fetchingLog')
   const resp = await fetch(`/api/${location}/log`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -139,7 +139,7 @@ export async function fetchingGlobalAboutSpaceCards() {
   return resp
 }
 
-export async function fetchingHistories(location) {
+async function fetchingHistories(location) {
   const resp = await fetch(`/api/${location}/histories`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -147,7 +147,7 @@ export async function fetchingHistories(location) {
   return resp
 }
 
-export async function fetchingLoginHistory(location) {
+async function fetchingLoginHistory(location) {
   const resp = await fetch(`/api/${location}/loginhistory`)
     .then((res) => res.json())
     .then((json) => json.data)

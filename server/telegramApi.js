@@ -18,7 +18,7 @@ const telegramDispatcher = new UndiciAgent({
   },
 })
 
-export const telegramPost = async (
+const telegramPost = async (
   url,
   form,
   callbackOnSuccess = null,

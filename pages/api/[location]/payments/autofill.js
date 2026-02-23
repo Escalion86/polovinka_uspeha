@@ -1,5 +1,6 @@
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
+import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -16,6 +17,14 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     try {
+      const eventManagementGuard = await assertCityOperationAllowed(
+        location,
+        'event_management'
+      )
+      if (!eventManagementGuard.success) {
+        return res?.status(403).json(eventManagementGuard)
+      }
+
       delete query.location
 
       const { eventId, payType, payAt, couponForOrganizer } = body.data

@@ -119,4 +119,4 @@ const fetchVkUserInfo = async ({ accessToken }) => {
   })
 }
 
-export { exchangeVkCode, fetchVkUserInfo, getVkClientId, getVkRedirectUrl }
+export { exchangeVkCode, fetchVkUserInfo }

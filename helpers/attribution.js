@@ -23,7 +23,7 @@ const parseSearchParams = (search) => {
   }, {})
 }
 
-export const readAttributionFromStorage = () => {
+const readAttributionFromStorage = () => {
   if (typeof window === 'undefined') return null
   try {
     const raw = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY)

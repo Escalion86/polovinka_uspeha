@@ -13,6 +13,7 @@ import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
 import { faSignIn } from '@fortawesome/free-solid-svg-icons/faSignIn'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import locationAtom from '@state/atoms/locationAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -38,6 +39,7 @@ const UserCardButtons = ({
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const { allowEventManagement } = useCityManagementAccess()
 
   const copyLink = useCopyUserLinkToClipboard(location, item?._id)
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
@@ -51,11 +53,13 @@ const UserCardButtons = ({
   )
 
   const canEdit =
+    allowEventManagement &&
     !isMorePrivelegetUser &&
     showEditButton &&
     item.status !== 'closed' &&
     (rule?.edit || rule === true)
   const canDelete =
+    allowEventManagement &&
     !isMorePrivelegetUser &&
     showDeleteButton &&
     item.status !== 'closed' &&
@@ -139,6 +143,7 @@ const UserCardButtons = ({
       })
     }
     if (!isMorePrivelegetUser && rule?.setPassword) {
+      if (allowEventManagement)
       buttons.push({
         key: 'set-password',
         icon: faKey,
@@ -148,6 +153,7 @@ const UserCardButtons = ({
       })
     }
     if (onEditQuestionnaire) {
+      if (allowEventManagement)
       buttons.push({
         key: 'edit-questionnaire',
         icon: faIdCard,

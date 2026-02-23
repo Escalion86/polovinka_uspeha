@@ -1,6 +1,7 @@
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
 import { normalizePhoneValue } from '@helpers/phoneUtils'
+import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 
 const isValidPhone = (phone) => /^7\d{10}$/.test(String(phone || ''))
 
@@ -107,6 +108,14 @@ export default async function handler(req, res) {
   }
 
   try {
+    const eventManagementGuard = await assertCityOperationAllowed(
+      location,
+      'event_management'
+    )
+    if (!eventManagementGuard.success) {
+      return res?.status(403).json(eventManagementGuard)
+    }
+
     const db = await dbConnect(location)
     if (!db) {
       return res?.status(500).json({

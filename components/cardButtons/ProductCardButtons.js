@@ -9,6 +9,7 @@ import { faCode } from '@fortawesome/free-solid-svg-icons/faCode'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
@@ -34,18 +35,23 @@ const ProductCardButtons = ({
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const { allowEventManagement } = useCityManagementAccess()
 
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
 
   if (!item) return null
 
   const rule = loggedUserActiveRole?.products
-  const canEdit = showEditButton && (rule?.edit || rule === true)
-  const canDelete = showDeleteButton && (rule?.delete || rule === true)
-  const canClone = showCloneButton && rule?.add
+  const canEdit =
+    allowEventManagement && showEditButton && (rule?.edit || rule === true)
+  const canDelete =
+    allowEventManagement && showDeleteButton && (rule?.delete || rule === true)
+  const canClone = allowEventManagement && showCloneButton && rule?.add
   const canShowOnSite =
+    allowEventManagement &&
     showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true)
-  const canMove = !forForm && loggedUserActiveRole?.products?.edit
+  const canMove =
+    allowEventManagement && !forForm && loggedUserActiveRole?.products?.edit
 
   const buttons = []
 

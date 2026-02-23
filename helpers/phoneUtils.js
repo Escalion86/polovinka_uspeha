@@ -29,7 +29,7 @@ export const normalizePhoneValue = (rawValue) => {
   return `7${digits}`
 }
 
-export const normalizePhoneFromPaste = (clipboardText) => {
+const normalizePhoneFromPaste = (clipboardText) => {
   return normalizePhoneMaskState(clipboardText)
 }
 
@@ -50,5 +50,5 @@ export const getPhoneAnomalyReasons = (rawValue) => {
   return reasons
 }
 
-export const hasPhoneAnomaly = (rawValue) =>
+const hasPhoneAnomaly = (rawValue) =>
   getPhoneAnomalyReasons(rawValue).length > 0

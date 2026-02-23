@@ -546,7 +546,7 @@ export const MONTHS_FULL_1 = [
   'декабрь',
 ]
 
-export const MONTHS_FULL = [
+const MONTHS_FULL = [
   'января',
   'февраля',
   'марта',
@@ -561,9 +561,9 @@ export const MONTHS_FULL = [
   'декабря',
 ]
 
-export const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
+const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
 
-export const DAYS_OF_WEEK_FULL = [
+const DAYS_OF_WEEK_FULL = [
   'воскресенье',
   'понедельник',
   'вторник',
@@ -573,7 +573,7 @@ export const DAYS_OF_WEEK_FULL = [
   'суббота',
 ]
 
-export const DEFAULT_USERS_SECURITY = Object.freeze({
+const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: true,
   fullThirdName: true,
   showBirthday: true,
@@ -587,7 +587,7 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
   showEmail: false,
 })
 
-export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
+const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
   telegram: { active: false, userName: null, id: null },
   settings: { newEvents: false },
 })
@@ -820,7 +820,7 @@ export const DEFAULT_PRODUCT_USER = Object.freeze({
   status: 'active',
 })
 
-export const DEFAULT_SITE_SETTINGS = Object.freeze({
+const DEFAULT_SITE_SETTINGS = Object.freeze({
   email: '',
   phone: '',
   whatsapp: '',

@@ -14,6 +14,15 @@ import {
 } from '@helpers/phoneUtils'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
 import VkIdOneTapAuth from './VkIdOneTapAuth'
+import CityAccessLoading from '@components/CityAccessLoading'
+import CityAccessUnavailable from '@components/CityAccessUnavailable'
+import AuthPageFrame from '@components/AuthPageFrame'
+import AuthSplitLayout from '@components/AuthSplitLayout'
+import AuthField from '@components/AuthField'
+import AuthInput, { AUTH_INPUT_CLASS } from '@components/AuthInput'
+import AuthButton from '@components/AuthButton'
+import useCityAccess from '@hooks/useCityAccess'
+import useVkAuthAvailability from '@hooks/useVkAuthAvailability'
 
 const routeAfterLogin = (router, location) => {
   if (router.query?.page) {
@@ -44,7 +53,17 @@ export default function LocationLoginClient({ location }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [isVkAuthEnabled, setIsVkAuthEnabled] = useState(false)
+  const {
+    accessLoading,
+    isAllowed: isLoginAllowed,
+    currentCityTitle,
+    alternativeCities: alternativeLoginCities,
+  } = useCityAccess({
+    location,
+    allowField: 'allowLogin',
+    alternativesField: 'availableForLogin',
+  })
+  const isVkAuthEnabled = useVkAuthAvailability(location)
 
   const rawPhoneValue = phone ? String(phone) : ''
   const displayDigits = rawPhoneValue || (phoneFocused ? '7' : '')
@@ -66,34 +85,17 @@ export default function LocationLoginClient({ location }) {
     captureAttributionFromBrowser()
   }, [])
 
-  useEffect(() => {
-    let isMounted = true
-
-    const loadVkAuthFlag = async () => {
-      try {
-        const response = await fetch(
-          `/api/global/auth/vk-status?location=${location}`
-        )
-        const json = await response.json()
-        if (!isMounted) return
-        setIsVkAuthEnabled(Boolean(json?.data?.allowVkAuth))
-      } catch (fetchError) {
-        if (!isMounted) return
-        setIsVkAuthEnabled(false)
-      }
-    }
-
-    loadVkAuthFlag()
-
-    return () => {
-      isMounted = false
-    }
-  }, [location])
-
   const handleSubmit = useCallback(
     async (event) => {
       event?.preventDefault()
       if (loading) return
+
+      if (!isLoginAllowed) {
+        setError(
+          `Авторизация в городе ${currentCityTitle || location} временно приостановлена`
+        )
+        return
+      }
 
       const normalizedPhone = normalizePhoneValue(phone)
       const trimmedPassword = String(password || '').trim()
@@ -133,7 +135,15 @@ export default function LocationLoginClient({ location }) {
 
       await routeAfterLogin(router, location)
     },
-    [loading, phone, password, location, router]
+    [
+      loading,
+      isLoginAllowed,
+      currentCityTitle,
+      phone,
+      password,
+      location,
+      router,
+    ]
   )
 
   const handleRegistration = useCallback(() => {
@@ -151,18 +161,34 @@ export default function LocationLoginClient({ location }) {
     setPhone(normalizePhoneMaskState(event.target.value))
   }, [])
 
-  return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f7f7fb] text-[#1d1b1f]">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(160deg,#f8f9fb_0%,#eef3f8_100%)]" />
-        <div className="absolute -left-20 top-28 h-84 w-84 rounded-full bg-[radial-gradient(circle,rgba(141,207,242,0.7),rgba(141,207,242,0.1))] login3-orb login3-orb--blue" />
-        <div className="absolute -right-16 bottom-4 h-76 w-76 rounded-full bg-[radial-gradient(circle,rgba(107,31,42,0.55),rgba(107,31,42,0.08))] login3-orb login3-orb--burgundy" />
-        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(107,31,42,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(107,31,42,0.04)_1px,transparent_1px)] [background-size:80px_80px]" />
-      </div>
+  if (accessLoading) {
+    return (
+      <AuthPageFrame>
+        <CityAccessLoading message="Проверяем доступность входа..." />
+      </AuthPageFrame>
+    )
+  }
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-8 py-12">
-        <div className="grid w-full max-w-[980px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <div className="flex-col justify-center hidden gap-6 lg:flex">
+  if (!isLoginAllowed) {
+    return (
+      <AuthPageFrame>
+        <CityAccessUnavailable
+          heading="Авторизация приостановлена"
+          description="авторизация временно приостановлена. Вы можете перейти в другой город, где вход сейчас доступен."
+          cityTitle={currentCityTitle}
+          location={location}
+          cities={alternativeLoginCities}
+          buildCityHref={(slug) => `/${slug}/login`}
+          emptyMessage="Сейчас нет других публичных городов с доступной авторизацией."
+        />
+      </AuthPageFrame>
+    )
+  }
+
+  return (
+    <AuthSplitLayout
+      leftPanel={
+        <>
             <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
               Войдите в пространство живых встреч
             </h1>
@@ -188,9 +214,10 @@ export default function LocationLoginClient({ location }) {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="w-full max-w-[450px] justify-self-center rounded-[28px] border border-[rgba(107,31,42,0.12)] bg-white/25 p-8 shadow-[0_24px_48px_rgba(15,23,42,0.15)] backdrop-blur">
+        </>
+      }
+      rightPanel={
+        <>
             <div className="flex flex-col items-center gap-4">
               <img
                 src="/img/logo.webp"
@@ -229,8 +256,7 @@ export default function LocationLoginClient({ location }) {
                 </>
               ) : null}
 
-              <label className="grid gap-2 text-sm font-semibold text-[#6b1f2a]">
-                Телефон
+              <AuthField label="Телефон">
                 <InputMask
                   name="phone"
                   type="tel"
@@ -242,37 +268,34 @@ export default function LocationLoginClient({ location }) {
                   onBlur={() => setPhoneFocused(false)}
                   onChange={handlePhoneChange}
                   placeholder="+7 (___) ___-__-__"
-                  className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
+                  className={AUTH_INPUT_CLASS}
                 />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[#6b1f2a]">
-                Пароль
-                <input
+              </AuthField>
+              <AuthField label="Пароль">
+                <AuthInput
                   type="password"
                   placeholder="Введите пароль"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className="placeholder:text-gray-400 h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white px-4 text-base text-[#2b1b21] shadow-[0_10px_18px_rgba(15,23,42,0.08)] focus:outline-none focus:ring-2 focus:ring-[rgba(141,207,242,0.7)]"
                 />
-              </label>
+              </AuthField>
               {error ? (
                 <div className="text-sm text-[#b4232d]">{error}</div>
               ) : null}
-              <button
+              <AuthButton
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="h-12 rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_14px_30px_rgba(107,31,42,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(107,31,42,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8dcff2] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? 'Входим...' : 'Войти в пространство'}
-              </button>
-              <button
+              </AuthButton>
+              <AuthButton
                 type="button"
+                variant="secondary"
                 onClick={handleRegistration}
-                className="h-12 rounded-full border border-[rgba(107,31,42,0.2)] bg-white text-sm font-semibold uppercase tracking-[0.08em] text-[#6b1f2a] transition duration-200 hover:-translate-y-0.5 hover:border-[rgba(107,31,42,0.4)] hover:shadow-[0_12px_24px_rgba(107,31,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8dcff2]"
               >
                 Присоединиться к нам
-              </button>
+              </AuthButton>
             </form>
 
             <div className="mt-6 text-center text-sm text-[#5d4a52]">
@@ -292,27 +315,9 @@ export default function LocationLoginClient({ location }) {
                 Перейти на главную страницу
               </Link>
             </div>
-          </div>
-        </div>
-      </div>
-      <style jsx global>{`
-        .login3-orb {
-          animation: login3-float 8s ease-in-out infinite;
-        }
-        .login3-orb--burgundy {
-          animation-delay: 2.5s;
-        }
-        @keyframes login3-float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-125px);
-          }
-        }
-      `}</style>
-    </div>
+        </>
+      }
+    />
   )
 }
 

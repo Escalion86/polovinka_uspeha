@@ -55,7 +55,7 @@ export const MONTHS = [
   'дек',
 ]
 
-export const MONTHS_FULL_1 = [
+const MONTHS_FULL_1 = [
   'январь',
   'февраль',
   'март',
@@ -125,7 +125,7 @@ export const DEFAULT_USERS_STATUS_DISCOUNT = {
   member: 0,
 }
 
-export const DEFAULT_ADDRESS = Object.freeze({
+const DEFAULT_ADDRESS = Object.freeze({
   town: '',
   street: '',
   house: '',
@@ -158,7 +158,7 @@ export const DEFAULT_EVENT = Object.freeze({
   blank: false,
 })
 
-export const DEFAULT_SUBEVENT = Object.freeze({
+const DEFAULT_SUBEVENT = Object.freeze({
   title: '',
   description: '',
   price: 0,
@@ -179,14 +179,14 @@ export const DEFAULT_SUBEVENT = Object.freeze({
   isReserveActive: true,
 })
 
-export const DEFAULT_SERVICE_USER = Object.freeze({
+const DEFAULT_SERVICE_USER = Object.freeze({
   userId: '',
   serviceId: '',
   answers: {},
   status: 'active',
 })
 
-export const DEFAULT_USER = Object.freeze({
+const DEFAULT_USER = Object.freeze({
   firstName: '',
   secondName: '',
   thirdName: '',

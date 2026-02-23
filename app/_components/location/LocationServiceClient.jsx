@@ -84,7 +84,6 @@ function ServicePage(props) {
     <>
       <StateLoader {...props}>
         <Header noMenu={isPWA} fullLinkInMenu />
-        {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
           {service?._id && (
             // && canSee

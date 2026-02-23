@@ -10,6 +10,7 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
@@ -37,6 +38,7 @@ const ServiceCardButtons = ({
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
   const location = useAtomValue(locationAtom)
+  const { allowEventManagement } = useCityManagementAccess()
 
   const copyLink = useCopyServiceLinkToClipboard(location, item?._id)
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
@@ -44,12 +46,16 @@ const ServiceCardButtons = ({
   if (!item) return null
 
   const rule = loggedUserActiveRole?.services
-  const canEdit = showEditButton && (rule?.edit || rule === true)
-  const canDelete = showDeleteButton && (rule?.delete || rule === true)
-  const canClone = showCloneButton && rule?.add
+  const canEdit =
+    allowEventManagement && showEditButton && (rule?.edit || rule === true)
+  const canDelete =
+    allowEventManagement && showDeleteButton && (rule?.delete || rule === true)
+  const canClone = allowEventManagement && showCloneButton && rule?.add
   const canShowOnSite =
+    allowEventManagement &&
     showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true)
-  const canMove = !forForm && loggedUserActiveRole?.services?.edit
+  const canMove =
+    allowEventManagement && !forForm && loggedUserActiveRole?.services?.edit
 
   const buttons = []
 

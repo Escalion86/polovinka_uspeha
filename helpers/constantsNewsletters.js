@@ -24,7 +24,7 @@ export const NEWSLETTER_SENDING_STATUS_LABELS = {
   [NEWSLETTER_SENDING_STATUSES.SENT]: 'Отправлено',
 }
 
-export const NEWSLETTER_SENDING_STATUS_OPTIONS = Object.entries(
+const NEWSLETTER_SENDING_STATUS_OPTIONS = Object.entries(
   NEWSLETTER_SENDING_STATUS_LABELS
 ).map(([value, name]) => ({ value, name }))
 

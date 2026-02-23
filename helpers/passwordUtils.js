@@ -16,7 +16,7 @@ const pbkdf2Async = (password, salt, iterations, keylen, digest) =>
     })
   })
 
-export const isPasswordHashed = (password) =>
+const isPasswordHashed = (password) =>
   typeof password === 'string' && password.startsWith(`${HASH_PREFIX}$`)
 
 export const hashPassword = async (password) => {

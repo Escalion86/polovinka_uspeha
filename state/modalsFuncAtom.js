@@ -55,6 +55,60 @@ const modalsFuncGenerator = (get, set) => {
     return true
   }
 
+  let cityManagementAccessPromise = null
+  let cityManagementAccessCache = null
+
+  const getCityManagementAccess = async () => {
+    if (!location) {
+      return {
+        allowEventManagement: true,
+        cityTitle: '',
+      }
+    }
+    if (cityManagementAccessCache) return cityManagementAccessCache
+    if (cityManagementAccessPromise) return cityManagementAccessPromise
+
+    cityManagementAccessPromise = fetch(
+      `/api/global/cities/access?location=${location}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        const city = json?.data?.city || {}
+        const access = {
+          allowEventManagement: Boolean(city?.allowEventManagement),
+          cityTitle: city?.title || location,
+        }
+        cityManagementAccessCache = access
+        cityManagementAccessPromise = null
+        return access
+      })
+      .catch(() => {
+        const fallbackAccess = {
+          allowEventManagement: true,
+          cityTitle: location,
+        }
+        cityManagementAccessCache = fallbackAccess
+        cityManagementAccessPromise = null
+        return fallbackAccess
+      })
+
+    return cityManagementAccessPromise
+  }
+
+  const ensureCityManagementAccess = async (actionLabel = 'изменение данных') => {
+    const access = await getCityManagementAccess()
+    if (access?.allowEventManagement) return true
+
+    addModal({
+      title: 'Управление в городе отключено',
+      text: `Нельзя выполнить действие "${actionLabel}". В городе ${access?.cityTitle || location} отключено управление данными.`,
+      confirmButtonName: 'Понятно',
+      onConfirm: true,
+      showDecline: false,
+    })
+    return false
+  }
+
   return {
     add: addModal,
     confirm: ({
@@ -371,24 +425,37 @@ const modalsFuncGenerator = (get, set) => {
     },
     event: {
       add: (eventId, props) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/eventFunc').default(
-            eventId,
-            true,
-            props
+        ensureCityManagementAccess('создание мероприятия').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/eventFunc').default(
+              eventId,
+              true,
+              props
+            )
           )
-        ),
+        }),
       edit: (eventId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/eventFunc').default(eventId)
+        ensureCityManagementAccess('редактирование мероприятия').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/eventFunc').default(eventId)
+            )
+          }
         ),
       subEventEdit: (props, onChange, rules) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/subEventFunc').default(
-            props,
-            onChange,
-            rules
-          )
+        ensureCityManagementAccess('редактирование подмероприятий').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/subEventFunc').default(
+                props,
+                onChange,
+                rules
+              )
+            )
+          }
         ),
       users: (eventId) =>
         addModal(
@@ -403,10 +470,15 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       statusEdit: (eventId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/eventStatusEditFunc').default(
-            eventId
-          )
+        ensureCityManagementAccess('изменение статуса мероприятия').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/eventStatusEditFunc').default(
+                eventId
+              )
+            )
+          }
         ),
       historyEventUsers: (eventId) =>
         addModal(
@@ -421,29 +493,43 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       close: (eventId) =>
-        addModal({
-          title: 'Закрытие мероприятия',
-          text: 'Вы уверены, что хотите закрыть мероприятие?',
-          onConfirm: async () => itemsFunc.event.close(eventId),
+        ensureCityManagementAccess('закрытие мероприятия').then((allowed) => {
+          if (!allowed) return
+          addModal({
+            title: 'Закрытие мероприятия',
+            text: 'Вы уверены, что хотите закрыть мероприятие?',
+            onConfirm: async () => itemsFunc.event.close(eventId),
+          })
         }),
       cancel: (eventId) =>
-        addModal({
-          title: 'Отмена мероприятия',
-          text: 'Вы уверены, что хотите отменить мероприятие (это не удалит мероприятие, а лишь изменит его статус на отмененное)?',
-          onConfirm: async () => itemsFunc.event.cancel(eventId),
+        ensureCityManagementAccess('отмена мероприятия').then((allowed) => {
+          if (!allowed) return
+          addModal({
+            title: 'Отмена мероприятия',
+            text: 'Вы уверены, что хотите отменить мероприятие (это не удалит мероприятие, а лишь изменит его статус на отмененное)?',
+            onConfirm: async () => itemsFunc.event.cancel(eventId),
+          })
         }),
       uncancel: (eventId) =>
-        addModal({
-          title: 'Возобновление мероприятия',
-          text: 'Вы уверены, что хотите возобновить мероприятие?',
-          onConfirm: async () => itemsFunc.event.uncancel(eventId),
-        }),
-      delete: (eventId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/eventDeleteFunc').default(
-            eventId
-          )
+        ensureCityManagementAccess('возобновление мероприятия').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal({
+              title: 'Возобновление мероприятия',
+              text: 'Вы уверены, что хотите возобновить мероприятие?',
+              onConfirm: async () => itemsFunc.event.uncancel(eventId),
+            })
+          }
         ),
+      delete: (eventId) =>
+        ensureCityManagementAccess('удаление мероприятия').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/eventDeleteFunc').default(
+              eventId
+            )
+          )
+        }),
 
       // addModal({
       //   title: 'Удаление мероприятия',
@@ -552,16 +638,26 @@ const modalsFuncGenerator = (get, set) => {
     },
     payment: {
       add: (paymentId, props) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/paymentFunc').default(
-            paymentId,
-            true,
-            props
+        ensureCityManagementAccess('создание транзакции').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/paymentFunc').default(
+              paymentId,
+              true,
+              props
+            )
           )
-        ),
+        }),
       edit: (paymentId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/paymentFunc').default(paymentId)
+        ensureCityManagementAccess('редактирование транзакции').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/paymentFunc').default(
+                paymentId
+              )
+            )
+          }
         ),
       history: (paymentId) =>
         addModal(
@@ -576,10 +672,13 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       delete: (paymentId) =>
-        addModal({
-          title: 'Удаление транзакции',
-          text: 'Вы уверены, что хотите удалить транзакцию?',
-          onConfirm: async () => itemsFunc.payment.delete(paymentId),
+        ensureCityManagementAccess('удаление транзакции').then((allowed) => {
+          if (!allowed) return
+          addModal({
+            title: 'Удаление транзакции',
+            text: 'Вы уверены, что хотите удалить транзакцию?',
+            onConfirm: async () => itemsFunc.payment.delete(paymentId),
+          })
         }),
       userEvent: (userId, eventId) =>
         addModal(
@@ -591,12 +690,23 @@ const modalsFuncGenerator = (get, set) => {
     },
     user: {
       add: (userId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/userFunc').default(userId, true)
-        ),
+        ensureCityManagementAccess('создание пользователя').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/userFunc').default(
+              userId,
+              true
+            )
+          )
+        }),
       edit: (userId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/userFunc').default(userId)
+        ensureCityManagementAccess('редактирование пользователя').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/userFunc').default(userId)
+            )
+          }
         ),
       history: (userId) =>
         addModal(
@@ -611,20 +721,25 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       editPersonalStatus: (userId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/userPersonalStatusEditFunc').default(
-            userId
-          )
+        ensureCityManagementAccess('изменение статуса пользователя').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/userPersonalStatusEditFunc').default(
+                userId
+              )
+            )
+          }
         ),
       delete: (userId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/userDeleteFunc').default(userId)
-          //   {
-          //   title: 'Удаление пользователя',
-          //   text: 'Вы уверены, что хотите удалить пользователя?',
-          //   onConfirm: async () => itemsFunc.user.delete(userId),
-          // }
-        ),
+        ensureCityManagementAccess('удаление пользователя').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/userDeleteFunc').default(
+              userId
+            )
+          )
+        }),
       view: (userId, params) =>
         addModal(
           require('../layouts/modals/modalsFunc/userViewFunc').default(
@@ -645,10 +760,15 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
       setPassword: (userId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/userSetPasswordFunc').default(
-            userId
-          )
+        ensureCityManagementAccess('изменение пароля пользователя').then(
+          (allowed) => {
+            if (!allowed) return
+            addModal(
+              require('../layouts/modals/modalsFunc/userSetPasswordFunc').default(
+                userId
+              )
+            )
+          }
         ),
     },
     questionnaire: {
@@ -747,16 +867,22 @@ const modalsFuncGenerator = (get, set) => {
     },
     product: {
       add: (productId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/productFunc').default(
-            productId,
-            true
+        ensureCityManagementAccess('создание товара').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/productFunc').default(
+              productId,
+              true
+            )
           )
-        ),
+        }),
       edit: (productId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/productFunc').default(productId)
-        ),
+        ensureCityManagementAccess('редактирование товара').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/productFunc').default(productId)
+          )
+        }),
       view: (productId) =>
         addModal(
           require('../layouts/modals/modalsFunc/productViewFunc').default(
@@ -793,24 +919,33 @@ const modalsFuncGenerator = (get, set) => {
           )
       },
       delete: (productId) =>
-        addModal({
-          title: 'Удаление товара',
-          text: 'Вы уверены, что хотите удалить товар?',
-          onConfirm: async () => itemsFunc.product.delete(productId),
+        ensureCityManagementAccess('удаление товара').then((allowed) => {
+          if (!allowed) return
+          addModal({
+            title: 'Удаление товара',
+            text: 'Вы уверены, что хотите удалить товар?',
+            onConfirm: async () => itemsFunc.product.delete(productId),
+          })
         }),
     },
     service: {
       add: (serviceId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/serviceFunc').default(
-            serviceId,
-            true
+        ensureCityManagementAccess('создание услуги').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/serviceFunc').default(
+              serviceId,
+              true
+            )
           )
-        ),
+        }),
       edit: (serviceId) =>
-        addModal(
-          require('../layouts/modals/modalsFunc/serviceFunc').default(serviceId)
-        ),
+        ensureCityManagementAccess('редактирование услуги').then((allowed) => {
+          if (!allowed) return
+          addModal(
+            require('../layouts/modals/modalsFunc/serviceFunc').default(serviceId)
+          )
+        }),
       view: (serviceId) =>
         addModal(
           require('../layouts/modals/modalsFunc/serviceViewFunc').default(
@@ -847,10 +982,13 @@ const modalsFuncGenerator = (get, set) => {
           )
       },
       delete: (serviceId) =>
-        addModal({
-          title: 'Удаление услуги',
-          text: 'Вы уверены, что хотите удалить услугу?',
-          onConfirm: async () => itemsFunc.service.delete(serviceId),
+        ensureCityManagementAccess('удаление услуги').then((allowed) => {
+          if (!allowed) return
+          addModal({
+            title: 'Удаление услуги',
+            text: 'Вы уверены, что хотите удалить услугу?',
+            onConfirm: async () => itemsFunc.service.delete(serviceId),
+          })
         }),
       buy: (serviceId, userId) =>
         addModal({

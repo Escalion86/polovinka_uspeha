@@ -15,7 +15,7 @@ const getCitiesFromDoc = (doc) => normalizeCitiesList(doc?.cities)
 export default async function handler(req, res) {
   const { method, body } = req
 
-  const { canManageGlobalContent } = await getGlobalManagerSession()
+  const { canManageGlobalContent } = await getGlobalManagerSession(req, res)
   if (!canManageGlobalContent) {
     return res.status(403).json({
       success: false,

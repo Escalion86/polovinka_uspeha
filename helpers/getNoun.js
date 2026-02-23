@@ -77,6 +77,6 @@ export const getNounNewsletters = (number) =>
 export const getNounMessages = (number) =>
   getNoun(number, 'сообщение', 'сообщения', 'сообщений')
 
-export const getNounAnkets = (number) =>
+const getNounAnkets = (number) =>
   getNoun(number, 'анкета', 'анкеты', 'анкет')
 

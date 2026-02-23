@@ -1,10 +1,12 @@
 'use client'
 
 import ContentHeader from '@components/ContentHeader'
+import CityManagementBlockedBanner from '@components/CityManagementBlockedBanner'
 import PaymentsFilter from '@components/Filter/PaymentsFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import { getNounPayments } from '@helpers/getNoun'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import paymentSectorFunc from '@helpers/paymentSector'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import PaymentsList from '@layouts/lists/PaymentsList'
@@ -19,6 +21,8 @@ const PaymentsContent = () => {
   const payments = useAtomValue(asyncPaymentsAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.payments?.add
+  const { loading: cityAccessLoading, allowEventManagement, cityTitle } =
+    useCityManagementAccess()
 
   const [filter, setFilter] = useState({
     payType: {
@@ -79,6 +83,9 @@ const PaymentsContent = () => {
 
   return (
     <>
+      {!cityAccessLoading && !allowEventManagement ? (
+        <CityManagementBlockedBanner cityTitle={cityTitle} />
+      ) : null}
       <ContentHeader>
         <PaymentsFilter value={filter} onChange={setFilter} />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
@@ -90,7 +97,9 @@ const PaymentsContent = () => {
             onChange={setSort}
             sortKeys={['payAt']}
           />
-          {addButton && <AddButton onClick={() => modalsFunc.payment.edit()} />}
+          {addButton && allowEventManagement ? (
+            <AddButton onClick={() => modalsFunc.payment.edit()} />
+          ) : null}
         </div>
       </ContentHeader>
       <PaymentsList payments={[...visiblePayments].sort(sortFunc)} />

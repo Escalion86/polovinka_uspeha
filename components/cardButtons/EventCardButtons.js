@@ -17,6 +17,7 @@ import { EVENT_STATUSES } from '@helpers/constants'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import { getEventById } from '@helpers/getById'
 import locationAtom from '@state/atoms/locationAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -45,6 +46,7 @@ const EventCardButtons = ({
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const { allowEventManagement } = useCityManagementAccess()
 
   const copyLink = useCopyEventLinkToClipboard(location, item?._id)
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
@@ -52,10 +54,13 @@ const EventCardButtons = ({
   if (!item) return null
 
   const rule = loggedUserActiveRole?.events
-  const canEdit = showEditButton && (rule?.edit || rule === true)
-  const canDelete = showDeleteButton && (rule?.delete || rule === true)
-  const canClone = showCloneButton && rule?.add
+  const canEdit =
+    allowEventManagement && showEditButton && (rule?.edit || rule === true)
+  const canDelete =
+    allowEventManagement && showDeleteButton && (rule?.delete || rule === true)
+  const canClone = allowEventManagement && showCloneButton && rule?.add
   const canShowOnSite =
+    allowEventManagement &&
     showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true)
   const canSeeHistory = loggedUserActiveRole?.events?.seeHistory
   const canSeeUsers =
@@ -63,7 +68,7 @@ const EventCardButtons = ({
   const canEditLikes = loggedUserActiveRole?.events?.editLikes
   const canSendNotifications =
     loggedUserActiveRole?.newsletters?.add && item.showOnSite
-  const canEditStatus = rule?.statusEdit
+  const canEditStatus = allowEventManagement && rule?.statusEdit
   const canEditPayments = rule?.paymentsEdit
 
   const buttons = []

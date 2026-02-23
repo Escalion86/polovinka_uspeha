@@ -1,10 +1,10 @@
 import FormWrapper from '@components/FormWrapper'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LOCATIONS } from '@helpers/constants'
+import { LOCATIONS, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const Item = ({ towns = [], checked, location, isRegister }) => {
@@ -65,14 +65,39 @@ const browseLocationFunc = (props) => {
   ) => {
     const locationState = useAtomValue(locationAtom)
     const [selectedLocation, setSelectedLocation] = useState(locationState)
+    const [publicCities, setPublicCities] = useState([])
 
-    const locationsList = useMemo(
-      () =>
-        Object.keys(LOCATIONS).filter(
-          (location) => !LOCATIONS[location].hidden
-        ),
-      []
-    )
+    useEffect(() => {
+      let isMounted = true
+
+      const loadPublicCities = async () => {
+        try {
+          const response = await fetch('/api/global/cities/public')
+          const json = await response.json()
+          if (!isMounted || !json?.success) return
+
+          const cities = Array.isArray(json?.data?.cities) ? json.data.cities : []
+          const slugs = cities
+            .map((city) => city?.slug)
+            .filter(Boolean)
+
+          if (slugs.length > 0) setPublicCities(slugs)
+        } catch (error) {
+          // fallback below
+        }
+      }
+
+      loadPublicCities()
+
+      return () => {
+        isMounted = false
+      }
+    }, [])
+
+    const locationsList = useMemo(() => {
+      if (publicCities.length > 0) return publicCities
+      return LOCATIONS_KEYS_VISIBLE
+    }, [publicCities])
 
     // const onClickConfirm = async () => {
     //   if (selectedLocation === locationState) {

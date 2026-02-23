@@ -9,8 +9,9 @@ const mergeCitiesWithPolicies = (cities, cityPolicies) =>
   (Array.isArray(cities) ? cities : [])
     .map((city) => {
       const policy = cityPolicies?.[city.slug]
-      if (!policy) return city
-      return {
+      const merged = !policy
+        ? city
+        : {
         ...city,
         status: policy.status ?? city.status,
         allowRegistration:
@@ -38,6 +39,15 @@ const mergeCitiesWithPolicies = (cities, cityPolicies) =>
             ? policy.allowVkAuth
             : city.allowVkAuth,
       }
+
+      if (merged?.slug === 'nrsk' && merged?.status !== 'active') {
+        return {
+          ...merged,
+          allowPublicListing: false,
+        }
+      }
+
+      return merged
     })
     .filter(
       (city) =>
