@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { LOCATIONS, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
+import { fetchingGlobalAboutSpaceCards } from '@helpers/fetchers'
+import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
 
 const valueCards = [
   {
@@ -30,6 +32,7 @@ export default function RootPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [globalCities, setGlobalCities] = useState([])
+  const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState([])
 
   useEffect(() => {
     captureAttributionFromBrowser()
@@ -89,7 +92,44 @@ export default function RootPage() {
     }
   }, [])
 
+  useEffect(() => {
+    let isMounted = true
+
+    const loadAboutSpaceCards = async () => {
+      const data = await fetchingGlobalAboutSpaceCards()
+      if (!isMounted) return
+
+      setGlobalAboutSpaceCards(
+        Array.isArray(data?.aboutSpaceCards) ? data.aboutSpaceCards : []
+      )
+    }
+
+    loadAboutSpaceCards()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const locations = globalCities.length > 0 ? globalCities : fallbackLocations
+  const aboutCards = useMemo(() => {
+    const items = Array.isArray(globalAboutSpaceCards)
+      ? globalAboutSpaceCards
+      : []
+    return [...items]
+      .map((item, index) => ({
+        id: item.id ?? `about-${index}`,
+        title: item.title ?? '',
+        text: item.text ?? '',
+        wide: Boolean(item.wide),
+        tone: item.tone ?? 'white',
+        bgMode: item.bgMode ?? null,
+        bgColor1: item.bgColor1 ?? null,
+        bgColor2: item.bgColor2 ?? null,
+        index: typeof item.index === 'number' ? item.index : index,
+      }))
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+  }, [globalAboutSpaceCards])
 
   return (
     <div className="min-h-screen bg-[#f8f5f3] text-[#2b1b21]">
@@ -199,6 +239,27 @@ export default function RootPage() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-[1200px] px-4 py-6 md:px-6">
+          <h2 className="font-lora text-[clamp(24px,3vw,36px)] font-bold text-[#6b1f2a]">
+            О нашем пространстве
+          </h2>
+          {aboutCards.length > 0 ? (
+            <div className="mt-5 grid gap-6 lg:grid-cols-2">
+              {aboutCards.map((card, index) => (
+                <AboutSpaceCard
+                  key={card.id ?? `${card.title}-${index}`}
+                  card={card}
+                  showButtons={false}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-3xl border border-[rgba(107,31,42,0.15)] bg-white p-5 text-[15px] text-[#3a2c33]">
+              Блок скоро будет доступен.
+            </div>
+          )}
         </section>
 
         <section className="mx-auto w-full max-w-[1200px] px-4 py-10 md:px-6">

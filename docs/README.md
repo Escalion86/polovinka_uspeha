@@ -1,0 +1,26 @@
+# Документация проекта
+
+## Старт для нового агента
+1. `../AGENTS.md`
+2. `ROADMAP.md`
+3. `ARCHITECTURE.md`
+4. `FEATURES.md`
+5. `API_CONTRACTS.md`
+6. `DOMAIN.md`
+7. `LOCAL_SETUP.md`
+
+## Продукт и планирование
+- `ROADMAP.md`
+- `POSITIONING_GLOSSARY.md`
+- `POSITIONING_AUDIT_STAGE1.md`
+
+## Архитектура и операции
+- `ARCHITECTURE.md`
+- `DECISIONS.md`
+- `CHANGELOG_INTERNAL.md`
+- `CITY_LAUNCH_RUNBOOK.md`
+- `GLOBAL_USERS_ARCHITECTURE.md`
+- `GLOBAL_USERS_MIGRATION_RUNBOOK.md`
+- `VK_ID_LOGIN_DISCOVERY.md`
+- `VK_ID_SMOKE_ROLLOUT_RUNBOOK.md`
+- `TELEFONIP_PORTING_GUIDE.md`

@@ -1,23 +1,67 @@
-# Next.js + Tailwind CSS Example
+# Половинка успеха
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) (v2.1) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+Платформа для знакомств и живых офлайн-встреч через мероприятия.
 
-It uses the new [`Just-in-Time Mode`](https://tailwindcss.com/docs/just-in-time-mode) for Tailwind CSS.
+## Что это
+- Мульти-локационный продукт: `krsk`, `nrsk`, `ekb`
+- Гибридная архитектура Next.js: `app/` + `pages/`
+- Бэкенд: MongoDB + Mongoose + NextAuth
+- UI: React 19, Tailwind, Flowbite, MUI
 
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
+## Быстрый старт
+1. Установить зависимости:
 ```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
+npm install
+```
+2. Заполнить `.env.local` (переменные и группы описаны в `docs/LOCAL_SETUP.md`).
+3. Запустить dev:
+```bash
+npm run dev
+```
+4. Проверить линт:
+```bash
+npx eslint .
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## Основные команды
+- `npm run dev` - запуск в режиме разработки
+- `npm run build` - production build
+- `npm run start` - запуск production сервера
+- `npm run lint` - линтинг
+- `npm run global-users:dry-run` - dry-run миграции global users
+- `npm run duplicates:phones` - поиск дублей телефонов
+
+## Карта проекта
+- `app/` - актуальные страницы App Router
+- `pages/` - legacy страницы и API routes
+- `pages/api/` - серверные endpoint'ы
+- `server/` - бизнес-логика и интеграции
+- `state/` - Jotai atoms/selectors/async
+- `schemas/` - Mongoose схемы
+- `docs/` - документация проекта
+
+## Документация
+Точка входа в документацию: `docs/README.md`
+
+Ключевые документы:
+- `AGENTS.md`
+- `docs/ROADMAP.md`
+- `docs/ARCHITECTURE.md`
+- `docs/FEATURES.md`
+- `docs/API_CONTRACTS.md`
+- `docs/DOMAIN.md`
+- `docs/LOCAL_SETUP.md`
+
+## Критичные зоны
+- Auth и сессии: `server/authOptions.js`
+- Телефония: `pages/api/telefonip.js`, `docs/TELEFONIP_PORTING_GUIDE.md`
+- Роли и доступ: `pages/api/[location]/roles.js`, селекторы ролей
+- Модалки: `state/modalsFuncAtom.js` и `layouts/modals/*`
+- Рассылки: `pages/api/cron.js`, `server/sendNewsletterMessages.js`
+
+## Важные правила
+- Поддерживать все локации (`krsk`, `nrsk`, `ekb`).
+- Не вносить однолокационные изменения без явного согласования.
+- Для новых/изменяемых API использовать единый формат ответа:
+  - успех: `{"success": true, "data": ...}`
+  - ошибка: `{"success": false, "data": {"error": {"type": "...", "message": "..."}}}`
