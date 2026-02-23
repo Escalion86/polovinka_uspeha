@@ -47,13 +47,6 @@ const directionFunc = (directionId, clone = false) => {
       direction?.showOnSite ?? DEFAULT_DIRECTION.showOnSite
     )
 
-    // const defaultPlugins = direction?.plugins ?? DEFAULT_DIRECTION.plugins
-
-    // const [plugins, setPlugins] = useState(defaultPlugins)
-
-    // const setStatePlugins = (key, value) =>
-    //   setPlugins((state) => ({ ...state, [key]: value }))
-
     const defaultRules = {
       ...DEFAULT_DIRECTION.rules,
       ...direction?.rules,
@@ -71,12 +64,6 @@ const directionFunc = (directionId, clone = false) => {
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
-    // const router = useRouter()
-
-    // const refreshPage = () => {
-    //   router.replace(router.asPath)
-    // }
-
     const onClickConfirm = async () => {
       if (!checkErrors({ title, shortDescription, description })) {
         closeModal()
@@ -88,35 +75,10 @@ const directionFunc = (directionId, clone = false) => {
             shortDescription,
             images,
             showOnSite,
-            // image,
             rules,
-            // plugins,
           },
           clone
         )
-        // if (direction && !clone) {
-        //   await putData(
-        //     `/api/directions/${direction._id}`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //     },
-        //     refreshPage
-        //   )
-        // } else {
-        //   await postData(
-        //     `/api/directions`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //     },
-        //     refreshPage
-        //   )
-        // }
       }
     }
 
@@ -161,13 +123,17 @@ const directionFunc = (directionId, clone = false) => {
       <TabContext value="Общие">
         <TabPanel tabName="Общие" className="px-0">
           <FormWrapper>
-            {/* <InputImage
-          label="Картинка"
-          directory="directions"
-          image={image}
-          onChange={setImage}
-          aspect={1}
-        /> */}
+            <InputImages
+              label="Фотографии"
+              images={images}
+              onChange={(value) => {
+                removeError('images')
+                setImages(value)
+              }}
+              directory="directions"
+              maxImages={10}
+              error={errors.images}
+            />
             <Input
               label="Название"
               type="text"
@@ -208,17 +174,6 @@ const directionFunc = (directionId, clone = false) => {
                 setDescription(value)
               }}
               error={errors.description}
-            />
-            <InputImages
-              label="Фотографии"
-              images={images}
-              onChange={(value) => {
-                removeError('images')
-                setImages(value)
-              }}
-              directory="directions"
-              maxImages={10}
-              error={errors.images}
             />
             <CheckBox
               checked={showOnSite}
@@ -274,4 +229,3 @@ const directionFunc = (directionId, clone = false) => {
 }
 
 export default directionFunc
-
