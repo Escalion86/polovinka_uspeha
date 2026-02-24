@@ -166,6 +166,7 @@ export default function VkIdOneTapAuth({
           const code = vkPayload?.code
           const deviceId = vkPayload?.device_id
           const state = vkPayload?.state
+          const codeType = vkPayload?.type
           const codeVerifier =
             vkPayload?.code_verifier ||
             vkPayload?.codeVerifier ||
@@ -179,6 +180,7 @@ export default function VkIdOneTapAuth({
           if (isVkClientDebugEnabled()) {
             console.log('[VK DEBUG CLIENT] LOGIN_SUCCESS payload', vkPayload)
             console.log('[VK DEBUG CLIENT] parsed auth params', {
+              codeType,
               hasCode: Boolean(code),
               hasDeviceId: Boolean(deviceId),
               hasState: Boolean(state),
@@ -186,11 +188,29 @@ export default function VkIdOneTapAuth({
             })
           }
 
+          let accessToken
+          if (!codeVerifier && VKID?.Auth?.exchangeCode) {
+            try {
+              const exchangeResult = await VKID.Auth.exchangeCode(code, deviceId)
+              accessToken = exchangeResult?.access_token
+              if (isVkClientDebugEnabled()) {
+                console.log('[VK DEBUG CLIENT] client exchange result', {
+                  hasAccessToken: Boolean(accessToken),
+                })
+              }
+            } catch (error) {
+              setIsLoading(false)
+              onError('VK ID временно недоступен. Попробуйте позже или войдите по телефону.')
+              return
+            }
+          }
+
           const result = await signIn('vk', {
             redirect: false,
             code,
             deviceId,
             codeVerifier,
+            accessToken,
             state,
             location,
             mode,
