@@ -33,11 +33,28 @@ const getVkAppId = () => {
   return Number.isFinite(value) && value > 0 ? value : null
 }
 
+const normalizeUrlString = (value) => {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  const noQuotes = raw.replace(/^['"]|['"]$/g, '').trim()
+  try {
+    return new URL(noQuotes).toString()
+  } catch {
+    return ''
+  }
+}
+
+const isVkClientDebugEnabled = () =>
+  String(process.env.NEXT_PUBLIC_VK_DEBUG_LOGS || '')
+    .trim()
+    .toLowerCase() === 'true'
+
 const getVkRedirectUrl = () => {
   if (typeof window === 'undefined') return ''
+  const envRedirect = process.env.NEXT_PUBLIC_VK_ID_REDIRECT_URI
   return (
-    process.env.NEXT_PUBLIC_VK_ID_REDIRECT_URL ||
-    `${window.location.origin}/api/vk-id/callback`
+    normalizeUrlString(envRedirect) ||
+    normalizeUrlString(`${window.location.origin}/api/vk-id/callback`)
   )
 }
 
@@ -95,17 +112,32 @@ export default function VkIdOneTapAuth({
 
       const VKID = window.VKIDSDK
       const appId = getVkAppId()
+      const redirectUrl = getVkRedirectUrl()
       if (!appId) {
         onError(
           'VK ID не настроен: отсутствует NEXT_PUBLIC_VK_ID_APP_ID. Обратитесь к разработчику.'
         )
         return
       }
+      if (!redirectUrl) {
+        onError(
+          'VK ID не настроен: некорректный NEXT_PUBLIC_VK_ID_REDIRECT_URI. Обратитесь к разработчику.'
+        )
+        return
+      }
+      if (isVkClientDebugEnabled()) {
+        console.log('[VK DEBUG CLIENT] init config', {
+          appId,
+          redirectUrl,
+          origin:
+            typeof window !== 'undefined' ? window.location.origin : undefined,
+        })
+      }
 
       try {
         VKID.Config.init({
           app: appId,
-          redirectUrl: getVkRedirectUrl(),
+          redirectUrl,
           responseMode: VKID.ConfigResponseMode.Callback,
           source: VKID.ConfigSource.LOWCODE,
           scope: getVkScope(),

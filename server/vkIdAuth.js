@@ -8,9 +8,22 @@ const getVkClientId = () => {
 
 const getVkDomain = () => process.env.VK_ID_DOMAIN || VK_ID_DOMAIN_DEFAULT
 
+const normalizeUrlString = (value) => {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  const noQuotes = raw.replace(/^['"]|['"]$/g, '').trim()
+  try {
+    return new URL(noQuotes).toString()
+  } catch {
+    return ''
+  }
+}
+
 const getVkRedirectUrl = () =>
-  process.env.VK_ID_REDIRECT_URI ||
-  (process.env.DOMAIN ? `${process.env.DOMAIN}/api/vk-id/callback` : '')
+  normalizeUrlString(process.env.VK_ID_REDIRECT_URI) ||
+  normalizeUrlString(
+    process.env.DOMAIN ? `${process.env.DOMAIN}/api/vk-id/callback` : ''
+  )
 
 const toFormBody = (data = {}) => {
   const form = new URLSearchParams()
