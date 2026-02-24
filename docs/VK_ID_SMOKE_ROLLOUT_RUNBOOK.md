@@ -14,6 +14,7 @@
   - `VK_ID_APP_ID`
   - `VK_ID_REDIRECT_URI`
   - при необходимости `VK_ID_DOMAIN`
+  - для отладки ответов провайдера: `VK_DEBUG_LOGS=true`
 - В Dev UI для города управляется флаг `allowVkAuth`.
 
 ## Smoke checklist (до включения в проде)
@@ -29,6 +30,9 @@
    - успешный вход для уже привязанного `vk_id`;
    - корректная ошибка при неуспешном обмене `code/device_id`;
    - вход через телефон/пароль и telegram не сломан.
+   - при `VK_DEBUG_LOGS=true` в server-логах видны:
+     - `[VK DEBUG] exchangeVkCode response`
+     - `[VK DEBUG] fetchVkUserInfo response`
 3. Проверка recovery
    - сценарий `/{location}/recovery` работает как раньше (без зависимости от VK).
 4. Проверка сессии
@@ -65,4 +69,3 @@
 2. Убедиться, что VK виджет пропал с login/register.
 3. Проверить, что phone/telegram вход продолжают работать.
 4. Зафиксировать инцидент и подготовить корректирующий патч.
-

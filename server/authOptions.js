@@ -122,6 +122,16 @@ const throwVkAuthError = (code) => {
   throw new Error(code)
 }
 
+const isVkDebugLogsEnabled = () =>
+  String(process.env.VK_DEBUG_LOGS || '')
+    .trim()
+    .toLowerCase() === 'true'
+
+const logVkDebug = (label, payload) => {
+  if (!isVkDebugLogsEnabled()) return
+  console.log(`[VK DEBUG] ${label}:`, payload)
+}
+
 const buildSessionPayload = (user, location) => ({
   name: user?._id,
   email: location,
@@ -258,6 +268,7 @@ export const authOptions = {
           codeVerifier,
           state,
         })
+        logVkDebug('exchangeVkCode response', exchangeResult)
         if (!exchangeResult.success) {
           console.log('VK exchange error:', exchangeResult?.data)
           throwVkAuthError('VK_EXCHANGE_FAILED')
@@ -269,6 +280,7 @@ export const authOptions = {
         }
 
         const userInfoResult = await fetchVkUserInfo({ accessToken })
+        logVkDebug('fetchVkUserInfo response', userInfoResult)
         if (!userInfoResult.success) {
           console.log('VK userInfo error:', userInfoResult?.data)
           throwVkAuthError('VK_USERINFO_FAILED')
