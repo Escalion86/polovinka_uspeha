@@ -86,6 +86,40 @@ const buildVkProfilePatch = ({ vkUser = {}, vkId, consentToMailing }) => {
   }
 }
 
+const buildVkSetForExistingUser = ({ existingUser = {}, vkProfilePatch = {} }) => {
+  const nextSet = {}
+
+  if (vkProfilePatch.vk && !existingUser.vk) nextSet.vk = vkProfilePatch.vk
+  if (vkProfilePatch.firstName && !existingUser.firstName) {
+    nextSet.firstName = vkProfilePatch.firstName
+  }
+  if (vkProfilePatch.secondName && !existingUser.secondName) {
+    nextSet.secondName = vkProfilePatch.secondName
+  }
+  if (vkProfilePatch.thirdName && !existingUser.thirdName) {
+    nextSet.thirdName = vkProfilePatch.thirdName
+  }
+  if (vkProfilePatch.email && !existingUser.email) {
+    nextSet.email = vkProfilePatch.email
+  }
+  if (
+    Array.isArray(vkProfilePatch.images) &&
+    vkProfilePatch.images.length > 0 &&
+    (!Array.isArray(existingUser.images) || existingUser.images.length === 0)
+  ) {
+    nextSet.images = vkProfilePatch.images
+  }
+
+  if (
+    typeof vkProfilePatch.consentToMailing === 'boolean' &&
+    typeof existingUser.consentToMailing !== 'boolean'
+  ) {
+    nextSet.consentToMailing = vkProfilePatch.consentToMailing
+  }
+
+  return nextSet
+}
+
 const getPhoneCandidates = (phoneRaw) => {
   const normalized = normalizePhoneValue(phoneRaw)
   if (!normalized) return []
@@ -344,11 +378,15 @@ export const authOptions = {
           if (!isAuthDevOnlyUserAllowed(userByVkId, phoneValueToSet)) {
             throwVkAuthError('VK_DEV_ONLY_MODE')
           }
+          const vkSetForExistingUser = buildVkSetForExistingUser({
+            existingUser: userByVkId,
+            vkProfilePatch,
+          })
           const updatedUser = await usersModel.findByIdAndUpdate(
             userByVkId._id,
             {
               $set: {
-                ...vkProfilePatch,
+                ...vkSetForExistingUser,
                 registrationType: userByVkId.registrationType || 'vk',
                 ...(userByVkId.phone || !phoneValueToSet
                   ? {}
@@ -384,11 +422,15 @@ export const authOptions = {
             if (!isAuthDevOnlyUserAllowed(userByPhone, phoneValueToSet)) {
               throwVkAuthError('VK_DEV_ONLY_MODE')
             }
+            const vkSetForExistingUser = buildVkSetForExistingUser({
+              existingUser: userByPhone,
+              vkProfilePatch,
+            })
             const updatedUser = await usersModel.findByIdAndUpdate(
               userByPhone._id,
               {
                 $set: {
-                  ...vkProfilePatch,
+                  ...vkSetForExistingUser,
                   registrationType: userByPhone.registrationType || 'vk',
                   ...(userByPhone.phone ? {} : { phone: phoneValueToSet }),
                 },
