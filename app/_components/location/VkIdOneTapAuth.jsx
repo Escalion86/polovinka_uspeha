@@ -166,17 +166,31 @@ export default function VkIdOneTapAuth({
           const code = vkPayload?.code
           const deviceId = vkPayload?.device_id
           const state = vkPayload?.state
+          const codeVerifier =
+            vkPayload?.code_verifier ||
+            vkPayload?.codeVerifier ||
+            vkPayload?.verifier
 
           if (!code || !deviceId) {
             setIsLoading(false)
             onError('VK ID не вернул код авторизации')
             return
           }
+          if (isVkClientDebugEnabled()) {
+            console.log('[VK DEBUG CLIENT] LOGIN_SUCCESS payload', vkPayload)
+            console.log('[VK DEBUG CLIENT] parsed auth params', {
+              hasCode: Boolean(code),
+              hasDeviceId: Boolean(deviceId),
+              hasState: Boolean(state),
+              hasCodeVerifier: Boolean(codeVerifier),
+            })
+          }
 
           const result = await signIn('vk', {
             redirect: false,
             code,
             deviceId,
+            codeVerifier,
             state,
             location,
             mode,
