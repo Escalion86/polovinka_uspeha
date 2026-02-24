@@ -25,6 +25,7 @@ const ImagesMarquee = ({
   const [isHovered, setIsHovered] = useState(false)
   const [halfWidth, setHalfWidth] = useState(0)
   const [offset, setOffset] = useState(0)
+  const [shouldDuplicate, setShouldDuplicate] = useState(preparedImages.length > 1)
 
   if (preparedImages.length === 0) return null
 
@@ -45,11 +46,34 @@ const ImagesMarquee = ({
   }
 
   useEffect(() => {
+    setShouldDuplicate(preparedImages.length > 1)
+  }, [preparedImages.length])
+
+  useEffect(() => {
     const measure = () => {
+      const wrapperWidth = wrapperRef.current?.clientWidth ?? 0
       const fullWidth = trackRef.current?.scrollWidth ?? 0
-      const nextHalfWidth = fullWidth > 0 ? fullWidth / 2 : 0
-      setHalfWidth(nextHalfWidth)
-      setOffset((prev) => normalizeOffset(prev, nextHalfWidth))
+      const singleSetWidth =
+        fullWidth > 0 ? (shouldDuplicate ? fullWidth / 2 : fullWidth) : 0
+      const needDuplicate =
+        preparedImages.length > 1 &&
+        singleSetWidth > 0 &&
+        wrapperWidth > 0 &&
+        singleSetWidth > wrapperWidth
+
+      if (needDuplicate !== shouldDuplicate) {
+        setShouldDuplicate(needDuplicate)
+        return
+      }
+
+      if (!needDuplicate) {
+        setHalfWidth(0)
+        setOffset(0)
+        return
+      }
+
+      setHalfWidth(singleSetWidth)
+      setOffset((prev) => normalizeOffset(prev, singleSetWidth))
     }
 
     measure()
@@ -65,10 +89,11 @@ const ImagesMarquee = ({
       window.removeEventListener('resize', measure)
       if (observer) observer.disconnect()
     }
-  }, [preparedImages.length])
+  }, [preparedImages.length, shouldDuplicate])
 
   useEffect(() => {
-    const canAnimate = !isDragging && !(pauseOnHover && isHovered) && halfWidth > 0
+    const canAnimate =
+      shouldDuplicate && !isDragging && !(pauseOnHover && isHovered) && halfWidth > 0
     if (!canAnimate) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
       rafRef.current = null
@@ -90,10 +115,17 @@ const ImagesMarquee = ({
       rafRef.current = null
       lastTsRef.current = 0
     }
-  }, [animationDuration, halfWidth, isDragging, isHovered, pauseOnHover])
+  }, [
+    animationDuration,
+    halfWidth,
+    isDragging,
+    isHovered,
+    pauseOnHover,
+    shouldDuplicate,
+  ])
 
   useEffect(() => {
-    if (!isDragging) return undefined
+    if (!isDragging || !shouldDuplicate) return undefined
 
     const onMouseMove = (event) => {
       const dx = event.clientX - dragStartXRef.current
@@ -126,9 +158,10 @@ const ImagesMarquee = ({
       window.removeEventListener('touchend', stopDragging)
       window.removeEventListener('touchcancel', stopDragging)
     }
-  }, [halfWidth, isDragging])
+  }, [halfWidth, isDragging, shouldDuplicate])
 
   const startDragging = (clientX) => {
+    if (!shouldDuplicate) return
     dragStartXRef.current = clientX
     dragStartOffsetRef.current = offset
     setIsDragging(true)
@@ -140,14 +173,22 @@ const ImagesMarquee = ({
         ref={wrapperRef}
         className={cn(
           'relative overflow-hidden bg-black select-none touch-pan-y',
-          isDragging ? 'cursor-grabbing' : 'cursor-grab',
+          shouldDuplicate
+            ? isDragging
+              ? 'cursor-grabbing'
+              : 'cursor-grab'
+            : 'cursor-default',
           heightClassName,
           className
         )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onMouseDown={(event) => startDragging(event.clientX)}
+        onMouseEnter={() => shouldDuplicate && setIsHovered(true)}
+        onMouseLeave={() => shouldDuplicate && setIsHovered(false)}
+        onMouseDown={(event) => {
+          if (event.button !== 0) return
+          startDragging(event.clientX)
+        }}
         onTouchStart={(event) => {
+          if (!shouldDuplicate) return
           if (!event.touches?.[0]) return
           startDragging(event.touches[0].clientX)
         }}
@@ -156,12 +197,18 @@ const ImagesMarquee = ({
         <div
           ref={trackRef}
           className={cn(
-            'flex h-full w-max will-change-transform'
+            'flex h-full will-change-transform',
+            shouldDuplicate ? 'w-max' : 'w-full justify-center'
           )}
-          style={{ transform: `translate3d(${offset}px, 0, 0)` }}
+          style={{
+            transform: shouldDuplicate ? `translate3d(${offset}px, 0, 0)` : undefined,
+          }}
           onDragStart={(event) => event.preventDefault()}
         >
-          {[...preparedImages, ...preparedImages].map((src, index) => (
+          {(shouldDuplicate
+            ? [...preparedImages, ...preparedImages]
+            : preparedImages
+          ).map((src, index) => (
             <img
               key={`${src}-${index}`}
               src={src}

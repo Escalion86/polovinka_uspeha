@@ -167,7 +167,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
               />
             </div>
-            <div className="laptop:hidden mt-auto flex flex-col w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
+            <div className="laptop:hidden mt-auto flex flex-col w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-2 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
               <div className="flex items-center justify-center w-full tablet:w-auto gap-x-1">
                 <Suspense
                   fallback={

@@ -1,14 +1,18 @@
 import UserCardButtons from '@components/cardButtons/UserCardButtons'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import FormWrapper from '@components/FormWrapper'
-import ImageGallery from '@components/ImageGallery'
+import ImagesMarquee from '@components/ImagesMarquee'
+import ModalSurface from '@components/ModalSurface'
+import ModalSectionTitle from '@components/ModalSectionTitle'
 import TextLine from '@components/TextLine'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import ZodiacIcon from '@components/ZodiacIcon'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
@@ -18,10 +22,12 @@ import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/sele
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useAtomValue } from 'jotai'
 
-const CardButtonsComponent = ({ user }) => <UserCardButtons item={user} forForm />
+const CardButtonsComponent = ({ user }) => (
+  <UserCardButtons item={user} forForm />
+)
 
 const userViewFunc = (userId, params = {}) => {
   const UserModal = ({
@@ -37,12 +43,72 @@ const userViewFunc = (userId, params = {}) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-    const isLoggedUserDev = loggedUserActiveRole?.dev
     const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
     const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const user = useAtomValue(userSelector(userId))
+    const userGender = GENDERS.find((item) => item.value === user?.gender)
+    const canShowBirthday = Boolean(
+      user?.birthday &&
+        (seeBirthday ||
+          user?.security?.showBirthday === true ||
+          user?.security?.showBirthday === 'full' ||
+          user?.security?.showBirthday === 'noYear')
+    )
+    const canShowBirthdayYear = Boolean(
+      seeBirthday ||
+        user?.security?.showBirthday === 'full' ||
+        user?.security?.showBirthday === true
+    )
+    const hasVisibleContacts = useMemo(() => {
+      if (!user) return false
+
+      const canSeeAllContacts = Boolean(params?.showContacts || seeAllContacts)
+      const isMemberAndUserIsMember =
+        user.status === 'member' && isLoggedUserMember
+
+      if (!canSeeAllContacts) {
+        if (!isMemberAndUserIsMember) return false
+        if (
+          !user.security?.showPhone &&
+          !user.security?.showWhatsapp &&
+          !user.security?.showTelegram &&
+          !user.security?.showInstagram &&
+          !user.security?.showVk &&
+          !user.security?.showEmail
+        ) {
+          return false
+        }
+      }
+
+      const canShowBySecurity = (securityField) =>
+        canSeeAllContacts || (isMemberAndUserIsMember && user.security?.[securityField])
+
+      const phoneVisible = Boolean(user.phone && canShowBySecurity('showPhone'))
+      const whatsappVisible = Boolean(
+        (user.whatsapp && canShowBySecurity('showWhatsapp')) ||
+          (!user.whatsapp && seeAllContacts && canShowBySecurity('showWhatsapp'))
+      )
+      const telegramVisible = Boolean(
+        (user.telegram && canShowBySecurity('showTelegram')) ||
+          (!user.telegram && seeAllContacts && canShowBySecurity('showTelegram'))
+      )
+      const instagramVisible = Boolean(
+        user.instagram && canShowBySecurity('showInstagram')
+      )
+      const vkVisible = Boolean(user.vk && canShowBySecurity('showVk'))
+      const emailVisible = Boolean(user.email && canShowBySecurity('showEmail'))
+
+      return Boolean(
+        phoneVisible ||
+          whatsappVisible ||
+          telegramVisible ||
+          instagramVisible ||
+          vkVisible ||
+          emailVisible
+      )
+    }, [isLoggedUserMember, params?.showContacts, seeAllContacts, user])
 
     const eventsUsersSignedUpCount = useAtomValue(
       eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
@@ -62,61 +128,73 @@ const userViewFunc = (userId, params = {}) => {
     if (!user) return null
 
     return (
-      <FormWrapper className="flex flex-col">
-        <ImageGallery images={user?.images} />
-        <div className="flex flex-col flex-1 mt-1">
+      <FormWrapper className="flex flex-col gap-3">
+        <ModalSurface tone="media" noPadding>
+          <ImagesMarquee
+            images={user?.images}
+            className="rounded-2xl border border-[#ead7de] shadow-[0_12px_28px_rgba(0,0,0,0.2)]"
+            imageClassName="brightness-[0.95]"
+            heightClassName="h-56 phoneH:h-70"
+          />
+        </ModalSurface>
+
+        <ModalSurface tone="accent">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
-            <UserStatusIcon status={user?.status} />
-            <UserName user={user} className="text-lg font-bold" />
-            {!setTopLeftComponent && (
-              <div className="absolute right-0">
-                <CardButtonsComponent user={user} />
-              </div>
-            )}
+            <FontAwesomeIcon
+              icon={userGender?.icon ?? faGenderless}
+              className={
+                userGender?.value === 'male'
+                  ? 'w-6 h-6 min-w-6 min-h-6 text-blue-400'
+                  : userGender?.value === 'famale'
+                    ? 'w-6 h-6 min-w-6 min-h-6 text-general'
+                    : 'w-6 h-6 min-w-6 min-h-6 text-gray-400'
+              }
+            />
+            <div className="flex flex-col items-start tablet:flex-row tablet:items-center tablet:gap-2">
+              <UserName
+                user={user}
+                className="text-[clamp(20px,3.5vw,28px)] font-bold text-[#4b0f1c]"
+                leadingClass="leading-[24px]"
+              />
+              {canShowBirthday ? (
+                <span className="inline-flex mt-1 tablet:mt-0 items-center gap-1 rounded-full border border-[rgba(107,31,42,0.2)] bg-white/80 px-2.5 py-1 text-xs font-semibold text-[#6b1f2a] whitespace-nowrap">
+                  <span className="whitespace-nowrap">
+                    {birthDateToAge(
+                      user.birthday,
+                      serverDate,
+                      true,
+                      true,
+                      canShowBirthdayYear
+                    )}
+                  </span>
+                  <span className="inline-flex shrink-0">
+                    <ZodiacIcon date={user.birthday} />
+                  </span>
+                </span>
+              ) : null}
+            </div>
+            <div className="flex items-center gap-2 ml-auto">
+              {user?.status === 'member' ? (
+                <UserStatusIcon status={user?.status} />
+              ) : null}
+              {!setTopLeftComponent && <CardButtonsComponent user={user} />}
+            </div>
           </div>
           {user.personalStatus && (
-            <div className="pb-3 pt-1 text-sm italic font-normal leading-[15px] text-general">
+            <div className="pt-1 text-sm italic font-normal leading-[18px] text-general">
               {user.personalStatus}
             </div>
           )}
-          {isLoggedUserDev && <TextLine label="ID">{user?._id}</TextLine>}
-          <TextLine label="Пол">
-            {GENDERS.find((item) => item.value === user.gender)?.name ??
-              '[не указан]'}
-          </TextLine>
-          {/* <div className="flex gap-x-2">
-              <span className="font-bold">Ориентация:</span>
-              <span>
-                {
-                  ORIENTATIONS.find((item) => item.value === user.orientation)
-                    ?.name
-                }
-              </span>
-            </div> */}
-          {user.birthday &&
-            (seeBirthday ||
-              user.security?.showBirthday === true ||
-              user.security?.showBirthday === 'full' ||
-              user.security?.showBirthday === 'noYear') && (
-              <div className="flex items-center gap-x-1">
-                <span className="font-bold">Дата рождения:</span>
-                <span>
-                  {birthDateToAge(
-                    user.birthday,
-                    serverDate,
-                    true,
-                    true,
-                    seeBirthday ||
-                      user.security?.showBirthday === 'full' ||
-                      user.security?.showBirthday === true
-                  )}
-                </span>
-                <ZodiacIcon date={user.birthday} />
-              </div>
-            )}
-          <TextLine label="Место проживания">
-            {user.town ?? '[не указано]'}
-          </TextLine>
+        </ModalSurface>
+
+        {user.town ? (
+          <ModalSurface>
+            <TextLine label="Место проживания">{user.town}</TextLine>
+          </ModalSurface>
+        ) : null}
+
+        <ModalSurface>
+          <ModalSectionTitle>Семейный контекст</ModalSectionTitle>
           <TextLine label="Отношения">
             <UserRelationshipIcon
               size="m"
@@ -124,7 +202,6 @@ const userViewFunc = (userId, params = {}) => {
               showName
             />
           </TextLine>
-
           <TextLine label="Дети">
             {user?.haveKids === true
               ? 'Есть'
@@ -132,20 +209,29 @@ const userViewFunc = (userId, params = {}) => {
                 ? 'Нет'
                 : 'Не указано'}
           </TextLine>
-          <ContactsIconsButtons
-            user={user}
-            withTitle
-            grid
-            forceShowAll={params?.showContacts || seeAllContacts}
-            forceWhatsApp={seeAllContacts}
-            forceTelegram={seeAllContacts}
-          />
-          <TextLine label="Дата регистрации">
-            {formatDate(user.createdAt)}
-          </TextLine>
+        </ModalSurface>
 
-          <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
+        {hasVisibleContacts ? (
+          <ModalSurface>
+            <ModalSectionTitle>Контакты</ModalSectionTitle>
+            <ContactsIconsButtons
+              user={user}
+              withTitle
+              grid
+              forceShowAll={params?.showContacts || seeAllContacts}
+              forceWhatsApp={seeAllContacts}
+              forceTelegram={seeAllContacts}
+            />
+          </ModalSurface>
+        ) : null}
+
+        <ModalSurface>
+          <ModalSectionTitle>Активность</ModalSectionTitle>
+          <div className="flex flex-col tablet:items-end tablet:flex-row tablet:justify-between gap-y-2 gap-x-4">
             <div className="flex flex-col">
+              <TextLine label="Дата регистрации">
+                {formatDate(user.createdAt)}
+              </TextLine>
               <TextLine label="Посетил мероприятий">
                 {eventsUsersSignedUpCount.finished}
               </TextLine>
@@ -158,7 +244,7 @@ const userViewFunc = (userId, params = {}) => {
               (eventsUsersSignedUpCount.finished > 0 ||
                 eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem
-                  name="Посмотреть мероприятия с пользователем"
+                  name="Посмотреть мероприятия"
                   color="general"
                   icon={faCalendarAlt}
                   hoverable
@@ -166,7 +252,7 @@ const userViewFunc = (userId, params = {}) => {
                 />
               )}
           </div>
-        </div>
+        </ModalSurface>
 
         {/* <SelectEventList
           eventsId={eventUsers.map((eventUser) => eventUser.eventId)}

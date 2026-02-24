@@ -3,6 +3,10 @@ import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventFreePlacesBadge from '@components/EventFreePlacesBadge'
 import ImagesMarquee from '@components/ImagesMarquee'
+import ModalPillPanel from '@components/ModalPillPanel'
+import ModalSurface from '@components/ModalSurface'
+import ModalSectionTitle from '@components/ModalSectionTitle'
+import NavigatorLinkButton from '@components/NavigatorLinkButton'
 import PriceDiscount from '@components/PriceDiscount'
 import PulseButton from '@components/PulseButton'
 import TextLine from '@components/TextLine'
@@ -45,9 +49,9 @@ const NamesOfUsersAssistantsOfEventComponent = ({ eventId }) => {
   return (
     users.length > 0 && (
       <div className="flex flex-col mt-2 leading-5 gap-x-1">
-        <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-[#6b1f2a]">
+        <ModalSectionTitle>
           {users.length > 1 ? 'Ведущие' : 'Ведущий'}
-        </h3>
+        </ModalSectionTitle>
         <div className="flex flex-wrap items-center gap-x-1 ">
           {users.map((user, index) => {
             if (index < users.length - 1) {
@@ -77,7 +81,7 @@ const NamesOfUsersAssistantsOfEvent = (props) => {
 }
 
 const EventOrganizersAndAssistantsSkeleton = () => (
-  <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
+  <ModalSurface>
     <Skeleton height={14} width={170} />
     <div className="mt-3">
       <Skeleton height={20} width={220} />
@@ -88,7 +92,7 @@ const EventOrganizersAndAssistantsSkeleton = () => (
     <div className="mt-3">
       <Skeleton height={16} width={140} />
     </div>
-  </div>
+  </ModalSurface>
 )
 
 const EventOrganizersAndAssistantsBlockComponent = ({ event, eventId }) => {
@@ -105,10 +109,10 @@ const EventOrganizersAndAssistantsBlockComponent = ({ event, eventId }) => {
   if (!event?.organizerId) return null
 
   return (
-    <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
-      <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-[#6b1f2a]">
+    <ModalSurface>
+      <ModalSectionTitle>
         {isSingleAssistantOrganizer ? 'Ведущий и организатор' : 'Организатор'}
-      </h3>
+      </ModalSectionTitle>
       <UserName user={organizer} noWrap />
       <div className="mt-1">
         <TextLine label="Контакты организатора">
@@ -118,7 +122,7 @@ const EventOrganizersAndAssistantsBlockComponent = ({ event, eventId }) => {
       {!isSingleAssistantOrganizer ? (
         <NamesOfUsersAssistantsOfEvent eventId={eventId} />
       ) : null}
-    </div>
+    </ModalSurface>
   )
 }
 
@@ -220,10 +224,14 @@ const EventViewModal = ({
         images={event?.images}
         className="rounded-2xl border border-[#ead7de] shadow-[0_12px_28px_rgba(0,0,0,0.2)]"
         imageClassName="brightness-[0.9]"
-        heightClassName="h-56"
+        heightClassName="h-56 phoneH:h-70"
       />
       <div className="flex flex-col gap-3">
-        <div className="overflow-hidden relative rounded-2xl border border-[#ead7de] bg-[linear-gradient(135deg,#fff,#f9f2f5)] px-4 pb-4 pt-8 shadow-[0_8px_24px_rgba(107,31,42,0.08)]">
+        <ModalSurface
+          tone="accent"
+          className="relative overflow-hidden"
+          paddingClassName="px-4 pb-4 pt-8"
+        >
           <div className="flex items-start gap-2">
             {!setTopLeftComponent && (
               <div className="ml-auto">
@@ -269,20 +277,18 @@ const EventViewModal = ({
               twoLines={false}
             />
           </div>
-        </div>
+        </ModalSurface>
 
-        <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
+        <ModalSurface>
           <NoOrphanText
             as="div"
             className="w-full max-w-full overflow-hidden list-disc textarea ql text-[15px] leading-relaxed text-[#2e2530]"
             html={DOMPurify.sanitize(event?.description)}
           />
-        </div>
+        </ModalSurface>
         {event?.address ? (
-          <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
-            <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-[#6b1f2a]">
-              Адрес и навигатор
-            </h3>
+          <ModalSurface>
+            <ModalSectionTitle>Адрес и навигатор</ModalSectionTitle>
             <TextLine label="Адрес">
               {formatAddress(
                 event?.address,
@@ -293,54 +299,44 @@ const EventViewModal = ({
             {event.address?.link2GisShow || event.address?.linkYandexShow ? (
               <div className="flex items-center gap-2 mt-3">
                 {event.address?.link2GisShow && (
-                  <a
-                    data-tip="Открыть адрес в 2ГИС"
+                  <NavigatorLinkButton
                     href={
                       event.address?.link2Gis ||
                       `https://2gis.ru/search/${event.address.town},%20${
                         event.address.street
                       }%20${event.address.house.replaceAll('/', '%2F')}`
                     }
-                    target="_blank"
-                    className="flex gap-x-2 items-center rounded-lg border border-[#f0e2e8] p-1 transition hover:bg-[#f7f1f4]"
+                    title="Открыть адрес в 2ГИС"
+                    imgSrc="/img/navigators/2gis.png"
+                    imgAlt="2gis"
                   >
-                    <img
-                      className="object-contain w-6 h-6 min-w-6 min-h-6"
-                      src="/img/navigators/2gis.png"
-                      alt="2gis"
-                    />
-                    <div>2ГИС</div>
-                  </a>
+                    2ГИС
+                  </NavigatorLinkButton>
                 )}
                 {event.address?.linkYandexShow && (
-                  <a
-                    data-tip="Открыть адрес в Яндекс Навигаторе"
+                  <NavigatorLinkButton
                     href={
                       event.address?.linkYandexNavigator ||
                       `yandexnavi://map_search?text=${event.address.town},%20${
                         event.address.street
                       }%20${event.address.house.replaceAll('/', '%2F')}`
                     }
-                    target="_blank"
-                    className="flex gap-x-2 items-center rounded-lg border border-[#f0e2e8] p-1 transition hover:bg-[#f7f1f4]"
+                    title="Открыть адрес в Яндекс Навигаторе"
+                    imgSrc="/img/navigators/yandex.png"
+                    imgAlt="Яндекс Навигатор"
                   >
-                    <img
-                      className="object-contain w-6 h-6 min-w-6 min-h-6"
-                      src="/img/navigators/yandex.png"
-                      alt="2gis"
-                    />
-                    <div>Яндекс Навигатор</div>
-                  </a>
+                    Яндекс Навигатор
+                  </NavigatorLinkButton>
                 )}
               </div>
             ) : null}
-          </div>
+          </ModalSurface>
         ) : null}
 
         <EventOrganizersAndAssistantsBlock event={event} eventId={eventId} />
 
-        <div className="rounded-2xl border border-[#f0e2e8] bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
-          <div className="rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-3 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
+        <ModalSurface paddingClassName="p-3">
+          <ModalPillPanel>
             <div className="flex flex-col gap-3 tablet:flex-row tablet:items-center tablet:justify-between">
               <Suspense
                 fallback={
@@ -361,8 +357,8 @@ const EventViewModal = ({
                 />
               ) : null}
             </div>
-          </div>
-        </div>
+          </ModalPillPanel>
+        </ModalSurface>
       </div>
     </div>
   )
