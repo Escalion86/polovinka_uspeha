@@ -3,7 +3,7 @@ const VK_ID_DOMAIN_DEFAULT = 'id.vk.ru'
 const getVkClientId = () => {
   const raw = process.env.VK_ID_APP_ID || process.env.NEXT_PUBLIC_VK_ID_APP_ID
   const parsed = Number.parseInt(String(raw || ''), 10)
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 54460590
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null
 }
 
 const getVkDomain = () => process.env.VK_ID_DOMAIN || VK_ID_DOMAIN_DEFAULT
@@ -36,6 +36,17 @@ const vkOAuthRequest = async ({
   method = 'POST',
 }) => {
   const clientId = getVkClientId()
+  if (!clientId) {
+    return {
+      success: false,
+      data: {
+        error: {
+          type: 'VK_CONFIG_ERROR',
+          message: 'VK app id is not configured',
+        },
+      },
+    }
+  }
   const domain = getVkDomain()
   const queryParams = new URLSearchParams({
     client_id: String(clientId),

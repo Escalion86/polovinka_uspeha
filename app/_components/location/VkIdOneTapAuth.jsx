@@ -27,10 +27,10 @@ const loadVkSdk = () => {
 
 const getVkAppId = () => {
   const value = Number.parseInt(
-    String(process.env.NEXT_PUBLIC_VK_ID_APP_ID || '54460590'),
+    String(process.env.NEXT_PUBLIC_VK_ID_APP_ID || ''),
     10
   )
-  return Number.isFinite(value) && value > 0 ? value : 54460590
+  return Number.isFinite(value) && value > 0 ? value : null
 }
 
 const getVkRedirectUrl = () => {
@@ -94,9 +94,17 @@ export default function VkIdOneTapAuth({
       }
 
       const VKID = window.VKIDSDK
+      const appId = getVkAppId()
+      if (!appId) {
+        onError(
+          'VK ID не настроен: отсутствует NEXT_PUBLIC_VK_ID_APP_ID. Обратитесь к разработчику.'
+        )
+        return
+      }
+
       try {
         VKID.Config.init({
-          app: getVkAppId(),
+          app: appId,
           redirectUrl: getVkRedirectUrl(),
           responseMode: VKID.ConfigResponseMode.Callback,
           source: VKID.ConfigSource.LOWCODE,
@@ -112,8 +120,13 @@ export default function VkIdOneTapAuth({
           container: containerRef.current,
           showAlternativeLogin: true,
         })
-        .on(VKID.WidgetEvents.ERROR, () => {
-          onError('Ошибка виджета VK ID. Попробуйте вход по телефону.')
+        .on(VKID.WidgetEvents.ERROR, (error) => {
+          const vkError = error?.type || error?.code || error?.message
+          onError(
+            vkError
+              ? `Ошибка виджета VK ID (${vkError}). Попробуйте вход по телефону.`
+              : 'Ошибка виджета VK ID. Попробуйте вход по телефону.'
+          )
         })
         .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async (vkPayload) => {
           if (!isMounted) return
