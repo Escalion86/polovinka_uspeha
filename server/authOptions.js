@@ -242,6 +242,11 @@ export const authOptions = {
               password: newPasswordHash,
             })
           }
+          await syncGlobalLinkSafe({
+            location,
+            user: fetchedUser,
+            source: 'credentials-login',
+          })
 
           return buildSessionPayload(fetchedUser, location)
         }
@@ -577,6 +582,11 @@ export const authOptions = {
               $set: { phone: phoneNumber },
             })
           }
+          await syncGlobalLinkSafe({
+            location,
+            user: fetchedUser,
+            source: 'telegram-login',
+          })
           return buildSessionPayload(fetchedUser, location)
         }
 
@@ -618,6 +628,11 @@ export const authOptions = {
               $addToSet: {
                 authProviders: 'telegram',
               },
+            })
+            await syncGlobalLinkSafe({
+              location,
+              user: userByPhone,
+              source: 'telegram-phone-link',
             })
 
             return buildSessionPayload(userByPhone, location)
@@ -665,6 +680,11 @@ export const authOptions = {
           } catch (couponError) {
             console.log('createReferralRegistrationCoupon error :>> ', couponError)
           }
+          await syncGlobalLinkSafe({
+            location,
+            user: newUser,
+            source: 'telegram-register',
+          })
           await userRegisterTelegramNotification({
             telegramId: telegramIdNum,
             first_name,
