@@ -37,10 +37,9 @@ const ClosedSpaceContent = () => {
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
-  const visibleDirections = useMemo(
+  const selectableDirections = useMemo(
     () =>
       (Array.isArray(directions) ? directions : [])
-        .filter((item) => item?.showOnSite !== false)
         .sort(sortByIndexAndTitle),
     [directions]
   )
@@ -133,10 +132,13 @@ const ClosedSpaceContent = () => {
           activePlaceholder
           value={directionId}
           onChange={setDirectionId}
-          items={visibleDirections.map((item) => ({
-            value: item?._id,
-            name: item?.title || 'Без названия',
-          }))}
+          items={selectableDirections.map((item) => {
+            const isHidden = item?.showOnSite === false
+            return {
+              value: item?._id,
+              name: `${item?.title || 'Без названия'}${isHidden ? ' (скрыто на сайте)' : ''}`,
+            }
+          })}
           fullWidth
         />
         <div className="px-2">

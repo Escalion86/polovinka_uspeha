@@ -154,6 +154,7 @@ export default function LocationIndexClient({ location }) {
   const [reviewsData, setReviewsData] = useState([])
   const [directionsData, setDirectionsData] = useState([])
   const [eventsUsers, setEventsUsers] = useState([])
+  const [eventsUsersLoading, setEventsUsersLoading] = useState(true)
   const [reviewsPerView, setReviewsPerView] = useState(3)
   const defaultLocation = location || (LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk')
   const reviewsContainerRef = useRef(null)
@@ -197,39 +198,40 @@ export default function LocationIndexClient({ location }) {
     let isMounted = true
 
     const loadData = async () => {
-      const [
-        eventsData,
-        additionalBlocksData,
-        reviewsResponse,
-        directions,
-        eventsUsersData,
-        siteSettingsData,
-        globalAboutSpaceCardsData,
-      ] = await Promise.all([
-        fetchingEvents(defaultLocation),
-        fetchingAdditionalBlocks(defaultLocation),
-        fetchingReviews(defaultLocation),
-        fetchingDirections(defaultLocation),
-        fetchingEventsUsers(defaultLocation),
-        fetchingSiteSettings(defaultLocation),
-        fetchingGlobalAboutSpaceCards(),
-      ])
-
+      const globalAboutSpaceCardsData = await fetchingGlobalAboutSpaceCards()
       if (isMounted) {
-        setEvents(Array.isArray(eventsData) ? eventsData : [])
-        setAdditionalBlocks(
-          Array.isArray(additionalBlocksData) ? additionalBlocksData : []
-        )
-        setReviewsData(Array.isArray(reviewsResponse) ? reviewsResponse : [])
-        setDirectionsData(Array.isArray(directions) ? directions : [])
-        setEventsUsers(Array.isArray(eventsUsersData) ? eventsUsersData : [])
-        setSiteSettings(siteSettingsData || {})
         setGlobalAboutSpaceCards(
           Array.isArray(globalAboutSpaceCardsData?.aboutSpaceCards)
             ? globalAboutSpaceCardsData.aboutSpaceCards
             : []
         )
       }
+
+      const directions = await fetchingDirections(defaultLocation)
+      if (isMounted) {
+        setDirectionsData(Array.isArray(directions) ? directions : [])
+      }
+
+      const [
+        eventsData,
+        additionalBlocksData,
+        reviewsResponse,
+        siteSettingsData,
+      ] = await Promise.all([
+        fetchingEvents(defaultLocation),
+        fetchingAdditionalBlocks(defaultLocation),
+        fetchingReviews(defaultLocation),
+        fetchingSiteSettings(defaultLocation),
+      ])
+
+      if (!isMounted) return
+
+      setEvents(Array.isArray(eventsData) ? eventsData : [])
+      setAdditionalBlocks(
+        Array.isArray(additionalBlocksData) ? additionalBlocksData : []
+      )
+      setReviewsData(Array.isArray(reviewsResponse) ? reviewsResponse : [])
+      setSiteSettings(siteSettingsData || {})
     }
 
     loadData()
@@ -239,9 +241,27 @@ export default function LocationIndexClient({ location }) {
     }
   }, [defaultLocation])
 
-  const spacesFromDirections = useMemo(() => {
+  useEffect(() => {
+    let isMounted = true
+
+    const loadEventsUsers = async () => {
+      setEventsUsersLoading(true)
+      const eventsUsersData = await fetchingEventsUsers(defaultLocation)
+      if (!isMounted) return
+
+      setEventsUsers(Array.isArray(eventsUsersData) ? eventsUsersData : [])
+      setEventsUsersLoading(false)
+    }
+
+    loadEventsUsers()
+
+    return () => {
+      isMounted = false
+    }
+  }, [defaultLocation])
+
+  const allSpacesFromDirections = useMemo(() => {
     return (directionsData || [])
-      .filter((direction) => direction?.showOnSite)
       .sort((a, b) => (a.index < b.index ? -1 : 1))
       .map((direction) => ({
         id: direction._id,
@@ -249,8 +269,14 @@ export default function LocationIndexClient({ location }) {
         description: direction.shortDescription || direction.description || '',
         fullDescription: direction.description || '',
         images: Array.isArray(direction.images) ? direction.images : [],
+        showOnSite: direction?.showOnSite !== false,
       }))
   }, [directionsData])
+
+  const spacesFromDirections = useMemo(
+    () => allSpacesFromDirections.filter((space) => space.showOnSite),
+    [allSpacesFromDirections]
+  )
 
   const closedSpaceDirectionId = siteSettings?.closedSpace?.directionId ?? null
   const closedSpaceSubtitle =
@@ -259,10 +285,10 @@ export default function LocationIndexClient({ location }) {
     siteSettings?.closedSpace?.description ?? DEFAULT_CLOSED_SPACE_DESCRIPTION
   const closedSpaceDirection = useMemo(
     () =>
-      spacesFromDirections.find(
+      allSpacesFromDirections.find(
         (space) => String(space.id) === String(closedSpaceDirectionId)
       ) ?? null,
-    [spacesFromDirections, closedSpaceDirectionId]
+    [allSpacesFromDirections, closedSpaceDirectionId]
   )
 
   const index2AdditionalBlocks = useMemo(() => {
@@ -355,6 +381,18 @@ export default function LocationIndexClient({ location }) {
 
     return { primary, socials }
   }, [defaultLocation, siteSettings])
+
+  const participantsByEventId = useMemo(
+    () =>
+      (eventsUsers || []).reduce((acc, eventUser) => {
+        if (!eventUser?.eventId || eventUser?.status !== 'participant')
+          return acc
+        const current = acc.get(eventUser.eventId) ?? 0
+        acc.set(eventUser.eventId, current + 1)
+        return acc
+      }, new Map()),
+    [eventsUsers]
+  )
 
   useEffect(() => {
     const calcPerView = () => {
@@ -456,16 +494,6 @@ export default function LocationIndexClient({ location }) {
   const { calendarDays, activeDays, eventsByDay, monthLabel, monthName } =
     useMemo(() => {
       const now = new Date()
-      const participantsByEventId = (eventsUsers || []).reduce(
-        (acc, eventUser) => {
-          if (!eventUser?.eventId || eventUser?.status !== 'participant')
-            return acc
-          const current = acc.get(eventUser.eventId) ?? 0
-          acc.set(eventUser.eventId, current + 1)
-          return acc
-        },
-        new Map()
-      )
 
       const getEventMaxParticipants = (event) => {
         const hasSubEvents =
@@ -496,12 +524,10 @@ export default function LocationIndexClient({ location }) {
           if (!dateStart || Number.isNaN(dateStart.getTime())) return null
           if (event?.showOnSite === false) return null
           if (event?.status === 'canceled') return null
-          const participantsCount = participantsByEventId.get(event._id) ?? 0
           const maxParticipants = getEventMaxParticipants(event)
           return {
             ...event,
             dateStart,
-            participantsCount,
             maxParticipants,
           }
         })
@@ -554,7 +580,6 @@ export default function LocationIndexClient({ location }) {
           time,
           place,
           dateStart: event.dateStart,
-          participantsCount: event.participantsCount,
           maxParticipants: event.maxParticipants,
         })
         return acc
@@ -573,7 +598,7 @@ export default function LocationIndexClient({ location }) {
         monthLabel: `${MONTHS_FULL_UPPER[month]} ${year}`,
         monthName: MONTHS_FULL[month],
       }
-    }, [events, eventsUsers])
+    }, [events])
 
   useEffect(() => {
     if (activeDays.length === 0) {
@@ -972,12 +997,17 @@ export default function LocationIndexClient({ location }) {
                       </div>
                       <div className="mt-3 inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
                         {event.maxParticipants
-                          ? `Свободных мест ${Math.max(
-                              0,
-                              (event.maxParticipants ?? 0) -
-                                (event.participantsCount ?? 0)
-                            )} из ${event.maxParticipants}`
+                          ? eventsUsersLoading
+                            ? 'Свободных мест: '
+                            : `Свободных мест ${Math.max(
+                                0,
+                                (event.maxParticipants ?? 0) -
+                                  (participantsByEventId.get(event.id) ?? 0)
+                              )} из ${event.maxParticipants}`
                           : 'Количество мест не ограничено'}
+                        {event.maxParticipants && eventsUsersLoading ? (
+                          <span className="ml-2 inline-block h-4 w-14 animate-pulse rounded bg-[#6b1f2a]/20" />
+                        ) : null}
                       </div>
                     </div>
                   ))}

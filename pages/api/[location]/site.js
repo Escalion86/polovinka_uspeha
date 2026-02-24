@@ -4,6 +4,49 @@ import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
 
+const DEFAULT_CLOSED_SPACE_SUBTITLE = 'ЗАКРЫТОЕ ПРОСТРАНСТВО ДЛЯ СВОИХ'
+const DEFAULT_CLOSED_SPACE_DESCRIPTION =
+  'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.'
+
+const normalizeClosedSpaceText = (value, fallback) => {
+  if (typeof value !== 'string') return fallback
+  const normalized = value.trim()
+  return normalized || fallback
+}
+
+const normalizeClosedSpace = async (db, payload) => {
+  if (!payload || typeof payload !== 'object') return payload
+
+  const rawDirectionId =
+    payload.directionId === null || payload.directionId === undefined
+      ? null
+      : String(payload.directionId).trim()
+  const subtitle = normalizeClosedSpaceText(
+    payload.subtitle,
+    DEFAULT_CLOSED_SPACE_SUBTITLE
+  )
+  const description = normalizeClosedSpaceText(
+    payload.description,
+    DEFAULT_CLOSED_SPACE_DESCRIPTION
+  )
+
+  let directionId = null
+  if (rawDirectionId) {
+    if (mongoose.Types.ObjectId.isValid(rawDirectionId)) {
+      const directionExists = await db
+        .model('Directions')
+        .exists({ _id: new mongoose.Types.ObjectId(rawDirectionId) })
+      directionId = directionExists ? rawDirectionId : null
+    }
+  }
+
+  return {
+    directionId,
+    subtitle,
+    description,
+  }
+}
+
 export default async function handler(req, res) {
   const { query, method, body } = req
 
@@ -20,11 +63,20 @@ export default async function handler(req, res) {
     try {
       delete query.location
 
+      const preparedData =
+        body?.data && typeof body.data === 'object' ? { ...body.data } : {}
+      if (Object.prototype.hasOwnProperty.call(preparedData, 'closedSpace')) {
+        preparedData.closedSpace = await normalizeClosedSpace(
+          db,
+          preparedData.closedSpace
+        )
+      }
+
       const oldData = await db.model('SiteSettings').findOne({}).lean()
 
       const data = await db
         .model('SiteSettings')
-        .findOneAndUpdate({}, body.data, {
+        .findOneAndUpdate({}, preparedData, {
           new: true,
           upsert: true, // Make this update into an upsert
         })
