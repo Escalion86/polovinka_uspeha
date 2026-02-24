@@ -229,6 +229,7 @@ const serviceFunc = (serviceId, clone = false) => {
                 }}
                 required
                 error={errors.images}
+                maxImages={20}
               />
               {/* <InputImage
                 label="Картинка"
@@ -399,4 +400,3 @@ const serviceFunc = (serviceId, clone = false) => {
 }
 
 export default serviceFunc
-

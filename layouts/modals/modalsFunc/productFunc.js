@@ -30,9 +30,7 @@ const productFunc = (productId, clone = false) => {
     const product = useAtomValue(productSelector(productId))
     const setProduct = useAtomValue(itemsFuncAtom).product.set
 
-    const [title, setTitle] = useState(
-      product?.title ?? DEFAULT_PRODUCT.title
-    )
+    const [title, setTitle] = useState(product?.title ?? DEFAULT_PRODUCT.title)
     const [description, setDescription] = useState(
       product?.description ?? DEFAULT_PRODUCT.description
     )
@@ -48,9 +46,7 @@ const productFunc = (productId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       product?.showOnSite ?? DEFAULT_PRODUCT.showOnSite
     )
-    const [price, setPrice] = useState(
-      product?.price ?? DEFAULT_PRODUCT.price
-    )
+    const [price, setPrice] = useState(product?.price ?? DEFAULT_PRODUCT.price)
     const defaultUsersStatusAccess = {
       ...DEFAULT_USERS_STATUS_ACCESS,
       ...product?.usersStatusAccess,
@@ -134,6 +130,7 @@ const productFunc = (productId, clone = false) => {
             }}
             required
             error={errors.images}
+            maxImages={20}
           />
           <Input
             label="Название"

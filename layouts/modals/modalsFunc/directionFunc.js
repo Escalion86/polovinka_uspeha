@@ -131,7 +131,7 @@ const directionFunc = (directionId, clone = false) => {
                 setImages(value)
               }}
               directory="directions"
-              maxImages={10}
+              maxImages={20}
               error={errors.images}
             />
             <Input

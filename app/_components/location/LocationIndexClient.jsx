@@ -715,7 +715,12 @@ export default function LocationIndexClient({ location }) {
 
             <div className="relative order-first overflow-hidden rounded-[28px] bg-black lg:order-none">
               <div className="absolute inset-0 overflow-hidden">
-                <div className="flex h-full w-max animate-[marquee_40s_linear_infinite]">
+                <div
+                  className="flex h-full w-max"
+                  style={{
+                    animation: `marquee ${activeSpace.images?.length * 4}s linear infinite`,
+                  }}
+                >
                   {[...heroImages, ...heroImages].map((src, index) => (
                     <img
                       key={`${src}-${index}`}
@@ -847,7 +852,12 @@ export default function LocationIndexClient({ location }) {
               {activeSpace.images?.length > 0 ? (
                 <div className="relative overflow-hidden bg-black h-50 tablet:h-56">
                   <div className="absolute inset-0">
-                    <div className="flex h-full w-max animate-[marquee_40s_linear_infinite]">
+                    <div
+                      className="flex h-full w-max"
+                      style={{
+                        animation: `marquee ${activeSpace.images?.length * 4}s linear infinite`,
+                      }}
+                    >
                       {[...activeSpace.images, ...activeSpace.images].map(
                         (src, index) => (
                           <img

@@ -471,6 +471,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
                   }}
                   required
                   error={errors.images}
+                  maxImages={20}
                 />
                 <DirectionSelector
                   value={directionId}
