@@ -15,7 +15,7 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `h-[30px] flex min-w-22 duration-300 outline-hidden items-center justify-center border px-2 py-0.5 rounded-sm gap-x-2 flex-nowrap border-${color} group`,
+      `h-[30px] flex min-w-fit duration-300 outline-hidden items-center justify-center border px-2 py-0.5 rounded-sm gap-x-2 flex-nowrap border-${color} group`,
       active
         ? `text-white bg-${color}`
         : onClick

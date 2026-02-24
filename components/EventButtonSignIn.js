@@ -26,7 +26,7 @@ const TextStatus = ({ children, className }) => (
   </div>
 )
 
-const PaymentsFromLoggedUser = ({ eventId, noBorders }) => {
+const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
   const event = useAtomValue(eventSelector(eventId))
   const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
 

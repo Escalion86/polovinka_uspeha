@@ -65,6 +65,7 @@ const ContactsIconsButtons = ({
   forceWhatsApp,
   forceShowAll,
   forceTelegram,
+  gapX,
 }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
@@ -101,7 +102,7 @@ const ContactsIconsButtons = ({
         grid
           ? 'grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3'
           : 'flex flex-wrap',
-        withTitle ? 'gap-x-3' : 'gap-x-2',
+        gapX ? `gap-x-${gapX}` : withTitle ? 'gap-x-3' : 'gap-x-2',
         className
       )}
     >

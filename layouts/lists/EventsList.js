@@ -12,7 +12,7 @@ const EventsList = ({ events, persistScrollKey }) => {
     <ListWrapper
       itemCount={events.length}
       itemSize={
-        widthNum > 3 ? 270 : widthNum === 3 ? 270 : widthNum === 2 ? 310 : 310
+        widthNum > 3 ? 270 : widthNum === 3 ? 310 : widthNum === 2 ? 310 : 310
       }
       itemKey={(index) => events[index]?._id ?? index}
       wrapperClassName="bg-general/15"

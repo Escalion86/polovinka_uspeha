@@ -845,7 +845,6 @@ export default function LocationIndexClient({ location }) {
                 <ImagesMarquee
                   images={activeSpace.images}
                   heightClassName="h-50 tablet:h-56"
-                  itemWidthClassName="w-80"
                 />
               ) : null}
               <div className="flex max-h-[85vh] flex-col p-6">
@@ -980,16 +979,23 @@ export default function LocationIndexClient({ location }) {
                         <span>{event.time}</span>
                         <span className="text-right">{event.place}</span>
                       </div>
-                      <div className="mt-3 inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
-                        {event.maxParticipants
-                          ? eventsUsersLoading
-                            ? 'Свободных мест: '
-                            : `Свободных мест ${Math.max(
+                      <div className="flex flex-wrap mt-3 items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
+                        {event.maxParticipants ? (
+                          eventsUsersLoading ? (
+                            <span>{'Свободных мест '}</span>
+                          ) : (
+                            <>
+                              <span>{`Свободных мест `}</span>
+                              <span>{`${Math.max(
                                 0,
                                 (event.maxParticipants ?? 0) -
                                   (participantsByEventId.get(event.id) ?? 0)
-                              )} из ${event.maxParticipants}`
-                          : 'Количество мест не ограничено'}
+                              )} из ${event.maxParticipants}`}</span>
+                            </>
+                          )
+                        ) : (
+                          <span>{'Количество мест не ограничено'}</span>
+                        )}
                         {event.maxParticipants && eventsUsersLoading ? (
                           <span className="ml-2 inline-block h-4 w-14 animate-pulse rounded bg-[#6b1f2a]/20" />
                         ) : null}

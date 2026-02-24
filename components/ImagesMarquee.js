@@ -9,7 +9,7 @@ const ImagesMarquee = ({
   className,
   imageClassName,
   heightClassName = 'h-56',
-  itemWidthClassName = 'w-80',
+  itemWidthClassName = 'w-auto',
   durationSec,
   pauseOnHover = true,
 }) => {
@@ -167,7 +167,11 @@ const ImagesMarquee = ({
               src={src}
               alt=""
               draggable={false}
-              className={cn('h-full object-cover', itemWidthClassName, imageClassName)}
+              className={cn(
+                'h-full shrink-0',
+                itemWidthClassName,
+                imageClassName
+              )}
             />
           ))}
         </div>

@@ -4,72 +4,28 @@ import EventCardButtons from '@components/cardButtons/EventCardButtons'
 import CardWrapper from '@components/CardWrapper'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventButtonSignIn from '@components/EventButtonSignIn'
+import EventFreePlacesBadge from '@components/EventFreePlacesBadge'
 import TextInRing from '@components/TextInRing'
 import eventStatusFunc from '@helpers/eventStatus'
-import subEventsSummator from '@helpers/subEventsSummator'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
-import { Suspense, useMemo } from 'react'
+import { Suspense } from 'react'
 import eventCutedSelector from '@state/selectors/eventCutedSelector'
 import Venzel1 from '@svg/venzels/1'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
 import { PriceDiscountByEventId } from '@components/PriceDiscount'
 import loadingAtom from '@state/atoms/loadingAtom'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import EventCard2Skeleton from './Skeletons/EventCard2Skeleton'
 import Skeleton from 'react-loading-skeleton'
 
 const badgeClassName =
   'inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]'
-
-const EventParticipantsBadge = ({ event }) => {
-  const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(event?._id))
-
-  const participantsCount = useMemo(
-    () =>
-      (eventUsers || []).filter((item) => item?.status === 'participant')
-        .length,
-    [eventUsers]
-  )
-
-  const maxParticipants = useMemo(() => {
-    if (!event) return null
-    const hasSubEvents =
-      Array.isArray(event?.subEvents) && event.subEvents.length > 0
-    if (hasSubEvents) {
-      const summary = subEventsSummator(event.subEvents)
-      if (typeof summary?.maxParticipants === 'number')
-        return summary.maxParticipants
-      const maxMans = typeof summary?.maxMans === 'number' ? summary.maxMans : 0
-      const maxWomans =
-        typeof summary?.maxWomans === 'number' ? summary.maxWomans : 0
-      if (maxMans + maxWomans > 0) return maxMans + maxWomans
-    }
-
-    if (typeof event?.maxParticipants === 'number') return event.maxParticipants
-    const maxMans = typeof event?.maxMans === 'number' ? event.maxMans : 0
-    const maxWomans = typeof event?.maxWomans === 'number' ? event.maxWomans : 0
-    if (maxMans + maxWomans > 0) return maxMans + maxWomans
-    return null
-  }, [event])
-
-  return (
-    <div className={badgeClassName}>
-      {maxParticipants
-        ? `Свободных мест ${Math.max(
-            0,
-            (maxParticipants ?? 0) - (participantsCount ?? 0)
-          )} из ${maxParticipants}`
-        : 'Количество мест не ограничено'}
-    </div>
-  )
-}
 
 const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
   const widthNum = useAtomValue(windowDimensionsNumSelector)
@@ -211,39 +167,44 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
               />
             </div>
-            <div className="laptop:hidden mt-auto flex flex-col tablet:flex-row w-full flex-wrap items-center justify-between gap-3 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center justify-between w-full tablet:w-auto gap-x-1">
-              <Suspense
-                fallback={
-                  <div className={badgeClassName}>
-                    <Skeleton height={16} width={180} />
-                  </div>
-                }
-              >
-                <EventParticipantsBadge event={event} />
-              </Suspense>
+            <div className="laptop:hidden mt-auto flex flex-col w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
+              <div className="flex items-center justify-center w-full tablet:w-auto gap-x-1">
+                <Suspense
+                  fallback={
+                    <div className={badgeClassName}>
+                      <Skeleton height={16} width={180} />
+                    </div>
+                  }
+                >
+                  <EventFreePlacesBadge
+                    event={event}
+                    className={badgeClassName}
+                  />
+                </Suspense>
+              </div>
+              <div className="flex items-center justify-between w-full gap-x-1 tablet:justify-center">
                 <div className="tablet:hidden rounded-full bg-[#f7f1f4] px-3">
                   <PriceDiscountByEventId
                     eventId={eventId}
                     className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
                   />
                 </div>
-              </div>
-              <Suspense
-                fallback={
-                  <Skeleton
-                    height={28}
-                    width={140}
+                <Suspense
+                  fallback={
+                    <Skeleton
+                      height={28}
+                      width={140}
+                      className="rounded-full"
+                    />
+                  }
+                >
+                  <EventButtonSignIn
+                    eventId={eventId}
+                    noButtonIfAlreadySignIn
                     className="rounded-full"
                   />
-                }
-              >
-                <EventButtonSignIn
-                  eventId={eventId}
-                  noButtonIfAlreadySignIn
-                  className="rounded-full"
-                />
-              </Suspense>
+                </Suspense>
+              </div>
             </div>
           </div>
         </div>
@@ -255,7 +216,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
               </div>
             }
           >
-            <EventParticipantsBadge event={event} />
+            <EventFreePlacesBadge event={event} className={badgeClassName} />
           </Suspense>
           <Suspense
             fallback={
