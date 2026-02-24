@@ -3,7 +3,7 @@ import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import Divider from '@components/Divider'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
-import ImageGallery from '@components/ImageGallery'
+import ImagesMarquee from '@components/ImagesMarquee'
 import PriceDiscount from '@components/PriceDiscount'
 import PulseButton from '@components/PulseButton'
 import TextLine from '@components/TextLine'
@@ -132,150 +132,173 @@ const EventViewModal = ({
     : undefined
 
   return (
-    <div className="flex flex-col gap-y-2">
-      <ImageGallery images={event?.images} />
-      <div className="flex flex-col flex-1">
-        <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
-          <div className="flex items-center w-full gap-x-1">
+    <div className="flex flex-col gap-4 pb-2">
+      <ImagesMarquee
+        images={event?.images}
+        className="rounded-2xl border border-[#ead7de] shadow-[0_12px_28px_rgba(0,0,0,0.2)]"
+        imageClassName="brightness-[0.9]"
+        heightClassName="h-56"
+        itemWidthClassName="w-80"
+      />
+      <div className="flex flex-col gap-3">
+        <div className="rounded-2xl border border-[#ead7de] bg-[linear-gradient(135deg,#fff,#f9f2f5)] p-4 shadow-[0_8px_24px_rgba(107,31,42,0.08)]">
+          <div className="flex items-start gap-2">
             {!setTopLeftComponent && (
-              <div className="flex justify-end flex-1">
-                <CardButtonsComponent
-                  event={event}
-                  isEventClosed={isEventClosed}
-                  showDeleteButton={false}
-                />
+              <div className="ml-auto">
+                <CardButtonsComponent event={event} isEventClosed={isEventClosed} />
               </div>
             )}
           </div>
+
           {event.usersRelationshipAccess &&
             event.usersRelationshipAccess !== 'yes' && (
-              <UserRelationshipIcon
-                relationship={event.usersRelationshipAccess === 'only'}
-                nameForEvent
-                showName
-              />
-            )}
-          <div className="flex justify-center w-full text-3xl font-bold text-center whitespace-pre-line">
-            {event?.title}
-          </div>
-          <NoOrphanText
-            as="div"
-            className="w-full max-w-full overflow-hidden list-disc textarea ql"
-            html={DOMPurify.sanitize(event?.description)}
-          />
-          <Divider thin light />
-          {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
-          {direction?.title && (
-            <TextLine label="Пространство">{direction.title}</TextLine>
-          )}
-          <TextLine label="Начало">{formatDateTime(event?.dateStart)}</TextLine>
-          <TextLine label="Завершение">
-            {formatDateTime(event?.dateEnd)}
-          </TextLine>
-          <TextLine label="Продолжительность">
-            {formatMinutes(duration ?? 60)}
-          </TextLine>
-
-          {event?.address && (
-            <TextLine label="Адрес">
-              {formatAddress(
-                event?.address,
-                '[не указан]',
-                LOCATIONS?.[location]?.townRu
-              )}
-            </TextLine>
-          )}
-          {event?.address &&
-            (event.address?.link2GisShow || event.address?.linkYandexShow) && (
-              <TextLine label="Ссылки для навигатора">
-                {event.address?.link2GisShow && (
-                  <a
-                    data-tip="Открыть адрес в 2ГИС"
-                    href={
-                      event.address?.link2Gis ||
-                      `https://2gis.ru/search/${event.address.town},%20${
-                        event.address.street
-                      }%20${event.address.house.replaceAll('/', '%2F')}`
-                    }
-                    target="_blank"
-                  >
-                    <img
-                      className="object-contain w-6 h-6 min-w-6 min-h-6"
-                      src="/img/navigators/2gis.png"
-                      alt="2gis"
-                    />
-                  </a>
-                )}
-                {event.address?.linkYandexShow && (
-                  <a
-                    data-tip="Открыть адрес в Яндекс Навигаторе"
-                    href={
-                      event.address?.linkYandexNavigator ||
-                      `yandexnavi://map_search?text=${event.address.town},%20${
-                        event.address.street
-                      }%20${event.address.house.replaceAll('/', '%2F')}`
-                    }
-                    target="_blank"
-                  >
-                    <img
-                      className="object-contain w-6 h-6 min-w-6 min-h-6"
-                      src="/img/navigators/yandex.png"
-                      alt="2gis"
-                    />
-                  </a>
-                )}
-              </TextLine>
-            )}
-          {event?.organizerId && (
-            <>
-              <TextLine label="Организатор">
-                <UserName user={organizer} noWrap />
-              </TextLine>
-              <TextLine label="Контакты организатора">
-                <ContactsIconsButtons user={organizer} />
-              </TextLine>
-            </>
-          )}
-          <NamesOfUsersAssistantsOfEvent eventId={eventId} />
-        </div>
-        <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
-          <EventUsersCounterAndAge event={event} showAges />
-          {(isLoggedUserMember || seeEventsUsers) && (
-            <ValueItem
-              name="Посмотреть участников"
-              color="green-500"
-              icon={faUsers}
-              hoverable
-              onClick={() => modalsFunc.event.users(eventId)}
-            />
-          )}
-        </div>
-        <Divider thin light />
-        <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
-          {subEvent ? (
-            <>
-              {event?.subEvents?.length > 1 && (
-                <div>
-                  Вариант записи на мероприятие:{' '}
-                  <strong>{subEvent.title}</strong>
-                </div>
-              )}
-              <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
-                <PriceDiscount
-                  item={subEvent}
-                  className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+              <div className="mb-2">
+                <UserRelationshipIcon
+                  relationship={event.usersRelationshipAccess === 'only'}
+                  nameForEvent
+                  showName
                 />
               </div>
-            </>
-          ) : (
-            <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
-              <PriceDiscount
-                item={subEventSum}
-                className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+            )}
+
+          <h2 className="text-center text-[clamp(24px,4vw,34px)] font-bold leading-tight text-[#4b0f1c] whitespace-pre-line">
+            {event?.title}
+          </h2>
+        </div>
+
+        <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
+          <NoOrphanText
+            as="div"
+            className="w-full max-w-full overflow-hidden list-disc textarea ql text-[15px] leading-relaxed text-[#2e2530]"
+            html={DOMPurify.sanitize(event?.description)}
+          />
+        </div>
+
+        <div className="rounded-2xl border border-[#f0e2e8] bg-white p-4 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
+          <div className="grid gap-2">
+            {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
+            {direction?.title && (
+              <TextLine label="Пространство">{direction.title}</TextLine>
+            )}
+            <TextLine label="Начало">{formatDateTime(event?.dateStart)}</TextLine>
+            <TextLine label="Завершение">{formatDateTime(event?.dateEnd)}</TextLine>
+            <TextLine label="Продолжительность">
+              {formatMinutes(duration ?? 60)}
+            </TextLine>
+
+            {event?.address && (
+              <TextLine label="Адрес">
+                {formatAddress(
+                  event?.address,
+                  '[не указан]',
+                  LOCATIONS?.[location]?.townRu
+                )}
+              </TextLine>
+            )}
+            {event?.address &&
+              (event.address?.link2GisShow || event.address?.linkYandexShow) && (
+                <TextLine label="Навигатор">
+                  <div className="flex items-center gap-2">
+                    {event.address?.link2GisShow && (
+                      <a
+                        data-tip="Открыть адрес в 2ГИС"
+                        href={
+                          event.address?.link2Gis ||
+                          `https://2gis.ru/search/${event.address.town},%20${
+                            event.address.street
+                          }%20${event.address.house.replaceAll('/', '%2F')}`
+                        }
+                        target="_blank"
+                        className="rounded-lg border border-[#f0e2e8] p-1 transition hover:bg-[#f7f1f4]"
+                      >
+                        <img
+                          className="object-contain w-6 h-6 min-w-6 min-h-6"
+                          src="/img/navigators/2gis.png"
+                          alt="2gis"
+                        />
+                      </a>
+                    )}
+                    {event.address?.linkYandexShow && (
+                      <a
+                        data-tip="Открыть адрес в Яндекс Навигаторе"
+                        href={
+                          event.address?.linkYandexNavigator ||
+                          `yandexnavi://map_search?text=${event.address.town},%20${
+                            event.address.street
+                          }%20${event.address.house.replaceAll('/', '%2F')}`
+                        }
+                        target="_blank"
+                        className="rounded-lg border border-[#f0e2e8] p-1 transition hover:bg-[#f7f1f4]"
+                      >
+                        <img
+                          className="object-contain w-6 h-6 min-w-6 min-h-6"
+                          src="/img/navigators/yandex.png"
+                          alt="2gis"
+                        />
+                      </a>
+                    )}
+                  </div>
+                </TextLine>
+              )}
+
+            {event?.organizerId && (
+              <>
+                <TextLine label="Организатор">
+                  <UserName user={organizer} noWrap />
+                </TextLine>
+                <TextLine label="Контакты">
+                  <ContactsIconsButtons user={organizer} />
+                </TextLine>
+              </>
+            )}
+
+            <NamesOfUsersAssistantsOfEvent eventId={eventId} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#f0e2e8] bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)]">
+          <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-2">
+            <EventUsersCounterAndAge event={event} showAges />
+            {(isLoggedUserMember || seeEventsUsers) && (
+              <ValueItem
+                name="Посмотреть участников"
+                color="green-500"
+                icon={faUsers}
+                hoverable
+                onClick={() => modalsFunc.event.users(eventId)}
               />
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#ead7de] bg-[linear-gradient(135deg,#fff,#f9f2f5)] p-4 shadow-[0_10px_24px_rgba(107,31,42,0.08)]">
+          <div className="flex flex-col items-center gap-3 phoneH:flex-row phoneH:justify-between">
+            <div className="flex flex-col items-center phoneH:items-start">
+              {subEvent ? (
+                <>
+                  {event?.subEvents?.length > 1 && (
+                    <div className="text-sm text-[#5a4750]">
+                      Вариант записи: <strong>{subEvent.title}</strong>
+                    </div>
+                  )}
+                  <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+                    <PriceDiscount
+                      item={subEvent}
+                      className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+                  <PriceDiscount
+                    item={subEventSum}
+                    className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+                  />
+                </div>
+              )}
             </div>
-          )}
-          <EventButtonSignIn eventId={event?._id} noBorders />
+            <EventButtonSignIn eventId={event?._id} noBorders />
+          </div>
         </div>
       </div>
     </div>

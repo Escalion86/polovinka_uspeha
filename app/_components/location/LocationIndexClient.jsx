@@ -13,6 +13,7 @@ import { AdditionalBlockCardContent } from '@layouts/cards/AdditionalBlockCard'
 import { DirectionCardView } from '@layouts/cards/DirectionCard'
 import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import NoOrphanText from '@components/NoOrphanText'
+import ImagesMarquee from '@components/ImagesMarquee'
 import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
@@ -715,21 +716,12 @@ export default function LocationIndexClient({ location }) {
 
             <div className="relative order-first overflow-hidden rounded-[28px] bg-black lg:order-none">
               <div className="absolute inset-0 overflow-hidden">
-                <div
-                  className="flex h-full w-max"
-                  style={{
-                    animation: `marquee ${activeSpace.images?.length * 4}s linear infinite`,
-                  }}
-                >
-                  {[...heroImages, ...heroImages].map((src, index) => (
-                    <img
-                      key={`${src}-${index}`}
-                      src={src}
-                      alt=""
-                      className="h-full w-full object-cover brightness-[0.55]"
-                    />
-                  ))}
-                </div>
+                <ImagesMarquee
+                  images={heroImages}
+                  heightClassName="h-full"
+                  itemWidthClassName="w-full"
+                  imageClassName="brightness-[0.55]"
+                />
               </div>
               <div className="relative z-10 grid h-full place-items-center">
                 <img
@@ -850,28 +842,11 @@ export default function LocationIndexClient({ location }) {
                 ×
               </button>
               {activeSpace.images?.length > 0 ? (
-                <div className="relative overflow-hidden bg-black h-50 tablet:h-56">
-                  <div className="absolute inset-0">
-                    <div
-                      className="flex h-full w-max"
-                      style={{
-                        animation: `marquee ${activeSpace.images?.length * 4}s linear infinite`,
-                      }}
-                    >
-                      {[...activeSpace.images, ...activeSpace.images].map(
-                        (src, index) => (
-                          <img
-                            key={`${src}-${index}`}
-                            src={src}
-                            alt=""
-                            className="object-cover h-full w-80"
-                          />
-                        )
-                      )}
-                    </div>
-                  </div>
-                  {/* <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" /> */}
-                </div>
+                <ImagesMarquee
+                  images={activeSpace.images}
+                  heightClassName="h-50 tablet:h-56"
+                  itemWidthClassName="w-80"
+                />
               ) : null}
               <div className="flex max-h-[85vh] flex-col p-6">
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
@@ -1259,14 +1234,6 @@ export default function LocationIndexClient({ location }) {
         </Section>
       </main>
       <style jsx global>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
         [data-reveal] {
           opacity: 0;
           transform: translateY(16px);
