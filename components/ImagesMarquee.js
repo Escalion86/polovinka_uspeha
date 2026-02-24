@@ -12,12 +12,14 @@ const ImagesMarquee = ({
   itemWidthClassName = 'w-auto',
   durationSec,
   pauseOnHover = true,
+  enableLightbox = true,
 }) => {
   const preparedImages = Array.isArray(images) ? images.filter(Boolean) : []
   const wrapperRef = useRef(null)
   const trackRef = useRef(null)
   const dragStartXRef = useRef(0)
   const dragStartOffsetRef = useRef(0)
+  const hasDraggedRef = useRef(false)
   const lastTsRef = useRef(0)
   const rafRef = useRef(null)
 
@@ -26,6 +28,7 @@ const ImagesMarquee = ({
   const [halfWidth, setHalfWidth] = useState(0)
   const [offset, setOffset] = useState(0)
   const [shouldDuplicate, setShouldDuplicate] = useState(preparedImages.length > 1)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
 
   if (preparedImages.length === 0) return null
 
@@ -129,6 +132,7 @@ const ImagesMarquee = ({
 
     const onMouseMove = (event) => {
       const dx = event.clientX - dragStartXRef.current
+      if (Math.abs(dx) > 4) hasDraggedRef.current = true
       setOffset(
         normalizeOffset(dragStartOffsetRef.current + dx, halfWidth || undefined)
       )
@@ -137,6 +141,7 @@ const ImagesMarquee = ({
       if (!event.touches?.[0]) return
       event.preventDefault()
       const dx = event.touches[0].clientX - dragStartXRef.current
+      if (Math.abs(dx) > 4) hasDraggedRef.current = true
       setOffset(
         normalizeOffset(dragStartOffsetRef.current + dx, halfWidth || undefined)
       )
@@ -162,10 +167,22 @@ const ImagesMarquee = ({
 
   const startDragging = (clientX) => {
     if (!shouldDuplicate) return
+    hasDraggedRef.current = false
     dragStartXRef.current = clientX
     dragStartOffsetRef.current = offset
     setIsDragging(true)
   }
+
+  useEffect(() => {
+    if (lightboxIndex === null) return undefined
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setLightboxIndex(null)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [lightboxIndex])
 
   return (
     <>
@@ -214,8 +231,13 @@ const ImagesMarquee = ({
               src={src}
               alt=""
               draggable={false}
+              onClick={() => {
+                if (!enableLightbox || hasDraggedRef.current) return
+                setLightboxIndex(index % preparedImages.length)
+              }}
               className={cn(
                 'h-full shrink-0',
+                enableLightbox ? 'cursor-zoom-in' : undefined,
                 itemWidthClassName,
                 imageClassName
               )}
@@ -223,6 +245,28 @@ const ImagesMarquee = ({
           ))}
         </div>
       </div>
+      {enableLightbox && lightboxIndex !== null ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 p-4"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setLightboxIndex(null)
+          }}
+        >
+          <button
+            type="button"
+            className="absolute top-4 right-4 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-2xl leading-none text-white hover:bg-black/70"
+            onClick={() => setLightboxIndex(null)}
+            aria-label="Закрыть"
+          >
+            ×
+          </button>
+          <img
+            src={preparedImages[lightboxIndex]}
+            alt=""
+            className="max-h-[92vh] max-w-[96vw] object-contain"
+          />
+        </div>
+      ) : null}
       <style jsx global>{`
         @keyframes imagesMarqueeSlide {
           0% {
@@ -245,6 +289,7 @@ ImagesMarquee.propTypes = {
   itemWidthClassName: PropTypes.string,
   durationSec: PropTypes.number,
   pauseOnHover: PropTypes.bool,
+  enableLightbox: PropTypes.bool,
 }
 
 export default ImagesMarquee

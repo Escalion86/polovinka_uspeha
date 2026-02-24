@@ -51,15 +51,15 @@ const userViewFunc = (userId, params = {}) => {
     const userGender = GENDERS.find((item) => item.value === user?.gender)
     const canShowBirthday = Boolean(
       user?.birthday &&
-        (seeBirthday ||
-          user?.security?.showBirthday === true ||
-          user?.security?.showBirthday === 'full' ||
-          user?.security?.showBirthday === 'noYear')
+      (seeBirthday ||
+        user?.security?.showBirthday === true ||
+        user?.security?.showBirthday === 'full' ||
+        user?.security?.showBirthday === 'noYear')
     )
     const canShowBirthdayYear = Boolean(
       seeBirthday ||
-        user?.security?.showBirthday === 'full' ||
-        user?.security?.showBirthday === true
+      user?.security?.showBirthday === 'full' ||
+      user?.security?.showBirthday === true
     )
     const hasVisibleContacts = useMemo(() => {
       if (!user) return false
@@ -83,16 +83,17 @@ const userViewFunc = (userId, params = {}) => {
       }
 
       const canShowBySecurity = (securityField) =>
-        canSeeAllContacts || (isMemberAndUserIsMember && user.security?.[securityField])
+        canSeeAllContacts ||
+        (isMemberAndUserIsMember && user.security?.[securityField])
 
       const phoneVisible = Boolean(user.phone && canShowBySecurity('showPhone'))
       const whatsappVisible = Boolean(
         (user.whatsapp && canShowBySecurity('showWhatsapp')) ||
-          (!user.whatsapp && seeAllContacts && canShowBySecurity('showWhatsapp'))
+        (!user.whatsapp && seeAllContacts && canShowBySecurity('showWhatsapp'))
       )
       const telegramVisible = Boolean(
         (user.telegram && canShowBySecurity('showTelegram')) ||
-          (!user.telegram && seeAllContacts && canShowBySecurity('showTelegram'))
+        (!user.telegram && seeAllContacts && canShowBySecurity('showTelegram'))
       )
       const instagramVisible = Boolean(
         user.instagram && canShowBySecurity('showInstagram')
@@ -102,11 +103,11 @@ const userViewFunc = (userId, params = {}) => {
 
       return Boolean(
         phoneVisible ||
-          whatsappVisible ||
-          telegramVisible ||
-          instagramVisible ||
-          vkVisible ||
-          emailVisible
+        whatsappVisible ||
+        telegramVisible ||
+        instagramVisible ||
+        vkVisible ||
+        emailVisible
       )
     }, [isLoggedUserMember, params?.showContacts, seeAllContacts, user])
 
@@ -174,7 +175,7 @@ const userViewFunc = (userId, params = {}) => {
               ) : null}
             </div>
             <div className="flex items-center gap-2 ml-auto">
-              {user?.status === 'member' ? (
+              {isLoggedUserMember ? (
                 <UserStatusIcon status={user?.status} />
               ) : null}
               {!setTopLeftComponent && <CardButtonsComponent user={user} />}
@@ -194,7 +195,7 @@ const userViewFunc = (userId, params = {}) => {
         ) : null}
 
         <ModalSurface>
-          <ModalSectionTitle>Семейный контекст</ModalSectionTitle>
+          <ModalSectionTitle>Семейное положение</ModalSectionTitle>
           <TextLine label="Отношения">
             <UserRelationshipIcon
               size="m"
