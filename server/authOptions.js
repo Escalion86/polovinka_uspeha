@@ -11,6 +11,7 @@ import {
 import parseBooleanFromInput from '@helpers/parseBooleanFromInput'
 import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
+import dbConnectGlobal from '@utils/dbConnectGlobal'
 import {
   isAuthDevOnlyModeEnabled,
   isAuthDevOnlyUserAllowed,
@@ -141,6 +142,69 @@ const parseAttributionInput = (value) => {
   }
 }
 
+const toPlainObject = (value) => {
+  if (!value) return {}
+  if (typeof value.toObject === 'function') return value.toObject()
+  if (typeof value === 'object') return value
+  return {}
+}
+
+const readGlobalUserByPhone = async (phone) => {
+  const normalized = normalizePhoneValue(phone)
+  if (!normalized) return null
+  const phoneNumber = Number(normalized)
+  if (!Number.isFinite(phoneNumber)) return null
+
+  const globalDb = await dbConnectGlobal()
+  if (!globalDb) return null
+
+  const doc = await globalDb
+    .model('GlobalUsers')
+    .findOne({ phone: phoneNumber })
+    .select({
+      profile: 1,
+      personalStatus: 1,
+      registrationType: 1,
+      referrerId: 1,
+      lastActivityAt: 1,
+      archive: 1,
+      town: 1,
+      notifications: 1,
+    })
+    .lean()
+  return doc?._id ? doc : null
+}
+
+const readGlobalUserByTelegramId = async (telegramId) => {
+  const telegramIdNum = Number(telegramId)
+  if (!Number.isFinite(telegramIdNum)) return null
+
+  const globalDb = await dbConnectGlobal()
+  if (!globalDb) return null
+
+  const doc = await globalDb
+    .model('GlobalUsers')
+    .findOne({ 'authProviders.telegram.id': telegramIdNum })
+    .select({ phone: 1, cityProfiles: 1, authProviders: 1, notifications: 1 })
+    .lean()
+
+  return doc?._id ? doc : null
+}
+
+const resolveGlobalFirst = (globalValue, localValue) => {
+  if (typeof globalValue === 'boolean') return globalValue
+  if (typeof globalValue === 'number') return globalValue
+  if (globalValue instanceof Date) return globalValue
+  if (Array.isArray(globalValue)) return globalValue.length > 0 ? globalValue : localValue
+  if (globalValue && typeof globalValue === 'object') {
+    return Object.keys(globalValue).length > 0 ? globalValue : localValue
+  }
+  if (typeof globalValue === 'string') {
+    return globalValue.trim() ? globalValue : localValue
+  }
+  return localValue
+}
+
 const syncGlobalLinkSafe = async ({ location, user, source }) => {
   try {
     const result = await syncGlobalUserLink({ location, user, source })
@@ -203,9 +267,12 @@ export const authOptions = {
             source: 'login-read',
           })
 
+          const phoneCandidates = getPhoneCandidates(phone)
           let fetchedUser = await db
             .model('Users')
-            .findOne({ phone })
+            .findOne(
+              phoneCandidates.length > 0 ? { phone: { $in: phoneCandidates } } : { phone }
+            )
             .lean()
 
           if (fetchedUser?._id && !fetchedUser?.password) {
@@ -567,6 +634,77 @@ export const authOptions = {
 
         const usersModel = db.model('Users')
 
+        const globalUserByTelegramId = await readGlobalUserByTelegramId(
+          telegramIdNum
+        )
+        if (globalUserByTelegramId?.phone) {
+          const globalReadResult = await ensureLocalUserFromGlobalByPhone({
+            db,
+            location,
+            phone: globalUserByTelegramId.phone,
+            source: 'telegram-global-id-read',
+          })
+
+          const globalLocalUser = globalReadResult?.data?.localUser
+          if (
+            globalReadResult?.success &&
+            globalReadResult?.data?.globalUserFound &&
+            globalLocalUser?._id
+          ) {
+            if (
+              !isAuthDevOnlyUserAllowed(
+                globalLocalUser,
+                phoneNumberNormalized ?? globalUserByTelegramId.phone
+              )
+            ) {
+              return null
+            }
+
+            const existingTelegramNotification =
+              globalLocalUser.notifications?.telegram ??
+              globalLocalUser.notifications?.get?.('telegram')
+
+            const telegramUpdate = {
+              'notifications.telegram.id': telegramIdNum,
+              'notifications.telegram.active':
+                typeof existingTelegramNotification?.active === 'boolean'
+                  ? existingTelegramNotification.active
+                  : false,
+            }
+
+            if (typeof username !== 'undefined') {
+              telegramUpdate['notifications.telegram.userName'] = username
+            }
+
+            if (!globalLocalUser.phone && phoneNumberNormalized) {
+              telegramUpdate.phone = phoneNumberNormalized
+            }
+
+            const linkedUser = await usersModel
+              .findByIdAndUpdate(
+                globalLocalUser._id,
+                {
+                  $set: telegramUpdate,
+                  $addToSet: {
+                    authProviders: 'telegram',
+                  },
+                },
+                { new: true }
+              )
+              .lean()
+
+            if (!linkedUser?._id) return null
+
+            await syncGlobalLinkSafe({
+              location,
+              user: linkedUser,
+              source: 'telegram-global-id-login',
+            })
+
+            return buildSessionPayload(linkedUser, location)
+          }
+        }
+
         const fetchedUser = await usersModel
           .findOne({
             'notifications.telegram.id': telegramIdNum,
@@ -718,6 +856,11 @@ export const authOptions = {
 
       const result = await db.model('Users').findById(userId)
       session.user.authDevOnlyMode = isAuthDevOnlyModeEnabled()
+      const globalUser = result?.phone
+        ? await readGlobalUserByPhone(result.phone)
+        : null
+      const globalProfile = toPlainObject(globalUser?.profile)
+      const globalSecurity = toPlainObject(globalProfile?.security)
 
       if (result) {
         result.prevActivityAt = result.lastActivityAt
@@ -726,34 +869,78 @@ export const authOptions = {
 
         session.user._id = result._id
         session.user.role = result.role
-        session.user.firstName = result.firstName
-        session.user.secondName = result.secondName
-        session.user.thirdName = result.thirdName
+        session.user.firstName = resolveGlobalFirst(
+          globalProfile?.firstName,
+          result.firstName
+        )
+        session.user.secondName = resolveGlobalFirst(
+          globalProfile?.secondName,
+          result.secondName
+        )
+        session.user.thirdName = resolveGlobalFirst(
+          globalProfile?.thirdName,
+          result.thirdName
+        )
         session.user.phone = result.phone
-        session.user.email = result.email
-        session.user.whatsapp = result.whatsapp
-        session.user.ok = result.ok
-        session.user.telegram = result.telegram
-        session.user.instagram = result.instagram
-        session.user.vk = result.vk
-        session.user.gender = result.gender
-        session.user.relationship = result.relationship
-        session.user.town = result.town
-        session.user.personalStatus = result.personalStatus
-        session.user.birthday = result.birthday
-        session.user.lastActivityAt = result.lastActivityAt
+        session.user.email = resolveGlobalFirst(globalProfile?.email, result.email)
+        session.user.whatsapp = resolveGlobalFirst(
+          globalProfile?.whatsapp,
+          result.whatsapp
+        )
+        session.user.ok = resolveGlobalFirst(globalProfile?.ok, result.ok)
+        session.user.telegram = resolveGlobalFirst(
+          globalProfile?.telegram,
+          result.telegram
+        )
+        session.user.instagram = resolveGlobalFirst(
+          globalProfile?.instagram,
+          result.instagram
+        )
+        session.user.vk = resolveGlobalFirst(globalProfile?.vk, result.vk)
+        session.user.gender = resolveGlobalFirst(globalProfile?.gender, result.gender)
+        session.user.relationship = resolveGlobalFirst(
+          globalProfile?.relationship,
+          result.relationship
+        )
+        session.user.town = resolveGlobalFirst(globalUser?.town, result.town)
+        session.user.personalStatus = resolveGlobalFirst(
+          globalUser?.personalStatus,
+          result.personalStatus
+        )
+        session.user.birthday = resolveGlobalFirst(
+          globalProfile?.birthday,
+          result.birthday
+        )
+        session.user.lastActivityAt = resolveGlobalFirst(
+          globalUser?.lastActivityAt,
+          result.lastActivityAt
+        )
         session.user.prevActivityAt = result.prevActivityAt
         session.user.orientation = result.orientation
         session.user.status = result.status
-        session.user.images = result.images
-        session.user.haveKids = result.haveKids
-        session.user.security = result.security
+        session.user.images = resolveGlobalFirst(globalProfile?.images, result.images)
+        session.user.haveKids = resolveGlobalFirst(
+          globalProfile?.haveKids,
+          result.haveKids
+        )
+        session.user.security =
+          Object.keys(globalSecurity).length > 0 ? globalSecurity : result.security
         session.user.notifications = result.notifications
         session.user.eventAchievements = result.eventAchievements
-        session.user.registrationType = result.registrationType
+        session.user.registrationType = resolveGlobalFirst(
+          globalUser?.registrationType,
+          result.registrationType
+        )
         session.user.authProviders = result.authProviders
-        session.user.referrerId = result.referrerId
-        session.user.consentToMailing = result.consentToMailing
+        session.user.referrerId = resolveGlobalFirst(
+          globalUser?.referrerId,
+          result.referrerId
+        )
+        session.user.consentToMailing = resolveGlobalFirst(
+          globalUser?.notifications?.consentToMailing,
+          result.consentToMailing
+        )
+        session.user.archive = resolveGlobalFirst(globalUser?.archive, result.archive)
         session.user.createdAt = result.createdAt
         session.user.updatedAt = result.updatedAt
       }

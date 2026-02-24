@@ -180,14 +180,6 @@ const usersSchema = {
     type: Boolean,
     default: false,
   },
-  soctag: {
-    type: String,
-    default: null,
-  },
-  custag: {
-    type: String,
-    default: null,
-  },
   town: {
     type: String,
     default: null,

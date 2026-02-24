@@ -210,10 +210,8 @@ const StateLoader = (props) => {
     if (props.additionalBlocks?.length > 0) {
       setAdditionalBlocksState(props.additionalBlocks)
     }
-    if (props.users?.length > 0) {
-      setUsersState(props.users)
-      // setIsLoadedUsersAtom(true)
-    }
+    setUsersState(Array.isArray(props.users) ? props.users : [])
+    // setIsLoadedUsersAtom(true)
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)
     setSiteSettingsState(props.siteSettings)

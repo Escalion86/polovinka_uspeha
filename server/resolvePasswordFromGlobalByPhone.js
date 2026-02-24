@@ -57,6 +57,10 @@ const resolvePasswordFromGlobalByPhone = async ({ phone, location }) => {
     }
   }
 
+  if (globalUser?.password && typeof globalUser.password === 'string') {
+    return globalUser.password
+  }
+
   return null
 }
 

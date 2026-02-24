@@ -22,7 +22,9 @@
 
 ## Этап 1. Dry-run аудит (без записи)
 - Запустить:
+  - `npm run duplicates:phones`
   - `npm run global-users:dry-run`
+  - `npm run global-users:backfill:dry-run`
 - Скрипт:
   - читает пользователей из `krsk/nrsk/ekb`;
   - нормализует телефоны;
@@ -32,11 +34,22 @@
 
 ## Этап 2. Ручное согласование
 - Проверить в отчете:
+  - `duplicates:phones`:
+    - `duplicatesByCityGroups` — дубли внутри одного города (критично, исправить до write);
   - `invalidPhones` — невалидные телефоны;
   - `duplicatePhonesWithinCity` — дубли в одном городе;
   - `conflicts` — конфликтующие поля профиля по одному телефону;
   - `crossCityUsers` — пользователи, присутствующие в нескольких городах.
 - До подтверждения владельцем продукта записи в `GlobalUsers` запрещены.
+
+## Этап 2.5. Backfill `GlobalUsers` (после согласования)
+- Запустить:
+  - `npm run global-users:backfill:apply`
+  - `npm run global-users:backfill:dry-run`
+- Критерий успеха:
+  - в apply нет ошибок;
+  - в финальном dry-run `summary.candidates` соответствует ожидаемому объему;
+  - `summary.duplicatePhonesWithinCity = 0` (или осознанно обработаны отдельно).
 
 ## Этап 3. Shadow-режим (после согласования)
 - Включить только копирование в `GlobalUsers` (dual-write), чтение оставить по старому потоку.

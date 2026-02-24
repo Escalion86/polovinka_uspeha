@@ -23,6 +23,7 @@ import refreshSignedUpEventsCount from './refreshSignedUpEventsCount'
 import recalculateEventAchievements from './recalculateEventAchievements'
 // import { telegramCmdToIndex } from './telegramCmd'
 import processReferralRewards from './processReferralRewards'
+import syncGlobalUserLink from './syncGlobalUserLink'
 
 function isJson(str) {
   try {
@@ -713,6 +714,24 @@ export default async function handler(Schema, req, res, props = {}) {
           }
           const jsonData = data.toJSON()
 
+          if (Schema === 'Users') {
+            try {
+              const syncResult = await syncGlobalUserLink({
+                location,
+                user: jsonData,
+                source: 'users-create',
+              })
+              if (!syncResult?.success) {
+                console.log(
+                  'syncGlobalUserLink on user create skipped:',
+                  syncResult?.data?.error
+                )
+              }
+            } catch (syncError) {
+              console.log('syncGlobalUserLink on user create error:', syncError)
+            }
+          }
+
           if (Schema === 'Events' && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = updateEventInCalendar(jsonData, location)
@@ -837,6 +856,22 @@ export default async function handler(Schema, req, res, props = {}) {
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
           if (Schema === 'Users') {
+            try {
+              const syncResult = await syncGlobalUserLink({
+                location,
+                user: data,
+                source: 'users-update',
+              })
+              if (!syncResult?.success) {
+                console.log(
+                  'syncGlobalUserLink on user update skipped:',
+                  syncResult?.data?.error
+                )
+              }
+            } catch (syncError) {
+              console.log('syncGlobalUserLink on user update error:', syncError)
+            }
+
             // Если Telegram ID был обновлен
             const oldTelegramId = oldData.notifications?.telegram?.id
             const newTelegramId = data.notifications?.telegram?.id

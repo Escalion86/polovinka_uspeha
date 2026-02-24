@@ -83,6 +83,19 @@ npm run duplicates:phones
 Критерий успеха:
 - нет новых критичных аномалий, которые ломают login/link пользователей.
 
+### 4) Backfill `GlobalUsers` (обязательно при первом прод-раскрытии глобального профиля)
+
+```bash
+npm run global-users:backfill:dry-run
+npm run global-users:backfill:apply
+npm run global-users:backfill:dry-run
+```
+
+Критерий успеха:
+- нет ошибок в apply;
+- в dry-run после apply не появляется новых критичных аномалий;
+- дубли телефонов внутри одного города устранены до apply.
+
 ## Опциональные шаги (по необходимости релиза)
 
 - Dry-run по `GlobalUsers`:

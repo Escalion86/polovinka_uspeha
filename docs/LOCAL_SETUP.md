@@ -58,6 +58,10 @@ npm run build
 ```bash
 npm run global-users:dry-run
 ```
+- Backfill `GlobalUsers` (по умолчанию dry-run):
+```bash
+npm run global-users:backfill:dry-run
+```
 - Проверка дублей телефонов:
 ```bash
 npm run duplicates:phones
