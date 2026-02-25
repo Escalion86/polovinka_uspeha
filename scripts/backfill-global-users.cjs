@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 const { loadEnvConfig } = require('@next/env')
 
 loadEnvConfig(process.cwd())
@@ -385,7 +385,7 @@ async function main() {
         setPayload['authProviders.telegram.id'] = Number(authProviders.telegram.id)
       }
 
-      const result = await globalCollection.updateOne(
+      const updatedGlobalUser = await globalCollection.findOneAndUpdate(
         { phone: Number(phone) },
         {
           $setOnInsert: {
@@ -399,11 +399,33 @@ async function main() {
             cities: { $each: cities },
           },
         },
-        { upsert: true }
+        {
+          upsert: true,
+          returnDocument: 'after',
+        }
       )
 
-      if (result.upsertedCount > 0) createdCount += 1
-      else if (result.matchedCount > 0) updatedCount += 1
+      if (updatedGlobalUser?.lastErrorObject?.upserted) createdCount += 1
+      else updatedCount += 1
+
+      const resolvedGlobalUserId = updatedGlobalUser?.value?._id
+        ? String(updatedGlobalUser.value._id)
+        : null
+      if (resolvedGlobalUserId) {
+        for (const city of cities) {
+          const cityProfile = cityProfiles[city]
+          if (!cityProfile?.userId) continue
+          const cityDbName = `${process.env[DB_ENV_MAP[city]]}${DB_SUFFIX}`
+          const cityDb = client.db(cityDbName)
+          const cityUserId = ObjectId.isValid(cityProfile.userId)
+            ? new ObjectId(cityProfile.userId)
+            : cityProfile.userId
+          await cityDb.collection('users').updateOne(
+            { _id: cityUserId },
+            { $set: { globalUserId: resolvedGlobalUserId } }
+          )
+        }
+      }
     }
 
     const finishedAt = nowIso()

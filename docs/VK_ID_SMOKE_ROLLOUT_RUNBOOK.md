@@ -55,6 +55,10 @@
 - Ошибки `CredentialsSignin` и backend ошибки VK exchange.
 - Доля fallback на телефонный вход.
 
+## Шаблон отчета
+
+Использовать `docs/VK_ID_SMOKE_REPORT_TEMPLATE.md` для фиксации результатов smoke и решения `GO/HOLD/ROLLBACK`.
+
 ## Критерии stop/rollback
 
 Немедленно откатывать (`allowVkAuth=false`) если:

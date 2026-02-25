@@ -14,6 +14,7 @@ export default function useCityAccess({
   const [accessLoading, setAccessLoading] = useState(true)
   const [isAllowed, setIsAllowed] = useState(true)
   const [currentCityTitle, setCurrentCityTitle] = useState('')
+  const [currentCityStatus, setCurrentCityStatus] = useState('active')
   const [alternativeCities, setAlternativeCities] = useState([])
 
   useEffect(() => {
@@ -34,6 +35,9 @@ export default function useCityAccess({
         const cityData = json?.data?.city || {}
         setIsAllowed(Boolean(cityData?.[allowField]))
         setCurrentCityTitle(cityData?.title || getFallbackCityTitle(location))
+        setCurrentCityStatus(
+          typeof cityData?.status === 'string' ? cityData.status : 'active'
+        )
         setAlternativeCities(
           Array.isArray(json?.data?.[alternativesField])
             ? json.data[alternativesField]
@@ -43,6 +47,7 @@ export default function useCityAccess({
         if (!isMounted) return
         setIsAllowed(true)
         setCurrentCityTitle(getFallbackCityTitle(location))
+        setCurrentCityStatus('active')
         setAlternativeCities([])
       } finally {
         if (isMounted) setAccessLoading(false)
@@ -60,6 +65,7 @@ export default function useCityAccess({
     accessLoading,
     isAllowed,
     currentCityTitle,
+    currentCityStatus,
     alternativeCities,
   }
 }

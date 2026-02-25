@@ -1,6 +1,6 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.30",
+  "version": "2.0.33",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
@@ -14,6 +14,10 @@
     "global-users:backfill:dry-run": "node scripts/backfill-global-users.cjs",
     "global-users:backfill:apply": "node scripts/backfill-global-users.cjs --write",
     "global-users:backfill:dry-run:test": "cross-env GLOBAL_USERS_BACKFILL_DB_SUFFIX=_test node scripts/backfill-global-users.cjs",
+    "users:cleanup-legacy:dry-run": "node scripts/cleanup-users-legacy-fields.cjs",
+    "users:cleanup-legacy:apply": "node scripts/cleanup-users-legacy-fields.cjs --write",
+    "verify:global-links": "node scripts/verify-global-links.cjs",
+    "verify:global-links:test": "cross-env VERIFY_GLOBAL_LINKS_DB_SUFFIX=_test node scripts/verify-global-links.cjs",
     "auth-providers:dry-run": "node scripts/backfill-auth-providers.cjs",
     "auth-providers:apply": "node scripts/backfill-auth-providers.cjs --write",
     "auth-providers:dry-run:test": "cross-env BACKFILL_AUTH_PROVIDERS_DB_SUFFIX=_test node scripts/backfill-auth-providers.cjs",
@@ -22,6 +26,7 @@
     "notifications-new-events:dry-run:test": "cross-env MIGRATE_NEW_EVENTS_DB_SUFFIX=_test node scripts/migrate-new-events-notifications.cjs",
     "duplicates:phones": "node scripts/find-duplicate-phones.cjs",
     "duplicates:phones:test": "cross-env FIND_DUPLICATES_DB_SUFFIX=_test node scripts/find-duplicate-phones.cjs",
+    "validate:city-policy:analytics": "node scripts/validate-city-policy-analytics.cjs",
     "analyze": "ANALYZE=true npm run build",
     "knip": "knip",
     "postinstall": "flowbite-react build"

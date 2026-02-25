@@ -29,6 +29,7 @@ const ImagesMarquee = ({
   const [offset, setOffset] = useState(0)
   const [shouldDuplicate, setShouldDuplicate] = useState(preparedImages.length > 1)
   const [lightboxIndex, setLightboxIndex] = useState(null)
+  const [imageMeasureTick, setImageMeasureTick] = useState(0)
 
   if (preparedImages.length === 0) return null
 
@@ -50,6 +51,10 @@ const ImagesMarquee = ({
 
   useEffect(() => {
     setShouldDuplicate(preparedImages.length > 1)
+  }, [preparedImages.length])
+
+  useEffect(() => {
+    setImageMeasureTick(0)
   }, [preparedImages.length])
 
   useEffect(() => {
@@ -92,7 +97,7 @@ const ImagesMarquee = ({
       window.removeEventListener('resize', measure)
       if (observer) observer.disconnect()
     }
-  }, [preparedImages.length, shouldDuplicate])
+  }, [imageMeasureTick, preparedImages.length, shouldDuplicate])
 
   useEffect(() => {
     const canAnimate =
@@ -231,6 +236,12 @@ const ImagesMarquee = ({
               src={src}
               alt=""
               draggable={false}
+              onLoad={() => {
+                setImageMeasureTick((tick) => tick + 1)
+              }}
+              onError={() => {
+                setImageMeasureTick((tick) => tick + 1)
+              }}
               onClick={() => {
                 if (!enableLightbox || hasDraggedRef.current) return
                 setLightboxIndex(index % preparedImages.length)

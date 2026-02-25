@@ -149,6 +149,22 @@ const toPlainObject = (value) => {
   return {}
 }
 
+const normalizeNotificationSettings = (source = {}) => {
+  const settingsSource =
+    source && typeof source === 'object' && source.settings && typeof source.settings === 'object'
+      ? source.settings
+      : {}
+  const settings = { ...settingsSource }
+  if (
+    typeof settings.newEvents !== 'boolean' &&
+    typeof settings.newEventsByTags === 'boolean'
+  ) {
+    settings.newEvents = settings.newEventsByTags
+  }
+  delete settings.newEventsByTags
+  return settings
+}
+
 const readGlobalUserByPhone = async (phone) => {
   const normalized = normalizePhoneValue(phone)
   if (!normalized) return null
@@ -161,6 +177,31 @@ const readGlobalUserByPhone = async (phone) => {
   const doc = await globalDb
     .model('GlobalUsers')
     .findOne({ phone: phoneNumber })
+    .select({
+      profile: 1,
+      cityProfiles: 1,
+      personalStatus: 1,
+      registrationType: 1,
+      referrerId: 1,
+      lastActivityAt: 1,
+      archive: 1,
+      town: 1,
+      notifications: 1,
+    })
+    .lean()
+  return doc?._id ? doc : null
+}
+
+const readGlobalUserById = async (globalUserId) => {
+  const id = String(globalUserId || '').trim()
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) return null
+
+  const globalDb = await dbConnectGlobal()
+  if (!globalDb) return null
+
+  const doc = await globalDb
+    .model('GlobalUsers')
+    .findById(id)
     .select({
       profile: 1,
       personalStatus: 1,
@@ -267,11 +308,26 @@ export const authOptions = {
             source: 'login-read',
           })
 
+          const globalUserByPhone = await readGlobalUserByPhone(phone)
+          const globalCityProfile =
+            globalUserByPhone?.cityProfiles &&
+            typeof globalUserByPhone.cityProfiles === 'object'
+              ? globalUserByPhone.cityProfiles[location]
+              : null
+          const linkedLocalUserId =
+            globalCityProfile?.userId && String(globalCityProfile.userId).trim()
+              ? String(globalCityProfile.userId).trim()
+              : null
+
           const phoneCandidates = getPhoneCandidates(phone)
           let fetchedUser = await db
             .model('Users')
             .findOne(
-              phoneCandidates.length > 0 ? { phone: { $in: phoneCandidates } } : { phone }
+              linkedLocalUserId
+                ? { _id: linkedLocalUserId }
+                : phoneCandidates.length > 0
+                  ? { phone: { $in: phoneCandidates } }
+                  : { phone }
             )
             .lean()
 
@@ -856,11 +912,12 @@ export const authOptions = {
 
       const result = await db.model('Users').findById(userId)
       session.user.authDevOnlyMode = isAuthDevOnlyModeEnabled()
-      const globalUser = result?.phone
-        ? await readGlobalUserByPhone(result.phone)
-        : null
+      const globalUser =
+        (result?.phone ? await readGlobalUserByPhone(result.phone) : null) ||
+        (result?.globalUserId ? await readGlobalUserById(result.globalUserId) : null)
       const globalProfile = toPlainObject(globalUser?.profile)
       const globalSecurity = toPlainObject(globalProfile?.security)
+      const globalNotifications = toPlainObject(globalUser?.notifications)
 
       if (result) {
         result.prevActivityAt = result.lastActivityAt
@@ -882,6 +939,10 @@ export const authOptions = {
           result.thirdName
         )
         session.user.phone = result.phone
+        session.user.globalUserId = resolveGlobalFirst(
+          globalUser?._id ? String(globalUser._id) : null,
+          result.globalUserId
+        )
         session.user.email = resolveGlobalFirst(globalProfile?.email, result.email)
         session.user.whatsapp = resolveGlobalFirst(
           globalProfile?.whatsapp,
@@ -925,7 +986,14 @@ export const authOptions = {
         )
         session.user.security =
           Object.keys(globalSecurity).length > 0 ? globalSecurity : result.security
-        session.user.notifications = result.notifications
+        const localNotifications = toPlainObject(result.notifications)
+        session.user.notifications = {
+          ...localNotifications,
+          settings: resolveGlobalFirst(
+            normalizeNotificationSettings(globalNotifications),
+            normalizeNotificationSettings(localNotifications)
+          ),
+        }
         session.user.eventAchievements = result.eventAchievements
         session.user.registrationType = resolveGlobalFirst(
           globalUser?.registrationType,

@@ -147,13 +147,20 @@ const DEFAULT_CLOSED_SPACE_SUBTITLE = 'ЗАКРЫТОЕ ПРОСТРАНСТВО
 const DEFAULT_CLOSED_SPACE_DESCRIPTION =
   'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.'
 
-export default function LocationIndexClient({ location }) {
+export default function LocationIndexClient({
+  location,
+  initialDirections,
+  initialSiteSettings,
+  initialGlobalAboutSpaceCards,
+}) {
   const [activeDay, setActiveDay] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [events, setEvents] = useState([])
   const [additionalBlocks, setAdditionalBlocks] = useState([])
   const [reviewsData, setReviewsData] = useState([])
-  const [directionsData, setDirectionsData] = useState([])
+  const [directionsData, setDirectionsData] = useState(
+    Array.isArray(initialDirections) ? initialDirections : []
+  )
   const [eventsUsers, setEventsUsers] = useState([])
   const [eventsUsersLoading, setEventsUsersLoading] = useState(true)
   const [reviewsPerView, setReviewsPerView] = useState(3)
@@ -162,8 +169,10 @@ export default function LocationIndexClient({ location }) {
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
   const headerRef = useRef(null)
-  const [siteSettings, setSiteSettings] = useState({})
-  const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState([])
+  const [siteSettings, setSiteSettings] = useState(initialSiteSettings || {})
+  const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState(
+    Array.isArray(initialGlobalAboutSpaceCards) ? initialGlobalAboutSpaceCards : []
+  )
   const [activeReview, setActiveReview] = useState(null)
   const [activeSpace, setActiveSpace] = useState(null)
   const reviewTextRefs = useRef(new Map())
@@ -198,9 +207,14 @@ export default function LocationIndexClient({ location }) {
   useEffect(() => {
     let isMounted = true
 
-    const loadData = async () => {
-      const globalAboutSpaceCardsData = await fetchingGlobalAboutSpaceCards()
-      if (isMounted) {
+    const loadPrimaryData = async () => {
+      if (
+        !Array.isArray(initialGlobalAboutSpaceCards) ||
+        initialGlobalAboutSpaceCards.length === 0
+      ) {
+        const globalAboutSpaceCardsData = await fetchingGlobalAboutSpaceCards()
+        if (!isMounted) return
+
         setGlobalAboutSpaceCards(
           Array.isArray(globalAboutSpaceCardsData?.aboutSpaceCards)
             ? globalAboutSpaceCardsData.aboutSpaceCards
@@ -208,22 +222,43 @@ export default function LocationIndexClient({ location }) {
         )
       }
 
-      const directions = await fetchingDirections(defaultLocation)
-      if (isMounted) {
+      if (!Array.isArray(initialDirections) || initialDirections.length === 0) {
+        const directions = await fetchingDirections(defaultLocation)
+        if (!isMounted) return
+
         setDirectionsData(Array.isArray(directions) ? directions : [])
       }
 
-      const [
-        eventsData,
-        additionalBlocksData,
-        reviewsResponse,
-        siteSettingsData,
-      ] = await Promise.all([
-        fetchingEvents(defaultLocation),
-        fetchingAdditionalBlocks(defaultLocation),
-        fetchingReviews(defaultLocation),
-        fetchingSiteSettings(defaultLocation),
-      ])
+      if (!initialSiteSettings || Object.keys(initialSiteSettings).length === 0) {
+        const siteSettingsData = await fetchingSiteSettings(defaultLocation)
+        if (!isMounted) return
+
+        setSiteSettings(siteSettingsData || {})
+      }
+    }
+
+    loadPrimaryData()
+
+    return () => {
+      isMounted = false
+    }
+  }, [
+    defaultLocation,
+    initialDirections,
+    initialGlobalAboutSpaceCards,
+    initialSiteSettings,
+  ])
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadSecondaryData = async () => {
+      const [eventsData, additionalBlocksData, reviewsResponse] =
+        await Promise.all([
+          fetchingEvents(defaultLocation),
+          fetchingAdditionalBlocks(defaultLocation),
+          fetchingReviews(defaultLocation),
+        ])
 
       if (!isMounted) return
 
@@ -232,10 +267,9 @@ export default function LocationIndexClient({ location }) {
         Array.isArray(additionalBlocksData) ? additionalBlocksData : []
       )
       setReviewsData(Array.isArray(reviewsResponse) ? reviewsResponse : [])
-      setSiteSettings(siteSettingsData || {})
     }
 
-    loadData()
+    loadSecondaryData()
 
     return () => {
       isMounted = false
@@ -719,8 +753,9 @@ export default function LocationIndexClient({ location }) {
                 <ImagesMarquee
                   images={heroImages}
                   heightClassName="h-full"
-                  itemWidthClassName="w-full"
-                  imageClassName="brightness-[0.55]"
+                  itemWidthClassName="w-auto"
+                  imageClassName="object-cover brightness-[0.55]"
+                  durationSec={60}
                 />
               </div>
               <div className="relative z-10 grid h-full place-items-center">
@@ -1386,4 +1421,13 @@ AdditionalBlockSection.propTypes = {
 
 LocationIndexClient.propTypes = {
   location: PropTypes.string,
+  initialDirections: PropTypes.arrayOf(PropTypes.object),
+  initialSiteSettings: PropTypes.object,
+  initialGlobalAboutSpaceCards: PropTypes.arrayOf(PropTypes.object),
+}
+
+LocationIndexClient.defaultProps = {
+  initialDirections: [],
+  initialSiteSettings: {},
+  initialGlobalAboutSpaceCards: [],
 }

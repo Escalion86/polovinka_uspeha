@@ -229,6 +229,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
 
   const cityProfiles = toPlainObject(globalUser?.cityProfiles)
   const locationProfile = cityProfiles?.[location] || {}
+  const globalUserId = String(globalUser._id)
   const preparedProfile = normalizeGlobalProfile(globalUser?.profile)
   const preparedCore = normalizeGlobalCore(globalUser)
   const preparedNotifications = normalizeGlobalNotifications(globalUser)
@@ -238,6 +239,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       ...toPatchFromGlobalProfile(preparedProfile),
       ...toPatchFromGlobalCore(preparedCore),
       ...toPatchFromGlobalNotifications(preparedNotifications),
+      globalUserId,
     }
     const hasPatch = Object.keys(patch).length > 0
     const updatedExisting =
@@ -286,6 +288,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
 
   const newLocalUser = await db.model('Users').create({
     phone: phoneNumber,
+    globalUserId,
     ...(preparedCore.password ? { password: preparedCore.password } : {}),
     firstName: preparedProfile.firstName,
     secondName: preparedProfile.secondName,

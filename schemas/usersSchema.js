@@ -91,6 +91,10 @@ const usersSchema = {
     // required: [true, 'Введите Телефон'],
     default: null,
   },
+  globalUserId: {
+    type: String,
+    default: null,
+  },
   registrationType: {
     type: String,
     default: 'phone',

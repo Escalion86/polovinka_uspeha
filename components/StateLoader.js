@@ -1,4 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { RESET } from 'jotai/utils'
 
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
@@ -210,7 +211,11 @@ const StateLoader = (props) => {
     if (props.additionalBlocks?.length > 0) {
       setAdditionalBlocksState(props.additionalBlocks)
     }
-    setUsersState(Array.isArray(props.users) ? props.users : [])
+    if (Array.isArray(props.users)) {
+      setUsersState(props.users)
+    } else {
+      setUsersState(RESET)
+    }
     // setIsLoadedUsersAtom(true)
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)

@@ -1,5 +1,6 @@
 import localFont from 'next/font/local'
 import Providers from './providers'
+import { getSiteUrl } from '@server/seo'
 
 import '../styles/global.css'
 import '../styles/burger.css'
@@ -18,12 +19,30 @@ import '../styles/katex.min.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
 export const metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: 'Центр серьёзных знакомств - «Половинка успеха»',
     template: '%s | Половинка успеха',
   },
   description:
     'Половинка успеха - проект, созданный для тех, кто ищет серьёзные знакомства и живые встречи.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    siteName: 'Половинка успеха',
+    title: 'Центр серьёзных знакомств - «Половинка успеха»',
+    description:
+      'Половинка успеха - проект живых встреч и знакомств через офлайн-мероприятия.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Половинка успеха',
+    description:
+      'Проект живых офлайн-встреч и знакомств в разных городах.',
+  },
   applicationName: 'Приложение «Половинка успеха»',
   manifest: '/manifest.webmanifest',
   icons: {

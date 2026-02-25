@@ -57,6 +57,7 @@ export default function LocationLoginClient({ location }) {
     accessLoading,
     isAllowed: isLoginAllowed,
     currentCityTitle,
+    currentCityStatus,
     alternativeCities: alternativeLoginCities,
   } = useCityAccess({
     location,
@@ -64,6 +65,8 @@ export default function LocationLoginClient({ location }) {
     alternativesField: 'availableForLogin',
   })
   const isVkAuthEnabled = useVkAuthAvailability(location)
+  const shouldShowTransferNotice =
+    currentCityStatus !== 'active' && alternativeLoginCities.length > 0
 
   const rawPhoneValue = phone ? String(phone) : ''
   const displayDigits = rawPhoneValue || (phoneFocused ? '7' : '')
@@ -235,6 +238,30 @@ export default function LocationLoginClient({ location }) {
           </div>
 
           <form className="grid gap-4 mt-6" onSubmit={handleSubmit}>
+            {shouldShowTransferNotice ? (
+              <div className="rounded-2xl border border-[rgba(107,31,42,0.18)] bg-[#fff8fa] p-4 shadow-[0_10px_18px_rgba(107,31,42,0.08)]">
+                <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
+                  Город в режиме закрытия
+                </div>
+                <div className="mt-2 text-sm leading-relaxed text-[#3a2c33]">
+                  В городе {currentCityTitle || location} личный кабинет доступен
+                  только в ограниченном режиме. Для новых действий перейдите в
+                  активный город:
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {alternativeLoginCities.map((city) => (
+                    <Link
+                      key={city.slug}
+                      href={`/${city.slug}/login`}
+                      className="rounded-full border border-[rgba(107,31,42,0.18)] bg-white px-4 py-1.5 text-xs font-semibold text-[#6b1f2a] transition hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(107,31,42,0.12)]"
+                    >
+                      {city.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             {isVkAuthEnabled ? (
               <>
                 <VkIdOneTapAuth

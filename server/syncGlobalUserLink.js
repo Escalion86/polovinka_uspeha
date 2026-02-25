@@ -342,6 +342,19 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
     }
   )
 
+  if (updated?._id) {
+    try {
+      const localDb = await dbConnect(location)
+      if (localDb) {
+        await localDb.model('Users').findByIdAndUpdate(userId, {
+          $set: { globalUserId: String(updated._id) },
+        })
+      }
+    } catch (error) {
+      console.log('syncGlobalUserLink local globalUserId set error:', error)
+    }
+  }
+
   return {
     success: true,
     data: {

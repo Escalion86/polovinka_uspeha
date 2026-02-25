@@ -88,12 +88,12 @@ const UsersFilter = ({
       )}
       {value?.ages && (
         <Slider
-          value={[value.ages.min || 18, value.ages.max || 70]}
+          value={[value.ages.min ?? 18, value.ages.max ?? 70]}
           onChange={([min, max]) =>
             onChange((state) => ({ ...state, ages: { min, max } }))
           }
-          min={minMaxAges?.min ? minMaxAges.min : 18}
-          max={minMaxAges?.max ? minMaxAges.max : 70}
+          min={minMaxAges?.min ?? 18}
+          max={minMaxAges?.max ?? 70}
           label="Возраст"
           labelClassName="w-16 min-w-16"
           wrapperClassName="w-full min-w-[300px] max-w-[500px]"

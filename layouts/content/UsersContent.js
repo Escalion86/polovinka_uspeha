@@ -16,7 +16,7 @@ import usersAtomAsync from '@state/async/usersAtomAsync'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import birthDateToAge from '@helpers/birthDateToAge'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
@@ -66,16 +66,27 @@ const UsersContent = () => {
   )
 
   const minMaxAges = useMemo(
-    () =>
-      usersWithAges.reduce(
-        (acc, user) => ({
-          min: user.age < acc.min ? user.age : acc.min,
-          max: user.age > acc.max ? user.age : acc.max,
-        }),
-        { min: 70, max: 18 }
-      ),
+    () => {
+      const ages = usersWithAges
+        .map((user) => Number(user.age))
+        .filter((age) => Number.isFinite(age))
+
+      if (ages.length === 0) {
+        return { min: 18, max: 70 }
+      }
+
+      return {
+        min: Math.min(...ages),
+        max: Math.max(...ages),
+      }
+    },
     [usersWithAges]
   )
+
+  const normalizedInitialAges =
+    minMaxAges.min <= minMaxAges.max
+      ? { min: minMaxAges.min, max: minMaxAges.max }
+      : { min: 18, max: 70 }
 
   const [filter, setFilter] = useState({
     gender: {
@@ -91,10 +102,28 @@ const UsersContent = () => {
       havePartner: true,
       noPartner: true,
     },
-    ...(seeBirthday
-      ? { ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 } }
-      : {}),
+    ...(seeBirthday ? { ages: normalizedInitialAges } : {}),
   })
+
+  useEffect(() => {
+    if (!seeBirthday) return
+
+    setFilter((prev) => {
+      const min = Number(prev?.ages?.min)
+      const max = Number(prev?.ages?.max)
+      const isInvalid =
+        !Number.isFinite(min) || !Number.isFinite(max) || min > max
+
+      if (!prev?.ages || isInvalid) {
+        return {
+          ...prev,
+          ages: normalizedInitialAges,
+        }
+      }
+
+      return prev
+    })
+  }, [seeBirthday, normalizedInitialAges.min, normalizedInitialAges.max])
 
   // const visibleUsersIds = useMemo(
   //   () =>

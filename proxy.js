@@ -63,7 +63,7 @@ const isDevAccessToken = (token) => {
   return Boolean(tokenPhone && allowedPhones.has(tokenPhone))
 }
 
-export async function middleware(req) {
+export async function proxy(req) {
   if (!parseBooleanEnv(process.env.AUTH_DEV_ONLY_MODE)) {
     return NextResponse.next()
   }
@@ -95,3 +95,4 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|service-worker.js).*)',
   ],
 }
+

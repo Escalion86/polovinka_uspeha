@@ -5,8 +5,41 @@ import SliderMui from '@mui/material/Slider'
 import cn from 'classnames'
 import InputWrapper from './InputWrapper'
 
+const toFiniteNumber = (value, fallback) => {
+  const num = Number(value)
+  return Number.isFinite(num) ? num : fallback
+}
+
+const normalizeRange = (min, max) => {
+  const preparedMin = Math.trunc(toFiniteNumber(min, 0))
+  const preparedMax = Math.trunc(toFiniteNumber(max, preparedMin))
+  if (preparedMax < preparedMin) {
+    return { min: preparedMin, max: preparedMin }
+  }
+  return { min: preparedMin, max: preparedMax }
+}
+
+const normalizeValue = (value, min, max) => {
+  if (isObject(value)) {
+    const leftRaw = Array.isArray(value) ? value[0] : min
+    const rightRaw = Array.isArray(value) ? value[1] : max
+    let left = Math.trunc(toFiniteNumber(leftRaw, min))
+    let right = Math.trunc(toFiniteNumber(rightRaw, max))
+    if (left < min) left = min
+    if (right > max) right = max
+    if (left > right) left = right
+    return [left, right]
+  }
+
+  let nextValue = Math.trunc(toFiniteNumber(value, min))
+  if (nextValue < min) nextValue = min
+  if (nextValue > max) nextValue = max
+  return nextValue
+}
+
 const Options = ({ min, max }) => {
-  const array = new Array(max - min + 1).fill(0)
+  const rangeLength = Math.max(0, max - min + 1)
+  const array = new Array(rangeLength).fill(0)
 
   return array.map((item, index) => {
     const value = index + min
@@ -56,7 +89,15 @@ const Slider = ({
   paddingY = true,
   noMargin = false,
   smallMargin = false,
-}) => (
+}) => {
+  const normalizedRange = normalizeRange(min, max)
+  const normalizedValue = normalizeValue(
+    value,
+    normalizedRange.min,
+    normalizedRange.max
+  )
+
+  return (
   <InputWrapper
     label={label}
     labelClassName={labelClassName}
@@ -70,31 +111,32 @@ const Slider = ({
     <div className="flex flex-1 w-max min-w-40 gap-x-4">
       {!noInputs && (
         <Select
-          value={value}
+          value={normalizedValue}
           onChange={onChange}
           left
-          min={min}
-          max={max}
+          min={normalizedRange.min}
+          max={normalizedRange.max}
           className="min-w-14"
         />
       )}
       <SliderMui
-        value={value}
+        value={normalizedValue}
         onChange={(e, value) => onChange && onChange(value)}
-        min={min}
-        max={max}
+        min={normalizedRange.min}
+        max={normalizedRange.max}
       />
       {!noInputs && (
         <Select
-          value={value}
+          value={normalizedValue}
           onChange={onChange}
-          min={min}
-          max={max}
+          min={normalizedRange.min}
+          max={normalizedRange.max}
           className="min-w-14"
         />
       )}
     </div>
   </InputWrapper>
-)
+  )
+}
 
 export default Slider
