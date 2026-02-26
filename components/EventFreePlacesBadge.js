@@ -109,13 +109,17 @@ const EventFreePlacesBadge = ({
       </>
     )
   ) : typeof limits.maxParticipants === 'number' ? (
-    <>
-      <span>{`Свободных мест `}</span>
-      <span>{`${Math.max(
-        0,
-        (limits.maxParticipants ?? 0) - participants.length
-      )} из ${limits.maxParticipants}`}</span>
-    </>
+    Math.max(0, (limits.maxParticipants ?? 0) - participants.length) === 0 ? (
+      <span>{'Свободных мест нет'}</span>
+    ) : (
+      <>
+        <span>{`Свободных мест `}</span>
+        <span>{`${Math.max(
+          0,
+          (limits.maxParticipants ?? 0) - participants.length
+        )} из ${limits.maxParticipants}`}</span>
+      </>
+    )
   ) : (
     <span>{'Количество мест не ограничено'}</span>
   )
