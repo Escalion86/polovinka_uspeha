@@ -36,6 +36,30 @@ const CITY_STATUS_HINTS = {
     'Город в архиве: используется для хранения истории и обычно скрыт из публичной выдачи.',
 }
 
+const CITY_POLICY_RENDER_ORDER = ['krsk', 'nrsk', 'ekb']
+
+const toPlainCityPolicies = (value) => {
+  if (!value || typeof value !== 'object') return {}
+  const plain = {}
+  Object.entries(value).forEach(([key, policy]) => {
+    if (!key || !policy || typeof policy !== 'object') return
+    plain[key] = { ...policy }
+  })
+  return plain
+}
+
+const getOrderedCityPolicyEntries = (policies) => {
+  const plainPolicies = toPlainCityPolicies(policies)
+  const orderedKeys = [
+    ...CITY_POLICY_RENDER_ORDER.filter((slug) => plainPolicies[slug]),
+    ...Object.keys(plainPolicies).filter(
+      (slug) => !CITY_POLICY_RENDER_ORDER.includes(slug)
+    ),
+  ]
+
+  return orderedKeys.map((slug) => [slug, plainPolicies[slug]])
+}
+
 const formatMergeFieldValue = (fieldKey, item) => {
   if (fieldKey === 'password') {
     return item?.hasPassword ? '••••••' : '[не установлен]'
@@ -127,6 +151,7 @@ const DevContent = () => {
     allowEventManagement: true,
     allowPublicListing: true,
     allowVkAuth: false,
+    allowTelegramAuth: true,
   })
 
   const canManageCities = Boolean(loggedUserActiveRole?.dev)
@@ -369,13 +394,13 @@ const DevContent = () => {
       return
     }
 
-    setCityPolicies(response?.data?.cityPolicies || {})
+    setCityPolicies(toPlainCityPolicies(response?.data?.cityPolicies))
   }
 
   const saveCityPolicyPatch = async (citySlug, patch) => {
     if (!canManageCities || !citySlug || !patch || savingCitySlug) return
 
-    const previous = cityPolicies || {}
+    const previous = toPlainCityPolicies(cityPolicies)
     const nextPolicy = {
       ...(previous[citySlug] || {}),
       ...patch,
@@ -389,33 +414,38 @@ const DevContent = () => {
     setCityPolicies(nextPolicies)
     setCityPoliciesError('')
 
-    const response = await fetch('/api/global/content/city-policies', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: {
-          location: citySlug,
-          policy: nextPolicy,
+    let response = null
+    try {
+      const rawResponse = await fetch('/api/global/content/city-policies', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        userId: loggedUserActive?._id,
-      }),
-    })
-      .then((res) => res.json())
-      .catch(() => null)
+        body: JSON.stringify({
+          data: {
+            location: citySlug,
+            policy: nextPolicy,
+          },
+          userId: loggedUserActive?._id,
+        }),
+      })
+      response = await rawResponse.json().catch(() => null)
+    } catch {
+      response = null
+    }
 
     if (!response?.success) {
-      setCityPolicies(previous)
       setCityPoliciesError(
         response?.data?.error?.message || 'Не удалось сохранить политику города'
       )
+      setCityPolicies(previous)
+      await loadCityPolicies()
       setSavingCitySlug('')
       return
     }
 
-    setCityPolicies(response?.data?.cityPolicies || nextPolicies)
+    await loadCityPolicies()
     setSavingCitySlug('')
   }
 
@@ -522,6 +552,7 @@ const DevContent = () => {
       allowEventManagement: true,
       allowPublicListing: true,
       allowVkAuth: false,
+      allowTelegramAuth: true,
     })
     setSavingCitySlug('')
     setShowAddCityModal(false)
@@ -880,7 +911,8 @@ const DevContent = () => {
                 Политики статусов городов
               </div>
               <div className="grid gap-2 md:grid-cols-3">
-                {Object.entries(cityPolicies).map(([citySlug, policy]) => (
+                {getOrderedCityPolicyEntries(cityPolicies).map(
+                  ([citySlug, policy]) => (
                   <div
                     key={`policy-${citySlug}`}
                     className="rounded border border-indigo-100 p-2"
@@ -909,13 +941,14 @@ const DevContent = () => {
                       </div>
                     </label>
                     <div className="grid grid-cols-2 gap-1 text-xs">
-                      {[
+                      {[ 
                         ['allowRegistration', 'Регистрация'],
                         ['allowLogin', 'Логин'],
                         ['allowEventSignup', 'Запись'],
                         ['allowEventManagement', 'Управление'],
                         ['allowPublicListing', 'Публичный листинг'],
                         ['allowVkAuth', 'VK ID логин'],
+                        ['allowTelegramAuth', 'Telegram логин/регистрация'],
                       ].map(([field, label]) => (
                         <label key={`${citySlug}-${field}`} className="flex gap-1">
                           <input
@@ -933,7 +966,8 @@ const DevContent = () => {
                       ))}
                     </div>
                   </div>
-                ))}
+                )
+                )}
               </div>
             </div>
           ) : null}
@@ -1032,6 +1066,7 @@ const DevContent = () => {
                         ['allowEventManagement', 'Управление'],
                         ['allowPublicListing', 'Публичный листинг'],
                         ['allowVkAuth', 'VK ID логин'],
+                        ['allowTelegramAuth', 'Telegram логин/регистрация'],
                       ].map(([field, label]) => (
                         <label key={`${city.slug}-${field}`} className="flex gap-1">
                           <input
@@ -1153,6 +1188,7 @@ const DevContent = () => {
                 ['allowEventManagement', 'Управление'],
                 ['allowPublicListing', 'Публичный листинг'],
                 ['allowVkAuth', 'VK ID логин'],
+                ['allowTelegramAuth', 'Telegram логин/регистрация'],
               ].map(([field, label]) => (
                 <label key={`newcity-${field}`} className="flex gap-1">
                   <input

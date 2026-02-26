@@ -35,6 +35,10 @@ const mergeCitiesWithPolicies = (cities, cityPolicies) =>
               typeof policy.allowVkAuth === 'boolean'
                 ? policy.allowVkAuth
                 : city.allowVkAuth,
+            allowTelegramAuth:
+              typeof policy.allowTelegramAuth === 'boolean'
+                ? policy.allowTelegramAuth
+                : city.allowTelegramAuth,
           }
 
       if (merged?.slug === 'nrsk' && merged?.status !== 'active') {
@@ -77,4 +81,3 @@ export default async function getPublicCitiesCatalog() {
     return mergeCitiesWithPolicies(fallbackCities, fallbackPolicies)
   }
 }
-

@@ -13,6 +13,7 @@ const defaultCityPolicy = Object.freeze({
   allowEventManagement: true,
   allowPublicListing: true,
   allowVkAuth: false,
+  allowTelegramAuth: true,
 })
 
 const LOCATION_POLICY_DEFAULTS = Object.freeze({
@@ -25,6 +26,7 @@ const LOCATION_POLICY_DEFAULTS = Object.freeze({
     allowEventManagement: false,
     allowPublicListing: true,
     allowVkAuth: false,
+    allowTelegramAuth: true,
   }),
   ekb: defaultCityPolicy,
 })
@@ -68,6 +70,10 @@ const normalizeSinglePolicy = (policy = {}, location = null) => {
     allowPublicListing:
       location === 'nrsk' && status !== 'active' ? false : allowPublicListing,
     allowVkAuth: getFlagValue(policy?.allowVkAuth, locationDefaults.allowVkAuth),
+    allowTelegramAuth: getFlagValue(
+      policy?.allowTelegramAuth,
+      locationDefaults.allowTelegramAuth
+    ),
   }
 }
 

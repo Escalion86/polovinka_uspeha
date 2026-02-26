@@ -16,6 +16,7 @@ const BASE_CITY_DEFAULT = Object.freeze({
   allowEventManagement: true,
   allowPublicListing: true,
   allowVkAuth: false,
+  allowTelegramAuth: true,
 })
 
 const DEFAULT_CORE_CITIES = Object.freeze([
@@ -34,6 +35,7 @@ const DEFAULT_CORE_CITIES = Object.freeze([
     allowEventSignup: false,
     allowEventManagement: false,
     allowPublicListing: false,
+    allowTelegramAuth: true,
     index: 1,
   },
   {
@@ -119,6 +121,13 @@ export const normalizeCity = (city = {}, fallback = {}) => {
       city?.allowVkAuth,
       normalizeBoolean(fallback?.allowVkAuth, BASE_CITY_DEFAULT.allowVkAuth)
     ),
+    allowTelegramAuth: normalizeBoolean(
+      city?.allowTelegramAuth,
+      normalizeBoolean(
+        fallback?.allowTelegramAuth,
+        BASE_CITY_DEFAULT.allowTelegramAuth
+      )
+    ),
     index:
       typeof city?.index === 'number'
         ? city.index
@@ -171,6 +180,7 @@ export const buildCityPoliciesFromCities = (cities = []) => {
       allowEventManagement: normalizeBoolean(city.allowEventManagement, true),
       allowPublicListing: normalizeBoolean(city.allowPublicListing, true),
       allowVkAuth: normalizeBoolean(city.allowVkAuth, false),
+      allowTelegramAuth: normalizeBoolean(city.allowTelegramAuth, true),
     }
   })
 

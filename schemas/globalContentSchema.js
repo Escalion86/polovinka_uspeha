@@ -40,6 +40,10 @@ const cityPolicySchema = {
     type: Boolean,
     default: false,
   },
+  allowTelegramAuth: {
+    type: Boolean,
+    default: true,
+  },
 }
 
 const citySchema = {
@@ -96,6 +100,10 @@ const citySchema = {
   allowVkAuth: {
     type: Boolean,
     default: false,
+  },
+  allowTelegramAuth: {
+    type: Boolean,
+    default: true,
   },
   index: {
     type: Number,

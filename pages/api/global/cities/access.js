@@ -39,6 +39,10 @@ const mergeCitiesWithPolicies = (cities, cityPolicies) =>
           typeof policy.allowVkAuth === 'boolean'
             ? policy.allowVkAuth
             : city.allowVkAuth,
+        allowTelegramAuth:
+          typeof policy.allowTelegramAuth === 'boolean'
+            ? policy.allowTelegramAuth
+            : city.allowTelegramAuth,
       }
 
       if (merged?.slug === 'nrsk' && merged?.status !== 'active') {
@@ -61,6 +65,7 @@ const toPublicCity = (city) => ({
   allowEventSignup: Boolean(city.allowEventSignup),
   allowEventManagement: Boolean(city.allowEventManagement),
   allowPublicListing: Boolean(city.allowPublicListing),
+  allowTelegramAuth: Boolean(city.allowTelegramAuth),
   isVisibleInPublicSelector: Boolean(city.isVisibleInPublicSelector),
 })
 

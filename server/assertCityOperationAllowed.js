@@ -8,6 +8,7 @@ const operationToFlag = {
   event_management: 'allowEventManagement',
   public_listing: 'allowPublicListing',
   vk_auth: 'allowVkAuth',
+  telegram_auth: 'allowTelegramAuth',
 }
 
 const assertCityOperationAllowed = async (location, operation) => {

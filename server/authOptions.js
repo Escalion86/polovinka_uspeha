@@ -679,6 +679,13 @@ export const authOptions = {
         if (!loginGuard.success) {
           return null
         }
+        const telegramAuthGuard = await assertCityOperationAllowed(
+          location,
+          'telegram_auth'
+        )
+        if (!telegramAuthGuard.success) {
+          return null
+        }
 
         const phoneNumber = parsePhoneNumber(phone)
         const phoneDigits = normalizePhoneDigits(phoneNumber ?? phone)
