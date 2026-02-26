@@ -85,13 +85,15 @@ const PaymentCardButtons = ({
   buttons.push(...customButtonsArray)
 
   return (
-    <CardButtons
-      buttons={buttons}
-      className={className}
-      alwaysCompact={alwaysCompact}
-      alwaysCompactOnPhone={alwaysCompactOnPhone}
-      triggerClassName={triggerClassName}
-    />
+    <div className="mx-1">
+      <CardButtons
+        buttons={buttons}
+        className={className}
+        alwaysCompact={alwaysCompact}
+        alwaysCompactOnPhone={alwaysCompactOnPhone}
+        triggerClassName={triggerClassName}
+      />
+    </div>
   )
 }
 

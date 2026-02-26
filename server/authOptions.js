@@ -21,6 +21,7 @@ import { exchangeVkCode, fetchVkUserInfo } from './vkIdAuth'
 import syncGlobalUserLink from './syncGlobalUserLink'
 import ensureLocalUserFromGlobalByPhone from './ensureLocalUserFromGlobalByPhone'
 import resolvePasswordFromGlobalByPhone from './resolvePasswordFromGlobalByPhone'
+import checkLocationValid from './checkLocationValid'
 
 const parsePhoneNumber = (value) => {
   if (typeof value === 'number') {
@@ -180,6 +181,7 @@ const readGlobalUserByPhone = async (phone) => {
     .select({
       profile: 1,
       cityProfiles: 1,
+      cities: 1,
       personalStatus: 1,
       registrationType: 1,
       referrerId: 1,
@@ -204,6 +206,7 @@ const readGlobalUserById = async (globalUserId) => {
     .findById(id)
     .select({
       profile: 1,
+      cities: 1,
       personalStatus: 1,
       registrationType: 1,
       referrerId: 1,
@@ -902,22 +905,59 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = user.role
         token.phone = user.phone
+        token.location = user.email
+        token.userId = user.name
+      }
+
+      if (trigger === 'update' && session?.location) {
+        const nextLocation = String(session.location).trim()
+        if (checkLocationValid(nextLocation)) {
+          const loginGuard = await assertCityOperationAllowed(nextLocation, 'login')
+          if (loginGuard?.success) {
+            token.location = nextLocation
+          }
+        }
       }
       return token
     },
-    async session({ session }) {
-      const userId = session.user.name
-      const location = session.user.email
+    async session({ session, token }) {
+      const userId = String(token?.userId || session?.user?.name || '').trim()
+      const location = String(token?.location || session?.user?.email || '').trim()
+      const phone = token?.phone ?? session?.user?.phone
 
       const db = await dbConnect(location)
       if (!db) return null
       await ensureConsentToMailingField(db, location)
 
-      const result = await db.model('Users').findById(userId)
+      let result =
+        userId && mongoose.Types.ObjectId.isValid(userId)
+          ? await db.model('Users').findById(userId)
+          : null
+
+      if (!result && phone) {
+        await ensureLocalUserFromGlobalByPhone({
+          db,
+          location,
+          phone,
+          source: 'session-location-switch',
+        })
+
+        const phoneCandidates = getPhoneCandidates(phone)
+        if (phoneCandidates.length > 0) {
+          result = await db.model('Users').findOne({
+            phone: { $in: phoneCandidates },
+          })
+        }
+      }
+
+      if (!result) return null
+      token.userId = String(result._id)
+      token.phone = result.phone
+
       session.user.authDevOnlyMode = isAuthDevOnlyModeEnabled()
       const globalUser =
         (result?.phone ? await readGlobalUserByPhone(result.phone) : null) ||
@@ -1007,6 +1047,9 @@ export const authOptions = {
           result.registrationType
         )
         session.user.authProviders = result.authProviders
+        session.user.cities = Array.isArray(globalUser?.cities)
+          ? globalUser.cities.filter((city) => checkLocationValid(city))
+          : []
         session.user.referrerId = resolveGlobalFirst(
           globalUser?.referrerId,
           result.referrerId

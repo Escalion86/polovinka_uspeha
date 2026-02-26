@@ -1,17 +1,17 @@
 import FormWrapper from '@components/FormWrapper'
+import copyToClipboard from '@helpers/copyToClipboard'
+import useSnackbar from '@helpers/useSnackbar'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
+import { useEffect } from 'react'
 
 const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
   const QRCodeGeneratorFuncModal = ({
     closeModal,
     setOnConfirmFunc,
-    setOnDeclineFunc,
-    setOnShowOnCloseConfirmDialog,
-    setDisableConfirm,
-    setDisableDecline,
   }) => {
+    const { info } = useSnackbar()
     const location = useAtomValue(locationAtom)
     const router = useRouter()
     const origin =
@@ -25,6 +25,14 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
           type ?? router.query.page
         }${id ? `?id=${id}` : ''}`
     const encodedLink = encodeURIComponent(targetLink)
+
+    useEffect(() => {
+      setOnConfirmFunc(() => {
+        copyToClipboard(targetLink)
+        info('Ссылка скопирована в буфер обмена')
+        closeModal()
+      })
+    }, [closeModal, info, setOnConfirmFunc, targetLink])
 
     return (
       <FormWrapper flex className="flex justify-center">
@@ -54,6 +62,7 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
 
   return {
     title: title ?? `Генератор QR-кодов`,
+    confirmButtonName: 'Скопировать ссылку',
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: QRCodeGeneratorFuncModal,

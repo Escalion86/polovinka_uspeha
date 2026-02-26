@@ -1,4 +1,5 @@
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 import { faUserAlt } from '@fortawesome/free-solid-svg-icons/faUserAlt'
@@ -8,8 +9,9 @@ import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 import SvgKavichki from '@svg/SvgKavichki'
@@ -17,6 +19,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import { LOCATIONS } from '@helpers/constants'
 
 const variants = {
   show: {
@@ -39,23 +42,76 @@ const variants = {
   },
 }
 
-const MenuItem = ({ onClick, icon, title, href }) => {
+const getCityTitle = (slug) => LOCATIONS?.[slug]?.townRu || String(slug || '').toUpperCase()
+const formatCityTitle = (value) => {
+  const title = String(value || '').trim()
+  if (!title) return ''
+  return `${title.charAt(0).toUpperCase()}${title.slice(1)}`
+}
+
+const SwitchCityModalContent = ({
+  cities = [],
+  currentCity,
+  onSelectCity,
+  closeModal,
+  isSwitching,
+}) => (
+  <div className="flex flex-col gap-y-2">
+    <div className="text-sm text-[#4b3a40]">
+      Выберите город для продолжения работы:
+    </div>
+    <div className="flex flex-col gap-y-2">
+      {cities.map((city) => (
+        <button
+          key={city}
+          type="button"
+          disabled={isSwitching}
+          onClick={async () => {
+            await onSelectCity(city)
+            closeModal()
+          }}
+          className="flex items-center justify-between rounded-xl border border-[#f0e2e8] bg-white px-3 py-2 text-left text-[#6b1f2a] transition-colors hover:bg-[#6b1f2a] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span className="font-medium">{formatCityTitle(getCityTitle(city))}</span>
+          {city === currentCity ? (
+            <span className="text-xs opacity-80">Текущий</span>
+          ) : null}
+        </button>
+      ))}
+    </div>
+  </div>
+)
+
+const MenuItem = ({ onClick, icon, title, href, disabled = false }) => {
   const content = (
     <div
       onClick={onClick}
-      className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500"
+      className={cn(
+        'flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 group gap-x-2',
+        disabled
+          ? 'cursor-not-allowed opacity-60'
+          : 'cursor-pointer hover:bg-gray-500'
+      )}
     >
       <FontAwesomeIcon
         icon={icon}
-        className="w-5 h-5 min-h-5 text-general group-hover:text-white"
+        className={cn(
+          'w-5 h-5 min-h-5 text-general',
+          !disabled && 'group-hover:text-white'
+        )}
       />
-      <span className="text-black prevent-select-text whitespace-nowrap group-hover:text-white">
+      <span
+        className={cn(
+          'text-black prevent-select-text whitespace-nowrap',
+          !disabled && 'group-hover:text-white'
+        )}
+      >
         {title}
       </span>
     </div>
   )
 
-  if (href)
+  if (href && !disabled)
     return (
       <Link prefetch={false} href={href} shallow>
         {content}
@@ -67,6 +123,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
 const UserMenu = () => {
   const router = useRouter()
+  const { data: session, update } = useSession()
   const query = { ...router.query }
   delete query.location
   const location = useAtomValue(locationAtom)
@@ -74,6 +131,8 @@ const UserMenu = () => {
   const setMenuOpen = useSetAtom(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
+  const [isSwitchingLocation, setIsSwitchingLocation] = useState(false)
+  const [activeCitiesByPolicy, setActiveCitiesByPolicy] = useState([])
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
@@ -83,6 +142,101 @@ const UserMenu = () => {
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
     loggedUserActiveRole?.notifications?.eventRegistration
+
+  const allLocations = Object.keys(LOCATIONS || {})
+  const sessionCitiesRaw = Array.isArray(session?.user?.cities)
+    ? session.user.cities
+    : []
+  const activeUserCitiesRaw = Array.isArray(loggedUserActive?.cities)
+    ? loggedUserActive.cities
+    : []
+  const userCitiesRaw =
+    sessionCitiesRaw.length > 0 ? sessionCitiesRaw : activeUserCitiesRaw
+  const userCities = Array.from(new Set([...userCitiesRaw, location])).filter(
+    (city) => allLocations.includes(city)
+  )
+  const baseVisibleCities =
+    loggedUserActive?.role === 'dev' && userCities.length <= 1
+      ? allLocations
+      : userCities
+
+  const activeCitiesSet =
+    activeCitiesByPolicy.length > 0 ? new Set(activeCitiesByPolicy) : null
+  const isActiveCity = (city) => (activeCitiesSet ? activeCitiesSet.has(city) : true)
+
+  const selectableCities = baseVisibleCities.filter(
+    (city) => allLocations.includes(city) && isActiveCity(city)
+  )
+  const visibleCities = Array.from(new Set([location, ...selectableCities]))
+  const alternativeCities = selectableCities.filter((city) => city !== location)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadActiveCities = async () => {
+      try {
+        const response = await fetch('/api/global/cities/public')
+        const json = await response.json()
+        if (!isMounted || !json?.success) return
+
+        const activeSlugs = (Array.isArray(json?.data?.cities) ? json.data.cities : [])
+          .filter((city) => city?.status === 'active')
+          .map((city) => city?.slug)
+          .filter(Boolean)
+
+        setActiveCitiesByPolicy(activeSlugs)
+      } catch {
+        // fallback: keep current list without policy filter
+      }
+    }
+
+    loadActiveCities()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const buildSameCabinetPathForCity = (city) => {
+    const currentPath = String(router?.asPath || '')
+    const currentPrefix = `/${location}`
+    if (currentPath.startsWith(currentPrefix)) {
+      const suffix = currentPath.slice(currentPrefix.length)
+      return `/${city}${suffix || '/cabinet/eventsUpcoming'}`
+    }
+    return `/${city}/cabinet/eventsUpcoming`
+  }
+
+  const switchCity = async (city) => {
+    if (!city || city === location || isSwitchingLocation) return
+    setIsSwitchingLocation(true)
+    try {
+      await update({ location: city })
+      router.push(buildSameCabinetPathForCity(city), '', { shallow: true })
+    } finally {
+      setIsSwitchingLocation(false)
+    }
+  }
+
+  const openSwitchCityModal = () => {
+    if (alternativeCities.length === 0) return
+    modalsFunc.custom({
+      title: 'Смена города',
+      confirmButtonShow: false,
+      declineButtonShow: false,
+      onlyCloseButtonShow: true,
+      closeButtonName: 'Закрыть',
+      Children: ({ closeModal }) => (
+        <SwitchCityModalContent
+          cities={alternativeCities}
+          currentCity={location}
+          onSelectCity={switchCity}
+          closeModal={closeModal}
+          isSwitching={isSwitchingLocation}
+        />
+      ),
+    })
+  }
 
   // const router = useRouter()
 
@@ -166,6 +320,14 @@ const UserMenu = () => {
               href={`/${location}/cabinet/notifications`}
               icon={faBell}
               title="Настройка уведомлений"
+            />
+          )}
+          {visibleCities.length > 1 && (
+            <MenuItem
+              onClick={openSwitchCityModal}
+              icon={faMapMarkerAlt}
+              title={`Сменить город: ${formatCityTitle(getCityTitle(location))}`}
+              disabled={isSwitchingLocation}
             />
           )}
           {/* {getParentDir(router.asPath) === 'cabinet' && (

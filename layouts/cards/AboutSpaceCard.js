@@ -18,12 +18,6 @@ const toneShadow = {
   blue: 'shadow-[0_18px_40px_rgba(0,0,0,0.08)]',
 }
 
-const toneTrigger = {
-  white: 'text-[#6b1f2a]',
-  burgundy: 'text-white',
-  blue: 'text-[#0b2230]',
-}
-
 const hexToRgb = (hex) => {
   if (typeof hex !== 'string') return null
   const cleaned = hex.replace('#', '').trim()
@@ -109,13 +103,6 @@ const AboutSpaceCard = ({
             onMoveDown={onMoveDown}
             onClone={onClone}
             onDelete={onDelete}
-            triggerClassName={
-              hasCustomBg
-                ? textTone.textClass === 'text-white'
-                  ? 'text-white'
-                  : 'text-[#6b1f2a]'
-                : toneTrigger[tone]
-            }
           />
         </div>
       ) : null}

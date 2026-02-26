@@ -12,7 +12,6 @@ const AboutSpaceCardButtons = ({
   onMoveDown,
   onClone,
   onDelete,
-  triggerClassName,
 }) => {
   if (!card) return null
 
@@ -64,7 +63,6 @@ const AboutSpaceCardButtons = ({
       buttons={buttons}
       customOnly
       alwaysCompact
-      triggerClassName={triggerClassName}
     />
   )
 }

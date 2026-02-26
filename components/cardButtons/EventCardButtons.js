@@ -12,10 +12,8 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
-import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
 import { EVENT_STATUSES } from '@helpers/constants'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import { getEventById } from '@helpers/getById'
@@ -48,7 +46,6 @@ const EventCardButtons = ({
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
   const { allowEventManagement } = useCityManagementAccess()
 
-  const copyLink = useCopyEventLinkToClipboard(location, item?._id)
   const copyId = useCopyToClipboard(item?._id, 'ID скопирован в буфер обмена')
 
   if (!item) return null
@@ -86,23 +83,16 @@ const EventCardButtons = ({
     buttons.push({
       key: 'share',
       icon: faShareAlt,
-      onClick: () => copyLink && copyLink(),
-      color: 'blue',
-      tooltipText: 'Скопировать ссылку на мероприятие',
-    })
-    buttons.push({
-      key: 'qr-code',
-      icon: faQrcode,
       onClick: () => {
         if (typeof window === 'undefined' || !window.location?.origin) return
         const link = `${window.location.origin}/${location}/event/${item._id}`
         modalsFunc.external.qrCodeGenerator({
-          title: 'QR-код на мероприятие',
+          title: 'Поделиться мероприятием',
           link,
         })
       },
       color: 'blue',
-      tooltipText: 'QR-код на мероприятие',
+      tooltipText: 'Поделиться',
     })
     if (canSeeHistory) {
       buttons.push({

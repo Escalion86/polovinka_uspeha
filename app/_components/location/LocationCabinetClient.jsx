@@ -20,7 +20,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
 import { Suspense, useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
@@ -47,8 +47,13 @@ function CabinetPage(props) {
   const { location } = props
 
   useHydrateAtoms([[locationAtom, location]])
+  const setLocationState = useSetAtom(locationAtom)
 
   const locationState = useAtomValue(locationAtom)
+
+  useEffect(() => {
+    if (location) setLocationState(location)
+  }, [location, setLocationState])
 
   const page = router.asPath.replace(`/${location}/cabinet/`, '').split('?')[0]
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)

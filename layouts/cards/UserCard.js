@@ -151,7 +151,7 @@ const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
-                  <div className="tablet:rounded-bl-[30px] flex h-10 pl-3 max-h-10 flex-nowrap items-center px-2 py-0.5 leading-6 gap-x-2 rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
+                  <div className="tablet:rounded-bl-[30px] flex min-h-13 h-13 pl-3 max-h-13 flex-nowrap items-center px-2 py-0.5 leading-6 gap-x-2 rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
                     <div className="flex items-center flex-1 h-7 max-h-7 flex-nowrap">
                       <UserRelationshipIcon
                         relationship={user?.relationship}
@@ -296,7 +296,7 @@ const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
                       {seeSumOfPaymentsWithoutEventOnCard && (
                         <Suspense
                           fallback={
-                            <div className="h-5 w-16 rounded-full bg-gray-200" />
+                            <div className="w-16 h-5 bg-gray-200 rounded-full" />
                           }
                         >
                           <UserSumOfPaymentsWithoutEvent userId={userId} />

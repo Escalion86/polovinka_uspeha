@@ -103,7 +103,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
         </div>
       )}
       <div className="flex flex-col w-full">
-        <div className="flex items-center pl-4 pr-2 py-1 laptop:rounded-bl-[22px] laptop:rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
+        <div className="flex items-center pl-4 pr-2 py-0.5 laptop:rounded-bl-[22px] laptop:rounded-tr-[22px] bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.12))]">
           <TextLinesLimiter
             className="flex-1 text-lg font-bold text-[#4b0f1c]"
             lines={1}

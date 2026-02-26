@@ -95,6 +95,7 @@ const StateLoader = (props) => {
   const setRouter = useSetAtom(routerAtom)
   const [mode, setMode] = useAtom(modeAtom)
   // const [location, setLocation] = useAtom(locationAtom)
+  const setLocationState = useSetAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const setLoggedUserActive = useSetAtom(loggedUserActiveAtom)
@@ -235,7 +236,7 @@ const StateLoader = (props) => {
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
     setTelegramBotName(props.telegramBotName)
-    // setLocation(props.location ?? 'krasnoyarsk')
+    setLocationState(props.location ?? null)
     setIsSiteLoading(false)
 
     //jotai
@@ -271,7 +272,27 @@ const StateLoader = (props) => {
     // setIsSiteLoadingJ(false)
 
     // finish jotai
-  }, [props.loggedUser])
+  }, [
+    props.location,
+    props.loggedUser,
+    props.events,
+    props.directions,
+    props.additionalBlocks,
+    props.users,
+    props.reviews,
+    props.siteSettings,
+    props.rolesSettings,
+    props.questionnaires,
+    props.questionnairesUsers,
+    props.services,
+    props.products,
+    props.achievements,
+    props.achievementsUsers,
+    props.serverSettings,
+    props.mode,
+    props.telegramBotName,
+    setLocationState,
+  ])
 
   useEffect(() => {
     if (loggedUser && location) {

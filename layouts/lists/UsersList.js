@@ -10,7 +10,7 @@ const UsersList = ({ users }) => {
   return (
     <ListWrapper
       itemCount={users.length}
-      itemSize={widthNum > 2 ? 116 : 124}
+      itemSize={widthNum > 2 ? 120 : 148}
       wrapperClassName="bg-general/15"
       className="p-2"
     >
