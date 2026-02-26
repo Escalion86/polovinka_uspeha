@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 export const metadata = {
   title: 'Технические работы - Половинка успеха',
 }
@@ -16,15 +14,6 @@ export default async function LocationMaintenancePage({ params }) {
         <p className="mt-6 max-w-2xl text-[18px] leading-relaxed text-[#5b4850]">
           Мы обновляем сервис и скоро вернемся. Спасибо за понимание.
         </p>
-        <div className="mt-10">
-          <Link
-            prefetch={false}
-            href={`/${location}/logindev`}
-            className="rounded-xl border border-[#6b1f2a] px-4 py-2 text-sm font-semibold text-[#6b1f2a] hover:bg-[#6b1f2a] hover:text-white"
-          >
-            Вход для разработчика
-          </Link>
-        </div>
       </div>
     </main>
   )

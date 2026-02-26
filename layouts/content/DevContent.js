@@ -61,6 +61,31 @@ const formatMergeFieldValue = (fieldKey, item) => {
   return String(value)
 }
 
+const hasValueForMergeField = (item, fieldKey) => {
+  if (!item) return false
+
+  if (fieldKey === 'password') {
+    return Boolean(item?.hasPassword)
+  }
+
+  if (fieldKey === 'notifications') {
+    return Boolean(
+      item?.notifications &&
+        typeof item.notifications === 'object' &&
+        Object.keys(item.notifications).length > 0
+    )
+  }
+
+  const value = item?.[fieldKey]
+
+  if (value === null || value === undefined) return false
+  if (typeof value === 'string') return value.trim().length > 0
+  if (Array.isArray(value)) return value.length > 0
+  if (typeof value === 'object') return Object.keys(value).length > 0
+
+  return true
+}
+
 const DevContent = () => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -114,8 +139,13 @@ const DevContent = () => {
       const primaryId = group?.suggestedPrimaryUserId || group?.items?.[0]?._id
       if (!primaryId) return
       nextPrimary[group.phone] = primaryId
+      const groupItems = Array.isArray(group?.items) ? group.items : []
+
       nextFieldSource[group.phone] = MERGE_FIELDS.reduce((acc, field) => {
-        acc[field.key] = primaryId
+        const preferredItem = groupItems.find((item) =>
+          hasValueForMergeField(item, field.key)
+        )
+        acc[field.key] = preferredItem?._id || primaryId
         return acc
       }, {})
     })

@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
+import { getSession, signIn } from 'next-auth/react'
 import { InputMask, format } from '@react-input/mask'
 import useRouter from '@utils/useRouter'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -46,7 +46,19 @@ const routeAfterLogin = (router, location) => {
   return router.push(`/${location}/cabinet`, '', { shallow: true })
 }
 
-export default function LocationLoginClient({ location }) {
+const waitForSessionReady = async (attempts = 6, delayMs = 150) => {
+  for (let i = 0; i < attempts; i += 1) {
+    const session = await getSession()
+    if (session?.user?._id || session?.user?.name) return true
+    await new Promise((resolve) => setTimeout(resolve, delayMs))
+  }
+  return false
+}
+
+export default function LocationLoginClient({
+  location,
+  forceDisableVkAuth = false,
+}) {
   const router = useRouter()
   const [phone, setPhone] = useState('')
   const [phoneFocused, setPhoneFocused] = useState(false)
@@ -64,7 +76,7 @@ export default function LocationLoginClient({ location }) {
     allowField: 'allowLogin',
     alternativesField: 'availableForLogin',
   })
-  const isVkAuthEnabled = useVkAuthAvailability(location)
+  const isVkAuthEnabled = useVkAuthAvailability(location) && !forceDisableVkAuth
   const shouldShowTransferNotice =
     currentCityStatus !== 'active' && alternativeLoginCities.length > 0
 
@@ -136,6 +148,7 @@ export default function LocationLoginClient({ location }) {
         return
       }
 
+      await waitForSessionReady()
       await routeAfterLogin(router, location)
     },
     [
@@ -346,4 +359,5 @@ export default function LocationLoginClient({ location }) {
 
 LocationLoginClient.propTypes = {
   location: PropTypes.string.isRequired,
+  forceDisableVkAuth: PropTypes.bool,
 }

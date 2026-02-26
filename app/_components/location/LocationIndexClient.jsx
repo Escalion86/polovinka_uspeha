@@ -14,6 +14,7 @@ import { DirectionCardView } from '@layouts/cards/DirectionCard'
 import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import NoOrphanText from '@components/NoOrphanText'
 import ImagesMarquee from '@components/ImagesMarquee'
+import TitleHeroSection from '@components/TitleHeroSection'
 import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
@@ -39,6 +40,12 @@ const heroImages = [
   '/img/general/8.jpg',
   '/img/general/9.jpg',
   '/img/general/10.jpg',
+  '/img/general/11.jpg',
+  '/img/general/12.jpg',
+  '/img/general/13.jpg',
+  '/img/general/14.jpg',
+  '/img/general/15.jpg',
+  '/img/general/16.jpg',
 ]
 
 const services = [
@@ -171,7 +178,9 @@ export default function LocationIndexClient({
   const headerRef = useRef(null)
   const [siteSettings, setSiteSettings] = useState(initialSiteSettings || {})
   const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState(
-    Array.isArray(initialGlobalAboutSpaceCards) ? initialGlobalAboutSpaceCards : []
+    Array.isArray(initialGlobalAboutSpaceCards)
+      ? initialGlobalAboutSpaceCards
+      : []
   )
   const [activeReview, setActiveReview] = useState(null)
   const [activeSpace, setActiveSpace] = useState(null)
@@ -229,7 +238,10 @@ export default function LocationIndexClient({
         setDirectionsData(Array.isArray(directions) ? directions : [])
       }
 
-      if (!initialSiteSettings || Object.keys(initialSiteSettings).length === 0) {
+      if (
+        !initialSiteSettings ||
+        Object.keys(initialSiteSettings).length === 0
+      ) {
         const siteSettingsData = await fetchingSiteSettings(defaultLocation)
         if (!isMounted) return
 
@@ -731,9 +743,16 @@ export default function LocationIndexClient({
       />
 
       <main>
-        <section className="bg-[linear-gradient(135deg,rgba(107,31,42,0.05),transparent_60%)] px-[6vw] pb-16 pt-6">
-          <div className="grid min-h-[60vh] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-            <div className="order-last flex flex-col justify-center overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-10 text-white lg:order-none">
+        <TitleHeroSection
+          sectionClassName="bg-[linear-gradient(135deg,rgba(107,31,42,0.05),transparent_60%)] px-[6vw] pb-16 pt-6"
+          gridClassName="grid min-h-[60vh] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
+          leftClassName="relative order-last flex flex-col justify-center overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-10 text-white lg:order-none"
+          rightClassName="order-first lg:order-none"
+          images={heroImages}
+          imageClassName="object-cover opacity-85"
+          logoClassName="p-5 w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
+          leftContent={
+            <>
               <div className="absolute -left-20 -top-20 h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(79,176,232,0.5),transparent_70%)]" />
               <div className="mb-4 text-[12px] uppercase tracking-[0.2em] text-[#9ad9ff]">
                 ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ
@@ -746,37 +765,19 @@ export default function LocationIndexClient({
                 общением и открывать новых людей естественно, без ожиданий и
                 масок.
               </p>
+            </>
+          }
+          afterGridContent={
+            <div className="flex justify-center mt-8">
+              <Link
+                href={`/${defaultLocation}/register`}
+                className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
+              >
+                Присоединиться к нам
+              </Link>
             </div>
-
-            <div className="relative order-first overflow-hidden rounded-[28px] bg-black lg:order-none">
-              <div className="absolute inset-0 overflow-hidden">
-                <ImagesMarquee
-                  images={heroImages}
-                  heightClassName="h-full"
-                  itemWidthClassName="w-auto"
-                  imageClassName="object-cover brightness-[0.55]"
-                  durationSec={60}
-                />
-              </div>
-              <div className="relative z-10 grid h-full place-items-center">
-                <img
-                  src="/img/logo_new.png"
-                  alt="Половинка успеха"
-                  className="p-5 w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-8">
-            <Link
-              href={`/${defaultLocation}/register`}
-              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-            >
-              Присоединиться к нам
-            </Link>
-          </div>
-        </section>
+          }
+        />
 
         <Section id="about" title="О нашем пространстве">
           <div className="grid gap-6 lg:grid-cols-2">
@@ -866,7 +867,7 @@ export default function LocationIndexClient({
           >
             <div
               onMouseDown={(event) => event.stopPropagation()}
-              className="relative max-h-[85vh] w-full max-w-[820px] overflow-hidden rounded-[30px] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
+              className="flex flex-col relative max-h-[85vh] w-full max-w-[820px] overflow-hidden rounded-[30px] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
             >
               <button
                 type="button"
@@ -876,13 +877,16 @@ export default function LocationIndexClient({
               >
                 ×
               </button>
-              {activeSpace.images?.length > 0 ? (
-                <ImagesMarquee
-                  images={activeSpace.images}
-                  heightClassName="h-50 tablet:h-56"
-                />
-              ) : null}
-              <div className="flex max-h-[85vh] flex-col p-6">
+              <div className="h-50 tablet:h-56">
+                {activeSpace.images?.length > 0 ? (
+                  <ImagesMarquee
+                    images={activeSpace.images}
+                    heightClassName="h-50 tablet:h-56"
+                    durationSec={30}
+                  />
+                ) : null}
+              </div>
+              <div className="flex flex-col max-h-[calc(85vh-200px)]  p-6">
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
                   {activeSpace.title}
                 </h3>

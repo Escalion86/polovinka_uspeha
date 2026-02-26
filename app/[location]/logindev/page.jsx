@@ -26,5 +26,5 @@ export default async function LocationDevLoginPage({ params }) {
     redirect(`/${location}/cabinet`)
   }
 
-  return <LocationLoginClient location={location} />
+  return <LocationLoginClient location={location} forceDisableVkAuth />
 }

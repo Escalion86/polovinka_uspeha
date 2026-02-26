@@ -7,6 +7,7 @@ import { LOCATIONS, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
 import { fetchingGlobalAboutSpaceCards } from '@helpers/fetchers'
 import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
+import TitleHeroSection from '@components/TitleHeroSection'
 
 const valueCards = [
   {
@@ -27,6 +28,19 @@ const steps = [
   'Выберите город и изучите актуальные мероприятия.',
   'Пройдите быструю регистрацию и получите доступ в личный кабинет.',
   'Запишитесь на мероприятие и приходите в пространство живого общения.',
+]
+
+const heroImages = [
+  '/img/general/1.jpg',
+  '/img/general/2.jpg',
+  '/img/general/3.jpg',
+  '/img/general/4.jpg',
+  '/img/general/5.jpg',
+  '/img/general/6.jpg',
+  '/img/general/7.jpg',
+  '/img/general/8.jpg',
+  '/img/general/9.jpg',
+  '/img/general/10.jpg',
 ]
 
 const prepareCities = (cities) =>
@@ -225,47 +239,48 @@ export default function RootPageClient({
       </header>
 
       <main>
-        <section className="mx-auto grid w-full max-w-[1200px] gap-6 px-4 pb-12 pt-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] md:px-6">
-          <div className="rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-7 text-white md:p-9">
-            <p className="text-xs uppercase tracking-[0.22em] text-[#9ad9ff]">
-              Пространство живого общения
-            </p>
-            <h1 className="mt-3 font-lora text-[clamp(28px,4vw,44px)] leading-tight">
-              Легкие знакомства и офлайн-встречи для взрослых людей
-            </h1>
-            <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed text-white/90">
-              Платформа объединяет людей 30-50, которые ценят живое общение,
-              новые связи и качественный отдых без суеты.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <button
-                type="button"
-                className="rounded-full bg-[#8dcff2] px-5 py-2.5 text-sm font-semibold text-[#2b1b21]"
-                onClick={() => setShowLocationModal(true)}
-              >
-                Присоединиться
-              </button>
-              <a
-                href="#cities"
-                className="rounded-full border border-white/35 px-5 py-2.5 text-sm font-semibold text-white"
-                onClick={(event) => {
-                  event.preventDefault()
-                  scrollToSection('cities')
-                }}
-              >
-                Смотреть города
-              </a>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-[28px] bg-black">
-            <img
-              src="/img/general/5.jpg"
-              alt="Атмосфера живых встреч"
-              className="h-full min-h-[260px] w-full object-cover opacity-85"
-            />
-          </div>
-        </section>
+        <TitleHeroSection
+          sectionClassName="mx-auto w-full max-w-[1200px] px-4 pb-12 pt-10 md:px-6"
+          gridClassName="grid w-full gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]"
+          leftClassName="rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-7 text-white md:p-9"
+          rightClassName=""
+          images={heroImages}
+          imageClassName="object-cover opacity-85"
+          logoClassName="w-[min(210px,58%)] drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
+          leftContent={
+            <>
+              <p className="text-xs uppercase tracking-[0.22em] text-[#9ad9ff]">
+                Пространство живого общения
+              </p>
+              <h1 className="mt-3 font-lora text-[clamp(28px,4vw,44px)] leading-tight">
+                Легкие знакомства и офлайн-встречи для взрослых людей
+              </h1>
+              <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed text-white/90">
+                Платформа объединяет людей 30-50, которые ценят живое общение,
+                новые связи и качественный отдых без суеты.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className="rounded-full bg-[#8dcff2] px-5 py-2.5 text-sm font-semibold text-[#2b1b21]"
+                  onClick={() => setShowLocationModal(true)}
+                >
+                  Присоединиться
+                </button>
+                <a
+                  href="#cities"
+                  className="rounded-full border border-white/35 px-5 py-2.5 text-sm font-semibold text-white"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    scrollToSection('cities')
+                  }}
+                >
+                  Смотреть города
+                </a>
+              </div>
+            </>
+          }
+        />
 
         <section
           id="about"
