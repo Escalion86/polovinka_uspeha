@@ -163,6 +163,15 @@ const EventsContent = ({ mode = 'all' }) => {
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
         const isEventClosed = isEventClosedFunc(event)
+        const isCanceledByMode =
+          isEventCanceled &&
+          filter.status.canceled &&
+          (mode === 'upcoming'
+            ? !isEventExpired
+            : mode === 'past'
+              ? isEventExpired
+              : true)
+
         return (
           ((isEventClosed &&
             (statusFilterFull
@@ -172,7 +181,7 @@ const EventsContent = ({ mode = 'all' }) => {
               (isEventExpired
                 ? filter.status.finished
                 : filter.status.active)) ||
-            (isEventCanceled && filter.status.canceled)) &&
+            isCanceledByMode) &&
           (!filterOptions.directions ||
             filterOptions.directions === event.directionId) &&
           ((filter.participant?.participant &&
@@ -184,7 +193,7 @@ const EventsContent = ({ mode = 'all' }) => {
             : filter.participant?.notParticipant)
         )
       }),
-    [searchedEvents, filter, filterOptions]
+    [searchedEvents, filter, filterOptions, mode, statusFilterFull, eventsLoggedUser]
   )
 
   const filteredAndSortedEvents = useMemo(

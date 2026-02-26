@@ -208,7 +208,7 @@ const EventViewModal = ({
           ? 'Записаться в резерв'
           : 'Записаться'
     )
-    setOnConfirmFunc(() => () => {
+    setOnConfirmFunc(() => {
       if (isAlreadySignedUp) {
         modalsFunc.event.signOut(event, activeStatus)
       } else if (canSignInReserveOnly) {
