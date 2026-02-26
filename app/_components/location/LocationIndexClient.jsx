@@ -819,7 +819,7 @@ export default function LocationIndexClient({
               <p className="text-[18px] leading-relaxed">
                 <strong>Надежда</strong> – основатель пространства живых встреч,
                 идейный вдохновитель, а также организатор и ведущая основных
-                форматов пространства.
+                форматов пространства в городе Красноярске.
               </p>
             </div>
           </div>
@@ -1018,7 +1018,7 @@ export default function LocationIndexClient({
                         <span>{event.time}</span>
                         <span className="text-right">{event.place}</span>
                       </div>
-                      <div className="flex flex-wrap mt-3 items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
+                      <div className="flex gap-x-1 flex-wrap mt-3 items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
                         {event.maxParticipants ? (
                           eventsUsersLoading ? (
                             <span>{'Свободных мест '}</span>
@@ -1189,7 +1189,7 @@ export default function LocationIndexClient({
                 Свяжитесь с нами в Вашем городе
               </h3>
               <p className="mt-2 text-sm text-white/80">
-                Подскажем формат, ответим на вопросы и поможем выбрать событие.
+                Подскажем формат, ответим на вопросы и поможем выбрать событие
               </p>
               <div className="grid gap-3 mt-6">
                 {contactsData.primary.length > 0 ? (
@@ -1251,6 +1251,8 @@ export default function LocationIndexClient({
                     <a
                       key={`${item.label}-${item.value}`}
                       href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group flex items-center gap-3 rounded-2xl border border-[#f0e5ea] bg-white px-4 py-3 shadow-[0_10px_22px_rgba(107,31,42,0.1)] transition hover:-translate-y-0.5"
                     >
                       <span

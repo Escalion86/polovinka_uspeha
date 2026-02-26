@@ -161,6 +161,9 @@ const EventViewModal = ({
   const location = useAtomValue(locationAtom)
 
   const direction = useAtomValue(directionSelector(event?.directionId))
+  const loggedUserEventStatus = useAtomValue(
+    loggedUserToEventStatusSelector(eventId)
+  )
   const modalsFunc = useAtomValue(modalsFuncAtom)
 
   // const duration = getEventDuration(event)
@@ -189,9 +192,31 @@ const EventViewModal = ({
   useEffect(() => {
     if (!event) return undefined
 
-    // setConfirmButtonName('Записаться')
-    // setDeclineButtonShow(false)
-    setOnConfirmFunc(() => () => modalsFunc.event.signUp(event))
+    const activeStatus = eventUser?.status
+    const isAlreadySignedUp = ['participant', 'reserve'].includes(activeStatus)
+    const canSignInReserveOnly =
+      !isAlreadySignedUp &&
+      loggedUserEventStatus?.canSignIn === false &&
+      loggedUserEventStatus?.canSignInReserve === true
+
+    setConfirmButtonName(
+      isAlreadySignedUp
+        ? activeStatus === 'reserve'
+          ? 'Отписаться из резерва'
+          : 'Отписаться'
+        : canSignInReserveOnly
+          ? 'Записаться в резерв'
+          : 'Записаться'
+    )
+    setOnConfirmFunc(() => () => {
+      if (isAlreadySignedUp) {
+        modalsFunc.event.signOut(event, activeStatus)
+      } else if (canSignInReserveOnly) {
+        modalsFunc.event.signUp(event, 'reserve')
+      } else {
+        modalsFunc.event.signUp(event)
+      }
+    })
     setBottomLeftComponent(
       <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
         <PriceDiscount
@@ -204,11 +229,15 @@ const EventViewModal = ({
     return () => {
       setOnConfirmFunc(undefined)
       setBottomLeftComponent(undefined)
+      setConfirmButtonName('Записаться')
       // setDeclineButtonShow(true)
       // setConfirmButtonName('Подтвердить')
     }
   }, [
     event,
+    eventUser?.status,
+    loggedUserEventStatus?.canSignIn,
+    loggedUserEventStatus?.canSignInReserve,
     modalsFunc,
     setBottomLeftComponent,
     setConfirmButtonName,
