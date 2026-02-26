@@ -404,11 +404,13 @@ async function main() {
         }
       )
 
-      if (updatedGlobalUser?.lastErrorObject?.upserted) createdCount += 1
+      const updatedGlobalUserDoc = updatedGlobalUser?.value || updatedGlobalUser
+      const wasUpserted = Boolean(updatedGlobalUser?.lastErrorObject?.upserted)
+      if (wasUpserted || !existing?._id) createdCount += 1
       else updatedCount += 1
 
-      const resolvedGlobalUserId = updatedGlobalUser?.value?._id
-        ? String(updatedGlobalUser.value._id)
+      const resolvedGlobalUserId = updatedGlobalUserDoc?._id
+        ? String(updatedGlobalUserDoc._id)
         : null
       if (resolvedGlobalUserId) {
         for (const city of cities) {
