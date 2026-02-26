@@ -362,7 +362,6 @@ async function main() {
       )
 
       const setPayload = {
-        cities,
         cityProfiles,
         notifications,
         password: core.password,
