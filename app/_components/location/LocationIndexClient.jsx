@@ -886,7 +886,7 @@ export default function LocationIndexClient({
                   />
                 ) : null}
               </div>
-              <div className="flex flex-col max-h-[calc(85vh-200px)]  p-6">
+              <div className="flex flex-col max-h-[calc(85vh-225px)]  p-6">
                 <h3 className="text-xl font-semibold text-[#4b0f1c]">
                   {activeSpace.title}
                 </h3>
