@@ -416,11 +416,19 @@ async function main() {
           if (!cityProfile?.userId) continue
           const cityDbName = `${process.env[DB_ENV_MAP[city]]}${DB_SUFFIX}`
           const cityDb = client.db(cityDbName)
-          const cityUserId = ObjectId.isValid(cityProfile.userId)
-            ? new ObjectId(cityProfile.userId)
-            : cityProfile.userId
+          const cityUserIdRaw = String(cityProfile.userId)
+          const cityUserIdObjectId = ObjectId.isValid(cityUserIdRaw)
+            ? new ObjectId(cityUserIdRaw)
+            : null
+
+          const localUserFilter = cityUserIdObjectId
+            ? {
+                $or: [{ _id: cityUserIdObjectId }, { _id: cityUserIdRaw }],
+              }
+            : { _id: cityUserIdRaw }
+
           await cityDb.collection('users').updateOne(
-            { _id: cityUserId },
+            localUserFilter,
             { $set: { globalUserId: resolvedGlobalUserId } }
           )
         }
