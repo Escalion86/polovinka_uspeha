@@ -76,17 +76,38 @@ const EventFreePlacesBadge = ({
   const getFree = (max, count) =>
     typeof max === 'number' ? Math.max(0, (max ?? 0) - (count ?? 0)) : null
 
+  const hasWomansLimit = typeof limits.maxWomans === 'number'
+  const hasMansLimit = typeof limits.maxMans === 'number'
+  const freeWomansPlaces = getFree(limits.maxWomans, participantsWomansCount)
+  const freeMansPlaces = getFree(limits.maxMans, participantsMansCount)
+
   const text = hasGenderLimits ? (
-    <>
-      <span>{`Свободных мест`}</span>
-      <span>{`для женщин ${getFree(
-        limits.maxWomans,
-        participantsWomansCount
-      )} из ${limits.maxWomans ?? 0} | для мужчин ${getFree(
-        limits.maxMans,
-        participantsMansCount
-      )} из ${limits.maxMans ?? 0}`}</span>
-    </>
+    hasWomansLimit &&
+    hasMansLimit &&
+    freeWomansPlaces === 0 &&
+    freeMansPlaces === 0 ? (
+      <span>{'Свободных мест нет'}</span>
+    ) : (
+      <>
+        <span>{`Свободных мест`}</span>
+        <span>
+          {[
+            hasWomansLimit
+              ? freeWomansPlaces === 0
+                ? 'для женщин нет'
+                : `для женщин ${freeWomansPlaces} из ${limits.maxWomans}`
+              : null,
+            hasMansLimit
+              ? freeMansPlaces === 0
+                ? 'для мужчин нет'
+                : `для мужчин ${freeMansPlaces} из ${limits.maxMans}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' | ')}
+        </span>
+      </>
+    )
   ) : typeof limits.maxParticipants === 'number' ? (
     <>
       <span>{`Свободных мест `}</span>
