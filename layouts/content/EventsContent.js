@@ -298,23 +298,6 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
               />
             </>
           ) : null}
-          {!calendarOnly ? (
-            <button
-              type="button"
-              onClick={() =>
-                setViewMode((state) => (state === 'list' ? 'calendar' : 'list'))
-              }
-              className={cn(
-                'rounded-lg border px-2 py-1 text-xs font-semibold uppercase tracking-wide transition',
-                viewMode === 'calendar'
-                  ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
-                  : 'border-[#f0e2e8] bg-white text-[#6b1f2a] hover:bg-[#fff4f7]'
-              )}
-              aria-label="Переключить вид списка мероприятий"
-            >
-              {viewMode === 'list' ? 'Календарь' : 'Список'}
-            </button>
-          ) : null}
           {seeAddButton && allowEventManagement ? (
             <AddButton onClick={() => modalsFunc.event.add()} />
           ) : null}
