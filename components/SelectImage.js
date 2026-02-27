@@ -44,17 +44,30 @@ const SelectImage = ({
         'https://api.escalioncloud.ru/api/files',
         { directory: `${imageFolder}/${directory}`, noFolders: true },
         (response) => {
+          const safePath = [imageFolder, directory]
+            .filter(Boolean)
+            .map((part) => encodeURIComponent(part))
+            .join('/')
+
           setImages(
-            response.map(
-              (imageName) =>
-                `https://escalioncloud.ru/uploads/${imageFolder}/${directory}/${imageName}`
-            ) || []
+            (response || [])
+              .map((item) => (typeof item === 'string' ? item : item?.name))
+              .filter(Boolean)
+              .map((fileName) => {
+                const encodedFileName = encodeURIComponent(fileName)
+                return `https://escalioncloud.ru/uploads/${safePath}/${encodedFileName}`
+              })
           )
+
           setIsLoading(false)
         },
-        (error) => console.log('error :>> ', error),
+        (error) => {
+          console.log('error :>> ', error)
+          setIsLoading(false)
+        },
         true
       )
+
     loadImages()
   }, [])
 
