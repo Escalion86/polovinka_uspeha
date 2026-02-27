@@ -16,6 +16,7 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   supervisor: 'Сайт / Руководитель региона',
   eventsUpcoming: 'Предстоящие мероприятия',
   eventsPast: 'Прошедшие мероприятия',
+  eventsCalendar: 'Календарь мероприятий',
   questionnaire: 'Мой профиль',
   notifications: 'Уведомления',
   users: 'Пользователи',

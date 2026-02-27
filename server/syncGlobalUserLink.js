@@ -278,11 +278,23 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
     preferredLocalProfileData?.profile && hasMeaningfulProfile(preferredLocalProfileData.profile)
       ? preferredLocalProfileData.profile
       : incomingProfile
-  const preferredNotifications =
+  const preferredNotificationsSource =
     preferredLocalProfileData?.notifications &&
     typeof preferredLocalProfileData.notifications === 'object'
       ? preferredLocalProfileData.notifications
-      : incomingNotifications
+      : {}
+  const preferredNotifications = {
+    settings: {
+      ...(preferredNotificationsSource?.settings || {}),
+      ...(incomingNotifications?.settings || {}),
+    },
+    consentToMailing:
+      typeof incomingNotifications?.consentToMailing === 'boolean'
+        ? incomingNotifications.consentToMailing
+        : typeof preferredNotificationsSource?.consentToMailing === 'boolean'
+          ? preferredNotificationsSource.consentToMailing
+          : false,
+  }
   const preferredAuthProviders =
     preferredLocalProfileData?.authProviders &&
     typeof preferredLocalProfileData.authProviders === 'object'

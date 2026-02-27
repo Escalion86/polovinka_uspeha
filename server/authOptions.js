@@ -1054,10 +1054,12 @@ export const authOptions = {
           globalUser?.referrerId,
           result.referrerId
         )
-        session.user.consentToMailing = resolveGlobalFirst(
-          globalUser?.notifications?.consentToMailing,
-          result.consentToMailing
-        )
+        const localConsentToMailing = result.consentToMailing
+        const globalConsentToMailing = globalUser?.notifications?.consentToMailing
+        session.user.consentToMailing =
+          typeof localConsentToMailing === 'boolean'
+            ? localConsentToMailing
+            : resolveGlobalFirst(globalConsentToMailing, localConsentToMailing)
         session.user.archive = resolveGlobalFirst(globalUser?.archive, result.archive)
         session.user.createdAt = result.createdAt
         session.user.updatedAt = result.updatedAt

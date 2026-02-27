@@ -74,6 +74,9 @@ const EventsUpcomingContent = dynamic(
 const EventsPastContent = dynamic(
   () => import('@layouts/content/EventsPastContent')
 )
+const EventsCalendarContent = dynamic(
+  () => import('@layouts/content/EventsCalendarContent')
+)
 const AdditionalBlocksContent = dynamic(
   () => import('@layouts/content/AdditionalBlocksContent')
 )
@@ -1990,6 +1993,11 @@ export const CONTENTS = Object.freeze({
     name: 'Прошедшие мероприятия',
     roleAccess: (role) => role?.events?.see,
   },
+  eventsCalendar: {
+    Component: EventsCalendarContent,
+    name: 'Календарь мероприятий',
+    roleAccess: (role) => role?.events?.see,
+  },
   questionnaire: {
     Component: QuestionnaireContent,
     name: 'Мой профиль',
@@ -2299,6 +2307,14 @@ export const pages = [
     href: 'eventsPast',
     icon: faCalendarAlt,
     roleAccess: CONTENTS['eventsPast'].roleAccess,
+  },
+  {
+    id: 124,
+    group: 3,
+    name: 'Календарь мероприятий',
+    href: 'eventsCalendar',
+    icon: faCalendarAlt,
+    roleAccess: CONTENTS['eventsCalendar'].roleAccess,
   },
   {
     id: 8,

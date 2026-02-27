@@ -256,10 +256,10 @@ export default function RootPageClient({
                 Легкие знакомства и офлайн-встречи для взрослых людей
               </h1>
               <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed text-white/90">
-                Платформа объединяет людей 30-50, которые ценят живое общение,
-                новые связи и качественный отдых без суеты.
+                Платформа объединяет людей, которые ценят живое общение, новые
+                связи и качественный отдых без суеты.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 mt-6">
                 <button
                   type="button"
                   className="rounded-full bg-[#8dcff2] px-5 py-2.5 text-sm font-semibold text-[#2b1b21]"
@@ -364,7 +364,7 @@ export default function RootPageClient({
             </button>
           </div>
 
-          <div className="grid gap-4 mt-5 md:grid-cols-3">
+          <div className="grid gap-4 mt-5 tablet:grid-cols-2 desktop:grid-cols-3">
             {locations.map((item) => (
               <article
                 key={item.key}
@@ -381,7 +381,7 @@ export default function RootPageClient({
                     ? `Также рядом: ${item.nearby.join(', ')}`
                     : 'Локальная команда и офлайн-мероприятия в вашем городе.'}
                 </p>
-                <div className="flex gap-2 mt-5">
+                <div className="flex flex-wrap gap-2 mt-5">
                   <Link
                     href={`/${item.key}`}
                     className="rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] px-4 py-2 text-sm font-semibold text-white"

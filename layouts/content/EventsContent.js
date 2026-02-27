@@ -25,18 +25,20 @@ import cn from 'classnames'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const defaultFilterValue = {
   directions: null,
 }
 
-const EventsContent = ({ mode = 'all' }) => {
+const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
   const events = useAtomValue(eventsAtom)
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -44,8 +46,11 @@ const EventsContent = ({ mode = 'all' }) => {
   const seeHidden = loggedUserActiveRole?.events?.seeHidden
   const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
   const seeAddButton = loggedUserActiveRole?.events?.add
-  const { loading: cityAccessLoading, allowEventManagement, cityTitle } =
-    useCityManagementAccess()
+  const {
+    loading: cityAccessLoading,
+    allowEventManagement,
+    cityTitle,
+  } = useCityManagementAccess()
 
   const isClient = loggedUserActiveRole?._id === 'client'
 
@@ -56,6 +61,13 @@ const EventsContent = ({ mode = 'all' }) => {
   )
 
   const statusDefault = useMemo(() => {
+    if (calendarOnly)
+      return {
+        active: true,
+        finished: true,
+        closed: true,
+        canceled: false,
+      }
     if (mode === 'past')
       return {
         active: false,
@@ -76,7 +88,7 @@ const EventsContent = ({ mode = 'all' }) => {
       closed: false,
       canceled: false,
     }
-  }, [mode])
+  }, [calendarOnly, mode])
 
   const statusButtons = useMemo(() => {
     if (isClient) return []
@@ -95,7 +107,7 @@ const EventsContent = ({ mode = 'all' }) => {
 
   const [isSearching, setIsSearching] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
-  const [viewMode, setViewMode] = useState('list')
+  const [viewMode, setViewMode] = useState(calendarOnly ? 'calendar' : 'list')
   const [filter, setFilter] = useState({
     status: statusDefault,
     participant: {
@@ -111,6 +123,20 @@ const EventsContent = ({ mode = 'all' }) => {
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
+  const [monthEventsCount, setMonthEventsCount] = useState(0)
+  const todayLabel = useMemo(() => {
+    const now = new Date()
+    return `Сегодня ${now.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+    })}`
+  }, [])
+
+  useEffect(() => {
+    if (calendarOnly) {
+      setViewMode('calendar')
+    }
+  }, [calendarOnly])
 
   useEffect(() => {
     setFilter((state) => {
@@ -135,33 +161,28 @@ const EventsContent = ({ mode = 'all' }) => {
     })
   }, [mode, statusDefault])
 
-  const filteredEvents = useMemo(
-    () =>
+  const getVisibleEventsForSource = useCallback(
+    (sourceEvents = []) =>
       visibleEventsForUser(
-        events,
+        sourceEvents,
         eventsLoggedUser,
         loggedUserActive,
         false,
         seeHidden,
         loggedUserActiveStatusName
       ),
-    [
-      events,
-      eventsLoggedUser,
-      loggedUserActive,
-      seeHidden,
-      loggedUserActiveStatusName,
-    ]
+    [eventsLoggedUser, loggedUserActive, seeHidden, loggedUserActiveStatusName]
   )
 
-  const searchedEvents = useMemo(() => {
-    if (!isSearching || !searchText) return filteredEvents
-    return filterItems(filteredEvents, searchText, [], {}, ['title'])
-  }, [filteredEvents, searchText, isSearching])
+  const applyFiltersAndSort = useCallback(
+    (sourceEvents = []) => {
+      const filteredEvents = getVisibleEventsForSource(sourceEvents)
+      const searchedEvents =
+        isSearching && searchText
+          ? filterItems(filteredEvents, searchText, [], {}, ['title'])
+          : filteredEvents
 
-  const visibleEvents = useMemo(
-    () =>
-      searchedEvents.filter((event) => {
+      const visibleEvents = searchedEvents.filter((event) => {
         const isEventExpired = isEventExpiredFunc(event)
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
@@ -195,14 +216,28 @@ const EventsContent = ({ mode = 'all' }) => {
             ? filter.participant?.participant
             : filter.participant?.notParticipant)
         )
-      }),
-    [searchedEvents, filter, filterOptions, mode, statusFilterFull, eventsLoggedUser]
+      })
+
+      return [...visibleEvents].sort(sortFunc)
+    },
+    [
+      eventsLoggedUser,
+      filter,
+      filterOptions,
+      getVisibleEventsForSource,
+      isSearching,
+      mode,
+      searchText,
+      sortFunc,
+      statusFilterFull,
+    ]
   )
 
   const filteredAndSortedEvents = useMemo(
-    () => [...visibleEvents].sort(sortFunc),
-    [visibleEvents, sort]
+    () => applyFiltersAndSort(events),
+    [applyFiltersAndSort, events]
   )
+  const visibleEvents = filteredAndSortedEvents
 
   const isFiltered = Boolean(filterOptions.directions)
 
@@ -212,59 +247,74 @@ const EventsContent = ({ mode = 'all' }) => {
         <CityManagementBlockedBanner cityTitle={cityTitle} />
       ) : null}
       <ContentHeader>
-        {statusButtons.length > 0 && (
-          <EventStatusToggleButtons
-            value={filter.status}
+        <div className="flex items-center justify-center w-full">
+          {statusButtons.length > 0 && (
+            <EventStatusToggleButtons
+              value={filter.status}
+              onChange={(value) =>
+                setFilter((state) => ({ ...state, status: value }))
+              }
+              availableButtons={statusButtons}
+              labels={statusLabels}
+            />
+          )}
+          <EventParticipantToggleButtons
+            value={filter.participant}
             onChange={(value) =>
-              setFilter((state) => ({ ...state, status: value }))
+              setFilter((state) => ({ ...state, participant: value }))
             }
-            availableButtons={statusButtons}
-            labels={statusLabels}
           />
-        )}
-        <EventParticipantToggleButtons
-          value={filter.participant}
-          onChange={(value) =>
-            setFilter((state) => ({ ...state, participant: value }))
-          }
-        />
+        </div>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
+          {calendarOnly ? (
+            <div className="mr-auto text-sm font-semibold text-[#6b1f2a]">
+              {todayLabel}
+            </div>
+          ) : null}
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounEvents(visibleEvents.length)}
-          </div>
-          <SortingButtonMenu
-            sort={sort}
-            onChange={setSort}
-            sortKeys={['dateStart']}
-          />
-          <FilterToggleButton
-            value={isFiltered}
-            onChange={() => {
-              setShowFilter((state) => !state)
-            }}
-          />
-          <SearchToggleButton
-            value={isSearching}
-            onChange={() => {
-              setIsSearching((state) => !state)
-              // if (isSearching) setSearchText('')
-            }}
-          />
-          <button
-            type="button"
-            onClick={() =>
-              setViewMode((state) => (state === 'list' ? 'calendar' : 'list'))
-            }
-            className={cn(
-              'rounded-lg border px-2 py-1 text-xs font-semibold uppercase tracking-wide transition',
-              viewMode === 'calendar'
-                ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
-                : 'border-[#f0e2e8] bg-white text-[#6b1f2a] hover:bg-[#fff4f7]'
+            {getNounEvents(
+              calendarOnly ? monthEventsCount : visibleEvents.length
             )}
-            aria-label="Переключить вид списка мероприятий"
-          >
-            {viewMode === 'list' ? 'Календарь' : 'Список'}
-          </button>
+          </div>
+          {!calendarOnly ? (
+            <>
+              <SortingButtonMenu
+                sort={sort}
+                onChange={setSort}
+                sortKeys={['dateStart']}
+              />
+              <FilterToggleButton
+                value={isFiltered}
+                onChange={() => {
+                  setShowFilter((state) => !state)
+                }}
+              />
+              <SearchToggleButton
+                value={isSearching}
+                onChange={() => {
+                  setIsSearching((state) => !state)
+                  // if (isSearching) setSearchText('')
+                }}
+              />
+            </>
+          ) : null}
+          {!calendarOnly ? (
+            <button
+              type="button"
+              onClick={() =>
+                setViewMode((state) => (state === 'list' ? 'calendar' : 'list'))
+              }
+              className={cn(
+                'rounded-lg border px-2 py-1 text-xs font-semibold uppercase tracking-wide transition',
+                viewMode === 'calendar'
+                  ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
+                  : 'border-[#f0e2e8] bg-white text-[#6b1f2a] hover:bg-[#fff4f7]'
+              )}
+              aria-label="Переключить вид списка мероприятий"
+            >
+              {viewMode === 'list' ? 'Календарь' : 'Список'}
+            </button>
+          ) : null}
           {seeAddButton && allowEventManagement ? (
             <AddButton onClick={() => modalsFunc.event.add()} />
           ) : null}
@@ -283,23 +333,30 @@ const EventsContent = ({ mode = 'all' }) => {
           </FormControl> */}
         </div>
       </ContentHeader>
-      <Search
-        searchText={searchText}
-        show={isSearching}
-        onChange={setSearchText}
-        className="mx-1 bg-gray-100"
-      />
-      <Filter
-        show={showFilter}
-        onChange={setFilterOptions}
-        filterOptions={filterOptions}
-        defaultFilterValue={defaultFilterValue}
-        setShowFilter={setShowFilter}
-      />
+      {!calendarOnly ? (
+        <>
+          <Search
+            searchText={searchText}
+            show={isSearching}
+            onChange={setSearchText}
+            className="mx-1 bg-gray-100"
+          />
+          <Filter
+            show={showFilter}
+            onChange={setFilterOptions}
+            filterOptions={filterOptions}
+            defaultFilterValue={defaultFilterValue}
+            setShowFilter={setShowFilter}
+          />
+        </>
+      ) : null}
       {/* <CardListWrapper> */}
       {viewMode === 'calendar' ? (
         <EventsCalendarView
           events={filteredAndSortedEvents}
+          location={location}
+          applyFiltersAndSort={applyFiltersAndSort}
+          onMonthEventsCountChange={setMonthEventsCount}
           onOpenEvent={(eventId) => modalsFunc.event.view(eventId)}
         />
       ) : (
