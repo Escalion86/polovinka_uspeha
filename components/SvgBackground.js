@@ -33,7 +33,24 @@ import InputNumber from './InputNumber'
 //     .then((dataUrl) => dataUrl.split(',')[1])
 // }
 
-function urlToBase64(url, callback) {
+const getSafeImageUrl = (url) => {
+  if (!url || typeof url !== 'string') return ''
+
+  const trimmedUrl = url.trim()
+  if (!trimmedUrl) return ''
+
+  if (
+    trimmedUrl.startsWith('data:') ||
+    trimmedUrl.startsWith('blob:') ||
+    trimmedUrl.startsWith('/')
+  ) {
+    return trimmedUrl
+  }
+
+  return trimmedUrl
+}
+
+function urlToBase64(url, callback, onError) {
   var img = new Image()
   img.crossOrigin = 'Anonymous' // Allow cross-origin images
   img.onload = function () {
@@ -44,6 +61,9 @@ function urlToBase64(url, callback) {
     ctx.drawImage(img, 0, 0)
     var dataURL = canvas.toDataURL('image/png')
     callback(dataURL)
+  }
+  img.onerror = function (error) {
+    onError && onError(error)
   }
   img.src = url
 }
@@ -56,7 +76,7 @@ export const SvgBackgroundComponent = ({
   gradient2Color = '#7a6a53',
   src = '',
 }) => {
-  const [srcBase64, setBase64] = useState(src)
+  const [srcBase64, setBase64] = useState(getSafeImageUrl(src))
   var anglePI = angle * (Math.PI / 180)
 
   // const onLoad = (e) => {
@@ -95,14 +115,44 @@ export const SvgBackgroundComponent = ({
   // }, [src])
 
   useEffect(() => {
+    let isCancelled = false
+
+    const setIfActive = (value) => {
+      if (!isCancelled) setBase64(value)
+    }
+
     if (src) {
+      const safeSrc = getSafeImageUrl(src)
+      if (/^https?:\/\//i.test(safeSrc)) {
+        fetch(`/api/tools/image-to-base64?url=${encodeURIComponent(safeSrc)}`)
+          .then((response) => response.json())
+          .then((json) => {
+            const dataUrl = json?.success ? json?.data?.dataUrl : ''
+            setIfActive(dataUrl || '')
+          })
+          .catch(() => setIfActive(''))
+        return () => {
+          isCancelled = true
+        }
+      }
       // urlToBase64(src)
       //   .then((base64) => setBase64(base64))
       //   .catch((error) => console.error(error))
-      urlToBase64(src, function (base64) {
-        // console.log(base64);
-        setBase64(base64)
-      })
+      urlToBase64(
+        safeSrc,
+        function (base64) {
+          setIfActive(base64)
+        },
+        function () {
+          setIfActive('')
+        }
+      )
+    } else {
+      setIfActive('')
+    }
+
+    return () => {
+      isCancelled = true
     }
   }, [src])
 
