@@ -87,10 +87,10 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
     >
       <div className="flex flex-col w-full h-full overflow-hidden">
         <div className="w-full rounded-t-[30px] bg-[linear-gradient(135deg,rgba(107,31,42,0.12),rgba(79,176,232,0.18))] px-5 py-4">
-          <div className="flex items-center justify-between w-full gap-3">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full gap-2">
+            <div className="flex items-center gap-1">
               <UserRelationshipIconByEventId eventId={eventId} />
-              <span className="inline-flex items-center rounded-full border border-[rgba(107,31,42,0.25)] bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.08em] uppercase text-[#6b1f2a]">
+              <span className="text-center inline-flex items-center rounded-full border border-[rgba(107,31,42,0.25)] bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.08em] uppercase text-[#6b1f2a]">
                 {direction?.title ?? '[неизвестное Пространство]'}
               </span>
               {statusBadge ? (
@@ -208,7 +208,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
             </div>
           </div>
         </div>
-        <div className="rounded-[30px] overflow-hidden hidden laptop:flex w-full flex-wrap items-center justify-between gap-3 border border-[#f0e5ea] bg-white/90 px-4 py-3 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
+        <div className="overflow-hidden hidden laptop:flex w-full flex-wrap items-center justify-between gap-3 border border-[#f0e5ea] bg-white/90 px-4 py-1 h-11 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
           <Suspense
             fallback={
               <div className={badgeClassName}>

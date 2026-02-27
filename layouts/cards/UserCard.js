@@ -157,7 +157,9 @@ const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
                         relationship={user?.relationship}
                         showHavePartnerOnly
                       />
-                      <UserStatusIcon status={user?.status} size="m" />
+                      {user?.status === 'member' ? (
+                        <UserStatusIcon status={user?.status} size="m" />
+                      ) : null}
                       <UserName
                         user={user}
                         className="h-8 text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"

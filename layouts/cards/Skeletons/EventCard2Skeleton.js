@@ -21,10 +21,10 @@ const EventCard2Skeleton = ({ hidden, style, loading }) => {
       <div className="flex flex-col w-full h-full overflow-hidden">
         <div className="w-full rounded-t-[30px] bg-[linear-gradient(135deg,rgba(107,31,42,0.12),rgba(79,176,232,0.18))] px-5 py-4">
           <div className="flex items-center justify-between w-full gap-3">
-            <div className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
               <Skeleton circle height={18} width={18} />
-              <Skeleton height={20} width={180} />
-              <Skeleton height={20} width={90} />
+              <Skeleton height={20} width={widthNum <= 2 ? 110 : 180} />
+              <Skeleton height={20} width={widthNum <= 2 ? 56 : 90} />
             </div>
             <Skeleton height={24} width={56} />
           </div>
@@ -46,7 +46,7 @@ const EventCard2Skeleton = ({ hidden, style, loading }) => {
                 </div>
               </div>
               <div className="flex items-center justify-between w-full gap-3 mt-3">
-                <Skeleton height={18} width={220} />
+                <Skeleton height={18} width={widthNum <= 2 ? 150 : 220} />
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@ const EventCard2Skeleton = ({ hidden, style, loading }) => {
               <Skeleton height={24} width={90} />
             </div>
             <div className="laptop:hidden mt-auto flex flex-col tablet:flex-row w-full flex-wrap items-center justify-between gap-3 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-4 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
-              <Skeleton height={22} width={200} />
+              <Skeleton height={22} width={widthNum <= 2 ? 150 : 200} />
               <Skeleton height={28} width={130} />
             </div>
           </div>

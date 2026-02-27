@@ -92,6 +92,20 @@ const DateTimePicker = ({
           onChange={(date) => onChange(date.toISOString())}
           disabled={disabled}
           showDisabledIcon={false}
+          slotProps={{
+            day: {
+              sx: {
+                '&.Mui-selected': {
+                  color: '#fff !important',
+                  backgroundColor: '#6b1f2a !important',
+                },
+                '&.Mui-selected:hover': {
+                  color: '#fff !important',
+                  backgroundColor: '#6b1f2a !important',
+                },
+              },
+            },
+          }}
           // slotProps={{
           //   textField: {
           //     sx: { boxShadow: 'none' },
@@ -174,9 +188,9 @@ const DateTimePicker = ({
             slots={{
               openPickerIcon: AccessTimeIcon,
             }}
-            onChange={(date) => onChange(date.toISOString())}
-            disabled={disabled}
-            showDisabledIcon={false}
+          onChange={(date) => onChange(date.toISOString())}
+          disabled={disabled}
+          showDisabledIcon={false}
           />
         )}
       </LocalizationProvider>

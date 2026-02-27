@@ -108,6 +108,7 @@ const ToolsNewsletterContent = () => {
           NEWSLETTER_SENDING_STATUSES.WAITING
         ],
         color: 'primary',
+        activeClassName: '!text-white',
       },
       {
         value: NEWSLETTER_SENDING_STATUSES.SENT,

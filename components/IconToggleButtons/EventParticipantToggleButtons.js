@@ -51,12 +51,12 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
         color="inherit"
         sx={{
           backgroundColor: value.notParticipant ? '#8dcff2' : 'transparent',
-          color: '#1d3950',
+          color: value.notParticipant ? '#ffffff' : '#8dcff2',
           borderColor: '#8dcff2',
           '&:hover': {
             backgroundColor: value.notParticipant ? '#7fc3ea' : 'transparent',
             borderColor: '#7fc3ea',
-            color: '#1d3950',
+            color: value.notParticipant ? '#ffffff' : '#7fc3ea',
           },
         }}
       >

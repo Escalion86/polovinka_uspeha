@@ -175,7 +175,7 @@ const userViewFunc = (userId, params = {}) => {
               ) : null}
             </div>
             <div className="flex items-center gap-2 ml-auto">
-              {isLoggedUserMember ? (
+              {isLoggedUserMember && user?.status === 'member' ? (
                 <UserStatusIcon status={user?.status} />
               ) : null}
               {!setTopLeftComponent && <CardButtonsComponent user={user} />}

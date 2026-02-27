@@ -67,7 +67,7 @@ const ObjectItem = ({
       )}
       <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
         <FontAwesomeIcon
-          className="w-5 h-5 text-purple-500"
+          className="w-5 h-5 text-[#7b4fb3]"
           icon={item.show ? faEye : faEyeSlash}
           size="1x"
           onClick={() => onChange({ key: item.key, show: !item.show })}

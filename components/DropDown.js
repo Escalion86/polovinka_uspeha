@@ -27,6 +27,8 @@ const DropDown = ({
   // strategyAbsolute = true,
   className,
   placement = 'left-start',
+  closeOnContentClick = false,
+  fallbackPlacements,
 }) => {
   const isTouchDevice = useIsTouchDevice()
   const [open, setOpen] = useState(false)
@@ -35,7 +37,15 @@ const DropDown = ({
     onOpenChange: setOpen,
     placement,
     whileElementsMounted: autoUpdate,
-    middleware: [offset(6), flip(), shift({ padding: 8 })],
+    middleware: [
+      offset(6),
+      flip(
+        fallbackPlacements?.length
+          ? { fallbackPlacements }
+          : undefined
+      ),
+      shift({ padding: 8, crossAxis: true }),
+    ],
   })
 
   const hover = useHover(context, {
@@ -89,7 +99,14 @@ const DropDown = ({
               className="z-[9999]"
               {...getFloatingProps()}
             >
-              <div className="overflow-hidden rounded-lg">{children}</div>
+              <div
+                className="overflow-hidden rounded-lg"
+                onClick={() => {
+                  if (closeOnContentClick) setOpen(false)
+                }}
+              >
+                {children}
+              </div>
             </div>
           </FloatingFocusManager>
         </FloatingPortal>

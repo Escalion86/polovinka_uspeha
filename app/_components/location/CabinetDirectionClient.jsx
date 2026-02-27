@@ -21,7 +21,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CountDown from '@blocks/components/CountDown'
 
-const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard2'))
 const ServiceCard = dynamic(() => import('@layouts/cards/ServiceCard'))
 
 const sortByIndexAndTitle = (a, b) => {

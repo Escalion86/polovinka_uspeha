@@ -20,6 +20,11 @@ const CARD_BUTTON_PALETTE = {
     hover: 'hover:bg-[#b42318] hover:text-white',
     active: 'bg-[#b42318] text-white',
   },
+  purple: {
+    text: 'text-[#7b4fb3]',
+    hover: 'hover:bg-[#7b4fb3] hover:text-white',
+    active: 'bg-[#7b4fb3] text-white',
+  },
   general: {
     text: 'text-[#6b1f2a]',
     hover: 'hover:bg-[#6b1f2a] hover:text-white',
@@ -29,4 +34,3 @@ const CARD_BUTTON_PALETTE = {
 
 export const getCardButtonPalette = (color) =>
   CARD_BUTTON_PALETTE[color] || CARD_BUTTON_PALETTE.general
-

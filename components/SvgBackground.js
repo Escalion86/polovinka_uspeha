@@ -50,7 +50,7 @@ function urlToBase64(url, callback) {
 
 export const SvgBackgroundComponent = ({
   backgroundType = 'color',
-  backgroundColor = 'var(--color-general)',
+  backgroundColor = '#6b1f2a',
   angle = 45,
   gradient1Color = '#504436',
   gradient2Color = '#7a6a53',
@@ -163,7 +163,7 @@ export const SvgBackgroundInput = ({
     value?.backgroundType ?? 'color'
   )
   const [backgroundColor, setBackgroundColor] = useState(
-    value?.backgroundColor ?? 'var(--color-general)'
+    value?.backgroundColor ?? '#6b1f2a'
   )
   const [gradient1Color, setGradient1Color] = useState(
     value?.gradient1Color ?? '#7a6a53'
@@ -188,7 +188,7 @@ export const SvgBackgroundInput = ({
 
   useEffect(() => {
     setBackgroundType(value?.backgroundType ?? 'color')
-    setBackgroundColor(value?.backgroundColor ?? 'var(--color-general)')
+    setBackgroundColor(value?.backgroundColor ?? '#6b1f2a')
     setGradient1Color(value?.gradient1Color ?? '#7a6a53')
     setGradient2Color(value?.gradient2Color ?? '#504436')
     setAngle(value?.angle ?? 45)

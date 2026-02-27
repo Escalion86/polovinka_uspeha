@@ -36,6 +36,10 @@ const isPathLocationScoped = (pathname) => {
   const firstSegment = pathname.split('/').filter(Boolean)[0]
   return KNOWN_LOCATIONS.has(firstSegment)
 }
+const getLocationFromPath = (pathname) => {
+  const firstSegment = pathname.split('/').filter(Boolean)[0]
+  return KNOWN_LOCATIONS.has(firstSegment) ? firstSegment : null
+}
 
 const isPathAllowedWithoutAuth = (pathname) => {
   if (pathname === '/') return true
@@ -85,7 +89,24 @@ export async function proxy(req) {
     return response
   }
 
-  if (!parseBooleanEnv(process.env.AUTH_DEV_ONLY_MODE)) {
+  const authDevOnlyMode = parseBooleanEnv(process.env.AUTH_DEV_ONLY_MODE)
+
+  if (!authDevOnlyMode) {
+    const token = await getToken({ req, secret: process.env.SECRET })
+    if (token && !isCabinetPath(pathname)) {
+      const tokenLocation =
+        typeof token?.location === 'string' && KNOWN_LOCATIONS.has(token.location)
+          ? token.location
+          : null
+      const pathLocation = getLocationFromPath(pathname)
+      const targetLocation = pathLocation || tokenLocation || 'krsk'
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.search = ''
+      redirectUrl.pathname = `/${targetLocation}/cabinet/eventsCalendar`
+      if (redirectUrl.pathname !== pathname) {
+        return NextResponse.redirect(redirectUrl)
+      }
+    }
     return NextResponse.next()
   }
 

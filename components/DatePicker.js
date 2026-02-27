@@ -121,6 +121,20 @@ const DatePicker = ({
           }
           disabled={disabled}
           onChange={onChange}
+          slotProps={{
+            day: {
+              sx: {
+                '&.Mui-selected': {
+                  color: '#fff !important',
+                  backgroundColor: '#6b1f2a !important',
+                },
+                '&.Mui-selected:hover': {
+                  color: '#fff !important',
+                  backgroundColor: '#6b1f2a !important',
+                },
+              },
+            },
+          }}
           // slotProps={{
           //   // textField: {
           //   //   // helperText: 'дд.мм.гггг',

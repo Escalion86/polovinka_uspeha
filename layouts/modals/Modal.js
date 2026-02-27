@@ -341,7 +341,7 @@ const Modal = ({
           </div>
         )}
         {TopLeftComponentState && (
-          <div className="absolute left-2 top-2">{TopLeftComponentState}</div>
+          <div className="absolute left-2 top-1">{TopLeftComponentState}</div>
         )}
         {crossShow && (
           <Tooltip title="Закрыть">
@@ -356,7 +356,7 @@ const Modal = ({
           </Tooltip>
         )}
         {titleState && (
-          <div className="mx-10 mt-8 mb-2 text-lg font-bold leading-4 text-center whitespace-pre-line tablet:mb-3 tablet:mt-2 tablet:mx-24">
+          <div className="mx-10 mt-8 mb-3 text-lg font-bold leading-4 text-center whitespace-pre-line tablet:mb-4 tablet:mt-2 tablet:mx-24">
             {titleState}
           </div>
         )}

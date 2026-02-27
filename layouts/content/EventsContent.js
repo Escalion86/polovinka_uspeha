@@ -247,7 +247,7 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
         <CityManagementBlockedBanner cityTitle={cityTitle} />
       ) : null}
       <ContentHeader>
-        <div className="flex items-center justify-center w-full">
+        <div className="flex items-center justify-center w-full gap-x-2">
           {statusButtons.length > 0 && (
             <EventStatusToggleButtons
               value={filter.status}
@@ -335,13 +335,15 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
       ) : null}
       {/* <CardListWrapper> */}
       {viewMode === 'calendar' ? (
-        <EventsCalendarView
-          events={filteredAndSortedEvents}
-          location={location}
-          applyFiltersAndSort={applyFiltersAndSort}
-          onMonthEventsCountChange={setMonthEventsCount}
-          onOpenEvent={(eventId) => modalsFunc.event.view(eventId)}
-        />
+        <div className="w-full h-full overflow-y-scroll">
+          <EventsCalendarView
+            events={filteredAndSortedEvents}
+            location={location}
+            applyFiltersAndSort={applyFiltersAndSort}
+            onMonthEventsCountChange={setMonthEventsCount}
+            onOpenEvent={(eventId) => modalsFunc.event.view(eventId)}
+          />
+        </div>
       ) : (
         <EventsList
           events={filteredAndSortedEvents}

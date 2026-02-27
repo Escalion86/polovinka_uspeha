@@ -232,10 +232,12 @@ const UserItemBase = ({
               }
             />
           )}
-          <UserStatusIcon
-            status={item.status}
-            size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
-          />
+          {item?.status === 'member' ? (
+            <UserStatusIcon
+              status={item.status}
+              size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
+            />
+          ) : null}
         </div>
         {children && children(item)}
       </div>

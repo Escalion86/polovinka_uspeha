@@ -220,7 +220,7 @@ const SubEvent = ({
               status="novice"
               slashed={!props.usersStatusAccess?.novice}
             />
-            <div className="text-center min-w-20 whitespace-nowrap">
+            <div className="text-center min-w-14 whitespace-nowrap">
               {props.usersStatusDiscountResult?.noviceFrom && 'от '}
               {Math.floor(
                 (typeof props.usersStatusDiscountResult?.novice === 'number'
@@ -237,7 +237,7 @@ const SubEvent = ({
               status="member"
               slashed={!props.usersStatusAccess?.member}
             />
-            <div className="text-center min-w-20 whitespace-nowrap">
+            <div className="text-center min-w-14 whitespace-nowrap">
               {props.usersStatusDiscountResult?.memberFrom && 'от '}
               {Math.floor(
                 (typeof props.usersStatusDiscountResult?.member === 'number'
@@ -279,7 +279,7 @@ const SubEvent = ({
                   className={`flex items-center justify-center min-w-4 w-4 h-4`}
                 >
                   <FontAwesomeIcon
-                    className={cn(`min-w-4 w-4 h-4`, 'text-purple-500')}
+                    className={cn(`min-w-4 w-4 h-4`, 'text-[#7b4fb3]')}
                     icon={faRegistered}
                   />
                 </div>

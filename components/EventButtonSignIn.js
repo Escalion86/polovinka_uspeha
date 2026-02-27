@@ -163,7 +163,7 @@ const Status = ({
       {userEventStatus === 'reserve' ? 'В резерве' : 'Записан'}
     </TextStatus>
   ) : !event.showOnSite ? (
-    <TextStatus className="text-purple-500">Скрыто</TextStatus>
+    <TextStatus className="text-[#7b4fb3]">Скрыто</TextStatus>
   ) : !canSee ? (
     <TextStatus className="text-danger">Не доступно</TextStatus>
   ) : isUserQuestionnaireFilled &&

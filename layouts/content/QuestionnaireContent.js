@@ -45,7 +45,7 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
     {children}
     <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
       <FontAwesomeIcon
-        className={cn('w-5 h-5', value ? 'text-purple-500' : 'text-disabled')}
+        className={cn('w-5 h-5', value ? 'text-[#7b4fb3]' : 'text-disabled')}
         icon={value ? faEye : faEyeSlash}
         size="1x"
         onClick={() => setSecurytyKey({ [securytyKey]: !value })}
@@ -565,7 +565,7 @@ const QuestionnaireContent = (props) => {
             </span>
             <div className="flex pt-1 pl-4">
               <FontAwesomeIcon
-                className={cn('w-4 min-w-4 h-4 text-purple-500')}
+                className={cn('w-4 min-w-4 h-4 [#7b4fb3]')}
                 icon={faEye}
                 size="1x"
               />

@@ -58,7 +58,8 @@ const EventCardButtons = ({
   const canClone = allowEventManagement && showCloneButton && rule?.add
   const canShowOnSite =
     allowEventManagement &&
-    showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true)
+    showOnSiteOnClick &&
+    (rule?.seeHidden || rule?.edit || rule === true)
   const canSeeHistory = loggedUserActiveRole?.events?.seeHistory
   const canSeeUsers =
     loggedUserActiveRole?.eventsUsers?.see || isLoggedUserMember
@@ -103,25 +104,23 @@ const EventCardButtons = ({
         tooltipText: 'Посмотреть историю изменений',
       })
     }
-    buttons.push({
-      key: 'calendar',
-      icon: faCalendarPlus,
-      onClick: async () => {
-        const event = await getEventById(item._id, location)
-        goToUrlForAddEventToCalendar(event)
-      },
-      color: 'purple',
-      tooltipText: 'Добавить в Google календарь',
-    })
+    // buttons.push({
+    //   key: 'calendar',
+    //   icon: faCalendarPlus,
+    //   onClick: async () => {
+    //     const event = await getEventById(item._id, location)
+    //     goToUrlForAddEventToCalendar(event)
+    //   },
+    //   color: 'purple',
+    //   tooltipText: 'Добавить в Google календарь',
+    // })
     if (canSendNotifications) {
       buttons.push({
         key: 'send-notifications',
         icon: faBullhorn,
         onClick: () => {
-          modalsFunc.selectUsersByStatusesFromEvent(
-            item._id,
-            (users, event) =>
-              modalsFunc.newsletter.add(undefined, { users, event })
+          modalsFunc.selectUsersByStatusesFromEvent(item._id, (users, event) =>
+            modalsFunc.newsletter.add(undefined, { users, event })
           )
         },
         color: 'blue',
@@ -182,15 +181,15 @@ const EventCardButtons = ({
       })
     }
     if (canShowOnSite) {
+      const isShownOnSite = Boolean(item.showOnSite)
       buttons.push({
         key: 'show-on-site',
-        active: !item.showOnSite,
-        icon: item.showOnSite ? faEye : faEyeSlash,
+        icon: isShownOnSite ? faEyeSlash : faEye,
         onClick: () => {
           showOnSiteOnClick && showOnSiteOnClick()
         },
         color: 'purple',
-        tooltipText: 'Показывать на сайте',
+        tooltipText: isShownOnSite ? 'Скрыть' : 'Показать на сайте',
       })
     }
     if (canEditStatus) {
