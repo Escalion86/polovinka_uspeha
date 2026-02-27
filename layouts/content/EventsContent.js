@@ -10,6 +10,7 @@ import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import Search from '@components/Search'
 import SortingButtonMenu from '@components/SortingButtonMenu'
+import EventsCalendarView from './EventsCalendarView'
 import filterItems from '@helpers/filterItems'
 import { getNounEvents } from '@helpers/getNoun'
 import isEventActiveFunc from '@helpers/isEventActive'
@@ -20,6 +21,7 @@ import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import EventsList from '@layouts/lists/EventsList'
+import cn from 'classnames'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -93,6 +95,7 @@ const EventsContent = ({ mode = 'all' }) => {
 
   const [isSearching, setIsSearching] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
+  const [viewMode, setViewMode] = useState('list')
   const [filter, setFilter] = useState({
     status: statusDefault,
     participant: {
@@ -247,6 +250,21 @@ const EventsContent = ({ mode = 'all' }) => {
               // if (isSearching) setSearchText('')
             }}
           />
+          <button
+            type="button"
+            onClick={() =>
+              setViewMode((state) => (state === 'list' ? 'calendar' : 'list'))
+            }
+            className={cn(
+              'rounded-lg border px-2 py-1 text-xs font-semibold uppercase tracking-wide transition',
+              viewMode === 'calendar'
+                ? 'border-[#6b1f2a] bg-[#6b1f2a] text-white'
+                : 'border-[#f0e2e8] bg-white text-[#6b1f2a] hover:bg-[#fff4f7]'
+            )}
+            aria-label="Переключить вид списка мероприятий"
+          >
+            {viewMode === 'list' ? 'Календарь' : 'Список'}
+          </button>
           {seeAddButton && allowEventManagement ? (
             <AddButton onClick={() => modalsFunc.event.add()} />
           ) : null}
@@ -279,10 +297,17 @@ const EventsContent = ({ mode = 'all' }) => {
         setShowFilter={setShowFilter}
       />
       {/* <CardListWrapper> */}
-      <EventsList
-        events={filteredAndSortedEvents}
-        persistScrollKey={mode === 'past' ? 'events-past' : undefined}
-      />
+      {viewMode === 'calendar' ? (
+        <EventsCalendarView
+          events={filteredAndSortedEvents}
+          onOpenEvent={(eventId) => modalsFunc.event.view(eventId)}
+        />
+      ) : (
+        <EventsList
+          events={filteredAndSortedEvents}
+          persistScrollKey={mode === 'past' ? 'events-past' : undefined}
+        />
+      )}
       {/* <div className="flex-1 w-full bg-general/15">
         <AutoSizer>
           {({ height, width }) => (
