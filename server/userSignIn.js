@@ -8,6 +8,7 @@ import eventUsersTelegramNotification from './eventUsersTelegramNotification'
 import isEventExpired from './isEventExpired'
 import userToEventStatus from '@helpers/userToEventStatus'
 import subEventsSummator from '@helpers/subEventsSummator'
+import { syncEventUsersGoogleCalendar } from './userGoogleCalendar'
 
 const userSignIn = async ({
   req,
@@ -448,6 +449,12 @@ const userSignIn = async ({
       addedEventUsers: [newEventUserJson],
       itIsSelfRecord: true,
       location,
+    })
+
+    await syncEventUsersGoogleCalendar({
+      db,
+      location,
+      eventUsers: [newEventUserJson],
     })
 
     const result = { success: true, data: newEventUserJson }

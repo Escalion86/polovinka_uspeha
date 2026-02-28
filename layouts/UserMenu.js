@@ -3,6 +3,7 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 import { faUserAlt } from '@fortawesome/free-solid-svg-icons/faUserAlt'
+import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
@@ -322,6 +323,11 @@ const UserMenu = () => {
               title="Настройка уведомлений"
             />
           )}
+          <MenuItem
+            href={`/${location}/cabinet/googleCalendarIntegration`}
+            icon={faCalendarAlt}
+            title="Интеграция Google календаря"
+          />
           {visibleCities.length > 1 && (
             <MenuItem
               onClick={openSwitchCityModal}

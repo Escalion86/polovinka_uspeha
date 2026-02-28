@@ -165,6 +165,9 @@ const ToolsNewsletterContent = dynamic(
 const LoggedUserNotificationsContent = dynamic(
   () => import('@layouts/content/LoggedUserNotificationsContent')
 )
+const GoogleCalendarIntegrationContent = dynamic(
+  () => import('@layouts/content/GoogleCalendarIntegrationContent')
+)
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
 )
@@ -1843,6 +1846,11 @@ export const CONTENTS = Object.freeze({
       role?.notifications?.birthdays ||
       role?.notifications?.newUserRegistred ||
       role?.notifications?.eventRegistration,
+  },
+  googleCalendarIntegration: {
+    Component: GoogleCalendarIntegrationContent,
+    name: 'Интеграция Google календаря',
+    roleAccess: () => true,
   },
   users: {
     Component: UsersContent,

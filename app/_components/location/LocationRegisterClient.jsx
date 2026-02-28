@@ -547,8 +547,25 @@ const Register3Inner = ({ location }) => {
                     />
                     <span>
                       <span className="text-[#b4232d]">*</span> Согласен на
-                      обработку персональных данных (включая данные из VK ID при
-                      входе через VK)
+                      {' '}
+                      <Link
+                        href="/legal/personal-data-consent"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold underline text-[#6b1f2a] hover:text-[#8b2a38]"
+                      >
+                        обработку персональных данных
+                      </Link>
+                      {' '}и с{' '}
+                      <Link
+                        href="/docs/politika.docx"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold underline text-[#6b1f2a] hover:text-[#8b2a38]"
+                      >
+                        политикой конфиденциальности
+                      </Link>
+                      {' '} (включая данные из VK ID при входе через VK)
                     </span>
                   </label>
                   <label className="flex items-start gap-3">

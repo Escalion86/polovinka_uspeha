@@ -20,6 +20,7 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   eventsCalendar: 'Календарь мероприятий',
   questionnaire: 'Мой профиль',
   notifications: 'Уведомления',
+  googleCalendarIntegration: 'Интеграция Google календаря',
   users: 'Пользователи',
   members: 'Участники клуба',
   payments: 'Транзакции / Все транзакции',

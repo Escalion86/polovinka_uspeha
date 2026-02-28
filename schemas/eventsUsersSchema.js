@@ -37,6 +37,18 @@ const eventsUsersSchema = {
     type: String,
     default: null,
   },
+  googleCalendarUserEventId: {
+    type: String,
+    default: null,
+  },
+  googleCalendarUserCalendarId: {
+    type: String,
+    default: null,
+  },
+  googleCalendarSyncedAt: {
+    type: Date,
+    default: null,
+  },
 }
 
 export default eventsUsersSchema

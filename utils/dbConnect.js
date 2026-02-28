@@ -25,6 +25,7 @@ import siteSettingsSchema from '@schemas/siteSettingsSchema'
 import testSchema from '@schemas/testSchema'
 import toolsTemplatesSchema from '@schemas/toolsTemplatesSchema'
 import usersSchema from '@schemas/usersSchema'
+import usersGoogleCalendarsSchema from '@schemas/usersGoogleCalendarsSchema'
 import checkLocationValid from '@server/checkLocationValid'
 import newsLettersSchema from '@schemas/newsLettersSchema'
 import individualWeddingsSchema from '@schemas/individualWeddingsSchema'
@@ -198,6 +199,10 @@ async function dbConnect(location) {
     connections[location].model(
       'Users',
       mongoose.Schema(usersSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'UsersGoogleCalendars',
+      mongoose.Schema(usersGoogleCalendarsSchema, { timestamps: true })
     )
     connections[location].model(
       'Achievements',

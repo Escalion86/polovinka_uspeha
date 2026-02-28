@@ -4,6 +4,7 @@ import eventUsersTelegramNotification from '@server/eventUsersTelegramNotificati
 import userSignIn from '@server/userSignIn'
 import dbConnect from '@utils/dbConnect'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
+import { syncEventUsersGoogleCalendar } from '@server/userGoogleCalendar'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -114,6 +115,13 @@ export default async function handler(req, res) {
             data: deletedEventUsers,
             userId: body.userId,
           })
+
+          await syncEventUsersGoogleCalendar({
+            db,
+            location,
+            eventUsers: deletedEventUsers,
+            forceDelete: true,
+          })
         }
 
         const data = []
@@ -138,6 +146,16 @@ export default async function handler(req, res) {
             data,
             userId: body.userId,
           })
+
+        if (data.length > 0) {
+          await syncEventUsersGoogleCalendar({
+            db,
+            location,
+            eventUsers: data.map((item) =>
+              typeof item?.toJSON === 'function' ? item.toJSON() : item
+            ),
+          })
+        }
 
         // Оповещение в телеграм
         // const deletedUsersIds = deletedEventUsers.map(
@@ -224,6 +242,16 @@ export default async function handler(req, res) {
         }
       }
 
+      if (result.length > 0) {
+        await syncEventUsersGoogleCalendar({
+          db,
+          location,
+          eventUsers: result.map((item) =>
+            typeof item?.toJSON === 'function' ? item.toJSON() : item
+          ),
+        })
+      }
+
       return res?.status(201).json({ success: true, data: result })
     } catch (error) {
       console.log(error)
@@ -271,6 +299,13 @@ export default async function handler(req, res) {
         action: 'delete',
         data: eventUser,
         userId: body.userId,
+      })
+
+      await syncEventUsersGoogleCalendar({
+        db,
+        location,
+        eventUsers: [eventUser],
+        forceDelete: true,
       })
 
       // Оповещение в телеграм
