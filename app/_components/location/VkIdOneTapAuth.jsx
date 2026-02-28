@@ -94,6 +94,8 @@ export default function VkIdOneTapAuth({
 }) {
   const containerRef = useRef(null)
   const payloadRef = useRef(payload)
+  const onSuccessRef = useRef(onSuccess)
+  const onErrorRef = useRef(onError)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -101,12 +103,23 @@ export default function VkIdOneTapAuth({
   }, [payload])
 
   useEffect(() => {
+    onSuccessRef.current = onSuccess
+  }, [onSuccess])
+
+  useEffect(() => {
+    onErrorRef.current = onError
+  }, [onError])
+
+  useEffect(() => {
     let isMounted = true
 
     const init = async () => {
       const loaded = await loadVkSdk()
-      if (!loaded || !isMounted || !containerRef.current) {
-        onError('VK ID недоступен')
+      if (!loaded) {
+        if (isMounted) onErrorRef.current('VK ID недоступен')
+        return
+      }
+      if (!isMounted || !containerRef.current) {
         return
       }
 
@@ -114,13 +127,13 @@ export default function VkIdOneTapAuth({
       const appId = getVkAppId()
       const redirectUrl = getVkRedirectUrl()
       if (!appId) {
-        onError(
+        onErrorRef.current(
           'VK ID не настроен: отсутствует NEXT_PUBLIC_VK_ID_APP_ID. Обратитесь к разработчику.'
         )
         return
       }
       if (!redirectUrl) {
-        onError(
+        onErrorRef.current(
           'VK ID не настроен: некорректный NEXT_PUBLIC_VK_ID_REDIRECT_URI. Обратитесь к разработчику.'
         )
         return
@@ -154,7 +167,7 @@ export default function VkIdOneTapAuth({
         })
         .on(VKID.WidgetEvents.ERROR, (error) => {
           const vkError = error?.type || error?.code || error?.message
-          onError(
+          onErrorRef.current(
             vkError
               ? `Ошибка виджета VK ID (${vkError}). Попробуйте вход по телефону.`
               : 'Ошибка виджета VK ID. Попробуйте вход по телефону.'
@@ -174,7 +187,7 @@ export default function VkIdOneTapAuth({
 
           if (!code || !deviceId) {
             setIsLoading(false)
-            onError('VK ID не вернул код авторизации')
+            onErrorRef.current('VK ID не вернул код авторизации')
             return
           }
           if (isVkClientDebugEnabled()) {
@@ -200,7 +213,9 @@ export default function VkIdOneTapAuth({
               }
             } catch (error) {
               setIsLoading(false)
-              onError('VK ID временно недоступен. Попробуйте позже или войдите по телефону.')
+              onErrorRef.current(
+                'VK ID временно недоступен. Попробуйте позже или войдите по телефону.'
+              )
               return
             }
           }
@@ -219,11 +234,11 @@ export default function VkIdOneTapAuth({
 
           setIsLoading(false)
           if (result?.error) {
-            onError(mapVkSignInError(result.error))
+            onErrorRef.current(mapVkSignInError(result.error))
             return
           }
 
-          onSuccess()
+          onSuccessRef.current()
         })
     }
 
@@ -233,7 +248,7 @@ export default function VkIdOneTapAuth({
       isMounted = false
       if (containerRef.current) containerRef.current.innerHTML = ''
     }
-  }, [location, mode, onError, onSuccess])
+  }, [location, mode])
 
   return (
     <div className="mt-2">
