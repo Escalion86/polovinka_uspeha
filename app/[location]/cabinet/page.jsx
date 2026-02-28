@@ -27,5 +27,5 @@ export default async function LocationCabinetIndexPage({
     redirect(`/${location}/login${query ? `?${query}` : ''}`)
   }
 
-  redirect(`/${location}/cabinet/eventsCalendar`)
+  redirect(`/${location}/cabinet/eventsUpcoming`)
 }

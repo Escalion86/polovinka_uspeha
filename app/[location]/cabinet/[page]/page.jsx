@@ -42,7 +42,7 @@ export default async function LocationCabinetPage({ params, searchParams }) {
     const targetPage =
       normalizedPage && normalizedPage !== 'eventsCalendar'
         ? normalizedPage
-        : 'eventsCalendar'
+        : 'eventsUpcoming'
     redirect(`/${session.location}/cabinet/${targetPage}`)
   }
 

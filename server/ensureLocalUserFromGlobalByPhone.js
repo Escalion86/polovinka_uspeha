@@ -230,16 +230,22 @@ const ensureLocalUserFromGlobalByPhone = async ({
   const cityProfiles = toPlainObject(globalUser?.cityProfiles)
   const locationProfile = cityProfiles?.[location] || {}
   const globalUserId = String(globalUser._id)
+  const locationRole = locationProfile?.role || null
+  const locationStatus = locationProfile?.status || null
   const preparedProfile = normalizeGlobalProfile(globalUser?.profile)
   const preparedCore = normalizeGlobalCore(globalUser)
   const preparedNotifications = normalizeGlobalNotifications(globalUser)
   const localExisting = await db.model('Users').findOne({ phone: phoneNumber }).lean()
   if (localExisting?._id) {
+    const resolvedRole = locationRole || localExisting?.role || 'client'
+    const resolvedStatus = locationStatus || localExisting?.status || 'novice'
     const patch = {
       ...toPatchFromGlobalProfile(preparedProfile),
       ...toPatchFromGlobalCore(preparedCore),
       ...toPatchFromGlobalNotifications(preparedNotifications),
       globalUserId,
+      role: resolvedRole,
+      status: resolvedStatus,
     }
     const hasPatch = Object.keys(patch).length > 0
     const updatedExisting =
@@ -256,8 +262,8 @@ const ensureLocalUserFromGlobalByPhone = async ({
         $set: {
           [`cityProfiles.${location}`]: {
             userId: String(localExisting._id),
-            status: localExisting?.status || locationProfile?.status || 'active',
-            role: localExisting?.role || locationProfile?.role || 'client',
+            status: resolvedStatus,
+            role: resolvedRole,
             linkedAt: new Date(),
           },
           meta: {

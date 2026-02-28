@@ -411,11 +411,7 @@ export const authOptions = {
           mode,
           state,
           codeVerifier,
-          referrerId,
           consentToMailing: consentToMailingRaw,
-          attribution: attributionRaw,
-          isAdultConfirmed: isAdultConfirmedRaw,
-          personalDataAgreementAccepted: personalDataAgreementAcceptedRaw,
         } = credentials ?? {}
 
         if ((!code || !deviceId) && !accessTokenFromClient) {
@@ -490,148 +486,84 @@ export const authOptions = {
           typeof consentToMailingRaw === 'undefined'
             ? undefined
             : parseBooleanFromInput(consentToMailingRaw)
-        const isAdultConfirmed = parseBooleanFromInput(isAdultConfirmedRaw)
-        const personalDataAgreementAccepted = parseBooleanFromInput(
-          personalDataAgreementAcceptedRaw
-        )
-        const attribution = parseAttributionInput(attributionRaw)
         const vkProfilePatch = buildVkProfilePatch({
           vkUser,
           vkId,
           consentToMailing,
         })
         const phoneCandidates = getPhoneCandidates(vkUser?.phone)
+        if (phoneCandidates.length === 0) {
+          console.log('VK auth: phone is required for global link login')
+          throwVkAuthError('VK_PHONE_REQUIRED')
+        }
+
         const phoneValueToSet =
           phoneCandidates.length > 0 && Number.isFinite(Number(phoneCandidates[0]))
             ? Number(phoneCandidates[0])
             : null
+        const globalReadResult = await ensureLocalUserFromGlobalByPhone({
+          db,
+          location,
+          phone: phoneCandidates[0],
+          source: 'vk-global-phone-read',
+        })
 
-        const userByVkId = await usersModel.findOne({ vk: vkId }).lean()
-        if (userByVkId?._id) {
-          if (!isAuthDevOnlyUserAllowed(userByVkId, phoneValueToSet)) {
-            throwVkAuthError('VK_DEV_ONLY_MODE')
-          }
-          const vkSetForExistingUser = buildVkSetForExistingUser({
-            existingUser: userByVkId,
-            vkProfilePatch,
+        const globalLocalUser = globalReadResult?.data?.localUser || null
+        if (
+          !globalReadResult?.success ||
+          !globalReadResult?.data?.globalUserFound ||
+          !globalLocalUser?._id
+        ) {
+          console.log('VK auth: global account is required for login', {
+            mode: mode || 'login',
+            hasGlobalUser: Boolean(globalReadResult?.data?.globalUserFound),
           })
-          const updatedUser = await usersModel.findByIdAndUpdate(
-            userByVkId._id,
-            {
-              $set: {
-                ...vkSetForExistingUser,
-                registrationType: userByVkId.registrationType || 'vk',
-                ...(userByVkId.phone || !phoneValueToSet
-                  ? {}
-                  : { phone: phoneValueToSet }),
-              },
-              $addToSet: {
-                authProviders: 'vk',
-              },
-            },
-            { new: true, lean: true }
-          )
-          await syncGlobalLinkSafe({
-            location,
-            user: updatedUser || userByVkId,
-            source: 'vk-auth-login',
-          })
-          return buildSessionPayload(updatedUser || userByVkId, location)
-        }
-
-        if (phoneCandidates.length === 0) {
-          console.log('VK auth: phone is required for auto-link/register')
-          throwVkAuthError('VK_PHONE_REQUIRED')
-        }
-
-        if (phoneCandidates.length > 0) {
-          const userByPhone = await usersModel
-            .findOne({
-              phone: { $in: phoneCandidates },
-            })
-            .lean()
-
-          if (userByPhone?._id) {
-            if (!isAuthDevOnlyUserAllowed(userByPhone, phoneValueToSet)) {
-              throwVkAuthError('VK_DEV_ONLY_MODE')
-            }
-            const vkSetForExistingUser = buildVkSetForExistingUser({
-              existingUser: userByPhone,
-              vkProfilePatch,
-            })
-            const updatedUser = await usersModel.findByIdAndUpdate(
-              userByPhone._id,
-              {
-                $set: {
-                  ...vkSetForExistingUser,
-                  registrationType: userByPhone.registrationType || 'vk',
-                  ...(userByPhone.phone ? {} : { phone: phoneValueToSet }),
-                },
-                $addToSet: {
-                  authProviders: 'vk',
-                },
-              },
-              { new: true, lean: true }
-            )
-            await syncGlobalLinkSafe({
-              location,
-              user: updatedUser || userByPhone,
-              source: 'vk-auth-phone-link',
-            })
-            return buildSessionPayload(updatedUser || userByPhone, location)
-          }
-        }
-
-        if (mode === 'login') {
           throwVkAuthError('VK_ACCOUNT_NOT_FOUND')
         }
-        if (isAuthDevOnlyModeEnabled()) {
+
+        if (!isAuthDevOnlyUserAllowed(globalLocalUser, phoneValueToSet)) {
           throwVkAuthError('VK_DEV_ONLY_MODE')
         }
 
-        const registrationGuard = await assertCityOperationAllowed(
-          location,
-          'registration'
+        const vkSetForExistingUser = buildVkSetForExistingUser({
+          existingUser: globalLocalUser,
+          vkProfilePatch,
+        })
+
+        const updatedUser = await usersModel.findByIdAndUpdate(
+          globalLocalUser._id,
+          {
+            $set: {
+              ...vkSetForExistingUser,
+              registrationType: globalLocalUser.registrationType || 'vk',
+              ...(globalLocalUser.phone || !phoneValueToSet
+                ? {}
+                : { phone: phoneValueToSet }),
+            },
+            $addToSet: {
+              authProviders: 'vk',
+            },
+          },
+          { new: true, lean: true }
         )
-        if (!registrationGuard.success) {
-          throwVkAuthError('VK_REGISTRATION_BLOCKED')
-        }
-        if (!isAdultConfirmed || !personalDataAgreementAccepted) {
-          console.log(
-            'VK auth: required agreements are not accepted for registration'
-          )
-          throwVkAuthError('VK_AGREEMENTS_REQUIRED')
+
+        const userByVkId = await usersModel.findOne({ vk: vkId }).select({ _id: 1 }).lean()
+        if (
+          userByVkId?._id &&
+          String(userByVkId._id) !== String(globalLocalUser._id)
+        ) {
+          await usersModel.findByIdAndUpdate(userByVkId._id, {
+            $unset: { vk: '' },
+          })
         }
 
-        const resolvedReferrerId = await resolveReferrerId(db, referrerId)
-        const newUser = await usersModel.create({
-          ...vkProfilePatch,
-          registrationType: 'vk',
-          authProviders: ['vk'],
-          referrerId: resolvedReferrerId,
-          phone: phoneValueToSet,
-          ...(attribution ? { attribution } : {}),
-        })
         await syncGlobalLinkSafe({
           location,
-          user: newUser,
-          source: 'vk-auth-register',
+          user: updatedUser || globalLocalUser,
+          source: 'vk-auth-global-link',
         })
 
-        await db.model('Histories').create({
-          schema: 'users',
-          action: 'add',
-          data: newUser,
-          userId: newUser._id,
-        })
-
-        try {
-          await createReferralRegistrationCoupon({ db, user: newUser })
-        } catch (couponError) {
-          console.log('createReferralRegistrationCoupon error :>> ', couponError)
-        }
-
-        return buildSessionPayload(newUser, location)
+        return buildSessionPayload(updatedUser || globalLocalUser, location)
       },
     }),
     CredentialsProvider({
