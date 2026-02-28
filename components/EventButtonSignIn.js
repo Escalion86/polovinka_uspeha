@@ -55,7 +55,7 @@ const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
   return (
     <div
       className={cn(
-        'flex items-center justify-center min-h-9',
+        'flex items-center justify-center',
         noBorders ? '' : 'border-r border-gray-200'
       )}
     >
