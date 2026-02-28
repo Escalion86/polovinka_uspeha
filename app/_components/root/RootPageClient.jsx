@@ -411,6 +411,25 @@ export default function RootPageClient({
           </div>
         </section>
       </main>
+      <footer className="border-t border-[rgba(107,31,42,0.15)] bg-white/90">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-4 text-sm text-[#5d4a52] md:px-6">
+          <span>© Половинка успеха</span>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              href="/legal/privacy-policy"
+              className="font-semibold underline text-[#6b1f2a] hover:text-[#8b2a38]"
+            >
+              Политика конфиденциальности
+            </Link>
+            <Link
+              href="/legal/terms"
+              className="font-semibold underline text-[#6b1f2a] hover:text-[#8b2a38]"
+            >
+              Пользовательское соглашение
+            </Link>
+          </div>
+        </div>
+      </footer>
 
       {showLocationModal ? (
         <div
