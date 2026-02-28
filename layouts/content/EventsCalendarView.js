@@ -53,6 +53,8 @@ const MONTHS_FULL_UPPER = [
   'ДЕКАБРЬ',
 ]
 
+const WEEKDAY_LABELS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+
 const toDayKey = (value) => {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return null
@@ -66,7 +68,21 @@ const buildMonthDays = (cursorDate) => {
   const year = cursorDate.getFullYear()
   const month = cursorDate.getMonth()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  return Array.from({ length: daysInMonth }, (_, i) => i + 1)
+  const firstDayOfWeekSundayFirst = new Date(year, month, 1).getDay()
+  // JS: 0 - воскресенье ... 6 - суббота
+  // Для сетки с понедельника переводим в формат 0 - понедельник ... 6 - воскресенье
+  const firstDayOffsetMondayFirst = (firstDayOfWeekSundayFirst + 6) % 7
+
+  const dayCells = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+  const prefix = Array.from({ length: firstDayOffsetMondayFirst }, () => null)
+  const calendarCells = [...prefix, ...dayCells]
+
+  const tailLength = (7 - (calendarCells.length % 7)) % 7
+  if (tailLength > 0) {
+    return [...calendarCells, ...Array.from({ length: tailLength }, () => null)]
+  }
+
+  return calendarCells
 }
 
 const resolveInitialCursorDate = (events = []) => {
@@ -284,8 +300,27 @@ const EventsCalendarView = ({
               <span className="h-11 w-11" />
             )}
           </div>
+          <div className="mb-2 grid grid-cols-7 gap-2">
+            {WEEKDAY_LABELS.map((label) => (
+              <div
+                key={label}
+                className="rounded-[10px] bg-[#f8edf1] px-0 py-2 text-center text-[12px] font-semibold text-[#6b1f2a]"
+              >
+                {label}
+              </div>
+            ))}
+          </div>
           <div className="grid grid-cols-7 gap-2">
-            {calendarDays.map((day) => {
+            {calendarDays.map((day, index) => {
+              if (day === null) {
+                return (
+                  <div
+                    key={`empty-${month}-${year}-${index}`}
+                    className="rounded-[10px] border border-transparent bg-transparent px-0 py-2"
+                  />
+                )
+              }
+
               const dayKey = String(day)
               const isActive = activeDays.includes(dayKey)
               const isSelected = selectedDay === dayKey
