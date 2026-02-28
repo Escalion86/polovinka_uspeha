@@ -77,7 +77,7 @@ const PriceDiscount = ({
         {prefix && (
           <span
             className={cn(
-              'text-base font-bold flex items-center',
+              'text-sm phoneH:text-base font-bold flex items-center',
               vertical ? 'mt-3.5' : 'h-7'
             )}
           >
@@ -118,7 +118,7 @@ const PriceDiscount = ({
                 )}
               >
                 <div className="relative flex items-center gap-x-1">
-                  <div className="text-lg tablet:text-xl laptop:text-2xl">
+                  <div className="text-base phoneH:text-lg tablet:text-xl laptop:text-2xl">
                     {item.price / 100}
                   </div>
                   {/* <div>₽</div> */}

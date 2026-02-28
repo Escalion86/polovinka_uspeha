@@ -1108,10 +1108,10 @@ export default function LocationIndexClient({
                       <div className="flex gap-x-1 flex-wrap mt-3 items-center rounded-full bg-white/70 px-3 py-1 text-sm font-semibold text-[#6b1f2a]">
                         {event.maxParticipants ? (
                           eventsUsersLoading ? (
-                            <span>{'Свободных мест '}</span>
+                            <span>{'Свободно мест:'}</span>
                           ) : (
                             <>
-                              <span>{`Свободных мест `}</span>
+                              <span>{`Свободно мест:`}</span>
                               <span>{`${Math.max(
                                 0,
                                 (event.maxParticipants ?? 0) -
@@ -1120,7 +1120,9 @@ export default function LocationIndexClient({
                             </>
                           )
                         ) : (
-                          <span>{'Количество мест не ограничено'}</span>
+                          <span>{`Мест неограничено · Записано ${
+                            participantsByEventId.get(event.id) ?? 0
+                          }`}</span>
                         )}
                         {event.maxParticipants && eventsUsersLoading ? (
                           <span className="ml-2 inline-block h-4 w-14 animate-pulse rounded bg-[#6b1f2a]/20" />

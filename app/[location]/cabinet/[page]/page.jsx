@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation'
 
 export async function generateMetadata({ params }) {
   const { page } = await params
-  const normalizedPage = page === 'events' ? 'eventsUpcoming' : page
+  const normalizedPage = page === 'events' ? 'eventsCalendar' : page
   const pageTitle = CABINET_PAGE_TITLES[normalizedPage]
   const suffix = pageTitle ? ` / ${pageTitle}` : ''
   return {
@@ -20,13 +20,13 @@ export async function generateMetadata({ params }) {
 export default async function LocationCabinetPage({ params, searchParams }) {
   const session = await getServerSession(authOptions)
   const { location, page } = await params
-  const normalizedPage = page === 'events' ? 'eventsUpcoming' : page
+  const normalizedPage = page === 'events' ? 'eventsCalendar' : page
 
   if (!location) {
     redirect('/')
   }
   if (page === 'events') {
-    redirect(`/${location}/cabinet/eventsUpcoming`)
+    redirect(`/${location}/cabinet/eventsCalendar`)
   }
   if (!session?.user) {
     const target = new URLSearchParams()
@@ -40,9 +40,9 @@ export default async function LocationCabinetPage({ params, searchParams }) {
 
   if (session.location !== location) {
     const targetPage =
-      normalizedPage && normalizedPage !== 'eventsUpcoming'
+      normalizedPage && normalizedPage !== 'eventsCalendar'
         ? normalizedPage
-        : 'eventsUpcoming'
+        : 'eventsCalendar'
     redirect(`/${session.location}/cabinet/${targetPage}`)
   }
 

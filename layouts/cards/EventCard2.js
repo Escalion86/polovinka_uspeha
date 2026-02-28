@@ -126,10 +126,10 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 <TextInRing text={direction?.title} />
               )}
             </div>
-            <div className="flex-1">
+            <div className="flex flex-col flex-1 h-full">
               <div className="flex items-start justify-between w-full gap-3">
                 <TextLinesLimiter
-                  className="text-[clamp(20px,2.6vw,28px)] font-bold leading-7 text-[#4b0f1c] max-h-[72px]"
+                  className="text-[clamp(18px,2.6vw,28px)] font-bold leading-5 phoneH:leading-6 tablet:leading-7 text-[#4b0f1c] max-h-[72px]"
                   textCenter={false}
                   lines={2}
                 >
@@ -145,7 +145,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between w-full gap-3 mt-3">
+              <div className="flex items-center justify-between flex-1 w-full gap-3">
                 <DateTimeEvent
                   wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 whitespace-nowrap"
                   dateClassName="text-general"
@@ -167,7 +167,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 className="font-futura font-semibold text-[18px] tablet:text-[26px] text-[#6b1f2a]"
               />
             </div>
-            <div className="laptop:hidden mt-auto flex flex-col w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-2 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
+            <div className="laptop:hidden mt-auto flex flex-col w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 tablet:gap-y-2 rounded-[30px] border border-[#f0e5ea] bg-white/90 px-2 py-2 shadow-[0_10px_18px_rgba(0,0,0,0.06)]">
               <div className="flex items-center justify-center w-full tablet:w-auto gap-x-1">
                 <Suspense
                   fallback={
@@ -182,7 +182,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                   />
                 </Suspense>
               </div>
-              <div className="flex items-center justify-between w-full gap-x-1 tablet:justify-center">
+              <div className="flex items-center justify-between w-full h-9 min-h-9 gap-x-1 tablet:justify-center">
                 <div className="tablet:hidden rounded-full bg-[#f7f1f4] px-3">
                   <PriceDiscountByEventId
                     eventId={eventId}

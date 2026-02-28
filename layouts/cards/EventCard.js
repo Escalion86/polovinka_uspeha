@@ -328,11 +328,11 @@ const EventCard = ({
               <div className="flex items-center justify-center ml-2 h-[42px] text-sm font-semibold text-general">
                 <span className="px-3 py-1 rounded-full bg-white/70">
                   {maxParticipants
-                    ? `Свободных мест ${Math.max(
+                    ? `Свободно мест: ${Math.max(
                         0,
                         (maxParticipants ?? 0) - (participantsCount ?? 0)
                       )} из ${maxParticipants}`
-                    : 'Количество мест не ограничено'}
+                    : `Мест неограничено · Записано ${participantsCount ?? 0}`}
                 </span>
               </div>
               <EventButtonSignIn
@@ -349,11 +349,11 @@ const EventCard = ({
           <div className="flex items-center justify-center flex-1 min-w-full h-[38px] laptop:h-[42px] text-sm font-semibold text-general">
             <span className="px-3 py-1 rounded-full bg-white/70">
               {maxParticipants
-                ? `Свободных мест ${Math.max(
+                ? `Свободно мест: ${Math.max(
                     0,
                     (maxParticipants ?? 0) - (participantsCount ?? 0)
                   )} из ${maxParticipants}`
-                : 'Количество мест не ограничено'}
+                : `Мест неограничено · Записано ${participantsCount ?? 0}`}
             </span>
           </div>
           <div className="flex items-stretch justify-end flex-1 w-full h-9">

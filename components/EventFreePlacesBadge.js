@@ -80,52 +80,38 @@ const EventFreePlacesBadge = ({
   const hasMansLimit = typeof limits.maxMans === 'number'
   const freeWomansPlaces = getFree(limits.maxWomans, participantsWomansCount)
   const freeMansPlaces = getFree(limits.maxMans, participantsMansCount)
+  const participantsCount = participants.length
 
   const text = hasGenderLimits ? (
-    hasWomansLimit &&
-    hasMansLimit &&
-    freeWomansPlaces === 0 &&
-    freeMansPlaces === 0 ? (
-      <span>{'Свободных мест нет'}</span>
-    ) : (
-      <>
-        <span>{`Свободных мест`}</span>
-        <span>
-          {[
-            hasWomansLimit
-              ? freeWomansPlaces === 0
-                ? 'для женщин нет'
-                : `для женщин ${freeWomansPlaces} из ${limits.maxWomans}`
-              : null,
-            hasMansLimit
-              ? freeMansPlaces === 0
-                ? 'для мужчин нет'
-                : `для мужчин ${freeMansPlaces} из ${limits.maxMans}`
-              : null,
-          ]
-            .filter(Boolean)
-            .join(' | ')}
-        </span>
-      </>
-    )
+    <>
+      <span className="whitespace-nowrap">{'Свободно мест:'}</span>
+      <span className="whitespace-nowrap">
+        <span className="text-base font-bold text-[#6b1f2a]">{'Ж'}</span>
+        {` ${hasWomansLimit ? `${freeWomansPlaces} из ${limits.maxWomans}` : 'неогр.'}`}
+        {' · '}
+        <span className="text-base font-bold text-[#6b1f2a]">{'М'}</span>
+        {` ${hasMansLimit ? `${freeMansPlaces} из ${limits.maxMans}` : 'неогр.'}`}
+      </span>
+    </>
   ) : typeof limits.maxParticipants === 'number' ? (
-    Math.max(0, (limits.maxParticipants ?? 0) - participants.length) === 0 ? (
-      <span>{'Свободных мест нет'}</span>
-    ) : (
-      <>
-        <span>{`Свободных мест `}</span>
-        <span>{`${Math.max(
-          0,
-          (limits.maxParticipants ?? 0) - participants.length
-        )} из ${limits.maxParticipants}`}</span>
-      </>
-    )
+    <>
+      <span className="whitespace-nowrap">{'Свободно мест:'}</span>
+      <span className="whitespace-nowrap">{`${Math.max(
+        0,
+        (limits.maxParticipants ?? 0) - participantsCount
+      )} из ${limits.maxParticipants}`}</span>
+    </>
   ) : (
-    <span>{'Количество мест не ограничено'}</span>
+    <span className="whitespace-nowrap">{`Мест неограничено · Записано ${participantsCount}`}</span>
   )
 
   return (
-    <div className={cn('flex gap-x-1 flex-wrap justify-center', className)}>
+    <div
+      className={cn(
+        'flex gap-x-1 justify-center h-7 min-h-7 max-h-7',
+        className
+      )}
+    >
       {text}
     </div>
   )
