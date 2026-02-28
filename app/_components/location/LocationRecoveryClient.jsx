@@ -54,6 +54,11 @@ export default function LocationRecoveryClient({ location }) {
     () => buildMaskedPhone(phone, phoneFocused),
     [phone, phoneFocused]
   )
+  const targetEventId = useMemo(() => {
+    const value = router.query?.event
+    if (Array.isArray(value)) return value[0]
+    return typeof value === 'string' ? value : undefined
+  }, [router.query])
 
   const clearErrors = () => setErrors(defaultErrors)
 
@@ -218,14 +223,29 @@ export default function LocationRecoveryClient({ location }) {
       return
     }
 
+    if (res?.success === false) {
+      setWaiting(false)
+      setErrors({
+        ...defaultErrors,
+        general:
+          res?.data?.error?.message ||
+          'Не удалось сохранить пароль. Попробуйте позже.',
+      })
+      return
+    }
+
     if (res?.error) {
       setWaiting(false)
       setErrors({ ...defaultErrors, general: res.error.message })
       return
     }
 
+    if (targetEventId) {
+      router.push(`/${location}/login?event=${targetEventId}`)
+      return
+    }
     router.push(`/${location}/login`)
-  }, [location, password, passwordRepeat, phone, router])
+  }, [location, password, passwordRepeat, phone, router, targetEventId])
 
   const resetFlow = useCallback(() => {
     stopPolling()

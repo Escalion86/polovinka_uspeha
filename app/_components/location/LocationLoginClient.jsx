@@ -32,9 +32,14 @@ const routeAfterLogin = (router, location) => {
   }
 
   if (router.query?.event) {
-    return router.push(`/${location}/event/${router.query?.event}`, '', {
-      shallow: true,
-    })
+    return router.push(
+      {
+        pathname: `/${location}/cabinet/eventsCalendar`,
+        query: { event: router.query?.event },
+      },
+      '',
+      { shallow: true }
+    )
   }
 
   if (router.query?.service) {

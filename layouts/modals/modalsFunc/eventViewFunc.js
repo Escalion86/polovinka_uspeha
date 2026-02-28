@@ -199,37 +199,49 @@ const EventViewModal = ({
       loggedUserEventStatus?.canSignIn === false &&
       loggedUserEventStatus?.canSignInReserve === true
 
-    setConfirmButtonName(
-      isAlreadySignedUp
-        ? activeStatus === 'reserve'
-          ? 'Отписаться из резерва'
-          : 'Отписаться'
-        : canSignInReserveOnly
-          ? 'Записаться в резерв'
-          : 'Записаться'
-    )
-    setOnConfirmFunc(() => {
-      if (isAlreadySignedUp) {
-        modalsFunc.event.signOut(event, activeStatus)
-      } else if (canSignInReserveOnly) {
-        modalsFunc.event.signUp(event, 'reserve')
-      } else {
-        modalsFunc.event.signUp(event)
-      }
-    })
-    setBottomLeftComponent(
-      <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
-        <PriceDiscount
-          item={subEvent || subEventSum}
-          className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
-        />
-      </div>
-    )
+    if (typeof setConfirmButtonName === 'function') {
+      setConfirmButtonName(
+        isAlreadySignedUp
+          ? activeStatus === 'reserve'
+            ? 'Отписаться из резерва'
+            : 'Отписаться'
+          : canSignInReserveOnly
+            ? 'Записаться в резерв'
+            : 'Записаться'
+      )
+    }
+    if (typeof setOnConfirmFunc === 'function') {
+      setOnConfirmFunc(() => {
+        if (isAlreadySignedUp) {
+          modalsFunc.event.signOut(event, activeStatus)
+        } else if (canSignInReserveOnly) {
+          modalsFunc.event.signUp(event, 'reserve')
+        } else {
+          modalsFunc.event.signUp(event)
+        }
+      })
+    }
+    if (typeof setBottomLeftComponent === 'function') {
+      setBottomLeftComponent(
+        <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+          <PriceDiscount
+            item={subEvent || subEventSum}
+            className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+          />
+        </div>
+      )
+    }
 
     return () => {
-      setOnConfirmFunc(undefined)
-      setBottomLeftComponent(undefined)
-      setConfirmButtonName('Записаться')
+      if (typeof setOnConfirmFunc === 'function') {
+        setOnConfirmFunc(undefined)
+      }
+      if (typeof setBottomLeftComponent === 'function') {
+        setBottomLeftComponent(undefined)
+      }
+      if (typeof setConfirmButtonName === 'function') {
+        setConfirmButtonName('Записаться')
+      }
       // setDeclineButtonShow(true)
       // setConfirmButtonName('Подтвердить')
     }

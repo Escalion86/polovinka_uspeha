@@ -114,6 +114,11 @@ const Register3Inner = ({ location }) => {
     if (Array.isArray(value)) return value[0]
     return typeof value === 'string' ? value : undefined
   }, [router.query])
+  const targetEventId = useMemo(() => {
+    const value = router.query?.event
+    if (Array.isArray(value)) return value[0]
+    return typeof value === 'string' ? value : undefined
+  }, [router.query])
   const vkAttributionJson = useMemo(() => {
     const payload = getAttributionPayload()
     return payload ? JSON.stringify(payload) : ''
@@ -348,6 +353,10 @@ const Register3Inner = ({ location }) => {
       return
     }
 
+    if (targetEventId) {
+      router.push(`/${location}/login?event=${targetEventId}`)
+      return
+    }
     router.push(`/${location}/login`)
   }, [
     isRegistrationAllowed,
@@ -360,6 +369,7 @@ const Register3Inner = ({ location }) => {
     phone,
     referralId,
     router,
+    targetEventId,
   ])
 
   const resetFlow = useCallback(() => {
@@ -468,6 +478,12 @@ const Register3Inner = ({ location }) => {
                           attribution: vkAttributionJson,
                         }}
                         onSuccess={() => {
+                          if (targetEventId) {
+                            router.push(
+                              `/${location}/cabinet/eventsCalendar?event=${targetEventId}`
+                            )
+                            return
+                          }
                           router.push(`/${location}/cabinet`)
                         }}
                         onError={(message) => {

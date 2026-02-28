@@ -117,6 +117,8 @@ const EventsCalendarView = ({
   location,
   onMonthEventsCountChange,
   applyFiltersAndSort,
+  focusEventId = null,
+  focusEventDate = null,
 }) => {
   const setEventsState = useSetAtom(eventsAtom)
   const [cursorDate, setCursorDate] = useState(() =>
@@ -203,6 +205,25 @@ const EventsCalendarView = ({
     const preferredDay = resolvePreferredDayForMonth(monthEvents, cursorDate)
     setSelectedDay(preferredDay)
   }, [monthEvents, cursorDate])
+
+  useEffect(() => {
+    if (!focusEventDate) return
+    const date = new Date(focusEventDate)
+    if (Number.isNaN(date.getTime())) return
+    setCursorDate(new Date(date.getFullYear(), date.getMonth(), 1))
+  }, [focusEventDate])
+
+  useEffect(() => {
+    if (!focusEventId || !Array.isArray(monthEvents) || monthEvents.length === 0)
+      return
+    const focusedEvent = monthEvents.find(
+      (event) => String(event?._id) === String(focusEventId)
+    )
+    if (!focusedEvent?.dateStart) return
+    const date = new Date(focusedEvent.dateStart)
+    if (Number.isNaN(date.getTime())) return
+    setSelectedDay(String(date.getDate()))
+  }, [focusEventId, monthEvents])
 
   const calendarDays = useMemo(() => buildMonthDays(cursorDate), [cursorDate])
   const month = cursorDate.getMonth()
@@ -321,6 +342,11 @@ EventsCalendarView.propTypes = {
   location: PropTypes.string,
   onMonthEventsCountChange: PropTypes.func,
   applyFiltersAndSort: PropTypes.func,
+  focusEventId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  focusEventDate: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(Date),
+  ]),
 }
 
 export default EventsCalendarView

@@ -17,6 +17,10 @@ export default async function LocationEventPage({ params }) {
     redirect('/')
   }
 
+  if (session?.user && session.location === location && session.user?._id) {
+    redirect(`/${location}/cabinet/eventsCalendar?event=${id}`)
+  }
+
   if (session?.user && (session.location !== location || !session.user?._id)) {
     return <LocationEventClient location={location} id={id} wrongSession />
   }

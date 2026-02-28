@@ -41,6 +41,18 @@ const getLocationFromPath = (pathname) => {
   const firstSegment = pathname.split('/').filter(Boolean)[0]
   return KNOWN_LOCATIONS.has(firstSegment) ? firstSegment : null
 }
+const getEventIdFromPath = (pathname) => {
+  const parts = pathname.split('/').filter(Boolean)
+  if (
+    parts.length >= 3 &&
+    KNOWN_LOCATIONS.has(parts[0]) &&
+    parts[1] === 'event' &&
+    parts[2]
+  ) {
+    return parts[2]
+  }
+  return null
+}
 
 const isPathAllowedWithoutAuth = (pathname) => {
   if (pathname === '/') return true
@@ -100,10 +112,14 @@ export async function proxy(req) {
           ? token.location
           : null
       const pathLocation = getLocationFromPath(pathname)
+      const eventId = getEventIdFromPath(pathname)
       const targetLocation = pathLocation || tokenLocation || 'krsk'
       const redirectUrl = req.nextUrl.clone()
-      redirectUrl.search = ''
       redirectUrl.pathname = `/${targetLocation}/cabinet/eventsCalendar`
+      redirectUrl.search = ''
+      if (eventId) {
+        redirectUrl.searchParams.set('event', eventId)
+      }
       if (redirectUrl.pathname !== pathname) {
         return NextResponse.redirect(redirectUrl)
       }

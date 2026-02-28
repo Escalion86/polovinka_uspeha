@@ -8,9 +8,10 @@ export const metadata = {
   title: 'Вход разработчика - Половинка успеха',
 }
 
-export default async function LocationDevLoginPage({ params }) {
+export default async function LocationDevLoginPage({ params, searchParams }) {
   const session = await getServerSession(authOptions)
   const { location } = await params
+  const eventId = searchParams?.event
 
   if (!location) {
     redirect('/')
@@ -23,6 +24,9 @@ export default async function LocationDevLoginPage({ params }) {
   }
 
   if (session?.user && isAuthDevOnlyUserAllowed(session.user)) {
+    if (eventId) {
+      redirect(`/${location}/cabinet/eventsCalendar?event=${eventId}`)
+    }
     redirect(`/${location}/cabinet`)
   }
 

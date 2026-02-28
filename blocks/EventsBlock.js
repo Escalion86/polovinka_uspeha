@@ -11,7 +11,7 @@ import Link from 'next/link'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
 import locationAtom from '@state/atoms/locationAtom'
-const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
+const EventCard = dynamic(() => import('@layouts/cards/EventCard2'))
 
 const Button = ({ title, className, href, onClick }) => {
   if (onClick)

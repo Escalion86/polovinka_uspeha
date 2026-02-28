@@ -17,6 +17,7 @@ import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 import Skeleton from 'react-loading-skeleton'
 import eventSelector from '@state/selectors/eventSelector'
 import SignOut from '@components/SignOut'
@@ -75,7 +76,7 @@ const Event = ({ event }) => {
   )
 }
 
-const EventBlock = ({ event }) => {
+const EventBlock = ({ event, eventId }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const location = useAtomValue(locationAtom)
 
@@ -86,13 +87,26 @@ const EventBlock = ({ event }) => {
       ) : (
         <Event event={event} />
       )}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center gap-2">
+        {!loggedUserActive && event?._id ? (
+          <Link
+            prefetch={false}
+            className="max-w-[76%]"
+            href={{
+              pathname: `/${location}/login`,
+              query: { event: eventId || event._id },
+            }}
+            shallow
+          >
+            <PulseButton className="mt-2 text-white" title="Записаться" />
+          </Link>
+        ) : null}
         <Link
           prefetch={false}
           className="max-w-[76%]"
           href={{
             pathname: loggedUserActive
-              ? `$/${location}/cabinet/eventsUpcoming`
+              ? `/${location}/cabinet/eventsUpcoming`
               : `/${location}/events`,
           }}
           shallow
@@ -109,6 +123,7 @@ const EventBlock = ({ event }) => {
 
 function EventPage(props) {
   const { location } = props
+  useHydrateAtoms([[locationAtom, location]])
   const [locationState, setLocationState] = useAtom(locationAtom)
 
   const eventId = props.id
@@ -127,7 +142,7 @@ function EventPage(props) {
     })
   }, [])
 
-  useEffect(() => setLocationState(location), [location])
+  useEffect(() => setLocationState(location), [location, setLocationState])
 
   if (props.wrongSession) return <SignOut />
 
@@ -144,7 +159,7 @@ function EventPage(props) {
     <>
       <StateLoader {...props}>
         <Header noMenu={isPWA} fullLinkInMenu />
-        <EventBlock event={event} />
+        <EventBlock event={event} eventId={eventId} />
 
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}

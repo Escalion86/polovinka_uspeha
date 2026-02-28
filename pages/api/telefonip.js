@@ -12,6 +12,7 @@ import ensureConsentToMailingField from '@server/ensureConsentToMailingField'
 import { getPhoneAnomalyReasons, normalizePhoneValue } from '@helpers/phoneUtils'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 import ensureLocalUserFromGlobalByPhone from '@server/ensureLocalUserFromGlobalByPhone'
+import syncGlobalUserLink from '@server/syncGlobalUserLink'
 import {
   isAuthDevOnlyModeEnabled,
   isAuthDevOnlyPhoneAllowed,
@@ -420,9 +421,6 @@ export default async function handler(req, res) {
 
       // Если код уже подтвержден, то создаем пользователя
       if (password && existingPhoneConfirm?.confirmed === true) {
-        await db
-          .model('PhoneConfirms')
-          .findOneAndDelete({ phone: normalizedPhone })
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || isForgotPassword)) {
           const hashedPassword = await hashPassword(password)
@@ -456,6 +454,21 @@ export default async function handler(req, res) {
 
           if (updatedUser) {
             try {
+              await syncGlobalUserLink({
+                location,
+                user: updatedUser,
+                source: isForgotPassword
+                  ? 'recovery-password-reset'
+                  : 'register-password-set',
+              })
+            } catch (syncError) {
+              console.log('syncGlobalUserLink error :>> ', syncError)
+            }
+
+            await db
+              .model('PhoneConfirms')
+              .findOneAndDelete({ phone: normalizedPhone })
+            try {
               await createReferralRegistrationCoupon({ db, user: updatedUser })
             } catch (couponError) {
               console.log(
@@ -479,6 +492,22 @@ export default async function handler(req, res) {
             consentToMailing,
             attribution,
           })
+
+          try {
+            await syncGlobalUserLink({
+              location,
+              user: newUser,
+              source: isForgotPassword
+                ? 'recovery-password-reset'
+                : 'register-password-set',
+            })
+          } catch (syncError) {
+            console.log('syncGlobalUserLink error :>> ', syncError)
+          }
+
+          await db
+            .model('PhoneConfirms')
+            .findOneAndDelete({ phone: normalizedPhone })
 
           try {
             await createReferralRegistrationCoupon({ db, user: newUser })
@@ -507,6 +536,19 @@ export default async function handler(req, res) {
             data: newUser,
           })
         }
+      }
+
+      if (password && existingPhoneConfirm?.confirmed !== true) {
+        return res?.status(200).json({
+          success: false,
+          data: {
+            error: {
+              message:
+                'Подтверждение номера не завершено. Запросите звонок и подтвердите номер повторно.',
+              type: 'phoneConfirmNotVerified',
+            },
+          },
+        })
       }
 
       return res?.status(200).json({

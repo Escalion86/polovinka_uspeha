@@ -29,6 +29,7 @@ import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import useRouter from '@utils/useRouter'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -39,6 +40,7 @@ const defaultFilterValue = {
 const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
   const events = useAtomValue(eventsAtom)
   const location = useAtomValue(locationAtom)
+  const router = useRouter()
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -124,6 +126,7 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
   const [monthEventsCount, setMonthEventsCount] = useState(0)
+  const [calendarFocusEvent, setCalendarFocusEvent] = useState(null)
   const todayLabel = useMemo(() => {
     const now = new Date()
     return `Сегодня ${now.toLocaleDateString('ru-RU', {
@@ -237,7 +240,52 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
     () => applyFiltersAndSort(events),
     [applyFiltersAndSort, events]
   )
+  const eventFromQueryId =
+    typeof router.query?.event === 'string' ? router.query.event : null
+
+  const accessibleEvents = useMemo(
+    () => getVisibleEventsForSource(events),
+    [events, getVisibleEventsForSource]
+  )
+  const accessibleEventFromQuery = useMemo(() => {
+    if (!eventFromQueryId) return null
+    return (
+      accessibleEvents.find(
+        (event) => String(event?._id) === String(eventFromQueryId)
+      ) || null
+    )
+  }, [accessibleEvents, eventFromQueryId])
+
   const visibleEvents = filteredAndSortedEvents
+
+  useEffect(() => {
+    if (!eventFromQueryId || !location) return
+    if (!accessibleEventFromQuery) return
+
+    setCalendarFocusEvent({
+      id: String(eventFromQueryId),
+      dateStart: accessibleEventFromQuery?.dateStart ?? null,
+    })
+    modalsFunc.event.view(eventFromQueryId)
+
+    const nextQuery = { ...router.query }
+    delete nextQuery.event
+
+    router.replace(
+      {
+        pathname: `/${location}/cabinet/eventsCalendar`,
+        query: nextQuery,
+      },
+      '',
+      { shallow: true }
+    )
+  }, [
+    accessibleEventFromQuery,
+    eventFromQueryId,
+    location,
+    modalsFunc.event,
+    router,
+  ])
 
   const isFiltered = Boolean(filterOptions.directions)
 
@@ -341,6 +389,8 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
             location={location}
             applyFiltersAndSort={applyFiltersAndSort}
             onMonthEventsCountChange={setMonthEventsCount}
+            focusEventId={calendarFocusEvent?.id ?? null}
+            focusEventDate={calendarFocusEvent?.dateStart ?? null}
             onOpenEvent={(eventId) => modalsFunc.event.view(eventId)}
           />
         </div>

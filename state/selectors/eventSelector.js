@@ -10,6 +10,7 @@ const eventSelector = atomFamily((id) =>
   atomWithDefault(async (get) => {
     if (!id) return
     const location = get(locationAtom)
+    if (!location || location === 'null' || location === 'undefined') return null
     const res = await getData(
       `/api/${location}/events/` + id,
       {},
