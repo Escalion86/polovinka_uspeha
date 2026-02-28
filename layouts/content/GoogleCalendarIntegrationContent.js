@@ -170,6 +170,10 @@ const GoogleCalendarIntegrationContent = () => {
     }
   }
 
+  const openVideoInstruction = () => {
+    window.open('/video/google-integration-instruction.mp4', '_blank', 'noopener,noreferrer')
+  }
+
   return (
     <div className="flex flex-col gap-4 p-2">
       <InputWrapper label="Интеграция Google Календаря">
@@ -202,6 +206,12 @@ const GoogleCalendarIntegrationContent = () => {
               onClick={loadSettings}
               loading={isLoading}
               disabled={isSubmitting}
+              outline
+            />
+            <Button
+              name="Посмотреть видеоинструкцию"
+              onClick={openVideoInstruction}
+              disabled={isLoading || isSubmitting}
               outline
             />
             {data.connected && (

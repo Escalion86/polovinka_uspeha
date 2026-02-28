@@ -1,5 +1,13 @@
 import DateTimeEvent from '@components/DateTimeEvent'
+import Button from '@components/Button'
 import FormWrapper from '@components/FormWrapper'
+import Note from '@components/Note'
+import { getData } from '@helpers/CRUD'
+import locationAtom from '@state/atoms/locationAtom'
+import modalsAtom from '@state/atoms/modalsAtom'
+import useRouter from '@utils/useRouter'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 
 const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
   const isReserve = status === 'reserve'
@@ -13,6 +21,34 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const router = useRouter()
+    const location = useAtomValue(locationAtom)
+    const setModals = useSetAtom(modalsAtom)
+    const [isGoogleCalendarConnected, setIsGoogleCalendarConnected] = useState(true)
+
+    useEffect(() => {
+      let cancelled = false
+
+      const loadGoogleCalendarState = async () => {
+        if (!location) return
+        const response = await getData(
+          `/api/${location}/google-calendar`,
+          {},
+          null,
+          null,
+          true
+        )
+        if (cancelled || !response?.success) return
+        setIsGoogleCalendarConnected(Boolean(response?.data?.connected))
+      }
+
+      loadGoogleCalendarState()
+
+      return () => {
+        cancelled = true
+      }
+    }, [location])
+
     // const [check, setCheck] = useState(false)
 
     // useEffect(() => {
@@ -61,6 +97,23 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
             За несколько дней до начала мероприятия с Вами свяжется
             администратор по вопросам оплаты и организации!
           </div>
+        )}
+        {!isGoogleCalendarConnected && (
+          <Note className="mt-3">
+            Вы можете подключить календарь в опции{' '}
+            <strong>«Интеграция Google Календаря»</strong>, чтобы запись на
+            мероприятие автоматически добавлялась в ваш Google Календарь.
+            <div className="mt-3 flex justify-center">
+              <Button
+                name="Перейти на страницу интеграции Google календаря"
+                thin
+                onClick={() => {
+                  setModals([])
+                  router.push(`/${location}/cabinet/googleCalendarIntegration`)
+                }}
+              />
+            </div>
+          </Note>
         )}
       </FormWrapper>
     )
