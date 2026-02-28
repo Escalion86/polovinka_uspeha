@@ -284,7 +284,7 @@ export default function LocationLoginClient({
               <>
                 <VkIdOneTapAuth
                   location={location}
-                  mode="auto"
+                  mode="login"
                   onSuccess={async () => {
                     await routeAfterLogin(router, location)
                   }}

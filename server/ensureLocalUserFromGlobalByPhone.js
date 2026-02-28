@@ -166,6 +166,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
   location,
   phone,
   source = 'global-read',
+  createIfMissing = true,
 }) => {
   if (!db || !checkLocationValid(location)) {
     return {
@@ -232,10 +233,31 @@ const ensureLocalUserFromGlobalByPhone = async ({
   const globalUserId = String(globalUser._id)
   const locationRole = locationProfile?.role || null
   const locationStatus = locationProfile?.status || null
+  const locationUserId = String(locationProfile?.userId || '').trim()
   const preparedProfile = normalizeGlobalProfile(globalUser?.profile)
   const preparedCore = normalizeGlobalCore(globalUser)
   const preparedNotifications = normalizeGlobalNotifications(globalUser)
-  const localExisting = await db.model('Users').findOne({ phone: phoneNumber }).lean()
+  let localExisting =
+    locationUserId && checkLocationValid(location) && /^[a-fA-F0-9]{24}$/.test(locationUserId)
+      ? await db.model('Users').findById(locationUserId).lean()
+      : null
+
+  if (!localExisting?._id) {
+    localExisting = await db
+      .model('Users')
+      .findOne({ globalUserId })
+      .sort({ createdAt: 1 })
+      .lean()
+  }
+
+  if (!localExisting?._id) {
+    localExisting = await db
+      .model('Users')
+      .findOne({ phone: phoneNumber })
+      .sort({ createdAt: 1 })
+      .lean()
+  }
+
   if (localExisting?._id) {
     const resolvedRole = locationRole || localExisting?.role || 'client'
     const resolvedStatus = locationStatus || localExisting?.status || 'novice'
@@ -244,6 +266,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       ...toPatchFromGlobalCore(preparedCore),
       ...toPatchFromGlobalNotifications(preparedNotifications),
       globalUserId,
+      phone: localExisting?.phone || phoneNumber,
       role: resolvedRole,
       status: resolvedStatus,
     }
@@ -261,7 +284,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       {
         $set: {
           [`cityProfiles.${location}`]: {
-            userId: String(localExisting._id),
+            userId: String(updatedExisting?._id || localExisting._id),
             status: resolvedStatus,
             role: resolvedRole,
             linkedAt: new Date(),
@@ -287,6 +310,17 @@ const ensureLocalUserFromGlobalByPhone = async ({
       data: {
         globalUserFound: true,
         localUser: updatedExisting,
+        localUserCreated: false,
+      },
+    }
+  }
+
+  if (!createIfMissing) {
+    return {
+      success: true,
+      data: {
+        globalUserFound: true,
+        localUser: null,
         localUserCreated: false,
       },
     }

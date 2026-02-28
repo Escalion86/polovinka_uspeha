@@ -469,7 +469,7 @@ const Register3Inner = ({ location }) => {
                     {checkHave18Years && checkAgreement ? (
                       <VkIdOneTapAuth
                         location={location}
-                        mode="auto"
+                        mode="register"
                         payload={{
                           referrerId: referralId,
                           consentToMailing: checkConsentToMailing,

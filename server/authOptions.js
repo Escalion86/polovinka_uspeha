@@ -411,7 +411,11 @@ export const authOptions = {
           mode,
           state,
           codeVerifier,
+          referrerId,
           consentToMailing: consentToMailingRaw,
+          attribution: attributionRaw,
+          isAdultConfirmed: isAdultConfirmedRaw,
+          personalDataAgreementAccepted: personalDataAgreementAcceptedRaw,
         } = credentials ?? {}
 
         if ((!code || !deviceId) && !accessTokenFromClient) {
@@ -486,6 +490,12 @@ export const authOptions = {
           typeof consentToMailingRaw === 'undefined'
             ? undefined
             : parseBooleanFromInput(consentToMailingRaw)
+        const isAdultConfirmed = parseBooleanFromInput(isAdultConfirmedRaw)
+        const personalDataAgreementAccepted = parseBooleanFromInput(
+          personalDataAgreementAcceptedRaw
+        )
+        const attribution = parseAttributionInput(attributionRaw)
+        const isVkRegisterMode = String(mode || '').trim() === 'register'
         const vkProfilePatch = buildVkProfilePatch({
           vkUser,
           vkId,
@@ -506,6 +516,7 @@ export const authOptions = {
           location,
           phone: phoneCandidates[0],
           source: 'vk-global-phone-read',
+          createIfMissing: isVkRegisterMode,
         })
 
         const globalLocalUser = globalReadResult?.data?.localUser || null
@@ -514,6 +525,60 @@ export const authOptions = {
           !globalReadResult?.data?.globalUserFound ||
           !globalLocalUser?._id
         ) {
+          if (isVkRegisterMode) {
+            if (isAuthDevOnlyModeEnabled()) {
+              throwVkAuthError('VK_DEV_ONLY_MODE')
+            }
+
+            const registrationGuard = await assertCityOperationAllowed(
+              location,
+              'registration'
+            )
+            if (!registrationGuard.success) {
+              throwVkAuthError('VK_REGISTRATION_BLOCKED')
+            }
+            if (!isAdultConfirmed || !personalDataAgreementAccepted) {
+              console.log(
+                'VK auth: required agreements are not accepted for registration'
+              )
+              throwVkAuthError('VK_AGREEMENTS_REQUIRED')
+            }
+
+            const resolvedReferrerId = await resolveReferrerId(db, referrerId)
+            const newUser = await usersModel.create({
+              ...vkProfilePatch,
+              registrationType: 'vk',
+              authProviders: ['vk'],
+              referrerId: resolvedReferrerId,
+              phone: phoneValueToSet,
+              ...(attribution ? { attribution } : {}),
+            })
+
+            await syncGlobalLinkSafe({
+              location,
+              user: newUser,
+              source: 'vk-auth-register',
+            })
+
+            await db.model('Histories').create({
+              schema: 'users',
+              action: 'add',
+              data: newUser,
+              userId: newUser._id,
+            })
+
+            try {
+              await createReferralRegistrationCoupon({ db, user: newUser })
+            } catch (couponError) {
+              console.log(
+                'createReferralRegistrationCoupon error :>> ',
+                couponError
+              )
+            }
+
+            return buildSessionPayload(newUser, location)
+          }
+
           console.log('VK auth: global account is required for login', {
             mode: mode || 'login',
             hasGlobalUser: Boolean(globalReadResult?.data?.globalUserFound),

@@ -96,6 +96,7 @@ export default function VkIdOneTapAuth({
   const payloadRef = useRef(payload)
   const onSuccessRef = useRef(onSuccess)
   const onErrorRef = useRef(onError)
+  const authInFlightRef = useRef(false)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -175,6 +176,8 @@ export default function VkIdOneTapAuth({
         })
         .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async (vkPayload) => {
           if (!isMounted) return
+          if (authInFlightRef.current) return
+          authInFlightRef.current = true
           setIsLoading(true)
           const code = vkPayload?.code
           const deviceId = vkPayload?.device_id
@@ -186,6 +189,7 @@ export default function VkIdOneTapAuth({
             vkPayload?.verifier
 
           if (!code || !deviceId) {
+            authInFlightRef.current = false
             setIsLoading(false)
             onErrorRef.current('VK ID не вернул код авторизации')
             return
@@ -212,6 +216,7 @@ export default function VkIdOneTapAuth({
                 })
               }
             } catch (error) {
+              authInFlightRef.current = false
               setIsLoading(false)
               onErrorRef.current(
                 'VK ID временно недоступен. Попробуйте позже или войдите по телефону.'
@@ -234,10 +239,12 @@ export default function VkIdOneTapAuth({
 
           setIsLoading(false)
           if (result?.error) {
+            authInFlightRef.current = false
             onErrorRef.current(mapVkSignInError(result.error))
             return
           }
 
+          authInFlightRef.current = false
           onSuccessRef.current()
         })
     }
@@ -246,6 +253,7 @@ export default function VkIdOneTapAuth({
 
     return () => {
       isMounted = false
+      authInFlightRef.current = false
       if (containerRef.current) containerRef.current.innerHTML = ''
     }
   }, [location, mode])
