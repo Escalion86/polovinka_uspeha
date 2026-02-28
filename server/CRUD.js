@@ -25,6 +25,7 @@ import recalculateEventAchievements from './recalculateEventAchievements'
 // import { telegramCmdToIndex } from './telegramCmd'
 import processReferralRewards from './processReferralRewards'
 import syncGlobalUserLink from './syncGlobalUserLink'
+import { syncEventUsersGoogleCalendar } from './userGoogleCalendar'
 
 function isJson(str) {
   try {
@@ -762,6 +763,14 @@ export default async function handler(Schema, req, res, props = {}) {
             })
           }
 
+          if (Schema === 'EventsUsers') {
+            await syncEventUsersGoogleCalendar({
+              db,
+              location,
+              eventUsers: [jsonData],
+            })
+          }
+
           await db.model('Histories').create({
             schema: lowercasedSchema,
             action: 'add',
@@ -985,6 +994,14 @@ export default async function handler(Schema, req, res, props = {}) {
             }
           }
 
+          if (Schema === 'EventsUsers') {
+            await syncEventUsersGoogleCalendar({
+              db,
+              location,
+              eventUsers: [data],
+            })
+          }
+
           return res?.status(200).json({ success: true, data })
         } else {
           return res?.status(400).json({ success: false, error: 'No Id' })
@@ -1008,6 +1025,16 @@ export default async function handler(Schema, req, res, props = {}) {
 
         if (params) {
           const existingData = await db.model(Schema).find(params)
+          if (Schema === 'EventsUsers' && Array.isArray(existingData) && existingData.length > 0) {
+            await syncEventUsersGoogleCalendar({
+              db,
+              location,
+              eventUsers: existingData.map((item) =>
+                typeof item?.toJSON === 'function' ? item.toJSON() : item
+              ),
+              forceDelete: true,
+            })
+          }
           data = await db.model(Schema).deleteMany(params)
           if (!data) {
             return res?.status(400).json({ success: false })
@@ -1023,6 +1050,18 @@ export default async function handler(Schema, req, res, props = {}) {
           const existingData = await db.model(Schema).findById(id)
           if (!existingData) {
             return res?.status(400).json({ success: false })
+          }
+          if (Schema === 'EventsUsers') {
+            await syncEventUsersGoogleCalendar({
+              db,
+              location,
+              eventUsers: [
+                typeof existingData?.toJSON === 'function'
+                  ? existingData.toJSON()
+                  : existingData,
+              ],
+              forceDelete: true,
+            })
           }
           data = await db.model(Schema).deleteOne({
             _id: id,
@@ -1046,6 +1085,16 @@ export default async function handler(Schema, req, res, props = {}) {
           const existingData = await db.model(Schema).find({
             _id: { $in: body.params },
           })
+          if (Schema === 'EventsUsers' && Array.isArray(existingData) && existingData.length > 0) {
+            await syncEventUsersGoogleCalendar({
+              db,
+              location,
+              eventUsers: existingData.map((item) =>
+                typeof item?.toJSON === 'function' ? item.toJSON() : item
+              ),
+              forceDelete: true,
+            })
+          }
           data = await db.model(Schema).deleteMany({
             _id: { $in: body.params },
           })

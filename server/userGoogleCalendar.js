@@ -5,7 +5,7 @@ import formatAddress from '@helpers/formatAddress'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 
 const GOOGLE_CALENDAR_SCOPES = ['https://www.googleapis.com/auth/calendar']
-const ACTIVE_SIGNUP_STATUSES = ['participant', 'reserve']
+const ACTIVE_SIGNUP_STATUSES = ['participant', 'reserve', 'assistant']
 
 const toError = (type, message, status = 400) => ({
   success: false,
@@ -97,10 +97,19 @@ const buildCalendarEventResource = ({ event, eventUser, location }) => {
     ? event.subEvents.find(({ id }) => id === eventUser?.subEventId)
     : null
   const isReserve = eventUser?.status === 'reserve'
+  const isAssistant = eventUser?.status === 'assistant'
   const reserveText = isReserve
     ? 'Вы записаны в резерв на это мероприятие.'
-    : 'Ваша запись подтверждена.'
+    : isAssistant
+      ? 'Вы отмечены как ведущий этого мероприятия.'
+      : 'Ваша запись подтверждена.'
   const subEventText = subEvent?.title ? `\nФормат участия: ${subEvent.title}` : ''
+
+  const summaryPrefix = isAssistant
+    ? '[ВЕДУЩИЙ] '
+    : isReserve
+      ? '[РЕЗЕРВ] '
+      : ''
 
   const description = [
     preparePlainEventDescription(event?.description),
@@ -114,7 +123,7 @@ const buildCalendarEventResource = ({ event, eventUser, location }) => {
     .trim()
 
   return {
-    summary: `${isReserve ? '[РЕЗЕРВ] ' : ''}${event?.title || 'Мероприятие'}`,
+    summary: `${summaryPrefix}${event?.title || 'Мероприятие'}`,
     description,
     start: {
       dateTime: event?.dateStart,
