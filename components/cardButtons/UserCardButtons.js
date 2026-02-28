@@ -1,6 +1,4 @@
 import CardButtons from '@components/CardButtons'
-import { faEye } from '@fortawesome/free-regular-svg-icons/faEye'
-import { faEyeSlash } from '@fortawesome/free-regular-svg-icons/faEyeSlash'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/faTrashAlt'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
@@ -23,7 +21,6 @@ import { useAtomValue } from 'jotai'
 
 const UserCardButtons = ({
   item,
-  showOnSiteOnClick,
   className,
   alwaysCompact,
   alwaysCompactOnPhone,
@@ -64,9 +61,6 @@ const UserCardButtons = ({
     showDeleteButton &&
     item.status !== 'closed' &&
     (rule?.delete || rule === true)
-  const canShowOnSite =
-    showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true)
-
   const buttons = []
 
   if (!customOnly) {
@@ -160,16 +154,6 @@ const UserCardButtons = ({
         onClick: onEditQuestionnaire,
         color: 'purple',
         tooltipText: 'Редактировать анкету',
-      })
-    }
-    if (canShowOnSite) {
-      buttons.push({
-        key: 'show-on-site',
-        active: !item.showOnSite,
-        icon: item.showOnSite ? faEye : faEyeSlash,
-        onClick: () => showOnSiteOnClick && showOnSiteOnClick(),
-        color: 'purple',
-        tooltipText: 'Показывать на сайте',
       })
     }
     if (canDelete) {

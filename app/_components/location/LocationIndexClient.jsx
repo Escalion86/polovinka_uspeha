@@ -15,6 +15,7 @@ import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import NoOrphanText from '@components/NoOrphanText'
 import ImagesMarquee from '@components/ImagesMarquee'
 import TitleHeroSection from '@components/TitleHeroSection'
+import SvgKavichki from '@svg/SvgKavichki'
 import { getNounYears } from '@helpers/getNoun'
 import {
   fetchingAdditionalBlocks,
@@ -212,6 +213,47 @@ export default function LocationIndexClient({
       }))
       .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
   }, [globalAboutSpaceCards])
+  const supervisorProfile = useMemo(() => {
+    const supervisor = siteSettings?.supervisor || {}
+    const name = String(supervisor?.name || '').trim()
+    const quote = String(supervisor?.quote || '').trim()
+    const photo = String(supervisor?.photo || '').trim()
+    const showOnSite = Boolean(supervisor?.showOnSite)
+
+    return {
+      name,
+      quote,
+      photo,
+      showOnSite,
+      hasContent: Boolean(name || quote || photo),
+    }
+  }, [siteSettings])
+  const founderProfile = useMemo(() => {
+    const founder = siteSettings?.founder || {}
+    const hasFounderSettings = Boolean(
+      founder && typeof founder === 'object' && Object.keys(founder).length > 0
+    )
+
+    const fallbackName = 'Надежда'
+    const fallbackPhoto = '/img/other/gubina.jpg'
+    const fallbackQuote =
+      'Основатель пространства живых встреч, идейный вдохновитель, а также организатор и ведущая основных форматов пространства в городе Красноярске.'
+
+    const name = String(founder?.name || fallbackName).trim()
+    const quote = String(founder?.quote || fallbackQuote).trim()
+    const photo = String(founder?.photo || fallbackPhoto).trim()
+    const showOnSite = hasFounderSettings
+      ? Boolean(founder?.showOnSite)
+      : true
+
+    return {
+      name,
+      quote,
+      photo,
+      showOnSite,
+      hasContent: Boolean(name || quote || photo),
+    }
+  }, [siteSettings])
 
   useEffect(() => {
     let isMounted = true
@@ -806,23 +848,68 @@ export default function LocationIndexClient({
               ))}
             </div>
           </div>
-          <div
-            className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
-            data-reveal
-          >
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,180px)_minmax(0,1fr)] lg:items-center">
-              <img
-                src="/img/other/gubina.jpg"
-                alt="Надежда Губина"
-                className="w-full max-w-[220px] rounded-[20px] justify-self-center object-contain"
-              />
-              <p className="text-[18px] leading-relaxed">
-                <strong>Надежда</strong> – основатель пространства живых встреч,
-                идейный вдохновитель, а также организатор и ведущая основных
-                форматов пространства в городе Красноярске.
-              </p>
+          {founderProfile.showOnSite && founderProfile.hasContent ? (
+            <div
+              className="mt-6 rounded-3xl bg-white p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
+              <div className="mb-4 inline-flex items-center rounded-full bg-white/80 px-4 py-1 text-sm font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
+                Основатель проекта
+              </div>
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,180px)_minmax(0,1fr)] lg:items-center">
+                {founderProfile.photo ? (
+                  <img
+                    src={founderProfile.photo}
+                    alt={founderProfile.name || 'Основатель проекта'}
+                    className="w-full max-w-[220px] rounded-[20px] justify-self-center object-contain"
+                  />
+                ) : null}
+                <div className="relative rounded-2xl border border-[#f0e2e8] bg-[#fff8fa] px-6 py-5 shadow-[0_10px_24px_rgba(107,31,42,0.08)]">
+                  <SvgKavichki className="absolute -bottom-2 left-2 h-6 w-6 fill-[#6b1f2a] opacity-25" />
+                  <SvgKavichki className="absolute -top-2 right-2 h-6 w-6 rotate-180 fill-[#6b1f2a] opacity-25" />
+                  <p className="text-[18px] leading-relaxed text-[#3a2c33] whitespace-pre-line">
+                    <strong>{founderProfile.name}</strong>
+                    {founderProfile.quote ? ` — ${founderProfile.quote}` : ''}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : null}
+          {supervisorProfile.showOnSite && supervisorProfile.hasContent ? (
+            <div
+              className="mt-6 overflow-hidden rounded-3xl border border-[rgba(107,31,42,0.16)] bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))] p-6 shadow-[0_20px_45px_rgba(0,0,0,0.08)]"
+              data-reveal
+            >
+              <div className="mb-4 inline-flex items-center rounded-full bg-white/80 px-4 py-1 text-sm font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
+                Руководитель региона
+              </div>
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,190px)_minmax(0,1fr)] lg:items-center">
+                {supervisorProfile.photo ? (
+                  <img
+                    src={supervisorProfile.photo}
+                    alt={supervisorProfile.name || 'Руководитель региона'}
+                    className="w-full max-w-[230px] justify-self-center rounded-[20px] border border-white/70 bg-white object-cover shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
+                  />
+                ) : null}
+                <div>
+                  {supervisorProfile.name ? (
+                    <h3 className="text-[22px] font-bold text-[#4b0f1c]">
+                      {supervisorProfile.name}
+                    </h3>
+                  ) : null}
+                  {supervisorProfile.quote ? (
+                    <div className="relative mt-3 rounded-2xl border border-[#f0e2e8] bg-white/75 px-6 py-5 shadow-[0_10px_24px_rgba(107,31,42,0.08)]">
+                      <SvgKavichki className="absolute -bottom-2 left-2 h-6 w-6 fill-[#6b1f2a] opacity-25" />
+                      <SvgKavichki className="absolute -top-2 right-2 h-6 w-6 rotate-180 fill-[#6b1f2a] opacity-25" />
+                      <p className="text-[18px] leading-relaxed text-[#3a2c33] whitespace-pre-line">
+                        {supervisorProfile.quote}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
           <div className="flex justify-center px-[6vw] pt-20">
             <Link
               href={`/${defaultLocation}/register`}

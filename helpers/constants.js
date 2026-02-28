@@ -177,6 +177,9 @@ const SettingsRolesContent = dynamic(
 const SupervisorBlockContent = dynamic(
   () => import('@layouts/content/SupervisorBlockContent')
 )
+const FounderBlockContent = dynamic(
+  () => import('@layouts/content/FounderBlockContent')
+)
 const SettingsDateStartProjectContent = dynamic(
   () => import('@layouts/content/SettingsDateStartProjectContent')
 )
@@ -1806,6 +1809,11 @@ export const CONTENTS = Object.freeze({
     name: 'Сайт / Руководитель региона',
     roleAccess: (role) => role?.generalPage?.supervisor,
   },
+  founder: {
+    Component: FounderBlockContent,
+    name: 'Сайт / Основатель проекта',
+    roleAccess: (role) => role?.dev || role?.president,
+  },
   eventsUpcoming: {
     Component: EventsUpcomingContent,
     name: 'Предстоящие мероприятия',
@@ -2228,6 +2236,14 @@ export const pages = [
     icon: faUserTie,
     // accessRoles: CONTENTS['supervisor'].accessRoles,
     roleAccess: CONTENTS['supervisor'].roleAccess,
+  },
+  {
+    id: 13.1,
+    group: 4,
+    name: 'Основатель проекта',
+    href: 'founder',
+    icon: faUserTie,
+    roleAccess: CONTENTS['founder'].roleAccess,
   },
   {
     id: 14,

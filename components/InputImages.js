@@ -14,6 +14,16 @@ import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Image from 'next/image'
+import locationAtom from '@state/atoms/locationAtom'
+
+const INPUT_ACCEPT_TYPES =
+  'image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/*'
+
+const getUploadMeta = (file) => ({
+  type: file?.type || 'unknown',
+  size: Number.isFinite(file?.size) ? file.size : null,
+  lastModified: Number.isFinite(file?.lastModified) ? file.lastModified : null,
+})
 
 const InputImages = ({
   images = [],
@@ -38,24 +48,73 @@ const InputImages = ({
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)
+  const location = useAtomValue(locationAtom)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {
     hiddenFileInput.current.click()
   }
 
+  const logUploadIssue = async (reason, file, extra = {}) => {
+    if (!location) return
+
+    try {
+      await fetch('/api/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location,
+          error: {
+            message: `input-images-upload-failed: ${reason}`,
+            stack: '',
+            componentStack: 'InputImages:onAddImage',
+            url: typeof window !== 'undefined' ? window.location?.href ?? '' : '',
+            userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+          },
+          meta: {
+            reason,
+            imageFolder,
+            directory,
+            file: getUploadMeta(file),
+            ...extra,
+          },
+        }),
+      })
+    } catch {
+      // ignore logging failures to keep upload flow non-blocking
+    }
+  }
+
   const onAddImage = async (newImage) => {
     if (newImage) {
       var img = document.createElement('img')
 
+      img.onerror = async () => {
+        await logUploadIssue('image_decode_error', newImage)
+        modalsFunc.error({
+          title: 'Ошибка загрузки фото',
+          text:
+            'Не удалось открыть выбранное фото. Попробуйте выбрать другое изображение или сохранить фото в JPEG.',
+        })
+      }
+
       img.onload = async () => {
         if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
         else {
-          modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
+          modalsFunc.cropImage(newImage, img, aspect, (croppedImage) => {
+            if (!croppedImage) {
+              logUploadIssue('crop_result_empty', newImage)
+              modalsFunc.error({
+                title: 'Ошибка обработки фото',
+                text:
+                  'Не удалось обработать изображение. Попробуйте фото меньшего размера или формат JPEG.',
+              })
+              return
+            }
             setAddingImage(true)
             if (typeof onLoading === 'function') onLoading()
             sendImage(
-              newImage,
+              croppedImage,
               (imagesUrls) => onChange([...images, ...imagesUrls]),
               directory,
               null,
@@ -66,6 +125,14 @@ const InputImages = ({
       }
 
       var reader = new FileReader()
+      reader.onerror = async () => {
+        await logUploadIssue('file_reader_error', newImage)
+        modalsFunc.error({
+          title: 'Ошибка чтения файла',
+          text:
+            'Не удалось прочитать выбранный файл. Попробуйте выбрать фото из другой папки.',
+        })
+      }
       reader.onloadend = function (ended) {
         img.src = ended.target.result
       }
@@ -168,7 +235,7 @@ const InputImages = ({
                   e.target.value = null
                 }}
                 style={{ display: 'none' }}
-                accept="image/jpeg,image/png"
+                accept={INPUT_ACCEPT_TYPES}
               />
             </div>
           </div>

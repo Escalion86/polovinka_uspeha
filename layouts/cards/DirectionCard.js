@@ -186,7 +186,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
         onMoveDown={
           direction.index < directions.length - 1 ? setDown : undefined
         }
-        triggerClassName="text-white"
+        triggerClassName="text-[#6b1f2a]"
       />
     </CardWrapper>
   )

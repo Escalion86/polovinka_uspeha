@@ -10,6 +10,7 @@ import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
 import snackbarAtom from '@state/atoms/snackbarAtom'
+import cn from 'classnames'
 
 export const AdditionalBlockCardContent = ({
   block,
@@ -100,7 +101,13 @@ export const AdditionalBlockCardContent = ({
   )
 }
 
-const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
+const AdditionalBlockCard = ({
+  additionalBlockId,
+  hidden = false,
+  style,
+  displayMode = 'card',
+  listIndex = 0,
+}) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const additionalBlock = useAtomValue(
     additionalBlockSelector(additionalBlockId)
@@ -194,6 +201,45 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
       )
   }
 
+  const content = (
+    <AdditionalBlockCardContent
+      block={additionalBlock}
+      showButtons
+      onToggleShowOnSite={() => {
+        itemFunc.additionalBlock.set({
+          _id: additionalBlock._id,
+          showOnSite: !additionalBlock.showOnSite,
+        })
+      }}
+      onMoveUp={additionalBlock.index > 0 ? setUp : undefined}
+      onMoveDown={
+        additionalBlock.index < additionalBlocks.length - 1 ? setDown : undefined
+      }
+      buttonsAlwaysCompact
+    />
+  )
+
+  if (displayMode === 'public') {
+    return (
+      <div
+        className={cn(
+          'px-[6vw] py-[70px]',
+          listIndex % 2 === 1 &&
+            'bg-[linear-gradient(140deg,rgba(79,176,232,0.12),rgba(111,29,43,0.06))]',
+          hidden ? 'overflow-hidden' : ''
+        )}
+        style={style}
+      >
+        <div
+          className="relative"
+          onClick={() => modalsFunc.additionalBlock.edit(additionalBlock._id)}
+        >
+          {content}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <CardWrapper
       loading={loading}
@@ -205,21 +251,7 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
       className="rounded-2xl border border-[rgba(107,31,42,0.18)] shadow-[0_12px_26px_rgba(0,0,0,0.08)]"
       bgClassName="bg-white"
     >
-      <AdditionalBlockCardContent
-        block={additionalBlock}
-        showButtons
-        onToggleShowOnSite={() => {
-          itemFunc.additionalBlock.set({
-            _id: additionalBlock._id,
-            showOnSite: !additionalBlock.showOnSite,
-          })
-        }}
-        onMoveUp={additionalBlock.index > 0 ? setUp : undefined}
-        onMoveDown={
-          additionalBlock.index < additionalBlocks.length - 1 ? setDown : undefined
-        }
-        buttonsAlwaysCompact
-      />
+      {content}
     </CardWrapper>
   )
 }

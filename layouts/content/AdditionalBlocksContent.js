@@ -34,10 +34,12 @@ const AdditionalBlocksContent = () => {
         {additionalBlocks?.length > 0 ? (
           [...additionalBlocks]
             .sort((a, b) => (a.index < b.index ? -1 : 1))
-            .map((additionalBlock) => (
+            .map((additionalBlock, index) => (
               <AdditionalBlockCard
                 key={additionalBlock._id}
                 additionalBlockId={additionalBlock._id}
+                displayMode="public"
+                listIndex={index}
               />
             ))
         ) : (

@@ -87,6 +87,31 @@ const getMonthBounds = (cursorDate) => {
   return { start, end }
 }
 
+const resolvePreferredDayForMonth = (events = [], cursorDate) => {
+  if (!Array.isArray(events) || events.length === 0) return null
+
+  const year = cursorDate.getFullYear()
+  const month = cursorDate.getMonth()
+  const now = new Date()
+
+  const normalized = events
+    .map((event) => {
+      const date = new Date(event?.dateStart)
+      if (Number.isNaN(date.getTime())) return null
+      return date
+    })
+    .filter(Boolean)
+    .filter((date) => date.getFullYear() === year && date.getMonth() === month)
+    .sort((a, b) => a - b)
+
+  if (normalized.length === 0) return null
+
+  const nearestUpcoming = normalized.find((date) => date >= now)
+  const selectedDate = nearestUpcoming || normalized[0]
+
+  return String(selectedDate.getDate())
+}
+
 const EventsCalendarView = ({
   events = [],
   location,
@@ -175,14 +200,9 @@ const EventsCalendarView = ({
   }, [monthEvents, cursorDate])
 
   useEffect(() => {
-    if (activeDays.length === 0) {
-      setSelectedDay(null)
-      return
-    }
-    if (!selectedDay || !activeDays.includes(String(selectedDay))) {
-      setSelectedDay(activeDays[0])
-    }
-  }, [activeDays, selectedDay])
+    const preferredDay = resolvePreferredDayForMonth(monthEvents, cursorDate)
+    setSelectedDay(preferredDay)
+  }, [monthEvents, cursorDate])
 
   const calendarDays = useMemo(() => buildMonthDays(cursorDate), [cursorDate])
   const month = cursorDate.getMonth()
@@ -270,7 +290,7 @@ const EventsCalendarView = ({
         </div>
       </div>
 
-      <div className="w-full flex justify-center overflow-x-hidden rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
+      <div className="w-full flex flex-col items-stretch overflow-x-hidden rounded-2xl bg-white shadow-[0_16px_30px_rgba(0,0,0,0.08)]">
         {(selectedEvents.length === 0 || loadingMonth) && (
           <h3 className="px-6 py-6 text-lg font-bold text-[#6b1f2a]">
             {/* {selectedDay

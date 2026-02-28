@@ -229,6 +229,10 @@ const cropImageFunc = (
       if (toBlob) {
         canvas.toBlob(
           (blob) => {
+            if (!blob) {
+              onConfirm(null)
+              return
+            }
             onConfirm(blobToFile(blob, src.name))
           },
           'image/jpeg',

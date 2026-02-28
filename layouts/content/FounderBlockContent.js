@@ -14,44 +14,50 @@ import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 
-const SupervisorBlockContent = (props) => {
+const FounderBlockContent = (props) => {
   const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
-  const [photo, setPhoto] = useState(siteSettings?.supervisor?.photo ?? null)
-  const [quote, setQuote] = useState(siteSettings?.supervisor?.quote ?? '')
-  const [name, setName] = useState(siteSettings?.supervisor?.name ?? '')
+  const [photo, setPhoto] = useState(siteSettings?.founder?.photo ?? null)
+  const [quote, setQuote] = useState(siteSettings?.founder?.quote ?? '')
+  const [name, setName] = useState(siteSettings?.founder?.name ?? '')
   const [showOnSite, setShowOnSite] = useState(
-    Boolean(siteSettings?.supervisor?.showOnSite)
+    Boolean(siteSettings?.founder?.showOnSite)
   )
 
-  const [errors, checkErrors, addError] = useErrors()
+  const [errors, _checkErrors, addError, removeError] = useErrors()
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
-  const normalizedSupervisor = {
-    photo: siteSettings?.supervisor?.photo ?? null,
-    quote: siteSettings?.supervisor?.quote ?? '',
-    name: siteSettings?.supervisor?.name ?? '',
-    showOnSite: Boolean(siteSettings?.supervisor?.showOnSite),
+  const normalizedFounder = {
+    photo: siteSettings?.founder?.photo ?? null,
+    quote: siteSettings?.founder?.quote ?? '',
+    name: siteSettings?.founder?.name ?? '',
+    showOnSite: Boolean(siteSettings?.founder?.showOnSite),
   }
   const formChanged =
-    normalizedSupervisor.photo !== photo ||
-    normalizedSupervisor.quote !== quote ||
-    normalizedSupervisor.name !== name ||
-    normalizedSupervisor.showOnSite !== showOnSite
+    normalizedFounder.photo !== photo ||
+    normalizedFounder.quote !== quote ||
+    normalizedFounder.name !== name ||
+    normalizedFounder.showOnSite !== showOnSite
 
   const onClickConfirm = async () => {
-    if (
-      checkErrors({
-        photo,
-        quote,
-        supervisorName: name,
-      })
-    ) {
-      return
+    let hasErrors = false
+
+    if (showOnSite && !photo) {
+      hasErrors = true
+      addError({ founderPhoto: 'Загрузите фотографию основателя' })
     }
+    if (showOnSite && !name?.trim()) {
+      hasErrors = true
+      addError({ founderName: 'Введите имя и фамилию основателя' })
+    }
+    if (showOnSite && !quote?.trim()) {
+      hasErrors = true
+      addError({ founderQuote: 'Введите цитату основателя' })
+    }
+    if (hasErrors) return
 
     setIsWaitingToResponse(true)
     setMessage('')
@@ -59,13 +65,12 @@ const SupervisorBlockContent = (props) => {
     await postData(
       `/api/${location}/site`,
       {
-        supervisor: { photo, quote, name, showOnSite },
+        founder: { photo, quote, name, showOnSite },
       },
       (data) => {
         setSiteSettings(data)
         setMessage('Данные обновлены успешно')
         setIsWaitingToResponse(false)
-        // refreshPage()
       },
       () => {
         setMessage('')
@@ -80,24 +85,21 @@ const SupervisorBlockContent = (props) => {
   useEffect(() => {
     if (isWaitingToResponse) {
       setIsWaitingToResponse(false)
-      // setMessage('Данные анкеты обновлены успешно')
     }
   }, [props])
 
   useEffect(() => {
-    setPhoto(normalizedSupervisor.photo)
-    setQuote(normalizedSupervisor.quote)
-    setName(normalizedSupervisor.name)
-    setShowOnSite(normalizedSupervisor.showOnSite)
-  }, [siteSettings?.supervisor])
-
-  const buttonDisabled = !formChanged
+    setPhoto(normalizedFounder.photo)
+    setQuote(normalizedFounder.quote)
+    setName(normalizedFounder.name)
+    setShowOnSite(normalizedFounder.showOnSite)
+  }, [siteSettings?.founder])
 
   return (
     <div className="flex flex-col flex-1 h-screen px-2 my-2 gap-y-2">
       <div className="flex items-center w-full p-1 gap-x-1">
         <div className="flex flex-row-reverse flex-1">
-          {!buttonDisabled && (
+          {formChanged && (
             <span className="leading-4 text-right tablet:text-lg">
               Чтобы изменения вступили в силу нажмите:
             </span>
@@ -114,29 +116,38 @@ const SupervisorBlockContent = (props) => {
       {message && !isWaitingToResponse && (
         <div className="flex flex-col col-span-2 text-success">{message}</div>
       )}
-      <div className="font-semibold text-[#6b1f2a] px-2">Руководитель региона</div>
+      <div className="font-semibold text-[#6b1f2a] px-2">Основатель проекта</div>
       <FormWrapper>
         <InputImage
-          label="Фотография"
+          label="Фотография основателя"
           directory="supervisor"
           image={photo}
-          onChange={setPhoto}
-          required
-          // aspect={1}
+          onChange={(value) => {
+            removeError('founderPhoto')
+            setPhoto(value)
+          }}
+          error={errors.founderPhoto}
+          required={showOnSite}
         />
         <Input
-          label="Имя и Фамилия руководителя"
+          label="Имя и Фамилия основателя"
           value={name}
-          onChange={setName}
-          error={errors.supervisorName}
-          required
+          onChange={(value) => {
+            removeError('founderName')
+            setName(value)
+          }}
+          error={errors.founderName}
+          required={showOnSite}
         />
         <Input
-          label="Цитата руководителя"
+          label="Цитата основателя"
           value={quote}
-          onChange={setQuote}
-          error={errors.quote}
-          required
+          onChange={(value) => {
+            removeError('founderQuote')
+            setQuote(value)
+          }}
+          error={errors.founderQuote}
+          required={showOnSite}
         />
         <CheckBox
           checked={showOnSite}
@@ -149,4 +160,4 @@ const SupervisorBlockContent = (props) => {
   )
 }
 
-export default SupervisorBlockContent
+export default FounderBlockContent

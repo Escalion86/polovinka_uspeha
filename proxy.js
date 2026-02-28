@@ -4,6 +4,7 @@ import { getToken } from 'next-auth/jwt'
 const TRUE_VALUES = new Set(['1', 'true', 'yes', 'on'])
 const KNOWN_LOCATIONS = new Set(['krsk', 'nrsk', 'ekb'])
 const DEVLOGIN_BYPASS_COOKIE = 'devlogin_bypass'
+const AUTH_JWT_SECRET = process.env.SECRET || 'test'
 
 const parseBooleanEnv = (value) => {
   if (typeof value === 'boolean') return value
@@ -92,7 +93,7 @@ export async function proxy(req) {
   const authDevOnlyMode = parseBooleanEnv(process.env.AUTH_DEV_ONLY_MODE)
 
   if (!authDevOnlyMode) {
-    const token = await getToken({ req, secret: process.env.SECRET })
+    const token = await getToken({ req, secret: AUTH_JWT_SECRET })
     if (token && !isCabinetPath(pathname)) {
       const tokenLocation =
         typeof token?.location === 'string' && KNOWN_LOCATIONS.has(token.location)
@@ -126,7 +127,7 @@ export async function proxy(req) {
       return NextResponse.next()
     }
 
-    const token = await getToken({ req, secret: process.env.SECRET })
+    const token = await getToken({ req, secret: AUTH_JWT_SECRET })
     if (isDevAccessToken(token)) {
       if (isProxyDebugEnabled()) {
         console.log('[proxy] allow cabinet for dev token:', pathname)

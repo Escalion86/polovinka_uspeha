@@ -353,18 +353,20 @@ const ToolsNewsletterContent = () => {
                 />
               )}
               <div className="flex flex-wrap items-center gap-1 text-sm text-general">
-                <Button
-                  onClick={handleRefreshNewslettersData}
-                  loading={isCountLoading || isStateLoading}
-                  thin
-                  icon={faRotateRight}
-                />
-                <span className="flex items-center gap-1 text-black">
-                  Статус WA:{' '}
-                  <span className="font-semibold">
-                    {isStateLoading ? '...' : stateLabel}
+                <div className="flex items-center gap-1">
+                  <Button
+                    onClick={handleRefreshNewslettersData}
+                    loading={isCountLoading || isStateLoading}
+                    thin
+                    icon={faRotateRight}
+                  />
+                  <span className="leading-4 text-black">
+                    Статус WA:{' '}
+                    <span className="font-semibold">
+                      {isStateLoading ? '...' : stateLabel}
+                    </span>
                   </span>
-                </span>
+                </div>
                 {isAuthorized && (
                   <span className="flex items-center gap-1 pl-1 text-black border-l border-gray-400">
                     Отправляется:{' '}
@@ -376,13 +378,13 @@ const ToolsNewsletterContent = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 tablet:justify-between">
             <ToggleButtons
               value={statusFilter}
               onChange={setStatusFilter}
               buttonsConfig={statusButtonsConfig}
             />
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center justify-end flex-1 gap-2">
               <div className="text-lg font-bold whitespace-nowrap">
                 {getNounNewsletters(sortedNewsletters.length)}
               </div>

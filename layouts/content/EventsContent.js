@@ -267,7 +267,7 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
         </div>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           {calendarOnly ? (
-            <div className="mr-auto text-sm font-semibold text-[#6b1f2a]">
+            <div className="mr-auto text-sm tablet:text-base font-semibold text-[#6b1f2a]">
               {todayLabel}
             </div>
           ) : null}

@@ -42,6 +42,8 @@ export default async function getLocationLandingInitialData(location) {
         .model('SiteSettings')
         .find({})
         .select({
+          founder: 1,
+          supervisor: 1,
           spaceStats: 1,
           closedSpace: 1,
           phone: 1,
@@ -71,4 +73,3 @@ export default async function getLocationLandingInitialData(location) {
     }
   }
 }
-

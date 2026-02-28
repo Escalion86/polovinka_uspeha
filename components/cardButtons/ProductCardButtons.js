@@ -115,15 +115,17 @@ const ProductCardButtons = ({
       })
     }
     if (canShowOnSite) {
+      const isVisibleOnSite = Boolean(item.showOnSite)
       buttons.push({
         key: 'show-on-site',
-        active: !item.showOnSite,
-        icon: item.showOnSite ? faEye : faEyeSlash,
+        icon: isVisibleOnSite ? faEyeSlash : faEye,
         onClick: () => {
           showOnSiteOnClick && showOnSiteOnClick()
         },
-        color: 'purple',
-        tooltipText: 'Показывать на сайте',
+        color: isVisibleOnSite ? 'purple' : 'green',
+        tooltipText: isVisibleOnSite
+          ? 'Скрыть на сайте'
+          : 'Показать на сайте',
       })
     }
     if (canDelete && item.status !== 'closed') {

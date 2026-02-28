@@ -12,6 +12,7 @@ import { hashPassword } from '@helpers/passwordUtils'
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 // import subEventsSummator from '@helpers/subEventsSummator'
+import fs from 'fs'
 
 import serviceUserTelegramNotification from './serviceUserTelegramNotification'
 import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
@@ -149,7 +150,9 @@ const connectToGoogleCalendar = (location) => {
   if (!calendarConstants) return
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
-  const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
+  const normalizedPrivateKey =
+    typeof privateKey === 'string' ? privateKey.replace(/\\n/g, '\n') : privateKey
+  const jwtClient = new google.auth.JWT(email, null, normalizedPrivateKey, SCOPES)
   const calendar = google.calendar({
     version: 'v3',
     project: projectNumber,
@@ -157,6 +160,32 @@ const connectToGoogleCalendar = (location) => {
   })
 
   return calendar
+}
+
+const getGoogleCalendarAuthClient = async (location) => {
+  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  const email = calendarConstants?.email
+  const privateKeyRaw = calendarConstants?.privateKey
+  const privateKey =
+    typeof privateKeyRaw === 'string'
+      ? privateKeyRaw.replace(/\\n/g, '\n')
+      : privateKeyRaw
+
+  if (email && privateKey) {
+    const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
+    await jwtClient.authorize()
+    return jwtClient
+  }
+
+  const keyFile = getGoogleCalendarJSONByLocation(location)
+  if (!keyFile || !fs.existsSync(keyFile)) return null
+
+  const auth = new google.auth.GoogleAuth({
+    keyFile,
+    scopes: SCOPES,
+  })
+
+  return await auth.getClient()
 }
 
 const addBlankEventToCalendar = async (location) => {
@@ -191,14 +220,8 @@ const addBlankEventToCalendar = async (location) => {
     },
   }
 
-  const keyFile = getGoogleCalendarJSONByLocation(location)
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile,
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
+  const authProcess = await getGoogleCalendarAuthClient(location)
+  if (!authProcess) return
 
   const calendarEventData = await new Promise((resolve, reject) => {
     calendar.events.insert(
@@ -241,14 +264,8 @@ const deleteEventFromCalendar = async (googleCalendarId, location) => {
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
-  const keyFile = getGoogleCalendarJSONByLocation(location)
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile,
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
+  const authProcess = await getGoogleCalendarAuthClient(location)
+  if (!authProcess) return
 
   const calendarEventData = await new Promise((resolve, reject) => {
     calendar.events.delete(
@@ -344,14 +361,8 @@ const updateEventInCalendar = async (event, location) => {
     // visibility: event.showOnSite ? 'default' : 'private',
   }
 
-  const keyFile = getGoogleCalendarJSONByLocation(location)
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile,
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
+  const authProcess = await getGoogleCalendarAuthClient(location)
+  if (!authProcess) return
 
   // Создаем новое событие (пустое) в календаре, если нет googleCalendarId
   if (!event.googleCalendarId) {

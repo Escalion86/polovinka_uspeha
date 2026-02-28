@@ -23,6 +23,8 @@ import ensureLocalUserFromGlobalByPhone from './ensureLocalUserFromGlobalByPhone
 import resolvePasswordFromGlobalByPhone from './resolvePasswordFromGlobalByPhone'
 import checkLocationValid from './checkLocationValid'
 
+const AUTH_JWT_SECRET = process.env.SECRET || 'test'
+
 const parsePhoneNumber = (value) => {
   if (typeof value === 'number') {
     return Number.isFinite(value) ? value : null
@@ -1070,7 +1072,7 @@ export const authOptions = {
     },
   },
   jwt: {
-    secret: 'test',
+    secret: AUTH_JWT_SECRET,
     encryption: true,
   },
   pages: {
