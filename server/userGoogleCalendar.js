@@ -96,6 +96,8 @@ const buildCalendarEventResource = ({ event, eventUser, location }) => {
   const subEvent = Array.isArray(event?.subEvents)
     ? event.subEvents.find(({ id }) => id === eventUser?.subEventId)
     : null
+  const hasMultipleSubEvents =
+    Array.isArray(event?.subEvents) && event.subEvents.length > 1
   const isReserve = eventUser?.status === 'reserve'
   const isAssistant = eventUser?.status === 'assistant'
   const reserveText = isReserve
@@ -103,7 +105,10 @@ const buildCalendarEventResource = ({ event, eventUser, location }) => {
     : isAssistant
       ? 'Вы отмечены как ведущий этого мероприятия.'
       : 'Ваша запись подтверждена.'
-  const subEventText = subEvent?.title ? `\nФормат участия: ${subEvent.title}` : ''
+  const subEventText =
+    hasMultipleSubEvents && subEvent?.title
+      ? `\nФормат участия: ${subEvent.title}`
+      : ''
 
   const summaryPrefix = isAssistant
     ? '[ВЕДУЩИЙ] '
