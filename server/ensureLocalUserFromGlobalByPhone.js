@@ -233,6 +233,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
   const globalUserId = String(globalUser._id)
   const locationRole = locationProfile?.role || null
   const locationStatus = locationProfile?.status || null
+  const defaultCityStatus = 'novice'
   const locationUserId = String(locationProfile?.userId || '').trim()
   const preparedProfile = normalizeGlobalProfile(globalUser?.profile)
   const preparedCore = normalizeGlobalCore(globalUser)
@@ -348,7 +349,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       : {}),
     images: preparedProfile.images,
     role: locationProfile?.role || 'client',
-    status: locationProfile?.status || 'active',
+    status: locationProfile?.status || defaultCityStatus,
     registrationType: preparedCore.registrationType || 'global-link',
     authProviders: ['global-link'],
     ...(preparedCore.referrerId ? { referrerId: preparedCore.referrerId } : {}),
@@ -376,7 +377,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       $set: {
         [`cityProfiles.${location}`]: {
           userId: String(newLocalUser._id),
-          status: locationProfile?.status || 'active',
+          status: locationProfile?.status || defaultCityStatus,
           role: locationProfile?.role || 'client',
           linkedAt: new Date(),
         },

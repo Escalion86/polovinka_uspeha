@@ -145,28 +145,10 @@ const UserMenu = () => {
     loggedUserActiveRole?.notifications?.eventRegistration
 
   const allLocations = Object.keys(LOCATIONS || {})
-  const sessionCitiesRaw = Array.isArray(session?.user?.cities)
-    ? session.user.cities
-    : []
-  const activeUserCitiesRaw = Array.isArray(loggedUserActive?.cities)
-    ? loggedUserActive.cities
-    : []
-  const userCitiesRaw =
-    sessionCitiesRaw.length > 0 ? sessionCitiesRaw : activeUserCitiesRaw
-  const userCities = Array.from(new Set([...userCitiesRaw, location])).filter(
-    (city) => allLocations.includes(city)
-  )
-  const baseVisibleCities =
-    loggedUserActive?.role === 'dev' && userCities.length <= 1
-      ? allLocations
-      : userCities
-
   const activeCitiesSet =
     activeCitiesByPolicy.length > 0 ? new Set(activeCitiesByPolicy) : null
-  const isActiveCity = (city) => (activeCitiesSet ? activeCitiesSet.has(city) : true)
-
-  const selectableCities = baseVisibleCities.filter(
-    (city) => allLocations.includes(city) && isActiveCity(city)
+  const selectableCities = allLocations.filter((city) =>
+    activeCitiesSet ? activeCitiesSet.has(city) : true
   )
   const visibleCities = Array.from(new Set([location, ...selectableCities]))
   const alternativeCities = selectableCities.filter((city) => city !== location)
