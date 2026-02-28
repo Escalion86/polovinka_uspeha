@@ -104,16 +104,6 @@ const EventCardButtons = ({
         tooltipText: 'Посмотреть историю изменений',
       })
     }
-    // buttons.push({
-    //   key: 'calendar',
-    //   icon: faCalendarPlus,
-    //   onClick: async () => {
-    //     const event = await getEventById(item._id, location)
-    //     goToUrlForAddEventToCalendar(event)
-    //   },
-    //   color: 'purple',
-    //   tooltipText: 'Добавить в Google календарь',
-    // })
     if (canSendNotifications) {
       buttons.push({
         key: 'send-notifications',

@@ -1,19 +1,14 @@
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnConfirm2Func,
-    setOnDeclineFunc,
-    setOnShowOnCloseConfirmDialog,
-    setDisableConfirm,
-    setDisableDecline,
   }) => {
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const itemsFunc = useAtomValue(itemsFuncAtom)
@@ -52,9 +47,6 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-      setOnConfirm2Func(() =>
-        onClickConfirm(() => goToUrlForAddEventToCalendar(event))
-      )
     }, [])
 
     // useEffect(() => {
@@ -82,7 +74,6 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
     title: `Запись в резерв на мероприятие`,
     text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
     confirmButtonName: `Записаться в резерв`,
-    confirmButtonName2: `Записаться в резерв и добавить в календарь`,
     Children: EventSignUpToReserveAfterErrorModal,
   }
 }

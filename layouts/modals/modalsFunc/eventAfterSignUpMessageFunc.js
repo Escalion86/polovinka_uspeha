@@ -1,10 +1,5 @@
-import Button from '@components/Button'
 import DateTimeEvent from '@components/DateTimeEvent'
 import FormWrapper from '@components/FormWrapper'
-import Note from '@components/Note'
-import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPlus'
-
-import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 
 const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
   const isReserve = status === 'reserve'
@@ -36,7 +31,7 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
     return (
       <FormWrapper>
         {/* <div>{`Вы успешно записались${postfixStatus} на мероприятие`}</div> */}
-        <div className="text-lg font-bold text-center text-general whitespace-pre-line">
+        <div className="text-lg font-bold text-center whitespace-pre-line text-general">
           {event.title}
         </div>
         <DateTimeEvent
@@ -67,16 +62,6 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
             администратор по вопросам оплаты и организации!
           </div>
         )}
-
-        <Note>
-          {`Вы можете добавить это мероприятие в Google календарь, для этого кликните по
-          кнопке ниже`}
-        </Note>
-        <Button
-          name="Добавить в календарь"
-          icon={faCalendarPlus}
-          onClick={() => goToUrlForAddEventToCalendar(event)}
-        />
       </FormWrapper>
     )
   }
@@ -86,7 +71,6 @@ const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
   return {
     title: `Успешная запись ${postfixStatus} на мероприятие`,
     confirmButtonName: `Понятно`,
-    confirmButtonName2: `Добавить в календарь`,
     Children: EventAfterSignUpMessageModal,
   }
 }
