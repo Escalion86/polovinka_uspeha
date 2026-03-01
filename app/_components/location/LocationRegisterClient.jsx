@@ -457,15 +457,9 @@ const Register3Inner = ({ location }) => {
             </div>
 
             {step === 1 && (
-              <form
-                className="grid gap-4 mt-6"
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  requestBackCall()
-                }}
-              >
+              <>
                 {isVkAuthEnabled ? (
-                  <>
+                  <div className="grid gap-2 mt-6">
                     {checkHave18Years && checkAgreement ? (
                       <VkIdOneTapAuth
                         location={location}
@@ -506,8 +500,16 @@ const Register3Inner = ({ location }) => {
                       Регистрация через VK ID доступна только после подтверждения
                       обязательных согласий.
                     </div>
-                  </>
+                  </div>
                 ) : null}
+
+                <form
+                  className="grid gap-4 mt-4"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    requestBackCall()
+                  }}
+                >
 
                 <AuthField label="Телефон">
                   <InputMask
@@ -594,14 +596,15 @@ const Register3Inner = ({ location }) => {
                     {errors.general}
                   </div>
                 ) : null}
-                <AuthButton
-                  type="submit"
-                  disabled={waiting}
-                  aria-busy={waiting}
-                >
-                  {waiting ? 'Отправляем...' : 'Продолжить регистрацию'}
-                </AuthButton>
-              </form>
+                  <AuthButton
+                    type="submit"
+                    disabled={waiting}
+                    aria-busy={waiting}
+                  >
+                    {waiting ? 'Отправляем...' : 'Продолжить регистрацию'}
+                  </AuthButton>
+                </form>
+              </>
             )}
 
             {step === 2 && (

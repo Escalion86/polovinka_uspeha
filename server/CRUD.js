@@ -148,110 +148,110 @@ const { MODE } = process.env
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-  if (!calendarConstants) return
+  if (!calendarConstants) return null
 
-  const { calendarId, email, privateKey, projectNumber } = calendarConstants
-  const normalizedPrivateKey =
-    typeof privateKey === 'string' ? privateKey.replace(/\\n/g, '\n') : privateKey
-  const jwtClient = new google.auth.JWT(email, null, normalizedPrivateKey, SCOPES)
+  const { projectNumber } = calendarConstants
   const calendar = google.calendar({
     version: 'v3',
     project: projectNumber,
-    auth: jwtClient,
   })
 
   return calendar
 }
 
 const getGoogleCalendarAuthClient = async (location) => {
-  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-  const email = calendarConstants?.email
-  const privateKeyRaw = calendarConstants?.privateKey
-  const privateKey =
-    typeof privateKeyRaw === 'string'
-      ? privateKeyRaw.replace(/\\n/g, '\n')
-      : privateKeyRaw
+  try {
+    const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+    const email = calendarConstants?.email
+    const privateKeyRaw = calendarConstants?.privateKey
+    const privateKey =
+      typeof privateKeyRaw === 'string'
+        ? privateKeyRaw.replace(/\\n/g, '\n')
+        : privateKeyRaw
 
-  if (email && privateKey) {
-    const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
-    await jwtClient.authorize()
-    return jwtClient
+    if (email && privateKey) {
+      const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
+      await jwtClient.authorize()
+      return jwtClient
+    }
+
+    const keyFile = getGoogleCalendarJSONByLocation(location)
+    if (!keyFile || !fs.existsSync(keyFile)) return null
+
+    const auth = new google.auth.GoogleAuth({
+      keyFile,
+      scopes: SCOPES,
+    })
+
+    return await auth.getClient()
+  } catch (error) {
+    console.log('getGoogleCalendarAuthClient error:', error?.message || error)
+    return null
   }
-
-  const keyFile = getGoogleCalendarJSONByLocation(location)
-  if (!keyFile || !fs.existsSync(keyFile)) return null
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile,
-    scopes: SCOPES,
-  })
-
-  return await auth.getClient()
 }
 
 const addBlankEventToCalendar = async (location) => {
-  const calendar = connectToGoogleCalendar(location)
-  if (!calendar) return
+  try {
+    const calendar = connectToGoogleCalendar(location)
+    if (!calendar) return
 
-  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-  if (!calendarConstants) return
+    const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+    if (!calendarConstants) return
 
-  const { calendarId, email, privateKey, projectNumber } = calendarConstants
+    const { calendarId } = calendarConstants
+    if (!calendarId) return
 
-  const timeZone = getTimeZoneByLocation(location)
+    const timeZone = getTimeZoneByLocation(location)
 
-  const calendarEvent = {
-    summary: '[blank]',
-    description: '',
-    start: {
-      dateTime: new Date(),
-      timeZone,
-    },
-    end: {
-      dateTime: new Date(),
-      timeZone,
-    },
-    attendees: [],
-    reminders: {
-      useDefault: false,
-      overrides: [
-        { method: 'email', minutes: 24 * 60 },
-        { method: 'popup', minutes: 10 },
-      ],
-    },
-  }
-
-  const authProcess = await getGoogleCalendarAuthClient(location)
-  if (!authProcess) return
-
-  const calendarEventData = await new Promise((resolve, reject) => {
-    calendar.events.insert(
-      {
-        auth: authProcess,
-        calendarId,
-        resource: calendarEvent,
+    const calendarEvent = {
+      summary: '[blank]',
+      description: '',
+      start: {
+        dateTime: new Date(),
+        timeZone,
       },
-      (error, result) => {
-        if (error) {
-          console.log({ error })
-          reject(error)
-          // res.send(JSON.stringify({ error: error }))
-        } else {
-          if (result) {
-            console.log(result)
+      end: {
+        dateTime: new Date(),
+        timeZone,
+      },
+      attendees: [],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 10 },
+        ],
+      },
+    }
+
+    const authProcess = await getGoogleCalendarAuthClient(location)
+    if (!authProcess) return
+
+    const calendarEventData = await new Promise((resolve, reject) => {
+      calendar.events.insert(
+        {
+          auth: authProcess,
+          calendarId,
+          resource: calendarEvent,
+        },
+        (error, result) => {
+          if (error) {
+            console.log({ error })
+            reject(error)
+          } else if (result) {
             resolve(result)
-            // res.send(JSON.stringify({ events: result.data.items }))
           } else {
-            console.log({ message: 'Что-то пошло не так' })
             reject('Что-то пошло не так')
-            // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
           }
         }
-      }
-    )
-  })
+      )
+    })
 
-  return calendarEventData?.data?.id
+    return calendarEventData?.data?.id
+  } catch (error) {
+    console.log('addBlankEventToCalendar skipped:', error?.message || error)
+    return undefined
+  }
 }
 
 const deleteEventFromCalendar = async (googleCalendarId, location) => {

@@ -255,7 +255,7 @@ export default function LocationLoginClient({
             </div>
           </div>
 
-          <form className="grid gap-4 mt-6" onSubmit={handleSubmit}>
+          <div className="mt-6 grid gap-4">
             {shouldShowTransferNotice ? (
               <div className="rounded-2xl border border-[rgba(107,31,42,0.18)] bg-[#fff8fa] p-4 shadow-[0_10px_18px_rgba(107,31,42,0.08)]">
                 <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
@@ -300,6 +300,9 @@ export default function LocationLoginClient({
                   </div> */}
               </>
             ) : null}
+          </div>
+
+          <form className="grid gap-4 mt-4" onSubmit={handleSubmit}>
 
             <AuthField label="Телефон">
               <InputMask
