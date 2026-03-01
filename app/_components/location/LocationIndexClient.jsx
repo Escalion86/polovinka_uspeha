@@ -40,13 +40,13 @@ const heroImages = [
   '/img/general/7.jpg',
   '/img/general/8.jpg',
   '/img/general/9.jpg',
-  '/img/general/10.jpg',
-  '/img/general/11.jpg',
-  '/img/general/12.jpg',
-  '/img/general/13.jpg',
-  '/img/general/14.jpg',
-  '/img/general/15.jpg',
-  '/img/general/16.jpg',
+  '/img/general/10.png',
+  '/img/general/11.png',
+  '/img/general/12.png',
+  '/img/general/13.png',
+  '/img/general/14.png',
+  '/img/general/15.png',
+  '/img/general/16.png',
 ]
 
 const services = [
@@ -143,6 +143,8 @@ const MONTHS_FULL_UPPER = [
   'ДЕКАБРЬ',
 ]
 
+const WEEKDAY_LABELS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+
 const navItems = [
   { id: 'about', label: 'О нас' },
   { id: 'announcements', label: 'Анонс мероприятий' },
@@ -155,6 +157,18 @@ const DEFAULT_CLOSED_SPACE_SUBTITLE = 'ЗАКРЫТОЕ ПРОСТРАНСТВО
 const DEFAULT_CLOSED_SPACE_DESCRIPTION =
   'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.'
 
+const AuthorizeButton = ({ location }) => (
+  <Link
+    href={`/${location}/register`}
+    className="rounded-full btn-gradient-hover px-7 py-3 tracking-[0.05em] text-white"
+  >
+    <div className="flex flex-col items-center justify-center leading-5">
+      <div className="font-semibold uppercase">Присоединиться к нам</div>
+      <div>(зарегистрироваться)</div>
+    </div>
+  </Link>
+)
+
 export default function LocationIndexClient({
   location,
   initialDirections,
@@ -162,6 +176,10 @@ export default function LocationIndexClient({
   initialGlobalAboutSpaceCards,
 }) {
   const [activeDay, setActiveDay] = useState(null)
+  const [calendarCursorDate, setCalendarCursorDate] = useState(() => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+  })
   const [menuOpen, setMenuOpen] = useState(false)
   const [events, setEvents] = useState([])
   const [additionalBlocks, setAdditionalBlocks] = useState([])
@@ -242,9 +260,7 @@ export default function LocationIndexClient({
     const name = String(founder?.name || fallbackName).trim()
     const quote = String(founder?.quote || fallbackQuote).trim()
     const photo = String(founder?.photo || fallbackPhoto).trim()
-    const showOnSite = hasFounderSettings
-      ? Boolean(founder?.showOnSite)
-      : true
+    const showOnSite = hasFounderSettings ? Boolean(founder?.showOnSite) : true
 
     return {
       name,
@@ -583,6 +599,11 @@ export default function LocationIndexClient({
   const { calendarDays, activeDays, eventsByDay, monthLabel, monthName } =
     useMemo(() => {
       const now = new Date()
+      const cursorDate =
+        calendarCursorDate instanceof Date &&
+        !Number.isNaN(calendarCursorDate.getTime())
+          ? calendarCursorDate
+          : new Date(now.getFullYear(), now.getMonth(), 1)
 
       const getEventMaxParticipants = (event) => {
         const hasSubEvents =
@@ -626,12 +647,10 @@ export default function LocationIndexClient({
         .filter((event) => event.dateStart >= now)
         .sort((a, b) => a.dateStart - b.dateStart)
 
-      const baseEvent = upcoming[0] ?? normalizedEvents[0]
-      const baseDate = baseEvent?.dateStart ?? now
-      const month = baseDate.getMonth()
-      const year = baseDate.getFullYear()
+      const month = cursorDate.getMonth()
+      const year = cursorDate.getFullYear()
 
-      const monthEvents = normalizedEvents.filter(
+      const monthEvents = upcoming.filter(
         (event) =>
           event.dateStart.getMonth() === month &&
           event.dateStart.getFullYear() === year
@@ -639,6 +658,15 @@ export default function LocationIndexClient({
 
       const daysInMonth = new Date(year, month + 1, 0).getDate()
       const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+      const firstDaySundayFirst = new Date(year, month, 1).getDay()
+      const firstDayMondayFirst = (firstDaySundayFirst + 6) % 7
+      const prefix = Array.from({ length: firstDayMondayFirst }, () => null)
+      const calendarCells = [...prefix, ...daysArray]
+      const tailLength = (7 - (calendarCells.length % 7)) % 7
+      const calendarGrid = [
+        ...calendarCells,
+        ...Array.from({ length: tailLength }, () => null),
+      ]
       const locationTownLower = (
         LOCATIONS?.[defaultLocation]?.townRu || ''
       ).toLowerCase()
@@ -681,13 +709,63 @@ export default function LocationIndexClient({
         .sort((a, b) => a - b)
 
       return {
-        calendarDays: daysArray,
+        calendarDays: calendarGrid,
         activeDays: activeDaysList,
         eventsByDay: eventsByDayMap,
         monthLabel: `${MONTHS_FULL_UPPER[month]} ${year}`,
         monthName: MONTHS_FULL[month],
       }
-    }, [events])
+    }, [events, calendarCursorDate])
+
+  const isPrevMonthDisabled = useMemo(() => {
+    const now = new Date()
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    return calendarCursorDate <= currentMonthStart
+  }, [calendarCursorDate])
+
+  const isNextMonthDisabled = useMemo(() => {
+    const now = new Date()
+    const upcomingEvents = (events || [])
+      .map((event) => {
+        const dateStart = event?.dateStart ? new Date(event.dateStart) : null
+        if (!dateStart || Number.isNaN(dateStart.getTime())) return null
+        if (event?.showOnSite === false) return null
+        if (event?.status === 'canceled') return null
+        if (dateStart < now) return null
+        return dateStart
+      })
+      .filter(Boolean)
+
+    if (upcomingEvents.length === 0) return true
+
+    const maxEventDate = upcomingEvents.reduce(
+      (max, current) => (current > max ? current : max),
+      upcomingEvents[0]
+    )
+    const lastMonthWithEvents = new Date(
+      maxEventDate.getFullYear(),
+      maxEventDate.getMonth(),
+      1
+    )
+
+    return calendarCursorDate >= lastMonthWithEvents
+  }, [events, calendarCursorDate])
+
+  const handlePrevMonth = () => {
+    if (isPrevMonthDisabled) return
+    setCalendarCursorDate((prev) => {
+      const date = new Date(prev.getFullYear(), prev.getMonth() - 1, 1)
+      return date
+    })
+  }
+
+  const handleNextMonth = () => {
+    if (isNextMonthDisabled) return
+    setCalendarCursorDate((prev) => {
+      const date = new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
+      return date
+    })
+  }
 
   useEffect(() => {
     if (activeDays.length === 0) {
@@ -811,12 +889,7 @@ export default function LocationIndexClient({
           }
           afterGridContent={
             <div className="flex justify-center mt-8">
-              <Link
-                href={`/${defaultLocation}/register`}
-                className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-              >
-                Присоединиться к нам
-              </Link>
+              <AuthorizeButton location={defaultLocation} />
             </div>
           }
         />
@@ -911,12 +984,7 @@ export default function LocationIndexClient({
             </div>
           ) : null}
           <div className="flex justify-center px-[6vw] pt-20">
-            <Link
-              href={`/${defaultLocation}/register`}
-              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-            >
-              Присоединиться к нам
-            </Link>
+            <AuthorizeButton location={defaultLocation} />
           </div>
         </Section>
 
@@ -1001,13 +1069,8 @@ export default function LocationIndexClient({
           </div>         
         </Section> */}
 
-        <div className="flex justify-center px-[6vw] ">
-          <Link
-            href={`/${defaultLocation}/register`}
-            className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-          >
-            Присоединиться к нам
-          </Link>
+        <div className="flex justify-center px-[6vw]">
+          <AuthorizeButton location={defaultLocation} />
         </div>
 
         {index2AdditionalBlocks.map((block) => (
@@ -1049,18 +1112,64 @@ export default function LocationIndexClient({
               data-reveal
             >
               <div className="mb-4 flex items-center justify-between font-semibold text-[#6b1f2a]">
-                <span>{monthLabel}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={isPrevMonthDisabled}
+                    onClick={handlePrevMonth}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                      isPrevMonthDisabled
+                        ? 'cursor-not-allowed border-[#d6d9de] text-[#b8bcc4]'
+                        : 'cursor-pointer border-[rgba(107,31,42,0.22)] text-[#6b1f2a] hover:bg-[#6b1f2a] hover:text-white'
+                    }`}
+                    aria-label="Предыдущий месяц"
+                  >
+                    {'<'}
+                  </button>
+                  <span>{monthLabel}</span>
+                  <button
+                    type="button"
+                    disabled={isNextMonthDisabled}
+                    onClick={handleNextMonth}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                      isNextMonthDisabled
+                        ? 'cursor-not-allowed border-[#d6d9de] text-[#b8bcc4]'
+                        : 'cursor-pointer border-[rgba(107,31,42,0.22)] text-[#6b1f2a] hover:bg-[#6b1f2a] hover:text-white'
+                    }`}
+                    aria-label="Следующий месяц"
+                  >
+                    {'>'}
+                  </button>
+                </div>
                 <span className="text-[14px] text-[#1f6e9c]">
                   Активные даты выделены
                 </span>
               </div>
+              <div className="grid grid-cols-7 gap-2 mb-2">
+                {WEEKDAY_LABELS.map((label) => (
+                  <div
+                    key={label}
+                    className="rounded-[10px] bg-[#f1f2f4] px-0 py-2 text-center text-[12px] font-semibold text-[#6b1f2a]"
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
               <div className="grid grid-cols-7 gap-2">
-                {calendarDays.map((day) => {
+                {calendarDays.map((day, index) => {
+                  if (!day) {
+                    return (
+                      <div
+                        key={`empty-${index}`}
+                        className="rounded-[10px] border border-transparent px-0 py-2 text-[14px]"
+                      />
+                    )
+                  }
                   const isActive = activeDays.includes(day)
                   const isSelected = activeDay === day
                   return (
                     <button
-                      key={day}
+                      key={`${day}-${index}`}
                       type="button"
                       className={`rounded-[10px] border px-0 py-2 text-[14px] ${
                         isSelected
@@ -1135,12 +1244,7 @@ export default function LocationIndexClient({
             </div>
           </div>
           <div className="flex justify-center px-[6vw] pt-20">
-            <Link
-              href={`/${defaultLocation}/register`}
-              className="rounded-full btn-gradient-hover px-7 py-3 font-semibold uppercase tracking-[0.05em] text-white"
-            >
-              Присоединиться к нам
-            </Link>
+            <AuthorizeButton location={defaultLocation} />
           </div>
         </Section>
 

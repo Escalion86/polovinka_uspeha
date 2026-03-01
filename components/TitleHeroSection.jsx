@@ -12,7 +12,7 @@ const TitleHeroSection = ({
   leftContent,
   images,
   imageClassName = 'object-cover opacity-85',
-  durationSec = 30,
+  durationSec = 40,
   overlayClassName = 'bg-black/35',
   logoSrc = '/img/logo_new.png',
   logoAlt = 'Половинка успеха',

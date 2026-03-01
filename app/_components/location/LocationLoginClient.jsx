@@ -308,6 +308,7 @@ export default function LocationLoginClient({
               <InputMask
                 name="phone"
                 type="tel"
+                autoComplete="tel"
                 mask={PHONE_MASK}
                 replacement={PHONE_REPLACEMENT}
                 showMask={phoneFocused}
@@ -322,6 +323,7 @@ export default function LocationLoginClient({
             <AuthField label="Пароль">
               <AuthInput
                 type="password"
+                autoComplete="current-password"
                 placeholder="Введите пароль"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
