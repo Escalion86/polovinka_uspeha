@@ -539,7 +539,7 @@ const EventsTestContent = () => {
               {WEEKDAY_LABELS.map((label) => (
                 <div
                   key={label}
-                  className="rounded-[10px] bg-[#f8edf1] px-0 py-2 text-center text-[12px] font-semibold text-[#6b1f2a]"
+                  className="rounded-[10px] bg-[#f8edf1] px-0 py-1 phoneH:py-2 text-center text-[12px] font-semibold text-[#6b1f2a]"
                 >
                   {label}
                 </div>
