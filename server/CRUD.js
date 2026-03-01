@@ -615,7 +615,7 @@ export default async function handler(Schema, req, res, props = {}) {
       try {
         if (id) {
           data = await db.model(Schema).findById(id).select(selectOpts)
-          if (!data) {
+          if (data === null || typeof data === 'undefined') {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
@@ -643,7 +643,7 @@ export default async function handler(Schema, req, res, props = {}) {
                   .select(selectOpts)
                   .limit(queryLimit)
                   .sort(querySort)
-          if (!data) {
+          if (data === null || typeof data === 'undefined') {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })

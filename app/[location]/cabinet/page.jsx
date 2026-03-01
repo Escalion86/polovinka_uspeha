@@ -8,6 +8,7 @@ export default async function LocationCabinetIndexPage({
 }) {
   const session = await getServerSession(authOptions)
   const { location } = await params
+  const resolvedSearchParams = (await searchParams) || {}
 
   if (!location) {
     redirect('/')
@@ -19,7 +20,7 @@ export default async function LocationCabinetIndexPage({
 
   if (!session) {
     const target = new URLSearchParams()
-    const page = searchParams?.page
+    const page = resolvedSearchParams?.page
     if (page) {
       target.set('page', page)
     }
@@ -27,5 +28,5 @@ export default async function LocationCabinetIndexPage({
     redirect(`/${location}/login${query ? `?${query}` : ''}`)
   }
 
-  redirect(`/${location}/cabinet/eventsUpcoming`)
+  redirect(`/${location}/cabinet/eventsCalendar`)
 }

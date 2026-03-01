@@ -10,7 +10,7 @@ import '../styles/fonts/Enchants.css'
 import '../styles/fonts/FuturaPT.css'
 import '../styles/fonts/CeraRoundPro.css'
 import 'react-image-crop/dist/ReactCrop.css'
-import 'react-image-gallery/styles/css/image-gallery.css'
+import 'react-image-gallery/styles/image-gallery.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'quill/dist/quill.snow.css'
@@ -166,7 +166,11 @@ const lora = localFont({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" className="scroll-smooth">
+    <html
+      lang="ru"
+      className="scroll-smooth"
+      data-scroll-behavior="smooth"
+    >
       <body
         className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`}
       >

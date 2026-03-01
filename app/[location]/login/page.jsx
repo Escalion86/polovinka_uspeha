@@ -10,7 +10,8 @@ export const metadata = {
 export default async function LocationLoginPage({ params, searchParams }) {
   const session = await getServerSession(authOptions)
   const { location } = await params
-  const eventId = searchParams?.event
+  const resolvedSearchParams = (await searchParams) || {}
+  const eventId = resolvedSearchParams?.event
 
   if (!location) {
     redirect('/')

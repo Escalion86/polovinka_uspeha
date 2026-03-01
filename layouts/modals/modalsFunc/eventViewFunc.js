@@ -16,7 +16,7 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import NoOrphanText from '@components/NoOrphanText'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import formatAddress from '@helpers/formatAddress'
-// import formatDateTime from '@helpers/formatDateTime'
+import formatDateTime from '@helpers/formatDateTime'
 // import formatMinutes from '@helpers/formatMinutes'
 // import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
@@ -157,7 +157,7 @@ const EventViewModal = ({
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const canEdit = loggedUserActiveRole?.events?.edit
-  // const isLoggedUserDev = loggedUserActiveRole?.dev
+  const isLoggedUserDev = loggedUserActiveRole?.dev === true
   const location = useAtomValue(locationAtom)
 
   const direction = useAtomValue(directionSelector(event?.directionId))
@@ -318,6 +318,13 @@ const EventViewModal = ({
               twoLines={false}
             />
           </div>
+          {isLoggedUserDev ? (
+            <div className="mt-2">
+              <TextLine label="Создано">
+                {event?.createdAt ? formatDateTime(event.createdAt) : '[не указано]'}
+              </TextLine>
+            </div>
+          ) : null}
         </ModalSurface>
 
         <ModalSurface>

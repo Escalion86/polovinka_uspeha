@@ -67,6 +67,12 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
       : ['finished', 'closed'].includes(eventStatus)
         ? 'Завершено'
         : null
+  const statusBadgeClassName =
+    eventStatus === 'canceled'
+      ? 'border border-red-700/40 bg-red-600 text-white'
+      : ['finished', 'closed'].includes(eventStatus)
+        ? 'border border-green-700/40 bg-green-600 text-white'
+        : 'border border-[#f0e5ea] bg-white/90 text-[#6b1f2a]'
 
   const previewImage = Array.isArray(event?.images)
     ? event.images[0]
@@ -94,7 +100,12 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 {direction?.title ?? '[неизвестное Пространство]'}
               </span>
               {statusBadge ? (
-                <span className="inline-flex rounded-full border border-[#f0e5ea] bg-white/90 px-3 py-1 text-xs font-semibold text-[#6b1f2a]">
+                <span
+                  className={cn(
+                    'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                    statusBadgeClassName
+                  )}
+                >
                   {statusBadge}
                 </span>
               ) : null}

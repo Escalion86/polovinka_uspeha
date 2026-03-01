@@ -40,16 +40,19 @@ const ToolsScheduledMessagesContent = () => {
         value: SCHEDULED_MESSAGE_STATUSES.DRAFT,
         name: SCHEDULED_MESSAGE_STATUS_NAME[SCHEDULED_MESSAGE_STATUSES.DRAFT],
         color: 'warning',
+        activeClassName: '!text-white',
       },
       {
         value: SCHEDULED_MESSAGE_STATUSES.READY,
         name: SCHEDULED_MESSAGE_STATUS_NAME[SCHEDULED_MESSAGE_STATUSES.READY],
         color: 'primary',
+        activeClassName: '!text-white',
       },
       {
         value: SCHEDULED_MESSAGE_STATUSES.SENT,
         name: SCHEDULED_MESSAGE_STATUS_NAME[SCHEDULED_MESSAGE_STATUSES.SENT],
         color: 'success',
+        activeClassName: '!text-white',
       },
     ],
     []

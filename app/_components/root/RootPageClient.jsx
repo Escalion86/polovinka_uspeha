@@ -36,11 +36,17 @@ const heroImages = [
   '/img/general/3.jpg',
   '/img/general/4.jpg',
   '/img/general/5.jpg',
-  '/img/general/6.jpg',
+  '/img/general/6.png',
   '/img/general/7.jpg',
-  '/img/general/8.jpg',
+  '/img/general/8.png',
   '/img/general/9.jpg',
-  '/img/general/10.jpg',
+  '/img/general/10.png',
+  '/img/general/11.png',
+  '/img/general/12.png',
+  '/img/general/13.png',
+  '/img/general/14.png',
+  '/img/general/15.png',
+  '/img/general/16.png',
 ]
 
 const prepareCities = (cities) =>

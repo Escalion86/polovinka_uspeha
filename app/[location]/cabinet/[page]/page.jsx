@@ -9,7 +9,8 @@ import { redirect } from 'next/navigation'
 
 export async function generateMetadata({ params }) {
   const { page } = await params
-  const normalizedPage = page === 'events' ? 'eventsCalendar' : page
+  const normalizedPage =
+    page === 'events' || page === 'eventsTest' ? 'eventsCalendar' : page
   const pageTitle = CABINET_PAGE_TITLES[normalizedPage]
   const suffix = pageTitle ? ` / ${pageTitle}` : ''
   return {
@@ -20,20 +21,24 @@ export async function generateMetadata({ params }) {
 export default async function LocationCabinetPage({ params, searchParams }) {
   const session = await getServerSession(authOptions)
   const { location, page } = await params
-  const normalizedPage = page === 'events' ? 'eventsCalendar' : page
+  const resolvedSearchParams = (await searchParams) || {}
+  const normalizedPage =
+    page === 'events' || page === 'eventsTest' ? 'eventsCalendar' : page
 
   if (!location) {
     redirect('/')
   }
-  if (page === 'events') {
+  if (page === 'events' || page === 'eventsTest') {
     redirect(`/${location}/cabinet/eventsCalendar`)
   }
   if (!session?.user) {
     const target = new URLSearchParams()
     if (normalizedPage) target.set('page', normalizedPage)
-    if (searchParams?.ref) target.set('ref', searchParams.ref)
-    if (searchParams?.event) target.set('event', searchParams.event)
-    if (searchParams?.service) target.set('service', searchParams.service)
+    if (resolvedSearchParams?.ref) target.set('ref', resolvedSearchParams.ref)
+    if (resolvedSearchParams?.event)
+      target.set('event', resolvedSearchParams.event)
+    if (resolvedSearchParams?.service)
+      target.set('service', resolvedSearchParams.service)
     const query = target.toString()
     redirect(`/${location}/login${query ? `?${query}` : ''}`)
   }
@@ -42,7 +47,7 @@ export default async function LocationCabinetPage({ params, searchParams }) {
     const targetPage =
       normalizedPage && normalizedPage !== 'eventsCalendar'
         ? normalizedPage
-        : 'eventsUpcoming'
+        : 'eventsCalendar'
     redirect(`/${session.location}/cabinet/${targetPage}`)
   }
 
