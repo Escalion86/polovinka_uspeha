@@ -18,6 +18,9 @@ const parseUpstreamResponse = async (response) => {
   return response.text()
 }
 
+const normalizePathSegment = (value) =>
+  typeof value === 'string' ? value.trim().replace(/^\/+|\/+$/g, '') : ''
+
 export async function POST(request) {
   const password = process.env.ESCALIONCLOUD_PASSWORD
   if (!password) {
@@ -34,10 +37,16 @@ export async function POST(request) {
     const incomingFormData = await request.formData()
     const formData = new FormData()
     const files = incomingFormData.getAll('files')
-    const directoryRaw =
-      incomingFormData.get('directory') || incomingFormData.get('folder')
+    const directoryRaw = incomingFormData.get('directory')
+    const legacyProjectRaw = incomingFormData.get('project')
+    const legacyFolderRaw = incomingFormData.get('folder')
+
+    const directoryFromNewContract = normalizePathSegment(directoryRaw)
+    const legacyProject = normalizePathSegment(legacyProjectRaw)
+    const legacyFolder = normalizePathSegment(legacyFolderRaw)
     const directory =
-      typeof directoryRaw === 'string' ? directoryRaw.trim() : ''
+      directoryFromNewContract ||
+      [legacyProject, legacyFolder].filter(Boolean).join('/')
 
     if (!files.length) {
       return Response.json(

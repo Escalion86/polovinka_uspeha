@@ -94,10 +94,11 @@ export const sendImage = async (
 ) => {
   if (isObject(image)) {
     const formData = new FormData()
-
-    const directoryPath = [project ?? 'polovinka_uspeha', folder ?? 'temp']
-      .filter(Boolean)
-      .join('/')
+    const normalizedProject =
+      typeof project === 'string' ? project.trim() : String(project || '').trim()
+    const normalizedFolder =
+      typeof folder === 'string' ? folder.trim() : String(folder || '').trim()
+    const directoryPath = `${normalizedProject || 'polovinka_uspeha'}/${normalizedFolder || 'temp'}`
 
     formData.append('directory', directoryPath)
     formData.append('files', image)
