@@ -37,17 +37,23 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const directory = searchParams.get('directory')
     const noFoldersParam = searchParams.get('noFolders')
+    const upstreamSearchParams = new URLSearchParams()
 
-    const payload = { password }
-    if (directory) payload.directory = directory
-    if (noFoldersParam !== null) payload.noFolders = parseBoolean(noFoldersParam)
+    if (directory) upstreamSearchParams.set('directory', directory)
+    if (noFoldersParam !== null) {
+      upstreamSearchParams.set(
+        'noFolders',
+        parseBoolean(noFoldersParam) ? '1' : '0'
+      )
+    }
 
-    const upstreamResponse = await fetch(ESCALIONCLOUD_FILES_API_URL, {
-      method: 'POST',
+    const upstreamUrl = `${ESCALIONCLOUD_FILES_API_URL}?${upstreamSearchParams.toString()}`
+
+    const upstreamResponse = await fetch(upstreamUrl, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'x-api-password': password,
       },
-      body: JSON.stringify(payload),
     })
     const upstreamBody = await parseUpstreamResponse(upstreamResponse)
 
@@ -63,7 +69,9 @@ export async function GET(request) {
 
     return Response.json({
       success: true,
-      data: upstreamBody?.data ?? upstreamBody,
+      data: Array.isArray(upstreamBody)
+        ? upstreamBody
+        : upstreamBody?.data ?? upstreamBody,
     })
   } catch (error) {
     console.log('EscalionCloud files API error:', error)
@@ -76,4 +84,3 @@ export async function GET(request) {
     )
   }
 }
-

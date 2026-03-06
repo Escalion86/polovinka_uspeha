@@ -33,15 +33,27 @@ export async function POST(request) {
   try {
     const incomingFormData = await request.formData()
     const formData = new FormData()
+    const files = incomingFormData.getAll('files')
+    const directoryRaw =
+      incomingFormData.get('directory') || incomingFormData.get('folder')
+    const directory =
+      typeof directoryRaw === 'string' ? directoryRaw.trim() : ''
 
-    for (const [key, value] of incomingFormData.entries()) {
-      formData.append(key, value)
+    if (!files.length) {
+      return Response.json(
+        buildError('VALIDATION_ERROR', 'No files provided for upload'),
+        { status: 400 }
+      )
     }
 
-    formData.append('password', password)
+    files.forEach((file) => formData.append('files', file))
+    if (directory) formData.append('directory', directory)
 
     const upstreamResponse = await fetch(ESCALIONCLOUD_API_URL, {
       method: 'POST',
+      headers: {
+        'x-api-password': password,
+      },
       body: formData,
     })
     const upstreamBody = await parseUpstreamResponse(upstreamResponse)
@@ -52,28 +64,25 @@ export async function POST(request) {
       body: upstreamBody,
     })
 
-    const upstreamStatus = upstreamBody?.status
-    const upstreamMessage = upstreamBody?.message
-    const upstreamReason = upstreamBody?.reason
-    const isUpstreamErrorStatus =
-      typeof upstreamStatus === 'string' &&
-      upstreamStatus.toLowerCase() === 'error'
-
-    if (!upstreamResponse.ok || isUpstreamErrorStatus) {
+    if (!upstreamResponse.ok) {
+      const upstreamMessage =
+        upstreamBody?.reason || upstreamBody?.message || upstreamBody
       const errorMessage =
-        upstreamReason ||
-        upstreamMessage ||
+        typeof upstreamMessage === 'string'
+          ? upstreamMessage
+          : JSON.stringify(upstreamMessage) ||
         `EscalionCloud upload failed with status ${upstreamResponse.status}`
-      const responseStatus = upstreamResponse.ok ? 400 : upstreamResponse.status
       return Response.json(
         buildError('ESCALIONCLOUD_REQUEST_FAILED', errorMessage),
-        { status: responseStatus }
+        { status: upstreamResponse.status }
       )
     }
 
     return Response.json({
       success: true,
-      data: upstreamBody?.data ?? upstreamBody,
+      data: Array.isArray(upstreamBody)
+        ? upstreamBody
+        : upstreamBody?.data ?? upstreamBody,
     })
   } catch (error) {
     console.log('EscalionCloud upload API error:', error)

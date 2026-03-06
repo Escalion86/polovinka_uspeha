@@ -94,13 +94,14 @@ export const sendImage = async (
 ) => {
   if (isObject(image)) {
     const formData = new FormData()
-    // console.log('folder', folder)
-    formData.append('project', project ?? 'polovinka_uspeha')
 
-    formData.append('folder', folder ?? 'temp')
-    formData.append('fileType', 'image')
+    const directoryPath = [project ?? 'polovinka_uspeha', folder ?? 'temp']
+      .filter(Boolean)
+      .join('/')
+
+    formData.append('directory', directoryPath)
     formData.append('files', image)
-    formData.append('fileName', imageName)
+    if (imageName) formData.append('fileName', imageName)
 
     try {
       const controller = new AbortController()
