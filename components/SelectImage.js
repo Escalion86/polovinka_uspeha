@@ -89,7 +89,14 @@ const SelectImage = ({
               (imagesUrls) => setImages([...images, ...imagesUrls]),
               directory,
               null,
-              imageFolder
+              imageFolder,
+              () => {
+                setAddingImage(false)
+                modalsFunc.error({
+                  title: 'Ошибка загрузки',
+                  text: 'Не удалось загрузить изображение. Попробуйте еще раз.',
+                })
+              }
             )
           })
         }

@@ -89,7 +89,8 @@ export const sendImage = async (
   callback,
   folder,
   imageName = null,
-  project = 'polovinka_uspeha'
+  project = 'polovinka_uspeha',
+  onError = null
 ) => {
   if (isObject(image)) {
     const formData = new FormData()
@@ -101,36 +102,42 @@ export const sendImage = async (
     formData.append('files', image)
     formData.append('fileName', imageName)
 
-    return await fetch(
-      '/api/escalioncloud',
-      {
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 45000)
+
+      const response = await fetch('/api/escalioncloud', {
         method: 'POST',
         body: formData,
-        //  JSON.stringify({
-        //   file: image,
-        //   fileName: imageName ?? 'test.jpg',
-        //   folder: 'events',
-        // })
-        // dataType: 'json',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // 'Content-Type': "multipart/form-data"
-        // },
-      }
-    )
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log('data', responseJson)
-        const data = responseJson?.success
-          ? responseJson.data
-          : responseJson?.data?.error
-            ? []
-            : responseJson
-        if (callback) callback(data)
-        return data
+        signal: controller.signal,
       })
-      .catch((err) => console.error('ERROR', err))
+      clearTimeout(timeoutId)
+
+      const responseJson = await response.json()
+      console.log('data', responseJson)
+
+      if (!response.ok || !responseJson?.success) {
+        const error =
+          responseJson?.data?.error?.message || `Upload failed: ${response.status}`
+        if (onError) onError(error)
+        return null
+      }
+
+      const data = responseJson.data
+      if (callback) callback(data)
+      return data
+    } catch (err) {
+      const message =
+        err?.name === 'AbortError'
+          ? 'Upload timeout'
+          : err?.message || 'Upload failed'
+      console.error('ERROR', err)
+      if (onError) onError(message)
+      return null
+    }
   }
+  if (onError) onError('Image is invalid')
+  return null
 }
 
 // const sendFile = async (

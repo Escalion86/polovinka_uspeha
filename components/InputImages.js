@@ -118,7 +118,19 @@ const InputImages = ({
               (imagesUrls) => onChange([...images, ...imagesUrls]),
               directory,
               null,
-              imageFolder
+              imageFolder,
+              async (errorMessage) => {
+                setAddingImage(false)
+                if (typeof onLoaded === 'function') onLoaded()
+                await logUploadIssue('upload_error', croppedImage, {
+                  errorMessage,
+                })
+                modalsFunc.error({
+                  title: 'Ошибка загрузки фото',
+                  text:
+                    'Не удалось загрузить фото. Проверьте интернет и попробуйте еще раз.',
+                })
+              }
             )
           })
         }
