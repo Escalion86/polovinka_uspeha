@@ -8,9 +8,7 @@ import textAge from '@helpers/textAge'
 import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 import convertHtmlToTelegramText from '@helpers/convertHtmlToTelegramText'
-import {
-  SCHEDULED_MESSAGE_STATUSES,
-} from '@helpers/constantsScheduledMessages'
+import { SCHEDULED_MESSAGE_STATUSES } from '@helpers/constantsScheduledMessages'
 import {
   NEWSLETTER_SEND_MODES,
   NEWSLETTER_SENDING_STATUSES,
@@ -57,13 +55,12 @@ const processScheduledMessages = async ({
       })
 
       if (!result.error) {
-        await db.model('ScheduledMessages').findByIdAndUpdate(
-          scheduledMessage._id,
-          {
+        await db
+          .model('ScheduledMessages')
+          .findByIdAndUpdate(scheduledMessage._id, {
             status: SCHEDULED_MESSAGE_STATUSES.SENT,
             sentAt: dateTimeNow,
-          }
-        )
+          })
       } else {
         console.log('scheduledMessage send error', {
           messageId: scheduledMessage._id,
@@ -76,7 +73,7 @@ const processScheduledMessages = async ({
         error,
         messageId: scheduledMessage._id,
         location,
-          telegramId: scheduledMessage?.channel?.telegramId,
+        telegramId: scheduledMessage?.channel?.telegramId,
       })
     }
   }
@@ -242,7 +239,7 @@ export default async function handler(req, res) {
                 birthdayText += `\n${
                   user.gender === 'male' ? '♂️' : '♀️'
                 } ${getUserFullName(user)} ${
-                  user.status === 'member' ? '(клуб) ' : ''
+                  user.status === 'member' ? '(ЗП) ' : ''
                 }- ${birthDateToAge(
                   user.birthday,
                   dateTimeNow,
@@ -261,7 +258,7 @@ export default async function handler(req, res) {
                 birthdayText += `\n${
                   user.gender === 'male' ? '♂️' : '♀️'
                 } ${getUserFullName(user)} ${
-                  user.status === 'member' ? '(клуб) ' : ''
+                  user.status === 'member' ? '(ЗП) ' : ''
                 }- ${birthDateToAge(
                   user.birthday,
                   dateTimeNow,
@@ -332,7 +329,10 @@ export default async function handler(req, res) {
                 textArray.push(remindDatesText)
               const text = textArray.join('\n\n')
               if (textArray.length > 0) {
-                if (notifications.telegram?.active && notifications.telegram?.id) {
+                if (
+                  notifications.telegram?.active &&
+                  notifications.telegram?.id
+                ) {
                   await sendMessageWithRepeats({
                     req,
                     telegramId: notifications.telegram.id,
@@ -422,7 +422,7 @@ export default async function handler(req, res) {
         //       birthdayText += `\n${
         //         user.gender === 'male' ? '♂️' : '♀️'
         //       } ${getUserFullName(user)} ${
-        //         user.status === 'member' ? '(клуб) ' : ''
+        //         user.status === 'member' ? '(ЗП) ' : ''
         //       }- ${birthDateToAge(
         //         user.birthday,
         //         dateTimeNow,
@@ -441,7 +441,7 @@ export default async function handler(req, res) {
         //       birthdayText += `\n${
         //         user.gender === 'male' ? '♂️' : '♀️'
         //       } ${getUserFullName(user)} ${
-        //         user.status === 'member' ? '(клуб) ' : ''
+        //         user.status === 'member' ? '(ЗП) ' : ''
         //       }- ${birthDateToAge(
         //         user.birthday,
         //         dateTimeNow,

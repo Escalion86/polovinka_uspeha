@@ -150,8 +150,8 @@ const SettingsReferralSystemContent = () => {
       {message && !isSaving && <div className="text-success">{message}</div>}
       {showZeroWarning && (
         <Note type="error">
-          Нельзя включить реферальную систему для Центра или Клуба с нулевыми
-          суммами купонов для реферала и реферера.
+          Нельзя включить реферальную систему для Центра или закрытого
+          пространства с нулевыми суммами купонов для реферала и реферера.
         </Note>
       )}
       <FormWrapper>
@@ -171,7 +171,7 @@ const SettingsReferralSystemContent = () => {
           />
           <CheckBox
             checked={enabledForClub}
-            label="Для Клуба"
+            label="Для закрытого пространства"
             onClick={() => setEnabledForClub((state) => !state)}
           />
         </InputWrapper>

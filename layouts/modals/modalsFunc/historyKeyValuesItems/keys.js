@@ -30,8 +30,8 @@ export const eventKeys = {
   maxWomans: 'Максимум женщин',
   maxMansNovice: 'Максимум мужчин новичков',
   maxWomansNovice: 'Максимум женщин новичков',
-  maxMansMember: 'Максимум мужчин клубных',
-  maxWomansMember: 'Максиум женщин клубных',
+  maxMansMember: 'Максимум мужчин из ЗП',
+  maxWomansMember: 'Максиум женщин из ЗП',
   minMansAge: 'Минимальный возраст мужчин',
   maxMansAge: 'Максимальный возраст мужчин',
   minWomansAge: 'Минимальный возраст женщин',
@@ -80,4 +80,3 @@ export const userKeys = {
   soctag: 'Социальный тэг',
   custag: 'Кастомный тэг',
 }
-

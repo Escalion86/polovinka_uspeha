@@ -315,7 +315,7 @@ const userSignIn = async ({
     //     errorText = `свободных мест для женщин на мероприятии уже нет`
     //   }
 
-    //   // Проверям места для клуба/центра
+    //   // Проверям места для закрытого пространства/центра
     //   if (!errorText) {
     //     // Если пользователь мужчина
     //     if (user.gender === 'male') {
@@ -340,7 +340,7 @@ const userSignIn = async ({
     //           if (
     //             subEventParticipantsMemberMansCount >= subEvent.maxMansMember
     //           ) {
-    //             errorText = `свободных мест для мужчин из клуба уже нет`
+    //             errorText = `свободных мест для мужчин из закрытого пространства уже нет`
     //           }
     //         }
     //       }
@@ -369,7 +369,7 @@ const userSignIn = async ({
     //             subEventParticipantsMemberWomansCount >=
     //             subEvent.maxWomansMember
     //           ) {
-    //             errorText = `свободных мест для женщин из клуба уже нет`
+    //             errorText = `свободных мест для женщин из закрытого пространства уже нет`
     //           }
     //         }
     //       }

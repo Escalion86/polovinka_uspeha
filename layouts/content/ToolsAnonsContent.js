@@ -155,7 +155,7 @@ const ToolsAnonsContent = () => {
       const text =
         memberEvent === 'dontShow' &&
         event.directionId === closedEventsDirectionId
-          ? 'Мероприятие закрытого клуба'
+          ? 'Мероприятие закрытого пространства'
           : event.title
 
       return {
@@ -511,7 +511,7 @@ const ToolsAnonsContent = () => {
           onChange={(value) => setStyleNum(Number(value))}
         />
         <ComboBox
-          label="Мероприятия клуба"
+          label="Мероприятия закрытого пространства"
           className="max-w-60"
           items={[
             { value: 'show', name: 'Показывать название' },
@@ -525,7 +525,7 @@ const ToolsAnonsContent = () => {
           checked={memberEvent}
           labelPos="left"
           onClick={() => setMemberEvent((checked) => !checked)}
-          label="Не показывать названия мероприятий клуба"
+          label="Не показывать названия мероприятий закрытого пространства"
         /> */}
       </div>
       <Templates

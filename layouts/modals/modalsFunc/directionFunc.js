@@ -193,7 +193,7 @@ const directionFunc = (directionId, clone = false) => {
               { value: 'select', name: 'Можно выбрать  в мероприятии' },
               { value: 'any', name: 'Всегда для всех' },
               { value: 'novice', name: 'Всегда только центру' },
-              { value: 'member', name: 'Всегда только клубным' },
+              { value: 'member', name: 'Всегда только участникам ЗП' },
             ]}
             value={rules.userStatus}
             onChange={(value) => setRule('userStatus', value)}

@@ -97,7 +97,9 @@ const HeaderInfoContactsContent = (props) => {
       </Note>
 
       <FormWrapper>
-        <div>Контакты для связи по вопросам вступления в клуб:</div>
+        <div>
+          Контакты для связи по вопросам вступления в закрытое пространство:
+        </div>
         <div className="flex flex-wrap gap-x-2">
           <PhoneInput
             label="Whatsapp"
@@ -113,7 +115,7 @@ const HeaderInfoContactsContent = (props) => {
           />
         </div>
         <Input
-          label="Ссылка на чат клуба (доступна только для клуба)"
+          label="Ссылка на чат закрытого пространства (доступна только для закрытого пространства)"
           type="text"
           value={memberChatLink}
           onChange={setMemberChatLink}

@@ -49,7 +49,7 @@ const serviceUserTelegramNotification = async ({
 
     const text = `\u{1F91D}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
       user
-    )} ${user.status === 'member' ? '(клуб) ' : ''}<b>подал${
+    )} ${user.status === 'member' ? '(ЗП) ' : ''}<b>подал${
       user.gender === 'male' ? '' : 'а'
     } заявку</b> на услугу "${service.title}".`
 

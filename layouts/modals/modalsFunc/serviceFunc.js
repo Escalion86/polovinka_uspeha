@@ -362,12 +362,12 @@ const serviceFunc = (serviceId, clone = false) => {
                   return { ...state, member: !usersStatusAccess?.member }
                 })
               }
-              label="Участник клуба"
+              label="Участник закрытого пространства"
             />
             {usersStatusAccess?.member && (
               <FormRow>
                 <PriceInput
-                  label="Скидка участникам клуба"
+                  label="Скидка участникам закрытого пространства"
                   value={usersStatusDiscount?.member ?? 0}
                   onChange={(value) => {
                     // removeError('price')

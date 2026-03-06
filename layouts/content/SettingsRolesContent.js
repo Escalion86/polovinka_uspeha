@@ -271,7 +271,7 @@ const SettingsRolesContent = (props) => {
             <SubTitle name="Пользователи" />
             <RoleItem label="Видит страницу" item="users" subItem="see" />
             <RoleItem
-              label="Видит только клубных"
+              label="Видит только с закрытого пространства"
               item="users"
               subItem="seeMembersOnly"
             />
@@ -462,7 +462,7 @@ const SettingsRolesContent = (props) => {
               subItem="dateStartProject"
             />
             <RoleItem
-              label="Информации для вступления в клуб"
+              label="Информации для вступления в закрытое пространство"
               item="siteSettings"
               subItem="headerInfo"
             />
@@ -595,4 +595,3 @@ const SettingsRolesContent = (props) => {
 }
 
 export default SettingsRolesContent
-

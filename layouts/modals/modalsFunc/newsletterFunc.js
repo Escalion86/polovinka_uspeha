@@ -803,7 +803,9 @@ const newsletterFunc = (
             //   console.log('User cursor is not in editor')
             // }
             if (value) {
-              const text1 = prompt('Введите текст для пользователя из клуба')
+              const text1 = prompt(
+                'Введите текст для пользователя из закрытого пространства'
+              )
               if (text1 === null) return
               const text2 = prompt('Введите текст для пользователя из центра')
               if (text2 === null) return
@@ -1567,4 +1569,3 @@ const newsletterFunc = (
 }
 
 export default newsletterFunc
-

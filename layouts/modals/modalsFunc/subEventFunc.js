@@ -379,7 +379,7 @@ const subEventFunc = (props, onChange, rules) => {
               label={
                 <div className="flex items-center gap-x-1">
                   <UserStatusIcon size="s" status="member" />
-                  {'Участник клуба'}
+                  {'Участник закрытого пространства'}
                 </div>
               }
               disabled={['any', 'novice', 'member'].includes(rules?.userStatus)}
@@ -387,7 +387,7 @@ const subEventFunc = (props, onChange, rules) => {
             {usersStatusAccess?.member && (
               <FormRow>
                 <PriceInput
-                  label="Скидка участникам клуба"
+                  label="Скидка участникам закрытого пространства"
                   value={usersStatusDiscount?.member ?? 0}
                   onChange={(value) => {
                     setUsersStatusDiscount((state) => {
@@ -729,4 +729,3 @@ const subEventFunc = (props, onChange, rules) => {
 }
 
 export default subEventFunc
-

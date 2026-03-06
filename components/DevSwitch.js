@@ -74,7 +74,7 @@ const DevSwitch = () => {
           Новичок
         </ToggleButton>
         <ToggleButton className="flex-1 leading-3 rounded-none" value="member">
-          Участник клуба
+          Участник закрытого пространства
         </ToggleButton>
       </ToggleButtonGroup>
       <Button

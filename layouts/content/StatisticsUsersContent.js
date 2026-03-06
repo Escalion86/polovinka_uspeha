@@ -206,7 +206,7 @@ const StatisticsUsersContent = () => {
     ? filterUsers.status.member
       ? 'Все'
       : 'Новички'
-    : 'Участники клуба'
+    : 'Участники закрытого пространства'
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto">

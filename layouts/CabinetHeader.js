@@ -169,15 +169,17 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                 <span className="font-bold">Ваш статус: Новичок</span>
                 <span>
                   После посещения хотя-бы одного мероприятия вы сможете вступить
-                  в клуб!
+                  в закрытое пространство!
                 </span>
                 <span className="mt-1">
-                  Участники клуба имеют следующие привелегии:
+                  Участники закрытого пространства имеют следующие привелегии:
                 </span>
               </>
             ) : (
               <>
-                <span className="font-bold">Ваш статус: Участник клуба</span>
+                <span className="font-bold">
+                  Ваш статус: Участник закрытого пространства
+                </span>
                 <div className="flex flex-col items-start">
                   <div>Ваши привелегии:</div>
                 </div>
@@ -185,14 +187,19 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             )}
             <ul className="flex flex-col my-1 gap-y-1">
               <CheckedItem>Доступ к закрытым мероприятиям</CheckedItem>
-              <CheckedItem>Просмотр других участников клуба</CheckedItem>
+              <CheckedItem>
+                Просмотр других участников закрытого пространства
+              </CheckedItem>
               <CheckedItem>Просмотр участников мероприятий</CheckedItem>
               <CheckedItem>Страница достижений и личная статистика</CheckedItem>
               <CheckedItem>Доступ к закрытому чату</CheckedItem>
             </ul>
             {isLoggedUserNovice ? (
               <div className="flex flex-col py-1 font-bold gap-y-1">
-                <span>Для вступления в клуб свяжитесь с администратором:</span>
+                <span>
+                  Для вступления в закрытое пространство свяжитесь с
+                  администратором:
+                </span>
                 {(headerInfo?.telegram || headerInfo?.whatsapp) && (
                   <div className="flex font-bold gap-x-2">
                     {headerInfo?.whatsapp && (
@@ -232,7 +239,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                   target="_blank"
                 >
                   <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />
-                  <span>Открыть чат клуба</span>
+                  <span>Открыть чат закрытого пространства</span>
                 </a>
               )
             )}

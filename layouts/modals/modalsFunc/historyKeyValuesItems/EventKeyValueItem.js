@@ -63,12 +63,14 @@ const EventKeyValueItem = ({ objKey, value }) =>
     <div>
       <div>Не авторизован: {value?.noReg ? 'Да' : 'Нет'}</div>
       <div>Новичок: {value?.novice ? 'Да' : 'Нет'}</div>
-      <div>Участник клуба: {value?.member ? 'Да' : 'Нет'}</div>
+      <div>Участник закрытого пространства: {value?.member ? 'Да' : 'Нет'}</div>
     </div>
   ) : objKey === 'usersStatusDiscount' ? (
     <div>
       <div>Новичок: {(value?.novice ?? 0) / 100 + ' ₽'}</div>
-      <div>Участник клуба: {(value?.member ?? 0) / 100 + ' ₽'}</div>
+      <div>
+        Участник закрытого пространства: {(value?.member ?? 0) / 100 + ' ₽'}
+      </div>
     </div>
   ) : [
       'maxParticipants',

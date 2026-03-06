@@ -288,7 +288,7 @@ const ToolsTextEventsAnonsContent = () => {
         <RadioBox
           checked={showPrice === 'member'}
           onClick={() => setShowPrice('member')}
-          label="Показывать цену члена клуба"
+          label="Показывать цену члена закрытого пространства"
         />
         <RadioBox
           checked={showPrice === 'formula'}

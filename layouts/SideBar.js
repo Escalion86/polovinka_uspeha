@@ -105,7 +105,7 @@ const menuCfg = (
                   id: `${page.id}-${item._id}`,
                   name: itemName
                     ? itemName(item)
-                    : item?.title ?? item?.name ?? 'Без названия',
+                    : (item?.title ?? item?.name ?? 'Без названия'),
                   href: `/${location}/cabinet/${page.href}/${item._id}`,
                   icon: page.icon,
                 })
@@ -264,12 +264,14 @@ const Group = ({
           </div>
 
           {items.length > 1 && (
-            <div
-              className={cn('w-4 duration-300 transition-transform', {
-                'rotate-180': openedMenuIndex === index,
-              })}
-            >
-              <FontAwesomeIcon icon={faAngleDown} size="lg" />
+            <div className="w-4 duration-300 transition-transform)">
+              <div
+                className={
+                  openedMenuIndex === index ? 'rotate-180' : '-translate-x-2'
+                }
+              >
+                <FontAwesomeIcon icon={faAngleDown} size="lg" />
+              </div>
             </div>
           )}
         </Component>
@@ -358,7 +360,7 @@ const MenuSuspense = (props) => (
 
 const variants = {
   min: { width: '100%' },
-  max: { width: 320 },
+  max: { width: 340 },
 }
 
 var handler

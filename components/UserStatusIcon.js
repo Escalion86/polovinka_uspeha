@@ -59,7 +59,11 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
       )
     case 'member':
       return (
-        <Tooltip title={'Участник клуба' + (slashed ? ' (запрещено)' : '')}>
+        <Tooltip
+          title={
+            'Участник закрытого пространства' + (slashed ? ' (запрещено)' : '')
+          }
+        >
           <div ref={ref} className="relative">
             <div
               className={cn(

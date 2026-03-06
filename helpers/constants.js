@@ -1859,7 +1859,7 @@ export const CONTENTS = Object.freeze({
   },
   members: {
     Component: MembersContent,
-    name: 'Участники клуба',
+    name: 'Участники закрытого рпостранства',
     roleAccess: (role, status) =>
       (role?.users?.see && role?.users?.seeMembersOnly) ||
       (status === 'member' && !role?.users?.see),
@@ -1998,7 +1998,7 @@ export const CONTENTS = Object.freeze({
   },
   settingsHeaderInfoContacts: {
     Component: HeaderInfoContactsContent,
-    name: 'Настройки / Информация для вступления в клуб',
+    name: 'Настройки / Информация для вступления в закрытое пространство',
     roleAccess: (role) => role?.siteSettings?.headerInfo,
   },
   userStatistics: {
@@ -2360,7 +2360,7 @@ export const pages = [
   {
     id: 50,
     group: 9,
-    name: 'Участники клуба',
+    name: 'Закрытое пространство',
     href: 'members',
     icon: faUser,
     // accessRoles: CONTENTS['members'].accessRoles,
@@ -2504,7 +2504,7 @@ export const pages = [
   {
     id: 86,
     group: 11,
-    name: 'Информация для вступления в клуб',
+    name: 'Информация для вступления в закрытое пространство',
     href: 'settingsHeaderInfoContacts',
     icon: faMedal,
     // accessRoles: CONTENTS['settingsHeaderInfoContacts'].accessRoles,
@@ -2598,7 +2598,7 @@ export const pagesGroups = [
   },
   {
     id: 9,
-    name: 'Участники клуба',
+    name: 'Закрытое пространство',
     icon: faUser,
     // accessRoles: ['client'],
     // accessStatuses: ['member'],
@@ -2834,7 +2834,7 @@ export const USERS_STATUSES = [
   { value: 'novice', name: 'Новичок', color: 'green-400', icon: faUser },
   {
     value: 'member',
-    name: 'Участник клуба',
+    name: 'Участник закрытого пространства',
     color: 'blue-400',
     imageSrc: '/img/svg_icons/medal.svg',
   },

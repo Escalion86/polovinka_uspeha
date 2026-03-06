@@ -125,7 +125,7 @@ const eventUsersTelegramNotification = async ({
       userId = user._id
       text = `\u{1F4C5}\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
+      )} ${user.status === 'member' ? '(ЗП) ' : ''}<b>${
         user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'
       }</b> ${
         status === 'reserve'
@@ -145,7 +145,7 @@ const eventUsersTelegramNotification = async ({
       userId = user._id
       text = `\u{1F4C5}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
+      )} ${user.status === 'member' ? '(ЗП) ' : ''}<b>${
         user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'
       }</b> ${
         status === 'reserve' ? '<b>В РЕЗЕРВ</b> мероприятия' : 'на мероприятие'

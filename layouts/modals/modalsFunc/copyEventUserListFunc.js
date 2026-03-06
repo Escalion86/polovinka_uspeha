@@ -91,7 +91,7 @@ const copyEventUserListFunc = (eventId) => {
             ? '[Резерв] '
             : ''
       }${getUserFullName(user, showSecondName, showThirdName)}${
-        showMember && user.status === 'member' ? ' (клуб)' : ''
+        showMember && user.status === 'member' ? ' (ЗП)' : ''
       }${showAges ? ` - ${birthDateToAge(user.birthday)}` : ''}`
 
     const sortItems = useMemo(() => {
@@ -227,7 +227,7 @@ const copyEventUserListFunc = (eventId) => {
             checked={showMember}
             labelPos="left"
             onClick={() => setShowMember((checked) => !checked)}
-            label="Показывать принадлежность к клубу"
+            label="Показывать принадлежность к закрытому пространству"
           />
           <CheckBox
             checked={showAges}

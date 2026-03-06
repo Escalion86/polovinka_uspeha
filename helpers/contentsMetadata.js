@@ -22,7 +22,7 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   notifications: 'Уведомления',
   googleCalendarIntegration: 'Интеграция Google календаря',
   users: 'Пользователи',
-  members: 'Участники клуба',
+  members: 'Участники закрытого пространства',
   payments: 'Транзакции / Все транзакции',
   paymentsNotParticipantsEvent: 'Транзакции / Не пришли на мероприятие',
   paymentsForNotExistedEvents:
@@ -50,7 +50,8 @@ export const CABINET_PAGE_TITLES = Object.freeze({
   settingsReferralSystem: 'Настройки / Реферальная система',
   settingsDateStartProject: 'Настройки / Дата старта проекта',
   settingsRoles: 'Настройки / Роли',
-  settingsHeaderInfoContacts: 'Настройки / Информация для вступления в клуб',
+  settingsHeaderInfoContacts:
+    'Настройки / Информация для вступления в закрытое пространство',
   userStatistics: 'Моя статистика',
   referrals: 'Реферальная программа',
   referralsAdmin: 'Реферальная программа / Администрирование',
