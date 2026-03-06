@@ -127,6 +127,12 @@ export const sendImage = async (
       if (!responseJson) {
         const contentType = response.headers.get('content-type') || ''
         const trimmedResponse = rawResponse?.trim?.() || ''
+        console.error('Upload returned non-JSON response', {
+          status: response.status,
+          ok: response.ok,
+          contentType,
+          preview: trimmedResponse.slice(0, 200),
+        })
         const isHtmlResponse =
           contentType.includes('text/html') ||
           trimmedResponse.startsWith('<!doctype') ||
@@ -136,7 +142,7 @@ export const sendImage = async (
         if (isHtmlResponse) {
           if (onError)
             onError(
-              'Сервер вернул некорректный ответ. Обновите PWA (закройте и откройте приложение) и попробуйте снова.'
+              `Сервер вернул HTML вместо JSON (status ${response.status}).`
             )
           return null
         }

@@ -48,6 +48,7 @@ export async function POST(request) {
     console.log('EscalionCloud upload response:', {
       status: upstreamResponse.status,
       ok: upstreamResponse.ok,
+      contentType: upstreamResponse.headers.get('content-type'),
       body: upstreamBody,
     })
 
