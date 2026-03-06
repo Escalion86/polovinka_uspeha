@@ -128,6 +128,7 @@ const InputImages = ({
                 modalsFunc.error({
                   title: 'Ошибка загрузки фото',
                   text:
+                    errorMessage ||
                     'Не удалось загрузить фото. Проверьте интернет и попробуйте еще раз.',
                 })
               }

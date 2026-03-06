@@ -46,13 +46,22 @@ export async function POST(request) {
     })
     const upstreamBody = await parseUpstreamResponse(upstreamResponse)
 
-    if (!upstreamResponse.ok) {
+    const upstreamStatus = upstreamBody?.status
+    const upstreamMessage = upstreamBody?.message
+    const upstreamReason = upstreamBody?.reason
+    const isUpstreamErrorStatus =
+      typeof upstreamStatus === 'string' &&
+      upstreamStatus.toLowerCase() === 'error'
+
+    if (!upstreamResponse.ok || isUpstreamErrorStatus) {
+      const errorMessage =
+        upstreamReason ||
+        upstreamMessage ||
+        `EscalionCloud upload failed with status ${upstreamResponse.status}`
+      const responseStatus = upstreamResponse.ok ? 400 : upstreamResponse.status
       return Response.json(
-        buildError(
-          'ESCALIONCLOUD_REQUEST_FAILED',
-          `EscalionCloud upload failed with status ${upstreamResponse.status}`
-        ),
-        { status: upstreamResponse.status }
+        buildError('ESCALIONCLOUD_REQUEST_FAILED', errorMessage),
+        { status: responseStatus }
       )
     }
 
@@ -71,4 +80,3 @@ export async function POST(request) {
     )
   }
 }
-
