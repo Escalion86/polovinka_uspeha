@@ -110,10 +110,42 @@ export const sendImage = async (
         method: 'POST',
         body: formData,
         signal: controller.signal,
+        headers: {
+          Accept: 'application/json',
+        },
       })
       clearTimeout(timeoutId)
 
-      const responseJson = await response.json()
+      const rawResponse = await response.text()
+      let responseJson = null
+      try {
+        responseJson = rawResponse ? JSON.parse(rawResponse) : null
+      } catch {
+        responseJson = null
+      }
+
+      if (!responseJson) {
+        const contentType = response.headers.get('content-type') || ''
+        const trimmedResponse = rawResponse?.trim?.() || ''
+        const isHtmlResponse =
+          contentType.includes('text/html') ||
+          trimmedResponse.startsWith('<!doctype') ||
+          trimmedResponse.startsWith('<html') ||
+          trimmedResponse.startsWith('<')
+
+        if (isHtmlResponse) {
+          if (onError)
+            onError(
+              'Сервер вернул некорректный ответ. Обновите PWA (закройте и откройте приложение) и попробуйте снова.'
+            )
+          return null
+        }
+
+        if (onError)
+          onError('Сервер вернул некорректный ответ при загрузке файла.')
+        return null
+      }
+
       console.log('data', responseJson)
 
       if (!response.ok || !responseJson?.success) {

@@ -45,6 +45,11 @@ export async function POST(request) {
       body: formData,
     })
     const upstreamBody = await parseUpstreamResponse(upstreamResponse)
+    console.log('EscalionCloud upload response:', {
+      status: upstreamResponse.status,
+      ok: upstreamResponse.ok,
+      body: upstreamBody,
+    })
 
     const upstreamStatus = upstreamBody?.status
     const upstreamMessage = upstreamBody?.message
