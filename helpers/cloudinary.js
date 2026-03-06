@@ -97,14 +97,12 @@ export const sendImage = async (
     formData.append('project', project ?? 'polovinka_uspeha')
 
     formData.append('folder', folder ?? 'temp')
-    // formData.append('password', 'cloudtest')
     formData.append('fileType', 'image')
     formData.append('files', image)
     formData.append('fileName', imageName)
 
     return await fetch(
-      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
-      'https://api.escalioncloud.ru/api',
+      '/api/escalioncloud',
       {
         method: 'POST',
         body: formData,
@@ -121,12 +119,13 @@ export const sendImage = async (
       }
     )
       .then((response) => response.json())
-      .then((data) => {
-        console.log('data', data)
-        // if (data.secure_url !== '') {
-        // if (callback) callback(data.secure_url)
-        // return data.secure_url
-        // }
+      .then((responseJson) => {
+        console.log('data', responseJson)
+        const data = responseJson?.success
+          ? responseJson.data
+          : responseJson?.data?.error
+            ? []
+            : responseJson
         if (callback) callback(data)
         return data
       })

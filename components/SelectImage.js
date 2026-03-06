@@ -41,7 +41,7 @@ const SelectImage = ({
   useEffect(() => {
     const loadImages = async () =>
       await getData(
-        'https://api.escalioncloud.ru/api/files',
+        '/api/escalioncloud/files',
         { directory: `${imageFolder}/${directory}`, noFolders: true },
         (response) => {
           const safePath = [imageFolder, directory]
@@ -64,8 +64,7 @@ const SelectImage = ({
         (error) => {
           console.log('error :>> ', error)
           setIsLoading(false)
-        },
-        true
+        }
       )
 
     loadImages()
