@@ -111,6 +111,9 @@ import ReactCrop, {
 
 // const MAX_SIZE = 2400
 const TO_RADIANS = Math.PI / 180
+const MAX_UPLOAD_BYTES = 900 * 1024
+const MAX_OUTPUT_SIDE = 1600
+const JPEG_QUALITIES = [0.85, 0.75, 0.65, 0.55]
 
 // const cropCorrecting = (crop, aspect) => {
 //   if (aspect === 1)
@@ -127,6 +130,11 @@ function blobToFile(theBlob, fileName) {
   theBlob.name = fileName
   return theBlob
 }
+
+const canvasToBlob = (canvas, quality) =>
+  new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality)
+  })
 
 const cropImageFunc = (
   src = '',
@@ -169,18 +177,24 @@ const cropImageFunc = (
 
       const scaleX = image.naturalWidth / image.width
       const scaleY = image.naturalHeight / image.height
-      // devicePixelRatio slightly increases sharpness on retina devices
-      // at the expense of slightly slower render times and needing to
-      // size the image back down if you want to download/upload and be
-      // true to the images natural size.
-      const pixelRatio = window.devicePixelRatio
-      // const pixelRatio = 1
+      const rawOutputWidth = Math.max(
+        1,
+        Math.floor(completedCrop.width * scaleX)
+      )
+      const rawOutputHeight = Math.max(
+        1,
+        Math.floor(completedCrop.height * scaleY)
+      )
+      const outputScale =
+        Math.max(rawOutputWidth, rawOutputHeight) > MAX_OUTPUT_SIDE
+          ? MAX_OUTPUT_SIDE / Math.max(rawOutputWidth, rawOutputHeight)
+          : 1
       // const aspectFact = imgElement.width / imgElement.height
 
-      canvas.width = Math.floor(completedCrop.width * scaleX * pixelRatio)
-      canvas.height = Math.floor(completedCrop.height * scaleY * pixelRatio)
+      canvas.width = Math.max(1, Math.floor(rawOutputWidth * outputScale))
+      canvas.height = Math.max(1, Math.floor(rawOutputHeight * outputScale))
 
-      ctx.scale(pixelRatio, pixelRatio)
+      ctx.scale(outputScale, outputScale)
       ctx.imageSmoothingQuality = 'high'
 
       const cropX = completedCrop.x * scaleX
@@ -227,17 +241,22 @@ const cropImageFunc = (
       // ctx.restore()
 
       if (toBlob) {
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              onConfirm(null)
-              return
-            }
-            onConfirm(blobToFile(blob, src.name))
-          },
-          'image/jpeg',
-          0.9
-        )
+        ;(async () => {
+          let selectedBlob = null
+          for (const quality of JPEG_QUALITIES) {
+            const blob = await canvasToBlob(canvas, quality)
+            if (!blob) continue
+            selectedBlob = blob
+            if (blob.size <= MAX_UPLOAD_BYTES) break
+          }
+
+          if (!selectedBlob) {
+            onConfirm(null)
+            return
+          }
+
+          onConfirm(blobToFile(selectedBlob, src.name))
+        })()
       } else {
         onConfirm(canvas.toDataURL('image/jpeg'))
       }

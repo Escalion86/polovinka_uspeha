@@ -141,6 +141,13 @@ export const sendImage = async (
           trimmedResponse.startsWith('<')
 
         if (isHtmlResponse) {
+          if (response.status === 413) {
+            if (onError)
+              onError(
+                'Файл слишком большой для загрузки. Попробуйте фото меньшего размера.'
+              )
+            return null
+          }
           if (onError)
             onError(
               `Сервер вернул HTML вместо JSON (status ${response.status}).`
