@@ -55,8 +55,18 @@ export async function POST(request) {
       )
     }
 
+    if (!directory) {
+      return Response.json(
+        buildError(
+          'VALIDATION_ERROR',
+          'Directory is required. Expected "<project>/<folder>"'
+        ),
+        { status: 400 }
+      )
+    }
+
     files.forEach((file) => formData.append('files', file))
-    if (directory) formData.append('directory', directory)
+    formData.append('directory', directory)
 
     const upstreamResponse = await fetch(ESCALIONCLOUD_API_URL, {
       method: 'POST',
@@ -70,6 +80,7 @@ export async function POST(request) {
       status: upstreamResponse.status,
       ok: upstreamResponse.ok,
       contentType: upstreamResponse.headers.get('content-type'),
+      resolvedDirectory: directory,
       body: upstreamBody,
     })
 
