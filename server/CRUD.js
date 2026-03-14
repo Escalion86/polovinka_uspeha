@@ -145,6 +145,7 @@ const linkAReformer = (link) => {
 const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
 const { MODE } = process.env
+const ACTIVE_EVENT_USER_STATUSES = ['participant', 'reserve', 'assistant']
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
@@ -827,10 +828,85 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           if (Schema === 'Events' && MODE === 'production') {
-            const calendarEvent = updateEventInCalendar(data, location)
+            if (data.status === 'canceled') {
+              if (oldData.status !== 'canceled') {
+                try {
+                  await deleteEventFromCalendar(oldData.googleCalendarId, location)
+                } catch (calendarDeleteError) {
+                  const calendarDeleteErrorCode = Number(
+                    calendarDeleteError?.code ||
+                      calendarDeleteError?.response?.status ||
+                      0
+                  )
+                  if (calendarDeleteErrorCode !== 404) {
+                    console.log(
+                      'deleteEventFromCalendar on event cancel error:',
+                      calendarDeleteError
+                    )
+                  }
+                }
+
+                if (oldData.googleCalendarId) {
+                  data = await db
+                    .model('Events')
+                    .findByIdAndUpdate(
+                      id,
+                      { googleCalendarId: null },
+                      {
+                        new: true,
+                        runValidators: true,
+                      }
+                    )
+                    .lean()
+                }
+              }
+            } else {
+              updateEventInCalendar(data, location)
+            }
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
             // }
+          }
+
+          const isCanceledNow = data.status === 'canceled'
+          const wasCanceledBefore = oldData.status === 'canceled'
+          const cancellationStateChanged = isCanceledNow !== wasCanceledBefore
+
+          if (Schema === 'Events' && cancellationStateChanged) {
+            const eventUsers = await db
+              .model('EventsUsers')
+              .find({
+                eventId: id,
+                $or: [
+                  { status: { $in: ACTIVE_EVENT_USER_STATUSES } },
+                  { googleCalendarUserEventId: { $ne: null } },
+                ],
+              })
+              .select({
+                _id: 1,
+                userId: 1,
+                eventId: 1,
+                status: 1,
+                subEventId: 1,
+                googleCalendarUserEventId: 1,
+                googleCalendarUserCalendarId: 1,
+                googleCalendarSyncedAt: 1,
+              })
+              .lean()
+
+            if (eventUsers.length > 0) {
+              await syncEventUsersGoogleCalendar({
+                db,
+                location,
+                eventUsers:
+                  isCanceledNow
+                    ? eventUsers.map((eventUser) => ({
+                        ...eventUser,
+                        status: 'canceled',
+                      }))
+                    : eventUsers,
+              })
+            }
           }
 
           if (
