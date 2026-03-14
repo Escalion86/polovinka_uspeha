@@ -67,29 +67,34 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
           Поставить лайки
         </div>
       ) : (
-        <div className="relative flex items-center justify-center px-1 border-l border-gray-700 h-9 w-9 tablet:w-10 tablet:h-10">
-          <FontAwesomeIcon
-            className="w-7 h-7 min-h-7 tablet:w-8 tablet:h-8 tablet:min-h-8"
-            icon={faHeart}
-            color={
-              coincidenceCount === null
-                ? 'var(--color-general)'
-                : coincidenceCount > 0
-                  ? '#EC4899'
-                  : '#9ca3af'
-            }
-          />
-          {coincidenceCount > 0 && eventLoggedUser.seeLikesResult && (
+        <div className="relative flex items-center justify-center w-34">
+          <div className="relative flex items-center justify-center w-20 pl-1 text-sm font-bold leading-3 text-center border-l border-gray-700 h-9 text-general tablet:text-base tablet:leading-4 tablet:w-32 tablet:h-10">
+            Поставлено
+          </div>
+          <div className="relative flex items-center justify-center px-1 h-9 w-9 tablet:h-10">
             <FontAwesomeIcon
-              className="absolute left-1 top-1 w-7 h-7 min-h-7 tablet:min-h-8 tablet:w-8 tablet:h-8 animate-ping-light"
+              className="w-7 h-7 min-h-7 min-w-7 tablet:min-w-8 tablet:w-8 tablet:h-8 tablet:min-h-8"
               icon={faHeart}
-              color="#EC4899"
+              color={
+                coincidenceCount === null
+                  ? 'var(--color-general)'
+                  : coincidenceCount > 0
+                    ? '#EC4899'
+                    : '#9ca3af'
+              }
             />
-          )}
-          <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center text-white">
-            {coincidenceCount === null
-              ? loggedUserLikes?.length
-              : coincidenceCount}
+            {coincidenceCount > 0 && eventLoggedUser.seeLikesResult && (
+              <FontAwesomeIcon
+                className="absolute left-1 top-1 w-7 h-7 min-h-7 tablet:min-h-8 tablet:w-8 tablet:h-8 animate-ping-light"
+                icon={faHeart}
+                color="#EC4899"
+              />
+            )}
+            <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center text-white">
+              {coincidenceCount === null
+                ? loggedUserLikes?.length
+                : coincidenceCount}
+            </div>
           </div>
         </div>
       )}
@@ -255,4 +260,3 @@ const LikesContent = () => {
 }
 
 export default LikesContent
-

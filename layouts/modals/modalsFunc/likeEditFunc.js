@@ -12,13 +12,18 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
+import snackbarAtom from '@state/atoms/snackbarAtom'
+import { getNounLikes } from '@helpers/getNoun'
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
-    className={cn('duration-300', small ? 'w-5 h-5' : 'w-9 h-9')}
+    className={cn(
+      'duration-300',
+      small ? 'w-5 h-5 min-h-5 min-w-5' : 'w-9 h-9 min-h-9 min-w-9'
+    )}
     icon={broken ? faHeartBroken : faHeart}
     color={gray ? '#9ca3af' : '#EC4899'}
   />
@@ -99,6 +104,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const event = useAtomValue(eventSelector(eventId))
     const user = useAtomValue(userSelector(userId))
+    const snackbar = useAtomValue(snackbarAtom)
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = useMemo(
       () => eventUsers.find((eventUser) => eventUser.userId === userId),
@@ -113,6 +119,21 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
     const setEventUserData = useAtomValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+    const saveLikes = useCallback(
+      async (likesValue) => {
+        if (!eventUser?._id) return
+        await setEventUserData(
+          eventId,
+          {
+            likes: {
+              [eventUser._id]: likesValue,
+            },
+          },
+          true
+        )
+      },
+      [eventId, eventUser?._id, setEventUserData]
+    )
 
     useEffect(() => {
       if (
@@ -217,25 +238,32 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       //       ? closeModal
       //       : onClickConfirm
       // )
-      setCloseButtonShow(
-        !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
-      )
-
       setOnConfirmFunc(
         eventUser?._id && event.likesProcessActive && likes?.length === 0
-          ? () => {
-              setEventUserData(
-                eventId,
-                {
-                  likes: {
-                    [eventUser._id]: [],
-                  },
-                },
-                true
+          ? async () => {
+              await saveLikes([])
+              snackbar.success('Ваш выбор никому не ставить лайки сохранён')
+              closeModal()
+            }
+          : undefined
+      )
+      setOnDeclineFunc(
+        eventUser?._id && event.likesProcessActive && likes?.length > 0
+          ? async () => {
+              await saveLikes(likes)
+              snackbar.success(
+                `Ваш выбор поставить ${getNounLikes(likes.length)} сохранён`
               )
               closeModal()
             }
           : undefined
+      )
+      setDeclineButtonShow(
+        eventUser?._id && event.likesProcessActive && likes?.length > 0
+      )
+      setCloseButtonShow(
+        !event.likesProcessActive ||
+          (eventUser?._id && event.likesProcessActive && likes?.length > 0)
       )
       // setCloseButtonShow(!event.likesProcessActive)
       setConfirmButtonName(
@@ -248,7 +276,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
         setTitle(
           `Совпадения лайков с участни${user.gender === 'male' ? 'ц' : 'к'}ами`
         )
-    }, [likes, event, adminView])
+    }, [likes, event, adminView, closeModal, saveLikes, snackbar, user.gender])
 
     return (
       <div className="flex flex-col">
@@ -303,22 +331,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                       event.likesProcessActive
                         ? () =>
                             setLikes((state) => {
-                              const likesResult = checked
+                              return checked
                                 ? state.filter((id) => id !== user._id)
                                 : [...state, user._id]
-
-                              if (eventUser?._id)
-                                setEventUserData(
-                                  eventId,
-                                  {
-                                    likes: {
-                                      [eventUser._id]: likesResult,
-                                    },
-                                  },
-                                  true
-                                )
-
-                              return likesResult
                             })
                         : undefined
                     }
@@ -327,8 +342,8 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                       className={cn(
                         'duration-300',
                         checked
-                          ? 'w-9 h-9 min-h-9'
-                          : 'w-7 h-7 min-h-7 group-hover:scale-110'
+                          ? 'w-9 h-9 min-h-9 min-w-9'
+                          : 'w-7 h-7 min-h-7 min-w-7 group-hover:scale-110'
                       )}
                       icon={faHeart}
                       color={checked ? '#EC4899' : '#9ca3af'}
@@ -464,6 +479,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     // declineButtonName: 'Оставить как было',
     // confirmButtonName: 'Применить',
     declineButtonName: 'Закрыть',
+    declineButtonBgClassName: 'bg-general',
     declineButtonShow: false,
     closeButtonShow: false,
     Children: LikeEditModal,
