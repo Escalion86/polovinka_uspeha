@@ -36,6 +36,7 @@ module.exports = withFlowbiteReact(
     //   return config
     // },
     // swcMinify: false,
+    output: 'standalone',
     experimental: {
       largePageDataBytes: 512 * 100000,
     },
