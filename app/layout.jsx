@@ -52,6 +52,7 @@ export const metadata = {
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    google: 'notranslate',
   },
 }
 
@@ -168,6 +169,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="ru"
+      translate="no"
       className="scroll-smooth"
       data-scroll-behavior="smooth"
     >
