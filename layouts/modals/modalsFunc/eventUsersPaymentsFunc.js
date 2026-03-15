@@ -312,7 +312,7 @@ const UserPayment = ({
             )}
             {allPaymentsOfUser.length > 0 && (
               <>
-                <span>
+                <span className="leading-4">
                   Транзакции пользователя привязанные к этому мероприятию
                 </span>
                 {allPaymentsOfUser.map((payment) => (

@@ -75,8 +75,7 @@ const isBirthdayInRange = (birthday, fromDate, toDate) => {
   const start = new Date(fromDate)
   const end = new Date(toDate ?? fromDate)
 
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()))
-    return false
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false
 
   const rangeStart = start <= end ? start : end
   const rangeEnd = start <= end ? end : start
@@ -534,7 +533,7 @@ export const PaymentItem = ({
       )}
       <div className="flex items-center justify-between flex-1 w-full px-1 gap-x-1">
         <div className="flex flex-col">
-          <div className="text-sm font-bold leading-4 text-gray-800 truncate">
+          <div className="text-xs font-bold leading-4 text-gray-800 truncate phoneH:text-sm">
             {formatDateTime(item.payAt)}
           </div>
           {showUser && (
