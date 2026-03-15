@@ -300,11 +300,15 @@ const deleteEventFromCalendar = async (googleCalendarId, location) => {
 }
 
 const updateEventInCalendar = async (event, location) => {
+  console.log('updateEventInCalendar :>> ')
   const calendar = connectToGoogleCalendar(location)
   if (!calendar) return
+  console.log('1')
 
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
   if (!calendarConstants) return
+
+  console.log('2')
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
@@ -363,8 +367,12 @@ const updateEventInCalendar = async (event, location) => {
     // visibility: event.showOnSite ? 'default' : 'private',
   }
 
+  console.log('3')
+
   const authProcess = await getGoogleCalendarAuthClient(location)
   if (!authProcess) return
+
+  console.log('4')
 
   // Создаем новое событие (пустое) в календаре, если нет googleCalendarId
   if (!event.googleCalendarId) {
@@ -412,8 +420,11 @@ const updateEventInCalendar = async (event, location) => {
 
     return createdCalendarEvent
   }
+  console.log('5')
 
   if (!event?.googleCalendarId) return
+
+  console.log('6')
   // Обновляем событие в календаре
   const updatedCalendarEvent = await new Promise((resolve, reject) => {
     calendar.events.update(
@@ -831,7 +842,10 @@ export default async function handler(Schema, req, res, props = {}) {
             if (data.status === 'canceled') {
               if (oldData.status !== 'canceled') {
                 try {
-                  await deleteEventFromCalendar(oldData.googleCalendarId, location)
+                  await deleteEventFromCalendar(
+                    oldData.googleCalendarId,
+                    location
+                  )
                 } catch (calendarDeleteError) {
                   const calendarDeleteErrorCode = Number(
                     calendarDeleteError?.code ||
@@ -898,13 +912,12 @@ export default async function handler(Schema, req, res, props = {}) {
               await syncEventUsersGoogleCalendar({
                 db,
                 location,
-                eventUsers:
-                  isCanceledNow
-                    ? eventUsers.map((eventUser) => ({
-                        ...eventUser,
-                        status: 'canceled',
-                      }))
-                    : eventUsers,
+                eventUsers: isCanceledNow
+                  ? eventUsers.map((eventUser) => ({
+                      ...eventUser,
+                      status: 'canceled',
+                    }))
+                  : eventUsers,
               })
             }
           }
@@ -1101,7 +1114,11 @@ export default async function handler(Schema, req, res, props = {}) {
 
         if (params) {
           const existingData = await db.model(Schema).find(params)
-          if (Schema === 'EventsUsers' && Array.isArray(existingData) && existingData.length > 0) {
+          if (
+            Schema === 'EventsUsers' &&
+            Array.isArray(existingData) &&
+            existingData.length > 0
+          ) {
             await syncEventUsersGoogleCalendar({
               db,
               location,
@@ -1147,7 +1164,10 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           if (Schema === 'Events' && MODE === 'production') {
-            await deleteEventFromCalendar(existingData.googleCalendarId, location)
+            await deleteEventFromCalendar(
+              existingData.googleCalendarId,
+              location
+            )
           }
 
           await db.model('Histories').create({
@@ -1161,7 +1181,11 @@ export default async function handler(Schema, req, res, props = {}) {
           const existingData = await db.model(Schema).find({
             _id: { $in: body.params },
           })
-          if (Schema === 'EventsUsers' && Array.isArray(existingData) && existingData.length > 0) {
+          if (
+            Schema === 'EventsUsers' &&
+            Array.isArray(existingData) &&
+            existingData.length > 0
+          ) {
             await syncEventUsersGoogleCalendar({
               db,
               location,
