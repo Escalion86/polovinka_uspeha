@@ -163,30 +163,76 @@ const connectToGoogleCalendar = (location) => {
 const getGoogleCalendarAuthClient = async (location) => {
   try {
     const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-    const email = calendarConstants?.email
+    const emailRaw = calendarConstants?.email
     const privateKeyRaw = calendarConstants?.privateKey
+    const email =
+      typeof emailRaw === 'string' ? emailRaw.trim() : emailRaw || null
     const privateKey =
       typeof privateKeyRaw === 'string'
         ? privateKeyRaw.replace(/\\n/g, '\n')
         : privateKeyRaw
+    const keyFile = getGoogleCalendarJSONByLocation(location)
+
+    console.log('getGoogleCalendarAuthClient sources:', {
+      location,
+      cwd: process.cwd(),
+      hasEnvEmail: Boolean(email),
+      hasEnvPrivateKey: Boolean(privateKey),
+      keyFile: keyFile || null,
+      keyFileExists: Boolean(keyFile && fs.existsSync(keyFile)),
+    })
 
     if (email && privateKey) {
       const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
       await jwtClient.authorize()
+      console.log('getGoogleCalendarAuthClient auth via env jwt: success', {
+        location,
+      })
       return jwtClient
     }
 
-    const keyFile = getGoogleCalendarJSONByLocation(location)
     if (!keyFile || !fs.existsSync(keyFile)) return null
 
-    const auth = new google.auth.GoogleAuth({
-      keyFile,
-      scopes: SCOPES,
-    })
+    const keyFileRaw = fs.readFileSync(keyFile, 'utf8')
+    const keyFileJson = JSON.parse(keyFileRaw)
+    const keyFileEmail =
+      typeof keyFileJson?.client_email === 'string'
+        ? keyFileJson.client_email.trim()
+        : null
+    const keyFilePrivateKeyRaw = keyFileJson?.private_key
+    const keyFilePrivateKey =
+      typeof keyFilePrivateKeyRaw === 'string'
+        ? keyFilePrivateKeyRaw.replace(/\\n/g, '\n')
+        : null
 
-    return await auth.getClient()
+    if (!keyFileEmail || !keyFilePrivateKey) {
+      console.log('getGoogleCalendarAuthClient key file missing fields:', {
+        location,
+        keyFile,
+        hasClientEmail: Boolean(keyFileEmail),
+        hasPrivateKey: Boolean(keyFilePrivateKey),
+      })
+      return null
+    }
+
+    const jwtClient = new google.auth.JWT(
+      keyFileEmail,
+      null,
+      keyFilePrivateKey,
+      SCOPES
+    )
+    await jwtClient.authorize()
+    console.log('getGoogleCalendarAuthClient auth via file jwt: success', {
+      location,
+      keyFile,
+    })
+    return jwtClient
   } catch (error) {
-    console.log('getGoogleCalendarAuthClient error:', error?.message || error)
+    console.log('getGoogleCalendarAuthClient error:', {
+      location,
+      message: error?.message || String(error),
+      code: error?.code || error?.response?.status || null,
+    })
     return null
   }
 }
@@ -867,7 +913,7 @@ export default async function handler(Schema, req, res, props = {}) {
                       id,
                       { googleCalendarId: null },
                       {
-                        new: true,
+                        returnDocument: 'after',
                         runValidators: true,
                       }
                     )

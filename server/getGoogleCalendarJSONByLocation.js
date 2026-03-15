@@ -18,6 +18,13 @@ const resolveTokensDir = () => {
     }
   })
 
+  console.log('google-calendar tokens dir resolve:', {
+    cwd: process.cwd(),
+    envDir: envDir || null,
+    candidates,
+    existingDir: existingDir || null,
+  })
+
   return existingDir || candidates[0] || null
 }
 
@@ -25,13 +32,22 @@ const getGoogleCalendarJSONByLocation = (location) => {
   const tokensDir = resolveTokensDir()
   if (!tokensDir) return
 
+  let resolvedPath
   if (location === 'ekb')
-    return path.join(tokensDir, 'ekb.json')
+    resolvedPath = path.join(tokensDir, 'ekb.json')
   if (location === 'krsk')
-    return path.join(tokensDir, 'krsk.json')
+    resolvedPath = path.join(tokensDir, 'krsk.json')
   if (location === 'nrsk')
-    return path.join(tokensDir, 'nrsk.json')
-  else return
+    resolvedPath = path.join(tokensDir, 'nrsk.json')
+  if (!resolvedPath) return
+
+  console.log('google-calendar key file resolve:', {
+    location,
+    resolvedPath,
+    exists: fs.existsSync(resolvedPath),
+  })
+
+  return resolvedPath
 }
 
 export default getGoogleCalendarJSONByLocation
