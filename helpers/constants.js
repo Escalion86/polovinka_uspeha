@@ -74,8 +74,8 @@ const EventsUpcomingContent = dynamic(
 const EventsPastContent = dynamic(
   () => import('@layouts/content/EventsPastContent')
 )
-const EventsTestContent = dynamic(
-  () => import('@layouts/content/EventsTestContent')
+const EventsCalendarPageContent = dynamic(
+  () => import('@layouts/content/EventsCalendarPageContent')
 )
 const AdditionalBlocksContent = dynamic(
   () => import('@layouts/content/AdditionalBlocksContent')
@@ -1828,7 +1828,7 @@ export const CONTENTS = Object.freeze({
     roleAccess: (role) => role?.events?.see,
   },
   eventsCalendar: {
-    Component: EventsTestContent,
+    Component: EventsCalendarPageContent,
     name: 'Календарь мероприятий',
     roleAccess: (role) => role?.events?.see,
   },

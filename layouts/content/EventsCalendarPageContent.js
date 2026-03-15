@@ -4,6 +4,7 @@ import EventsList from '@layouts/lists/EventsList'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -13,6 +14,7 @@ import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventExpired from '@helpers/isEventExpired'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
+import useRouter from '@utils/useRouter'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -86,9 +88,11 @@ const getNextWeekendRange = () => {
   return { start: saturday, end: sunday }
 }
 
-const EventsTestContent = () => {
+const EventsCalendarPageContent = () => {
   const events = useAtomValue(eventsAtom)
   const directions = useAtomValue(directionsAtom)
+  const location = useAtomValue(locationAtom)
+  const router = useRouter()
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const loggedUserStatus = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -160,6 +164,34 @@ const EventsTestContent = () => {
   const directionPanelRef = useRef(null)
   const dateButtonRef = useRef(null)
   const directionButtonRef = useRef(null)
+  const handledQueryEventRef = useRef(null)
+
+  const eventFromQueryId = useMemo(() => {
+    const raw = router.query?.event
+    if (Array.isArray(raw)) return raw[0] || null
+    return typeof raw === 'string' ? raw : null
+  }, [router.query])
+
+  useEffect(() => {
+    if (!eventFromQueryId || !location) return
+    if (handledQueryEventRef.current === eventFromQueryId) return
+    if (typeof modalsFunc?.event?.view !== 'function') return
+
+    handledQueryEventRef.current = eventFromQueryId
+    modalsFunc.event.view(eventFromQueryId)
+
+    const nextQuery = { ...router.query }
+    delete nextQuery.event
+
+    router.replace(
+      {
+        pathname: `/${location}/cabinet/eventsCalendar`,
+        query: nextQuery,
+      },
+      '',
+      { shallow: true }
+    )
+  }, [eventFromQueryId, location, modalsFunc, router])
 
   useEffect(() => {
     const onClickOutside = (event) => {
@@ -647,4 +679,4 @@ const EventsTestContent = () => {
   )
 }
 
-export default EventsTestContent
+export default EventsCalendarPageContent

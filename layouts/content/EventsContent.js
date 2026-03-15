@@ -243,30 +243,26 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
   const eventFromQueryId =
     typeof router.query?.event === 'string' ? router.query.event : null
 
-  const accessibleEvents = useMemo(
-    () => getVisibleEventsForSource(events),
-    [events, getVisibleEventsForSource]
-  )
-  const accessibleEventFromQuery = useMemo(() => {
+  const eventFromAllLoadedEvents = useMemo(() => {
     if (!eventFromQueryId) return null
     return (
-      accessibleEvents.find(
+      events.find(
         (event) => String(event?._id) === String(eventFromQueryId)
       ) || null
     )
-  }, [accessibleEvents, eventFromQueryId])
+  }, [eventFromQueryId, events])
 
   const visibleEvents = filteredAndSortedEvents
 
   useEffect(() => {
     if (!eventFromQueryId || !location) return
-    if (!accessibleEventFromQuery) return
-
-    setCalendarFocusEvent({
-      id: String(eventFromQueryId),
-      dateStart: accessibleEventFromQuery?.dateStart ?? null,
-    })
     modalsFunc.event.view(eventFromQueryId)
+    if (eventFromAllLoadedEvents) {
+      setCalendarFocusEvent({
+        id: String(eventFromQueryId),
+        dateStart: eventFromAllLoadedEvents?.dateStart ?? null,
+      })
+    }
 
     const nextQuery = { ...router.query }
     delete nextQuery.event
@@ -280,8 +276,8 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
       { shallow: true }
     )
   }, [
-    accessibleEventFromQuery,
     eventFromQueryId,
+    eventFromAllLoadedEvents,
     location,
     modalsFunc.event,
     router,
