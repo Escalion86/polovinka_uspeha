@@ -747,7 +747,7 @@ export default async function handler(Schema, req, res, props = {}) {
 
           if (Schema === 'Events' && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
-            const calendarEvent = updateEventInCalendar(jsonData, location)
+            await updateEventInCalendar(jsonData, location)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
             // if (jsonData.showOnSite) {
@@ -861,7 +861,7 @@ export default async function handler(Schema, req, res, props = {}) {
                 }
               }
             } else {
-              updateEventInCalendar(data, location)
+              await updateEventInCalendar(data, location)
             }
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
@@ -1147,7 +1147,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           if (Schema === 'Events' && MODE === 'production') {
-            deleteEventFromCalendar(existingData.googleCalendarId, location)
+            await deleteEventFromCalendar(existingData.googleCalendarId, location)
           }
 
           await db.model('Histories').create({
