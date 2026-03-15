@@ -146,6 +146,14 @@ const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
 const { MODE } = process.env
 const ACTIVE_EVENT_USER_STATUSES = ['participant', 'reserve', 'assistant']
+const normalizeEnvValue = (value) => {
+  if (typeof value !== 'string') return value || null
+  const trimmed = value.trim()
+  if (!trimmed) return null
+  const lowered = trimmed.toLowerCase()
+  if (lowered === 'undefined' || lowered === 'null') return null
+  return trimmed
+}
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
@@ -163,10 +171,9 @@ const connectToGoogleCalendar = (location) => {
 const getGoogleCalendarAuthClient = async (location) => {
   try {
     const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-    const emailRaw = calendarConstants?.email
-    const privateKeyRaw = calendarConstants?.privateKey
-    const email =
-      typeof emailRaw === 'string' ? emailRaw.trim() : emailRaw || null
+    const emailRaw = normalizeEnvValue(calendarConstants?.email)
+    const privateKeyRaw = normalizeEnvValue(calendarConstants?.privateKey)
+    const email = emailRaw
     const privateKey =
       typeof privateKeyRaw === 'string'
         ? privateKeyRaw.replace(/\\n/g, '\n')
@@ -178,17 +185,31 @@ const getGoogleCalendarAuthClient = async (location) => {
       cwd: process.cwd(),
       hasEnvEmail: Boolean(email),
       hasEnvPrivateKey: Boolean(privateKey),
+      envPrivateKeyLength:
+        typeof privateKey === 'string' ? privateKey.length : 0,
       keyFile: keyFile || null,
       keyFileExists: Boolean(keyFile && fs.existsSync(keyFile)),
     })
 
     if (email && privateKey) {
-      const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
-      await jwtClient.authorize()
-      console.log('getGoogleCalendarAuthClient auth via env jwt: success', {
-        location,
-      })
-      return jwtClient
+      try {
+        const jwtClient = new google.auth.JWT({
+          email,
+          key: privateKey,
+          scopes: SCOPES,
+        })
+        await jwtClient.authorize()
+        console.log('getGoogleCalendarAuthClient auth via env jwt: success', {
+          location,
+        })
+        return jwtClient
+      } catch (envAuthError) {
+        console.log('getGoogleCalendarAuthClient auth via env jwt failed:', {
+          location,
+          message: envAuthError?.message || String(envAuthError),
+          code: envAuthError?.code || envAuthError?.response?.status || null,
+        })
+      }
     }
 
     if (!keyFile || !fs.existsSync(keyFile)) return null
@@ -215,12 +236,11 @@ const getGoogleCalendarAuthClient = async (location) => {
       return null
     }
 
-    const jwtClient = new google.auth.JWT(
-      keyFileEmail,
-      null,
-      keyFilePrivateKey,
-      SCOPES
-    )
+    const jwtClient = new google.auth.JWT({
+      email: keyFileEmail,
+      key: keyFilePrivateKey,
+      scopes: SCOPES,
+    })
     await jwtClient.authorize()
     console.log('getGoogleCalendarAuthClient auth via file jwt: success', {
       location,
@@ -346,15 +366,11 @@ const deleteEventFromCalendar = async (googleCalendarId, location) => {
 }
 
 const updateEventInCalendar = async (event, location) => {
-  console.log('updateEventInCalendar :>> ')
   const calendar = connectToGoogleCalendar(location)
   if (!calendar) return
-  console.log('1')
 
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
   if (!calendarConstants) return
-
-  console.log('2')
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
@@ -413,12 +429,8 @@ const updateEventInCalendar = async (event, location) => {
     // visibility: event.showOnSite ? 'default' : 'private',
   }
 
-  console.log('3')
-
   const authProcess = await getGoogleCalendarAuthClient(location)
   if (!authProcess) return
-
-  console.log('4')
 
   // Создаем новое событие (пустое) в календаре, если нет googleCalendarId
   if (!event.googleCalendarId) {
@@ -458,7 +470,7 @@ const updateEventInCalendar = async (event, location) => {
         event._id,
         { googleCalendarId: createdCalendarEvent.data.id },
         {
-          new: true,
+          returnDocument: 'after',
           runValidators: true,
         }
       )
@@ -466,11 +478,7 @@ const updateEventInCalendar = async (event, location) => {
 
     return createdCalendarEvent
   }
-  console.log('5')
-
   if (!event?.googleCalendarId) return
-
-  console.log('6')
   // Обновляем событие в календаре
   const updatedCalendarEvent = await new Promise((resolve, reject) => {
     calendar.events.update(
@@ -875,7 +883,7 @@ export default async function handler(Schema, req, res, props = {}) {
           data = await db
             .model(Schema)
             .findByIdAndUpdate(id, updateData, {
-              new: true,
+              returnDocument: 'after',
               runValidators: true,
             })
             .lean()
