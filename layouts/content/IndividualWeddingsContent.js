@@ -48,6 +48,9 @@ const IndividualWeddingsContent = () => {
   const servicesUsers = useAtomValue(
     servicesUsersFullByServiceIdSelector(serviceId)
   )
+  const activeServicesUsers = servicesUsers.filter(
+    (serviceUser) => serviceUser.status === 'active'
+  )
   // const setIndividualWeddings =
   //   useAtomValue(itemsFuncAtom).individualWedding.set
 
@@ -63,9 +66,9 @@ const IndividualWeddingsContent = () => {
   //   }
   // }, [individualWeddings])
 
-  const acceptedUsersIds = servicesUsers.map((user) => user.userId)
+  const acceptedUsersIds = activeServicesUsers.map((user) => user.userId)
   const selectedServiceUser = selectedUserId
-    ? servicesUsers.find(({ userId }) => userId === selectedUserId)
+    ? activeServicesUsers.find(({ userId }) => userId === selectedUserId)
     : null
   const selectedUser = selectedServiceUser?.user
 

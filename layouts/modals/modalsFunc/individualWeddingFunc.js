@@ -51,10 +51,14 @@ const individualWeddingFunc = ({
     const servicesUsers = useAtomValue(
       servicesUsersFullByServiceIdSelector(serviceId)
     )
+    const activeServicesUsers = useMemo(
+      () => servicesUsers.filter((serviceUser) => serviceUser.status === 'active'),
+      [servicesUsers]
+    )
     const servicesUsersWithoutClientUser = useMemo(
       () =>
-        servicesUsers.filter((serviceUser) => serviceUser.userId !== userId),
-      [servicesUsers]
+        activeServicesUsers.filter((serviceUser) => serviceUser.userId !== userId),
+      [activeServicesUsers, userId]
     )
     // const users = servicesUsersWithoutClientUser.map(({ user }) => user)
 
@@ -89,7 +93,7 @@ const individualWeddingFunc = ({
 
     // const acceptedUsersIds = servicesUsers.map((user) => user.userId)
     const selectedServiceUser = userId
-      ? servicesUsers.find((serviceUser) => serviceUser.userId === userId)
+      ? activeServicesUsers.find((serviceUser) => serviceUser.userId === userId)
       : null
     const selectedUser = selectedServiceUser?.user
     const selectedUserQuestionire = selectedServiceUser?.answers
