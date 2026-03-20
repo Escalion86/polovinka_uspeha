@@ -15,7 +15,6 @@ import cn from 'classnames'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
-import snackbarAtom from '@state/atoms/snackbarAtom'
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
@@ -103,7 +102,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const event = useAtomValue(eventSelector(eventId))
     const user = useAtomValue(userSelector(userId))
-    const snackbar = useAtomValue(snackbarAtom)
+    // const snackbar = useAtomValue(snackbarAtom)
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = useMemo(
       () => eventUsers.find((eventUser) => eventUser.userId === userId),
