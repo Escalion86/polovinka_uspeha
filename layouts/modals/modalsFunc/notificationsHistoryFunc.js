@@ -58,6 +58,8 @@ const normalizeHistoryList = (value) => {
       types: Array.isArray(item?.types) ? item.types.map(String).filter(Boolean) : [],
       channels:
         item?.channels && typeof item.channels === 'object' ? item.channels : {},
+      entities:
+        item?.entities && typeof item.entities === 'object' ? item.entities : {},
       createdAt: item?.createdAt ? new Date(item.createdAt) : null,
     }))
     .filter((item) => item.createdAt && !Number.isNaN(item.createdAt.getTime()))
@@ -149,6 +151,10 @@ const notificationsHistoryFunc = () => {
     const [selectedTypes, setSelectedTypes] = useState([])
     const typeButtonRef = useRef(null)
     const typePanelRef = useRef(null)
+    const canSeeDebug =
+      ['dev', 'president', 'supervisor'].includes(
+        String(loggedUserActive?.role || '')
+      )
 
     const history = useMemo(
       () => normalizeHistoryList(historySource),
@@ -407,6 +413,31 @@ const notificationsHistoryFunc = () => {
                         }}
                       />
                     </div>
+                  )}
+
+                  {canSeeDebug && (
+                    <details className="mt-2">
+                      <summary className="text-xs text-gray-600 cursor-pointer">
+                        Debug
+                      </summary>
+                      <pre className="mt-1 p-2 text-[11px] leading-4 overflow-auto rounded bg-gray-100 border border-gray-200">
+{JSON.stringify(
+  {
+    notificationId: item?.notificationId,
+    type: item?.type,
+    types: item?.types,
+    entities: item?.entities,
+    resolved: {
+      eventId,
+      userIds,
+      serviceId,
+    },
+  },
+  null,
+  2
+)}
+                      </pre>
+                    </details>
                   )}
                 </div>
               )
