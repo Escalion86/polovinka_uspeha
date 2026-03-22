@@ -1216,6 +1216,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     ? `${process.env.DOMAIN}/${location}/user/${id}`
                     : `/${location}/user/${id}`,
                   tag: `questionnaire-filled-${id}`,
+                  notificationType: 'newUserRegistred',
                 })
               }
             }

@@ -20,6 +20,7 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import useRouter from '@utils/useRouter'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -29,6 +30,7 @@ const CheckedItem = ({ children }) => (
 )
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
+  const router = useRouter()
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
@@ -48,6 +50,9 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
     loggedUserActiveRole?.notifications?.eventRegistration
+  const canOpenNotificationHistoryModal = ['dev', 'president', 'supervisor'].includes(
+    String(loggedUserActiveRole?._id || '')
+  )
 
   const statusTrigger = (
     <button
@@ -152,15 +157,22 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       )}
       <div className="flex items-center gap-x-4">
         {notificationsVisible && (
-          <Link
-            prefetch={false}
-            href={`/${location}/cabinet/notifications`}
-            shallow
+          <button
+            type="button"
             className="flex items-center justify-center w-6 h-6 text-white cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-white/80"
+            onClick={() => {
+              if (canOpenNotificationHistoryModal) {
+                modalsFunc.notifications.history()
+                return
+              }
+              router.push(`/${location}/cabinet/notifications`, '', {
+                shallow: true,
+              })
+            }}
           >
             <span className="sr-only">Настройка уведомлений</span>
             <FontAwesomeIcon icon={faBell} className="w-5 h-5 min-h-5" />
-          </Link>
+          </button>
         )}
         <DropDown trigger={statusTrigger} openOnHover placement="bottom">
           <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black bg-white rounded-md cursor-default w-80">

@@ -137,8 +137,9 @@ export const notifyUsersWithPush = async ({
   text,
   url,
   tag,
+  notificationType = 'unknown',
+  notificationTypes = [],
 }) => {
-  if (!ensureVapid()) return { success: false, reason: 'PUSH_NOT_CONFIGURED' }
   if (!Array.isArray(users) || users.length === 0) {
     return { success: true, successCount: 0, errorCount: 0 }
   }
@@ -153,44 +154,151 @@ export const notifyUsersWithPush = async ({
   }
 
   const staleByUserId = new Map()
-  const deliveredByUserId = new Map()
+  const deliveryByUserId = new Map()
   let successCount = 0
   let errorCount = 0
 
+  const normalizedTypes = Array.isArray(notificationTypes)
+    ? notificationTypes.filter(Boolean)
+    : []
+  const resolvedTypes =
+    normalizedTypes.length > 0
+      ? normalizedTypes
+      : notificationType
+        ? [notificationType]
+        : ['unknown']
+
+  const persistHistoryForUsers = async (deliveryStateByUserId) => {
+    if (!db || !deliveryStateByUserId || deliveryStateByUserId.size === 0) return
+    for (const [userId, deliveryState] of deliveryStateByUserId.entries()) {
+      try {
+        const historyItem = {
+          notificationId: crypto.randomUUID(),
+          type: resolvedTypes[0] || 'unknown',
+          types: resolvedTypes,
+          title: pushTitle,
+          body: pushBody,
+          url: data?.url || null,
+          tag: tag || `pu-${location || 'global'}`,
+          location: location || null,
+          createdAt: new Date(),
+          channels: {
+            push: {
+              attempted: Boolean(deliveryState?.attempted),
+              success: Boolean(deliveryState?.success),
+              error: deliveryState?.error || null,
+            },
+          },
+        }
+
+        await db.model('Users').findByIdAndUpdate(userId, {
+          $push: {
+            'notifications.history': {
+              $each: [historyItem],
+              $slice: -200,
+            },
+            'notifications.push.history': {
+              $each: [historyItem],
+              $slice: -100,
+            },
+          },
+        })
+      } catch (error) {
+        console.log('notifyUsersWithPush history save error', {
+          userId,
+          error,
+        })
+      }
+    }
+  }
+
+  if (!ensureVapid()) {
+    const failedByUser = new Map()
+    for (const user of users) {
+      const userId = String(user?._id || '')
+      if (!userId) continue
+      failedByUser.set(userId, {
+        attempted: false,
+        success: false,
+        error: 'PUSH_NOT_CONFIGURED',
+      })
+    }
+    await persistHistoryForUsers(failedByUser)
+    return { success: false, reason: 'PUSH_NOT_CONFIGURED' }
+  }
+
   for (const user of users) {
+    const userId = String(user?._id || '')
+    if (userId) {
+      deliveryByUserId.set(userId, {
+        attempted: false,
+        success: false,
+        error: null,
+      })
+    }
+
     const subscriptions = getPushSubscriptionsFromUser(user)
-    if (!subscriptions.length) continue
+    if (!subscriptions.length) {
+      if (userId) {
+        deliveryByUserId.set(userId, {
+          attempted: false,
+          success: false,
+          error: 'NO_SUBSCRIPTIONS',
+        })
+      }
+      continue
+    }
+
+    if (userId) {
+      deliveryByUserId.set(userId, {
+        attempted: true,
+        success: false,
+        error: null,
+      })
+    }
 
     for (const subscription of subscriptions) {
       try {
+        const notificationId = crypto.randomUUID()
         await webpush.sendNotification(
           subscription,
           JSON.stringify({
             title: pushTitle,
             body: pushBody,
             tag: tag || `pu-${location || 'global'}`,
-            data,
+            data: {
+              ...data,
+              notificationId,
+            },
           })
         )
         successCount += 1
-        const userId = String(user?._id || '')
         if (userId) {
-          deliveredByUserId.set(userId, {
-            title: pushTitle,
-            body: pushBody,
-            url: data?.url || null,
-            tag: tag || `pu-${location || 'global'}`,
-            location: location || null,
-            createdAt: new Date(),
-            notificationId: crypto.randomUUID(),
+          const prev = deliveryByUserId.get(userId) || {}
+          deliveryByUserId.set(userId, {
+            ...prev,
+            attempted: true,
+            success: true,
+            error: null,
           })
         }
       } catch (error) {
         errorCount += 1
         const statusCode = Number(error?.statusCode)
+        if (userId) {
+          const prev = deliveryByUserId.get(userId) || {}
+          deliveryByUserId.set(userId, {
+            ...prev,
+            attempted: true,
+            success: Boolean(prev?.success),
+            error:
+              statusCode && Number.isFinite(statusCode)
+                ? `PUSH_HTTP_${statusCode}`
+                : 'PUSH_SEND_ERROR',
+          })
+        }
         if (![404, 410].includes(statusCode)) continue
 
-        const userId = String(user?._id || '')
         if (!userId) continue
 
         const staleEndpoints = staleByUserId.get(userId) || new Set()
@@ -224,25 +332,7 @@ export const notifyUsersWithPush = async ({
     }
   }
 
-  if (db && deliveredByUserId.size > 0) {
-    for (const [userId, notification] of deliveredByUserId.entries()) {
-      try {
-        await db.model('Users').findByIdAndUpdate(userId, {
-          $push: {
-            'notifications.push.history': {
-              $each: [notification],
-              $slice: -100,
-            },
-          },
-        })
-      } catch (error) {
-        console.log('notifyUsersWithPush history save error', {
-          userId,
-          error,
-        })
-      }
-    }
-  }
+  await persistHistoryForUsers(deliveryByUserId)
 
   return {
     success: true,

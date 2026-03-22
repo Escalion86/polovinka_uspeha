@@ -71,8 +71,12 @@ const normalizePushSubscriptionsList = (value) => {
 }
 
 const normalizePushHistoryList = (value) => {
-  if (!Array.isArray(value)) return []
-  return value
+  const source = Array.isArray(value)
+    ? value
+    : value && typeof value === 'object'
+      ? Object.values(value)
+      : []
+  return source
     .filter((item) => item && typeof item === 'object')
     .map((item) => ({
       notificationId: String(item?.notificationId || ''),
@@ -81,6 +85,10 @@ const normalizePushHistoryList = (value) => {
       url: String(item?.url || ''),
       tag: String(item?.tag || ''),
       location: String(item?.location || ''),
+      type: String(item?.type || ''),
+      types: Array.isArray(item?.types) ? item.types.map(String).filter(Boolean) : [],
+      channels:
+        item?.channels && typeof item.channels === 'object' ? item.channels : {},
       createdAt: item?.createdAt ? new Date(item.createdAt) : null,
     }))
     .filter((item) => item.createdAt && !Number.isNaN(item.createdAt.getTime()))
@@ -223,8 +231,13 @@ const LoggedUserNotificationsContent = (props) => {
           subscriptions: normalizePushSubscriptionsList(
             source?.push?.subscriptions
           ),
-          history: normalizePushHistoryList(source?.push?.history),
+          history: normalizePushHistoryList(
+            source?.history ?? source?.push?.history
+          ),
         },
+        history: normalizePushHistoryList(
+          source?.history ?? source?.push?.history
+        ),
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
           ...(source?.settings ?? {}),
@@ -269,7 +282,6 @@ const LoggedUserNotificationsContent = (props) => {
   )
   const canUsePushSettings =
     !pushDevPresidentOnly || isPushPrivilegedRole
-  const canViewPushHistory = isPushPrivilegedRole
 
   const serializePushSubscription = useCallback((subscription) => {
     if (!subscription) return null
@@ -446,7 +458,9 @@ const LoggedUserNotificationsContent = (props) => {
       sourcePushSubscriptionsCount: normalizePushSubscriptionsList(
         sourcePush?.subscriptions
       ).length,
-      sourcePushHistoryCount: normalizePushHistoryList(sourcePush?.history).length,
+      sourcePushHistoryCount: normalizePushHistoryList(
+        loggedUserActive?.notifications?.history ?? sourcePush?.history
+      ).length,
     })
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
     setConsentToMailing(!!loggedUserActive?.consentToMailing)
@@ -839,41 +853,6 @@ const LoggedUserNotificationsContent = (props) => {
           <Note>
             Push-уведомления пока недоступны: не задан публичный VAPID ключ
           </Note>
-        )}
-        {canViewPushHistory && (
-          <InputWrapper
-            label="История push-уведомлений"
-            className="mt-3"
-            noMargin
-          >
-            <div className="w-full p-2 border rounded-md border-gray-300 bg-gray-50 max-h-72 overflow-auto">
-              {(notifications?.push?.history || []).length === 0 && (
-                <div className="text-sm text-gray-600">
-                  Пока нет сохраненных push-уведомлений
-                </div>
-              )}
-              {(notifications?.push?.history || []).map((item, index) => (
-                <div
-                  key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
-                  className="p-2 mb-2 bg-white border rounded-md border-gray-200"
-                >
-                  <div className="font-semibold">{item.title}</div>
-                  {item.body && <div className="text-sm mt-1">{item.body}</div>}
-                  <div className="text-xs text-gray-600 mt-1">
-                    {item.createdAt?.toLocaleString?.('ru-RU') || ''}
-                  </div>
-                  {item.url && (
-                    <a
-                      href={item.url}
-                      className="text-xs underline text-general mt-1 inline-block"
-                    >
-                      Открыть
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </InputWrapper>
         )}
         {consentToMailing && isNotificationActivated && (
           <>

@@ -1083,6 +1083,10 @@ const modalsFuncGenerator = (get, set) => {
             )
           ),
       },
+      history: () =>
+        addModal(
+          require('../layouts/modals/modalsFunc/notificationsHistoryFunc').default()
+        ),
     },
     loginHistory: {
       user: (userId) =>

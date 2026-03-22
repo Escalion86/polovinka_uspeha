@@ -203,6 +203,7 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       text: pushTextFromHtml(noviceNotificationText),
       url: eventUrl,
       tag: `new-event-${String(event._id)}`,
+      notificationType: 'newEvents',
     })
   }
 
@@ -216,6 +217,7 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       text: pushTextFromHtml(memberNotificationText),
       url: eventUrl,
       tag: `new-event-${String(event._id)}`,
+      notificationType: 'newEvents',
     })
   }
 

@@ -378,6 +378,10 @@ export default async function handler(req, res) {
                     text: pushTextFromHtml(text),
                     url: detailsUrl,
                     tag: `daily-${location}-${strDateNow}`,
+                    notificationTypes: [
+                      notifications.settings.birthdays ? 'birthdays' : null,
+                      notifications.settings.remindDates ? 'remindDates' : null,
+                    ].filter(Boolean),
                   })
                 }
               }

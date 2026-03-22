@@ -111,6 +111,7 @@ const userRegisterTelegramNotification = async ({
       text: pushTextFromHtml(text),
       url: process.env.DOMAIN ? `${process.env.DOMAIN}/${location}/cabinet/users` : `/${location}/cabinet/users`,
       tag: 'new-user-registered',
+      notificationType: 'newUserRegistred',
     })
   }
 

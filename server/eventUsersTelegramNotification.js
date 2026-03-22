@@ -341,6 +341,7 @@ const eventUsersTelegramNotification = async ({
         text: pushTextFromHtml(text),
         url: eventUrl,
         tag: `event-users-${eventId}`,
+        notificationType: 'eventRegistration',
       })
     }
 

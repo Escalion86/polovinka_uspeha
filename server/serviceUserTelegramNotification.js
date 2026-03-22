@@ -111,6 +111,7 @@ const serviceUserTelegramNotification = async ({
         text: pushTextFromHtml(text),
         url: serviceUrl,
         tag: `service-registration-${serviceId}`,
+        notificationType: 'serviceRegistration',
       })
     }
 
