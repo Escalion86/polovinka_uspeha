@@ -90,6 +90,19 @@ const resolveUserId = (item) => {
   return match?.[1] || null
 }
 
+const resolveUserIds = (item) => {
+  const value = item?.entities?.userIds
+  const list = Array.isArray(value)
+    ? value
+    : value && typeof value === 'object'
+      ? Object.values(value)
+      : []
+  const normalized = list.map((id) => String(id || '')).filter(Boolean)
+  if (normalized.length > 0) return Array.from(new Set(normalized))
+  const single = resolveUserId(item)
+  return single ? [single] : []
+}
+
 const resolveServiceId = (item) => {
   const fromEntities = readEntityId(item, 'serviceId')
   if (fromEntities) return fromEntities
@@ -292,7 +305,7 @@ const notificationsHistoryFunc = () => {
           filteredHistory.map((item, index) => (
             (() => {
               const eventId = resolveEventId(item)
-              const userId = resolveUserId(item)
+              const userIds = resolveUserIds(item)
               const serviceId = resolveServiceId(item)
               const itemTypes = Array.isArray(item?.types) ? item.types : []
               const isEventRegistration =
@@ -317,7 +330,9 @@ const notificationsHistoryFunc = () => {
                     Тип: {notificationTypeLabel(item)}
                   </div>
                   {item.body ? (
-                    <Note className="whitespace-pre-line mt-2 mb-1">{item.body}</Note>
+                    <Note noItalic className="whitespace-pre-line mt-2 mb-1">
+                      {item.body}
+                    </Note>
                   ) : null}
 
                   {isEventRegistration && (
@@ -328,12 +343,13 @@ const notificationsHistoryFunc = () => {
                           onClick={() => modalsFunc.event.view(eventId)}
                         />
                       ) : null}
-                      {userId ? (
+                      {userIds.map((userId) => (
                         <UserItemFromId
+                          key={`${item.notificationId || 'event-reg'}-${userId}`}
                           userId={userId}
                           onClick={() => modalsFunc.user.view(userId)}
                         />
-                      ) : null}
+                      ))}
                     </div>
                   )}
 
@@ -345,12 +361,13 @@ const notificationsHistoryFunc = () => {
                           onClick={() => modalsFunc.service.view(serviceId)}
                         />
                       ) : null}
-                      {userId ? (
+                      {userIds.map((userId) => (
                         <UserItemFromId
+                          key={`${item.notificationId || 'service-reg'}-${userId}`}
                           userId={userId}
                           onClick={() => modalsFunc.user.view(userId)}
                         />
-                      ) : null}
+                      ))}
                     </div>
                   )}
 

@@ -4,7 +4,7 @@ import { faQuoteRight } from '@fortawesome/free-solid-svg-icons/faQuoteRight'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
-const Note = ({ children, noMargin, className, type }) => (
+const Note = ({ children, noMargin, className, type, noItalic = false }) => (
   // <div className="relative pt-2.5 pb-2 px-2 mb-2 mt-4 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
   //   <div className="absolute px-2 text-teal-700 bg-white rounded-md text-sm -top-[12px] left-2">
   //     <div className="absolute top-0 left-0 right-0 h-full px-1 border-t-2 border-b-2 border-l-2 border-r-2 border-teal-400 rounded-md font-semkibold" />
@@ -14,7 +14,8 @@ const Note = ({ children, noMargin, className, type }) => (
   // </div>
   <div
     className={cn(
-      'relative pt-2.5 pb-2 pl-2 pr-5 text-base leading-4 italic border-l-4 rounded-[4px]',
+      'relative pt-2.5 pb-2 pl-2 pr-5 text-base leading-4 border-l-4 rounded-[4px]',
+      noItalic ? 'not-italic' : 'italic',
       noMargin ? '' : 'my-2',
       type === 'error'
         ? 'text-red-900 bg-red-100 border-red-400'

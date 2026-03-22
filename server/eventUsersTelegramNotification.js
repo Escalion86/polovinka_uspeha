@@ -126,6 +126,13 @@ const eventUsersTelegramNotification = async ({
 
     var text
     var userId
+    const changedUserIds = Array.from(
+      new Set(
+        [...addedEventUsersFull, ...deletedEventUsersFull]
+          .map((eventUser) => String(eventUser?.user?._id || eventUser?.userId || ''))
+          .filter(Boolean)
+      )
+    )
     // Если зарегистрировался один пользователь
     if (
       itIsSelfRecord &&
@@ -344,7 +351,8 @@ const eventUsersTelegramNotification = async ({
         notificationType: 'eventRegistration',
         entities: {
           eventId: String(eventId),
-          userId: userId ? String(userId) : null,
+          userId: userId ? String(userId) : changedUserIds[0] || null,
+          userIds: changedUserIds,
         },
       })
     }
