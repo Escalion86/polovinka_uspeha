@@ -273,8 +273,8 @@ const notificationsHistoryFunc = () => {
     }, [])
 
     return (
-      <div className="w-full max-h-[70vh] overflow-auto pr-1">
-        <div className="relative z-[5] mb-2">
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="relative z-[5] mb-2 shrink-0">
           <div className="flex flex-wrap items-center gap-2">
             <button
               ref={typeButtonRef}
@@ -342,112 +342,114 @@ const notificationsHistoryFunc = () => {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="mb-2 text-sm text-gray-600">Загрузка истории...</div>
-        ) : null}
-        {loadError ? (
-          <div className="mb-2 text-sm text-danger">{loadError}</div>
-        ) : null}
-        {filteredHistory.length === 0 ? (
-          <div className="text-sm text-gray-600">
-            Пока нет сохраненных уведомлений
-          </div>
-        ) : (
-          filteredHistory.map((item, index) =>
-            (() => {
-              const eventId = resolveEventId(item)
-              const userIds = resolveUserIds(item)
-              const serviceId = resolveServiceId(item)
-              const itemTypes = Array.isArray(item?.types) ? item.types : []
-              const isEventRegistration =
-                item?.type === 'eventRegistration' ||
-                itemTypes.includes('eventRegistration')
-              const isServiceRegistration =
-                item?.type === 'serviceRegistration' ||
-                itemTypes.includes('serviceRegistration')
-              const hasBirthdaysType =
-                item?.type === 'birthdays' || itemTypes.includes('birthdays')
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+          {isLoading ? (
+            <div className="mb-2 text-sm text-gray-600">Загрузка истории...</div>
+          ) : null}
+          {loadError ? (
+            <div className="mb-2 text-sm text-danger">{loadError}</div>
+          ) : null}
+          {filteredHistory.length === 0 ? (
+            <div className="text-sm text-gray-600">
+              Пока нет сохраненных уведомлений
+            </div>
+          ) : (
+            filteredHistory.map((item, index) =>
+              (() => {
+                const eventId = resolveEventId(item)
+                const userIds = resolveUserIds(item)
+                const serviceId = resolveServiceId(item)
+                const itemTypes = Array.isArray(item?.types) ? item.types : []
+                const isEventRegistration =
+                  item?.type === 'eventRegistration' ||
+                  itemTypes.includes('eventRegistration')
+                const isServiceRegistration =
+                  item?.type === 'serviceRegistration' ||
+                  itemTypes.includes('serviceRegistration')
+                const hasBirthdaysType =
+                  item?.type === 'birthdays' || itemTypes.includes('birthdays')
 
-              return (
-                <div
-                  key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
-                  className="p-3 mb-2 bg-white border border-gray-200 rounded-md"
-                >
-                  <div className="mb-2 text-xs text-gray-600">
-                    {item.createdAt?.toLocaleString?.('ru-RU') || ''}
-                  </div>
-                  <div className="font-semibold">{item.title}</div>
-                  <div className="mt-1 text-xs text-gray-600">
-                    Тип: {notificationTypeLabel(item)}
-                  </div>
-                  {item.body ? (
-                    <Note noItalic className="mt-2 mb-1 whitespace-pre-line">
-                      {item.body}
-                    </Note>
-                  ) : null}
+                return (
+                  <div
+                    key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
+                    className="p-3 mb-2 bg-white border border-gray-200 rounded-md"
+                  >
+                    <div className="mb-2 text-xs text-gray-600">
+                      {item.createdAt?.toLocaleString?.('ru-RU') || ''}
+                    </div>
+                    <div className="font-semibold">{item.title}</div>
+                    <div className="mt-1 text-xs text-gray-600">
+                      Тип: {notificationTypeLabel(item)}
+                    </div>
+                    {item.body ? (
+                      <Note noItalic className="mt-2 mb-1 whitespace-pre-line">
+                        {item.body}
+                      </Note>
+                    ) : null}
 
-                  {isEventRegistration && (
-                    <div className="mt-2 space-y-2">
-                      {eventId ? (
-                        <EventItemFromId
-                          eventId={eventId}
-                          bordered
-                          onClick={() => modalsFunc.event.view(eventId)}
-                        />
-                      ) : null}
-                      {userIds.map((userId) => (
-                        <div
-                          key={`${item.notificationId || 'event-reg'}-${userId}`}
-                          className="overflow-hidden border border-gray-500 rounded-sm"
-                        >
-                          <UserItemFromId
-                            userId={userId}
-                            onClick={() => modalsFunc.user.view(userId)}
+                    {isEventRegistration && (
+                      <div className="mt-2 space-y-2">
+                        {eventId ? (
+                          <EventItemFromId
+                            eventId={eventId}
+                            bordered
+                            onClick={() => modalsFunc.event.view(eventId)}
                           />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ) : null}
+                        {userIds.map((userId) => (
+                          <div
+                            key={`${item.notificationId || 'event-reg'}-${userId}`}
+                            className="overflow-hidden border border-gray-500 rounded-sm"
+                          >
+                            <UserItemFromId
+                              userId={userId}
+                              onClick={() => modalsFunc.user.view(userId)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                  {isServiceRegistration && (
-                    <div className="mt-2 space-y-2">
-                      {serviceId ? (
-                        <ServiceItemFromId
-                          serviceId={serviceId}
-                          bordered
-                          onClick={() => modalsFunc.service.view(serviceId)}
-                        />
-                      ) : null}
-                      {userIds.map((userId) => (
-                        <div
-                          key={`${item.notificationId || 'service-reg'}-${userId}`}
-                          className="overflow-hidden border border-gray-500 rounded-sm"
-                        >
-                          <UserItemFromId
-                            userId={userId}
-                            onClick={() => modalsFunc.user.view(userId)}
+                    {isServiceRegistration && (
+                      <div className="mt-2 space-y-2">
+                        {serviceId ? (
+                          <ServiceItemFromId
+                            serviceId={serviceId}
+                            bordered
+                            onClick={() => modalsFunc.service.view(serviceId)}
                           />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ) : null}
+                        {userIds.map((userId) => (
+                          <div
+                            key={`${item.notificationId || 'service-reg'}-${userId}`}
+                            className="overflow-hidden border border-gray-500 rounded-sm"
+                          >
+                            <UserItemFromId
+                              userId={userId}
+                              onClick={() => modalsFunc.user.view(userId)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                  {hasBirthdaysType && (
-                    <div className="mt-2">
-                      <Button
-                        name="Посмотреть ближайшие Дни рождения"
-                        thin
-                        onClick={() => {
-                          window.location.href = `/${item.location || location}/cabinet/birthdays`
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )
-            })()
-          )
-        )}
+                    {hasBirthdaysType && (
+                      <div className="mt-2">
+                        <Button
+                          name="Посмотреть ближайшие Дни рождения"
+                          thin
+                          onClick={() => {
+                            window.location.href = `/${item.location || location}/cabinet/birthdays`
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+              })()
+            )
+          )}
+        </div>
       </div>
     )
   }
