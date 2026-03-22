@@ -154,7 +154,7 @@ export default async function handler(req, res) {
     const user = await db
       .model('Users')
       .findById(userId)
-      .select({ role: 1, notifications: 1 })
+      .select({ role: 1, status: 1, notifications: 1 })
       .lean()
 
     if (!user?._id) {
@@ -162,7 +162,7 @@ export default async function handler(req, res) {
     }
 
     const roleId = String(user?.role || '')
-    const userStatus = String(user?.status || '')
+    const userStatus = String(user?.status || 'novice')
     debugLog('user loaded', {
       userId,
       roleId,

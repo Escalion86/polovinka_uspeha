@@ -83,6 +83,16 @@ const notificationsHistoryFunc = () => {
               status: response.status,
               body: json,
             })
+            const message =
+              json?.data?.error?.message || 'Не удалось получить историю уведомлений'
+            setLoadError(message)
+            return
+          }
+          if (!json?.success) {
+            const message =
+              json?.data?.error?.message || 'Не удалось получить историю уведомлений'
+            setLoadError(message)
+            return
           }
           const history = json?.success ? json?.data?.history : null
 
