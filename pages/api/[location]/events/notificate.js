@@ -8,6 +8,11 @@ import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import checkLocationValid from '@server/checkLocationValid'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  supportsPushForUser,
+} from '@server/pushNotifications'
 
 const notificateUsersAboutEvent = async (eventId, location) => {
   if (!checkLocationValid(location)) return { error: 'Invalid location' }
@@ -35,15 +40,31 @@ const notificateUsersAboutEvent = async (eventId, location) => {
         process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
           ? 'dev'
           : { $in: rolesIdsToNewEventsNotification },
-      $or: [
-        { 'notifications.settings.newEvents': true },
-        { 'notifications.settings.newEventsByTags': true },
+      $and: [
+        {
+          $or: [
+            { 'notifications.settings.newEvents': true },
+            { 'notifications.settings.newEventsByTags': true },
+          ],
+        },
+        {
+          $or: [
+            {
+              'notifications.telegram.active': true,
+              'notifications.telegram.id': {
+                $exists: true,
+                $ne: null,
+              },
+            },
+            {
+              'notifications.push.active': true,
+              'notifications.push.subscriptions.0': {
+                $exists: true,
+              },
+            },
+          ],
+        },
       ],
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
     })
     .lean()
 
@@ -151,6 +172,10 @@ const notificateUsersAboutEvent = async (eventId, location) => {
           ],
         ]
 
+  const eventUrl = process.env.DOMAIN
+    ? `${process.env.DOMAIN}/${location}/event/${String(event._id)}`
+    : `/${location}/event/${String(event._id)}`
+
   if (novicesTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
       telegramIds: novicesTelegramIds,
@@ -165,6 +190,32 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       text: memberNotificationText,
       inline_keyboard,
       location,
+    })
+  }
+
+  const novicesPushUsers = novicesUsers.filter((user) => supportsPushForUser(user))
+  if (novicesPushUsers.length > 0) {
+    await notifyUsersWithPush({
+      db,
+      location,
+      users: novicesPushUsers,
+      title: 'Новое мероприятие',
+      text: pushTextFromHtml(noviceNotificationText),
+      url: eventUrl,
+      tag: `new-event-${String(event._id)}`,
+    })
+  }
+
+  const membersPushUsers = membersUsers.filter((user) => supportsPushForUser(user))
+  if (membersPushUsers.length > 0) {
+    await notifyUsersWithPush({
+      db,
+      location,
+      users: membersPushUsers,
+      title: 'Новое мероприятие',
+      text: pushTextFromHtml(memberNotificationText),
+      url: eventUrl,
+      tag: `new-event-${String(event._id)}`,
     })
   }
 

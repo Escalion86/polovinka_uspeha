@@ -3,6 +3,11 @@ import { DEFAULT_ROLES } from '@helpers/constantsServer'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  supportsPushForUser,
+} from './pushNotifications'
 
 const buildFullName = (user) => {
   if (!user) return null
@@ -27,7 +32,6 @@ const userRegisterTelegramNotification = async ({
   if (!db) return
 
   const telegramToken = getTelegramTokenByLocation(location)
-  if (!telegramToken) return
 
   const usersCount = await db.model('Users').countDocuments({})
 
@@ -56,11 +60,21 @@ const userRegisterTelegramNotification = async ({
           ? 'dev'
           : { $in: rolesIdsToEventUsersNotification },
       'notifications.settings.newUserRegistred': true,
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
+      $or: [
+        {
+          'notifications.telegram.active': true,
+          'notifications.telegram.id': {
+            $exists: true,
+            $ne: null,
+          },
+        },
+        {
+          'notifications.push.active': true,
+          'notifications.push.subscriptions.0': {
+            $exists: true,
+          },
+        },
+      ],
     })
     .lean()
 
@@ -84,6 +98,23 @@ const userRegisterTelegramNotification = async ({
     : ''
 
   const text = `${messageParts.join(' ')}${referrerPart}`
+
+  const usersWithPush = usersWithNotificationsOfEventUsersON.filter((user) =>
+    supportsPushForUser(user)
+  )
+  if (usersWithPush.length > 0) {
+    await notifyUsersWithPush({
+      db,
+      location,
+      users: usersWithPush,
+      title: 'Новый пользователь',
+      text: pushTextFromHtml(text),
+      url: process.env.DOMAIN ? `${process.env.DOMAIN}/${location}/cabinet/users` : `/${location}/cabinet/users`,
+      tag: 'new-user-registered',
+    })
+  }
+
+  if (!telegramToken) return
 
   return await Promise.all(
     usersTelegramIds

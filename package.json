@@ -1,6 +1,6 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.36",
+  "version": "2.0.37",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
@@ -96,7 +96,8 @@
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "uid": "^2.0.2",
-    "undici": "^7.22.0"
+    "undici": "^7.22.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

@@ -14,13 +14,45 @@ import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 import locationAtom from '@state/atoms/locationAtom'
 import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 import useRouter from '@utils/useRouter'
+
+const urlBase64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+const normalizePushSubscription = (subscription) => {
+  if (!subscription || typeof subscription !== 'object') return null
+
+  const endpoint = String(subscription?.endpoint || '').trim()
+  const p256dh = String(subscription?.keys?.p256dh || '').trim()
+  const auth = String(subscription?.keys?.auth || '').trim()
+  if (!endpoint || !p256dh || !auth) return null
+
+  return {
+    endpoint,
+    expirationTime:
+      typeof subscription?.expirationTime === 'number'
+        ? subscription.expirationTime
+        : null,
+    keys: {
+      p256dh,
+      auth,
+    },
+  }
+}
 
 const LoggedUserNotificationsContent = (props) => {
   const router = useRouter()
@@ -53,6 +85,10 @@ const LoggedUserNotificationsContent = (props) => {
           ...DEFAULT_USER.notifications.telegram,
           ...(source?.telegram ?? {}),
         },
+        push: {
+          ...DEFAULT_USER.notifications.push,
+          ...(source?.push ?? {}),
+        },
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
           ...(source?.settings ?? {}),
@@ -67,6 +103,8 @@ const LoggedUserNotificationsContent = (props) => {
   const [consentToMailing, setConsentToMailing] = useState(
     !!loggedUserActive?.consentToMailing
   )
+  const [isPushAvailable, setIsPushAvailable] = useState(false)
+  const [isPushBusy, setIsPushBusy] = useState(false)
 
   const handleTelegramResponse = ({
     id,
@@ -84,6 +122,110 @@ const LoggedUserNotificationsContent = (props) => {
       },
     }))
   }
+
+  const { success, error } = useSnackbar()
+  const vapidPublicKey = process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY
+  const pushConfigured = typeof vapidPublicKey === 'string' && !!vapidPublicKey
+  const pushDevPresidentOnly =
+    process.env.NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY === 'true'
+  const canUsePushSettings =
+    !pushDevPresidentOnly ||
+    loggedUserActiveRole?._id === 'dev' ||
+    loggedUserActiveRole?._id === 'president'
+
+  const subscribePush = useCallback(async () => {
+    if (!pushConfigured) {
+      error('Push-уведомления временно не настроены на сервере')
+      return null
+    }
+    if (
+      !('serviceWorker' in navigator) ||
+      !('PushManager' in window) ||
+      !window.isSecureContext
+    ) {
+      error('Push-уведомления недоступны в этом браузере')
+      return null
+    }
+
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') {
+      error('Браузер не разрешил push-уведомления')
+      return null
+    }
+
+    const registration = await navigator.serviceWorker.ready
+    const existingSubscription = await registration.pushManager.getSubscription()
+    if (existingSubscription) {
+      return normalizePushSubscription(existingSubscription.toJSON())
+    }
+
+    const createdSubscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+    })
+
+    return normalizePushSubscription(createdSubscription.toJSON())
+  }, [error, pushConfigured, vapidPublicKey])
+
+  const unsubscribePush = useCallback(async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+
+    const registration = await navigator.serviceWorker.ready
+    const existingSubscription = await registration.pushManager.getSubscription()
+    if (existingSubscription) {
+      await existingSubscription.unsubscribe()
+    }
+  }, [])
+
+  const togglePushNotifications = useCallback(async () => {
+    if (isPushBusy) return
+
+    setIsPushBusy(true)
+    try {
+      const isActiveNow = Boolean(notifications?.push?.active)
+      if (!isActiveNow) {
+        const subscription = await subscribePush()
+        if (!subscription) return
+
+        setNotifications((state) => {
+          const existingSubscriptions = Array.isArray(
+            state?.push?.subscriptions
+          )
+            ? state.push.subscriptions
+            : []
+          const subscriptionsMap = new Map(
+            existingSubscriptions
+              .map((item) => normalizePushSubscription(item))
+              .filter(Boolean)
+              .map((item) => [item.endpoint, item])
+          )
+          subscriptionsMap.set(subscription.endpoint, subscription)
+
+          return {
+            ...state,
+            push: {
+              active: true,
+              subscriptions: Array.from(subscriptionsMap.values()),
+            },
+          }
+        })
+      } else {
+        await unsubscribePush()
+        setNotifications((state) => ({
+          ...state,
+          push: {
+            ...(state?.push ?? {}),
+            active: false,
+          },
+        }))
+      }
+    } catch (toggleError) {
+      console.log('togglePushNotifications error', toggleError)
+      error('Не удалось изменить настройку push-уведомлений')
+    } finally {
+      setIsPushBusy(false)
+    }
+  }, [error, isPushBusy, notifications?.push?.active, subscribePush, unsubscribePush])
 
   const toggleNotificationsSettings = (key) =>
     setNotifications((state) => ({
@@ -106,10 +248,12 @@ const LoggedUserNotificationsContent = (props) => {
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
 
-  const { success, error } = useSnackbar()
-
   const isNotificationActivated = Boolean(
-    notifications?.telegram?.id && notifications?.telegram?.active
+    (notifications?.telegram?.id && notifications?.telegram?.active) ||
+      (canUsePushSettings &&
+        notifications?.push?.active &&
+        Array.isArray(notifications?.push?.subscriptions) &&
+        notifications.push.subscriptions.length > 0)
   )
 
   useEffect(() => {
@@ -120,6 +264,15 @@ const LoggedUserNotificationsContent = (props) => {
     loggedUserActive?.notifications,
     prepareNotifications,
   ])
+
+  useEffect(() => {
+    const available =
+      typeof window !== 'undefined' &&
+      'serviceWorker' in navigator &&
+      'PushManager' in window &&
+      window.isSecureContext
+    setIsPushAvailable(available)
+  }, [])
 
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
@@ -168,7 +321,10 @@ const LoggedUserNotificationsContent = (props) => {
 
   const formChanged =
     loggedUserActive?.consentToMailing !== consentToMailing ||
-    !compareObjects(loggedUserActive?.notifications, notifications)
+    !compareObjects(
+      prepareNotifications(loggedUserActive?.notifications),
+      notifications
+    )
 
   const buttonDisabled = !formChanged
 
@@ -222,6 +378,14 @@ const LoggedUserNotificationsContent = (props) => {
         )}
         {consentToMailing && (
           <div className="flex flex-wrap items-center gap-x-2">
+            {isPushAvailable && canUsePushSettings && (
+              <YesNoPicker
+                label="Push-уведомления в браузере"
+                value={!!notifications?.push?.active}
+                readOnly={isPushBusy || !pushConfigured}
+                onChange={togglePushNotifications}
+              />
+            )}
             {notifications?.telegram?.id && (
               <YesNoPicker
                 label="Оповещения в Telegram"
@@ -238,6 +402,11 @@ const LoggedUserNotificationsContent = (props) => {
               />
             )}
           </div>
+        )}
+        {consentToMailing && isPushAvailable && canUsePushSettings && !pushConfigured && (
+          <Note>
+            Push-уведомления пока недоступны: не задан публичный VAPID ключ
+          </Note>
         )}
         {consentToMailing && isNotificationActivated && (
           <>

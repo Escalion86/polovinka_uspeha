@@ -3,6 +3,11 @@ import getUserFullName from '@helpers/getUserFullName'
 
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  supportsPushForUser,
+} from './pushNotifications'
 
 // Оповещение в телеграм
 const serviceUserTelegramNotification = async ({
@@ -30,11 +35,21 @@ const serviceUserTelegramNotification = async ({
             ? 'dev'
             : { $in: rolesIdsToServiceUsersNotification },
         'notifications.settings.serviceRegistration': true,
-        'notifications.telegram.active': true,
-        'notifications.telegram.id': {
-          $exists: true,
-          $ne: null,
-        },
+        $or: [
+          {
+            'notifications.telegram.active': true,
+            'notifications.telegram.id': {
+              $exists: true,
+              $ne: null,
+            },
+          },
+          {
+            'notifications.push.active': true,
+            'notifications.push.subscriptions.0': {
+              $exists: true,
+            },
+          },
+        ],
       })
       .lean()
 
@@ -63,25 +78,41 @@ const serviceUserTelegramNotification = async ({
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)
 
-    if (filteredTelegramIds.length === 0) return
-
-    const result = await sendTelegramMessage({
-      telegramIds: filteredTelegramIds,
-      text,
-      inline_keyboard: [
-        [
-          {
-            text: '\u{1F4C5} Услуга',
-            url: serviceUrl,
-          },
-          {
-            text: '\u{1F464} Пользователь',
-            url: process.env.DOMAIN + '/' + location + '/user/' + userId,
-          },
+    let result
+    if (filteredTelegramIds.length > 0) {
+      result = await sendTelegramMessage({
+        telegramIds: filteredTelegramIds,
+        text,
+        inline_keyboard: [
+          [
+            {
+              text: '\u{1F4C5} Услуга',
+              url: serviceUrl,
+            },
+            {
+              text: '\u{1F464} Пользователь',
+              url: process.env.DOMAIN + '/' + location + '/user/' + userId,
+            },
+          ],
         ],
-      ],
-      location,
-    })
+        location,
+      })
+    }
+
+    const usersWithPush = usersWithNotificationsOfServiceUsersON.filter((user) =>
+      supportsPushForUser(user)
+    )
+    if (usersWithPush.length > 0) {
+      await notifyUsersWithPush({
+        db,
+        location,
+        users: usersWithPush,
+        title: 'Новая заявка на услугу',
+        text: pushTextFromHtml(text),
+        url: serviceUrl,
+        tag: `service-registration-${serviceId}`,
+      })
+    }
 
     return result
   }

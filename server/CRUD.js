@@ -26,6 +26,12 @@ import recalculateEventAchievements from './recalculateEventAchievements'
 import processReferralRewards from './processReferralRewards'
 import syncGlobalUserLink from './syncGlobalUserLink'
 import { syncEventUsersGoogleCalendar } from './userGoogleCalendar'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  sanitizePushNotificationsForUserData,
+  supportsPushForUser,
+} from './pushNotifications'
 
 function isJson(str) {
   try {
@@ -766,6 +772,9 @@ export default async function handler(Schema, req, res, props = {}) {
           let clearedBody = { ...body.data }
           delete clearedBody._id
           clearedBody = normalizeLegacyNotificationKeys(Schema, clearedBody)
+          if (Schema === 'Users') {
+            clearedBody = sanitizePushNotificationsForUserData(clearedBody)
+          }
 
           if (
             Schema === 'Users' &&
@@ -871,6 +880,12 @@ export default async function handler(Schema, req, res, props = {}) {
 
           let updateData = { ...body.data }
           updateData = normalizeLegacyNotificationKeys(Schema, updateData)
+          if (Schema === 'Users') {
+            updateData = sanitizePushNotificationsForUserData(
+              updateData,
+              oldData?.role
+            )
+          }
 
           if (
             Schema === 'Users' &&
@@ -1091,11 +1106,21 @@ export default async function handler(Schema, req, res, props = {}) {
                       ? 'dev'
                       : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,
-                  'notifications.telegram.active': true,
-                  'notifications.telegram.id': {
-                    $exists: true,
-                    $ne: null,
-                  },
+                  $or: [
+                    {
+                      'notifications.telegram.active': true,
+                      'notifications.telegram.id': {
+                        $exists: true,
+                        $ne: null,
+                      },
+                    },
+                    {
+                      'notifications.push.active': true,
+                      'notifications.push.subscriptions.0': {
+                        $exists: true,
+                      },
+                    },
+                  ],
                 })
                 .lean()
               const usersTelegramIds = usersWithNotificationsOfEventUsersON
@@ -1132,6 +1157,23 @@ export default async function handler(Schema, req, res, props = {}) {
                     ],
                   ],
                   location,
+                })
+              }
+
+              const usersWithPush = usersWithNotificationsOfEventUsersON.filter((user) =>
+                supportsPushForUser(user)
+              )
+              if (usersWithPush.length > 0) {
+                await notifyUsersWithPush({
+                  db,
+                  location,
+                  users: usersWithPush,
+                  title: 'Анкета пользователя заполнена',
+                  text: pushTextFromHtml(text),
+                  url: process.env.DOMAIN
+                    ? `${process.env.DOMAIN}/${location}/user/${id}`
+                    : `/${location}/user/${id}`,
+                  tag: `questionnaire-filled-${id}`,
                 })
               }
             }

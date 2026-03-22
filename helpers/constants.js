@@ -382,6 +382,7 @@ const DEFAULT_USERS_SECURITY = Object.freeze({
 
 const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
   telegram: { active: false, userName: null, id: null },
+  push: { active: false, subscriptions: [] },
   settings: { newEvents: false },
 })
 

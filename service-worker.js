@@ -8,7 +8,7 @@ import {
 } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 
-const workerVersion = '2026-03-06T15:45:00Z'
+const workerVersion = '2026-03-22T20:10:00Z'
 
 console.info('[ServiceWorker] Boot', {
   version: workerVersion,
@@ -77,3 +77,55 @@ registerRoute(
     ],
   })
 )
+
+self.addEventListener('push', (event) => {
+  if (!event?.data) return
+
+  let payload = {}
+  try {
+    payload = event.data.json()
+  } catch (error) {
+    payload = { body: event.data.text() }
+  }
+
+  const title = payload?.title || 'Половинка успеха'
+  const body = payload?.body || ''
+  const url = payload?.data?.url || '/'
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      tag: payload?.tag || 'pu-push',
+      icon: '/favicon.ico',
+      badge: '/favicon.ico',
+      data: {
+        url,
+      },
+    })
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+
+  const targetUrl = event.notification?.data?.url || '/'
+
+  event.waitUntil(
+    (async () => {
+      const openedClients = await clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+
+      for (const openedClient of openedClients) {
+        if (openedClient.url === targetUrl && 'focus' in openedClient) {
+          return openedClient.focus()
+        }
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl)
+      }
+    })()
+  )
+})

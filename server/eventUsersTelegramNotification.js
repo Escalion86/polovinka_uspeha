@@ -6,6 +6,11 @@ import subEventsSummator from '@helpers/subEventsSummator'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  supportsPushForUser,
+} from './pushNotifications'
 
 function convertTZ(date, location) {
   const timeZone = getTimeZoneByLocation(location)
@@ -55,11 +60,21 @@ const eventUsersTelegramNotification = async ({
             ? 'dev'
             : { $in: rolesIdsToEventUsersNotification },
         'notifications.settings.eventRegistration': true,
-        'notifications.telegram.active': true,
-        'notifications.telegram.id': {
-          $exists: true,
-          $ne: null,
-        },
+        $or: [
+          {
+            'notifications.telegram.active': true,
+            'notifications.telegram.id': {
+              $exists: true,
+              $ne: null,
+            },
+          },
+          {
+            'notifications.push.active': true,
+            'notifications.push.subscriptions.0': {
+              $exists: true,
+            },
+          },
+        ],
       })
       .lean()
 
@@ -291,27 +306,43 @@ const eventUsersTelegramNotification = async ({
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)
 
-    if (filteredTelegramIds.length === 0) return
-
-    const result = await sendTelegramMessage({
-      telegramIds: filteredTelegramIds,
-      text,
-      inline_keyboard: [
-        [
-          {
-            text: '\u{1F4C5} Мероприятие',
-            url: eventUrl,
-          },
-          userId
-            ? {
-                text: '\u{1F464} Пользователь',
-                url: process.env.DOMAIN + '/' + location + '/user/' + userId,
-              }
-            : undefined,
+    let result
+    if (filteredTelegramIds.length > 0) {
+      result = await sendTelegramMessage({
+        telegramIds: filteredTelegramIds,
+        text,
+        inline_keyboard: [
+          [
+            {
+              text: '\u{1F4C5} Мероприятие',
+              url: eventUrl,
+            },
+            userId
+              ? {
+                  text: '\u{1F464} Пользователь',
+                  url: process.env.DOMAIN + '/' + location + '/user/' + userId,
+                }
+              : undefined,
+          ],
         ],
-      ],
-      location,
-    })
+        location,
+      })
+    }
+
+    const usersWithPush = usersWithNotificationsOfEventUsersON.filter((user) =>
+      supportsPushForUser(user)
+    )
+    if (usersWithPush.length > 0) {
+      await notifyUsersWithPush({
+        db,
+        location,
+        users: usersWithPush,
+        title: 'Изменение записи на мероприятие',
+        text: pushTextFromHtml(text),
+        url: eventUrl,
+        tag: `event-users-${eventId}`,
+      })
+    }
 
     return result
   }

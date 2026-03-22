@@ -14,6 +14,11 @@ import {
   NEWSLETTER_SENDING_STATUSES,
 } from '@helpers/constantsNewsletters'
 import sendNewsletterMessages from '@server/sendNewsletterMessages'
+import {
+  notifyUsersWithPush,
+  pushTextFromHtml,
+  supportsPushForUser,
+} from '@server/pushNotifications'
 
 const buildScheduledMessageText = (message) =>
   convertHtmlToTelegramText(message?.text || '')
@@ -206,11 +211,25 @@ export default async function handler(req, res) {
                 { 'notifications.settings.remindDates': true },
               ],
               'notifications.settings.time': strTimeNow,
-              'notifications.telegram.active': true,
-              'notifications.telegram.id': {
-                $exists: true,
-                $ne: null,
-              },
+              $and: [
+                {
+                  $or: [
+                    {
+                      'notifications.telegram.active': true,
+                      'notifications.telegram.id': {
+                        $exists: true,
+                        $ne: null,
+                      },
+                    },
+                    {
+                      'notifications.push.active': true,
+                      'notifications.push.subscriptions.0': {
+                        $exists: true,
+                      },
+                    },
+                  ],
+                },
+              ],
             })
             .lean()
 
@@ -340,6 +359,25 @@ export default async function handler(req, res) {
                     // images,
                     inline_keyboard,
                     location,
+                  })
+                }
+                if (supportsPushForUser(usersToNotificate[index])) {
+                  const detailsUrl = notifications.settings.birthdays
+                    ? process.env.DOMAIN
+                      ? `${process.env.DOMAIN}/${location}/cabinet/birthdays`
+                      : `/${location}/cabinet/birthdays`
+                    : process.env.DOMAIN
+                      ? `${process.env.DOMAIN}/${location}/cabinet/remindDates`
+                      : `/${location}/cabinet/remindDates`
+
+                  await notifyUsersWithPush({
+                    db,
+                    location,
+                    users: [usersToNotificate[index]],
+                    title: 'Ежедневные уведомления',
+                    text: pushTextFromHtml(text),
+                    url: detailsUrl,
+                    tag: `daily-${location}-${strDateNow}`,
                   })
                 }
               }

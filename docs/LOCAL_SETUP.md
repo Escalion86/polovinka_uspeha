@@ -37,6 +37,12 @@ npm install
   - `DOMAIN`
   - `MODE`
   - `TELEGRAM_NOTIFICATION_DEV_ONLY`
+  - `PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY` (`true` -> push только для ролей `dev` и `president`)
+  - `WEB_PUSH_VAPID_PUBLIC_KEY`
+  - `WEB_PUSH_VAPID_PRIVATE_KEY`
+  - `WEB_PUSH_VAPID_SUBJECT`
+  - `NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY`
+  - `NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY` (должен совпадать с серверным флагом)
   - `DEEPSEEK_KEY`
 
 ## 4. Команды разработки
