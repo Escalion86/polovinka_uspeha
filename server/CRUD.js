@@ -881,6 +881,33 @@ export default async function handler(Schema, req, res, props = {}) {
           let updateData = { ...body.data }
           updateData = normalizeLegacyNotificationKeys(Schema, updateData)
           if (Schema === 'Users') {
+            const incomingPushActive = Boolean(
+              updateData?.notifications?.push?.active
+            )
+            const incomingPushSubscriptionsCount = Array.isArray(
+              updateData?.notifications?.push?.subscriptions
+            )
+              ? updateData.notifications.push.subscriptions.length
+              : 0
+            const oldPushActive = Boolean(oldData?.notifications?.push?.active)
+            const oldPushSubscriptionsCount = Array.isArray(
+              oldData?.notifications?.push?.subscriptions
+            )
+              ? oldData.notifications.push.subscriptions.length
+              : 0
+
+            console.log('[PushDebug][Server] CRUD Users PUT:incoming', {
+              userId: id,
+              role: oldData?.role || null,
+              incomingPushActive,
+              incomingPushSubscriptionsCount,
+              oldPushActive,
+              oldPushSubscriptionsCount,
+              pushDevPresidentOnly:
+                process.env.PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY === 'true',
+            })
+          }
+          if (Schema === 'Users') {
             updateData = sanitizePushNotificationsForUserData(
               updateData,
               oldData?.role
@@ -905,6 +932,21 @@ export default async function handler(Schema, req, res, props = {}) {
 
           if (!data) {
             return res?.status(400).json({ success: false })
+          }
+
+          if (Schema === 'Users') {
+            const savedPushActive = Boolean(data?.notifications?.push?.active)
+            const savedPushSubscriptionsCount = Array.isArray(
+              data?.notifications?.push?.subscriptions
+            )
+              ? data.notifications.push.subscriptions.length
+              : 0
+            console.log('[PushDebug][Server] CRUD Users PUT:saved', {
+              userId: id,
+              role: data?.role || null,
+              savedPushActive,
+              savedPushSubscriptionsCount,
+            })
           }
 
           if (Schema === 'Events' && MODE === 'production') {

@@ -65,6 +65,42 @@ const uint8ArrayToBase64 = (buffer) => {
   return btoa(binary)
 }
 
+const waitForServiceWorkerRegistration = async (timeoutMs = 8000) => {
+  if (!('serviceWorker' in navigator)) return null
+
+  const existingRegistration = await navigator.serviceWorker.getRegistration('/')
+  if (existingRegistration?.active) return existingRegistration
+
+  try {
+    const registered = await navigator.serviceWorker.register('/sw.js')
+    if (registered?.active || registered?.installing || registered?.waiting) {
+      return registered
+    }
+  } catch (error) {
+    console.log('waitForServiceWorkerRegistration register /sw.js error', error)
+  }
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => resolve(null), timeoutMs)
+  })
+
+  const readyRegistration = await Promise.race([
+    navigator.serviceWorker.ready,
+    timeoutPromise,
+  ])
+
+  if (readyRegistration?.active) return readyRegistration
+
+  const finalRegistration = await navigator.serviceWorker.getRegistration('/')
+  return finalRegistration || null
+}
+
+const shortEndpoint = (endpoint) => {
+  const value = String(endpoint || '')
+  if (!value) return null
+  return value.length > 36 ? `...${value.slice(-36)}` : value
+}
+
 const LoggedUserNotificationsContent = (props) => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
@@ -171,6 +207,16 @@ const LoggedUserNotificationsContent = (props) => {
   }, [])
 
   const subscribePush = useCallback(async () => {
+    console.log('[PushDebug][Client] subscribePush:start', {
+      pushConfigured,
+      canUsePushSettings,
+      role: loggedUserActiveRole?._id,
+      isSecureContext: typeof window !== 'undefined' ? window.isSecureContext : null,
+      hasServiceWorker:
+        typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
+      hasPushManager: typeof window !== 'undefined' && 'PushManager' in window,
+    })
+
     if (!pushConfigured) {
       error('Push-уведомления временно не настроены на сервере')
       return null
@@ -185,15 +231,32 @@ const LoggedUserNotificationsContent = (props) => {
     }
 
     const permission = await Notification.requestPermission()
+    console.log('[PushDebug][Client] subscribePush:permission', { permission })
     if (permission !== 'granted') {
       error('Браузер не разрешил push-уведомления')
       return null
     }
 
-    const registration = await navigator.serviceWorker.ready
+    const registration = await waitForServiceWorkerRegistration()
+    console.log('[PushDebug][Client] subscribePush:registration', {
+      hasRegistration: !!registration,
+      hasActive: !!registration?.active,
+      scope: registration?.scope || null,
+    })
+    if (!registration) {
+      error(
+        'Service Worker не готов. В dev-режиме push отключен, проверьте production-сборку'
+      )
+      return null
+    }
+
     const existingSubscription = await registration.pushManager.getSubscription()
     if (existingSubscription) {
-      return serializePushSubscription(existingSubscription)
+      const serialized = serializePushSubscription(existingSubscription)
+      console.log('[PushDebug][Client] subscribePush:existingSubscription', {
+        endpoint: shortEndpoint(serialized?.endpoint),
+      })
+      return serialized
     }
 
     const createdSubscription = await registration.pushManager.subscribe({
@@ -201,13 +264,25 @@ const LoggedUserNotificationsContent = (props) => {
       applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
     })
 
-    return serializePushSubscription(createdSubscription)
-  }, [error, pushConfigured, serializePushSubscription, vapidPublicKey])
+    const serialized = serializePushSubscription(createdSubscription)
+    console.log('[PushDebug][Client] subscribePush:createdSubscription', {
+      endpoint: shortEndpoint(serialized?.endpoint),
+    })
+    return serialized
+  }, [
+    canUsePushSettings,
+    error,
+    loggedUserActiveRole?._id,
+    pushConfigured,
+    serializePushSubscription,
+    vapidPublicKey,
+  ])
 
   const unsubscribePush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
 
-    const registration = await navigator.serviceWorker.ready
+    const registration = await waitForServiceWorkerRegistration()
+    if (!registration) return
     const existingSubscription = await registration.pushManager.getSubscription()
     if (existingSubscription) {
       await existingSubscription.unsubscribe()
@@ -290,9 +365,19 @@ const LoggedUserNotificationsContent = (props) => {
       successMessage = 'Данные уведомлений обновлены успешно',
       showSuccess = true,
     } = {}) => {
+      let savedUser = null
       const preparedNotifications = normalizeNotificationsForSave(
         notificationsToSave
       )
+      console.log('[PushDebug][Client] saveNotifications:request', {
+        userId: loggedUserActive?._id,
+        role: loggedUserActiveRole?._id,
+        consentToMailing: consentToMailingToSave,
+        pushActive: Boolean(preparedNotifications?.push?.active),
+        pushSubscriptionsCount: Array.isArray(preparedNotifications?.push?.subscriptions)
+          ? preparedNotifications.push.subscriptions.length
+          : 0,
+      })
 
       await putData(
         `/api/${location}/users/${loggedUserActive._id}`,
@@ -301,6 +386,20 @@ const LoggedUserNotificationsContent = (props) => {
           consentToMailing: consentToMailingToSave,
         },
         (data) => {
+          savedUser = data
+          console.log('[PushDebug][Client] saveNotifications:response', {
+            userId: data?._id,
+            role: data?.role,
+            pushActive: Boolean(data?.notifications?.push?.active),
+            pushSubscriptionsCount: Array.isArray(
+              data?.notifications?.push?.subscriptions
+            )
+              ? data.notifications.push.subscriptions.length
+              : 0,
+            pushEndpoint: shortEndpoint(
+              data?.notifications?.push?.subscriptions?.[0]?.endpoint
+            ),
+          })
           setLoggedUserActive(data)
           setUserInUsersState(data)
           if (showSuccess) {
@@ -312,18 +411,24 @@ const LoggedUserNotificationsContent = (props) => {
           setIsWaitingToResponse(false)
         },
         () => {
+          console.log('[PushDebug][Client] saveNotifications:error', {
+            userId: loggedUserActive?._id,
+          })
           error('Ошибка обновления данных уведомлений')
           setIsWaitingToResponse(false)
         },
         false,
         loggedUserActive._id
       )
+
+      return savedUser
     },
     [
       consentToMailing,
       error,
       location,
       loggedUserActive?._id,
+      loggedUserActiveRole?._id,
       normalizeNotificationsForSave,
       notifications,
       router,
@@ -339,6 +444,14 @@ const LoggedUserNotificationsContent = (props) => {
     setIsPushBusy(true)
     try {
       const isActiveNow = Boolean(notifications?.push?.active)
+      console.log('[PushDebug][Client] togglePushNotifications:click', {
+        isActiveNow,
+        role: loggedUserActiveRole?._id,
+        canUsePushSettings,
+        localSubscriptionsCount: Array.isArray(notifications?.push?.subscriptions)
+          ? notifications.push.subscriptions.length
+          : 0,
+      })
       if (!isActiveNow) {
         const subscription = await subscribePush()
         if (!subscription) return
@@ -365,10 +478,26 @@ const LoggedUserNotificationsContent = (props) => {
         }
 
         setNotifications(nextNotifications)
-        await saveNotifications({
+        const savedUser = await saveNotifications({
           notificationsToSave: nextNotifications,
           successMessage: 'Push уведомления подключены',
         })
+        const savedPush = savedUser?.notifications?.push
+        const savedActive = Boolean(savedPush?.active)
+        const savedSubscriptionsCount = Array.isArray(savedPush?.subscriptions)
+          ? savedPush.subscriptions.length
+          : 0
+        if (!savedActive || savedSubscriptionsCount === 0) {
+          console.log('[PushDebug][Client] togglePushNotifications:serverRejectedOrLost', {
+            savedActive,
+            savedSubscriptionsCount,
+            role: loggedUserActiveRole?._id,
+            pushDevPresidentOnly,
+          })
+          error(
+            'Push не сохранился на сервере. Проверьте роль пользователя и env-флаги PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY / NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY'
+          )
+        }
       } else {
         await unsubscribePush()
         const nextNotifications = {
@@ -386,14 +515,19 @@ const LoggedUserNotificationsContent = (props) => {
       }
     } catch (toggleError) {
       console.log('togglePushNotifications error', toggleError)
-      error('Не удалось изменить настройку push-уведомлений')
+      error(
+        `Не удалось изменить настройку push-уведомлений${toggleError?.message ? `: ${toggleError.message}` : ''}`
+      )
     } finally {
       setIsPushBusy(false)
     }
   }, [
+    canUsePushSettings,
     error,
     isPushBusy,
+    loggedUserActiveRole?._id,
     notifications,
+    pushDevPresidentOnly,
     saveNotifications,
     subscribePush,
     unsubscribePush,

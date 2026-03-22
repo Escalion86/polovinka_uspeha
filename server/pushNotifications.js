@@ -67,9 +67,25 @@ export const sanitizePushNotificationsForUserData = (
       ? { ...userData.notifications }
       : {}
 
+  const incomingPushActive = Boolean(notifications?.push?.active)
+  const incomingPushSubscriptionsCount = Array.isArray(
+    notifications?.push?.subscriptions
+  )
+    ? notifications.push.subscriptions.length
+    : 0
+
   notifications.push = {
     active: false,
     subscriptions: [],
+  }
+
+  if (incomingPushActive || incomingPushSubscriptionsCount > 0) {
+    console.log('[PushDebug][Server] sanitizePushNotificationsForUserData:blocked', {
+      role: String(role || ''),
+      pushDevPresidentOnly: PUSH_DEV_PRESIDENT_ONLY,
+      incomingPushActive,
+      incomingPushSubscriptionsCount,
+    })
   }
 
   return {
