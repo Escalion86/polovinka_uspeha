@@ -1,5 +1,7 @@
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
+import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useMemo, useState } from 'react'
 
 const NOTIFICATION_TYPE_TITLES = {
   newEvents: 'Новые мероприятия',
@@ -49,14 +51,59 @@ const notificationTypeLabel = (item) => {
 
 const notificationsHistoryFunc = () => {
   const NotificationsHistoryModal = () => {
-    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-    const history = normalizeHistoryList(
-      loggedUserActive?.notifications?.history ??
-        loggedUserActive?.notifications?.push?.history
+    const location = useAtomValue(locationAtom)
+    const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+    const [historySource, setHistorySource] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState('')
+
+    const history = useMemo(
+      () => normalizeHistoryList(historySource),
+      [historySource]
     )
+
+    useEffect(() => {
+      let isMounted = true
+
+      const loadHistory = async () => {
+        const userId = String(loggedUserActive?._id || '')
+        if (!userId || !location) {
+          setIsLoading(false)
+          setHistorySource([])
+          return
+        }
+        setHistorySource([])
+        setLoadError('')
+
+        try {
+          const response = await fetch(`/api/${location}/users/${userId}`)
+          const json = await response.json()
+          const user = json?.success ? json?.data : null
+
+          if (!isMounted || !user?._id) return
+          setLoggedUserActive(user)
+          setHistorySource(
+            user?.notifications?.history ?? user?.notifications?.push?.history
+          )
+        } catch (error) {
+          if (!isMounted) return
+          setLoadError('Не удалось обновить историю уведомлений')
+        } finally {
+          if (isMounted) setIsLoading(false)
+        }
+      }
+
+      loadHistory()
+
+      return () => {
+        isMounted = false
+      }
+    }, [location, loggedUserActive?._id, setLoggedUserActive])
 
     return (
       <div className="w-full max-h-[70vh] overflow-auto pr-1">
+        {isLoading ? <div className="text-sm text-gray-600 mb-2">Загрузка истории...</div> : null}
+        {loadError ? <div className="text-sm text-danger mb-2">{loadError}</div> : null}
         {history.length === 0 ? (
           <div className="text-sm text-gray-600">Пока нет сохраненных уведомлений</div>
         ) : (
