@@ -67,7 +67,7 @@ const uint8ArrayToBase64 = (buffer) => {
 
 const waitForServiceWorkerRegistration = async ({
   timeoutMs = 8000,
-  scriptUrls = ['/sw.js'],
+  scriptUrls = ['/push-sw.js'],
 } = {}) => {
   if (!('serviceWorker' in navigator)) return null
 
@@ -252,7 +252,14 @@ const LoggedUserNotificationsContent = (props) => {
       return null
     }
 
-    const swCandidates = [`/${location}/sw.js`, '/sw.js', `/${location}/service-worker.js`, '/service-worker.js']
+    const swCandidates = [
+      `/${location}/push-sw.js`,
+      '/push-sw.js',
+      `/${location}/sw.js`,
+      '/sw.js',
+      `/${location}/service-worker.js`,
+      '/service-worker.js',
+    ]
     const swResult = await waitForServiceWorkerRegistration({
       scriptUrls: swCandidates,
     })
@@ -303,7 +310,14 @@ const LoggedUserNotificationsContent = (props) => {
   const unsubscribePush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
 
-    const swCandidates = [`/${location}/sw.js`, '/sw.js', `/${location}/service-worker.js`, '/service-worker.js']
+    const swCandidates = [
+      `/${location}/push-sw.js`,
+      '/push-sw.js',
+      `/${location}/sw.js`,
+      '/sw.js',
+      `/${location}/service-worker.js`,
+      '/service-worker.js',
+    ]
     const swResult = await waitForServiceWorkerRegistration({
       scriptUrls: swCandidates,
     })
