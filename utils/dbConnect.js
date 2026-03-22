@@ -323,6 +323,13 @@ async function dbConnect(location) {
     )
   }
 
+  if (!connections[location].models?.NotificationsHistory) {
+    connections[location].model(
+      'NotificationsHistory',
+      mongoose.Schema(notificationsHistorySchema, { timestamps: true })
+    )
+  }
+
   // test[location] = (test[location] ?? 0) + 1
 
   // console.log('connections :>> ', Object.keys(connections))
