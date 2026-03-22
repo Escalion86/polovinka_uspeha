@@ -1,5 +1,9 @@
 import Button from '@components/Button'
-import { EventItemFromId, ServiceItemFromId, UserItemFromId } from '@components/ItemCards'
+import {
+  EventItemFromId,
+  ServiceItemFromId,
+  UserItemFromId,
+} from '@components/ItemCards'
 import Note from '@components/Note'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
@@ -55,11 +59,17 @@ const normalizeHistoryList = (value) => {
       tag: String(item?.tag || ''),
       location: String(item?.location || ''),
       type: String(item?.type || ''),
-      types: Array.isArray(item?.types) ? item.types.map(String).filter(Boolean) : [],
+      types: Array.isArray(item?.types)
+        ? item.types.map(String).filter(Boolean)
+        : [],
       channels:
-        item?.channels && typeof item.channels === 'object' ? item.channels : {},
+        item?.channels && typeof item.channels === 'object'
+          ? item.channels
+          : {},
       entities:
-        item?.entities && typeof item.entities === 'object' ? item.entities : {},
+        item?.entities && typeof item.entities === 'object'
+          ? item.entities
+          : {},
       createdAt: item?.createdAt ? new Date(item.createdAt) : null,
     }))
     .filter((item) => item.createdAt && !Number.isNaN(item.createdAt.getTime()))
@@ -78,11 +88,12 @@ const notificationTypeLabel = (item) => {
 }
 
 const getItemTypes = (item) => {
-  const types = Array.isArray(item?.types) && item.types.length > 0
-    ? item.types
-    : item?.type
-      ? [item.type]
-      : []
+  const types =
+    Array.isArray(item?.types) && item.types.length > 0
+      ? item.types
+      : item?.type
+        ? [item.type]
+        : []
   return types.map(String).filter(Boolean)
 }
 
@@ -205,7 +216,9 @@ const notificationsHistoryFunc = () => {
         setLoadError('')
 
         try {
-          const response = await fetch(`/api/${location}/notifications/history?limit=200`)
+          const response = await fetch(
+            `/api/${location}/notifications/history?limit=200`
+          )
           const json = await response.json()
           if (!response.ok) {
             console.log('[NotificationsHistory][Client] fetch failed', {
@@ -213,13 +226,15 @@ const notificationsHistoryFunc = () => {
               body: json,
             })
             const message =
-              json?.data?.error?.message || 'Не удалось получить историю уведомлений'
+              json?.data?.error?.message ||
+              'Не удалось получить историю уведомлений'
             setLoadError(message)
             return
           }
           if (!json?.success) {
             const message =
-              json?.data?.error?.message || 'Не удалось получить историю уведомлений'
+              json?.data?.error?.message ||
+              'Не удалось получить историю уведомлений'
             setLoadError(message)
             return
           }
@@ -290,7 +305,9 @@ const notificationsHistoryFunc = () => {
               )}
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-bold text-[#4b0f1c]">Типы уведомлений</div>
+                <div className="text-sm font-bold text-[#4b0f1c]">
+                  Типы уведомлений
+                </div>
                 <button
                   type="button"
                   className="text-xs font-semibold text-[#6b1f2a] hover:underline"
@@ -325,12 +342,18 @@ const notificationsHistoryFunc = () => {
           </div>
         </div>
 
-        {isLoading ? <div className="text-sm text-gray-600 mb-2">Загрузка истории...</div> : null}
-        {loadError ? <div className="text-sm text-danger mb-2">{loadError}</div> : null}
+        {isLoading ? (
+          <div className="mb-2 text-sm text-gray-600">Загрузка истории...</div>
+        ) : null}
+        {loadError ? (
+          <div className="mb-2 text-sm text-danger">{loadError}</div>
+        ) : null}
         {filteredHistory.length === 0 ? (
-          <div className="text-sm text-gray-600">Пока нет сохраненных уведомлений</div>
+          <div className="text-sm text-gray-600">
+            Пока нет сохраненных уведомлений
+          </div>
         ) : (
-          filteredHistory.map((item, index) => (
+          filteredHistory.map((item, index) =>
             (() => {
               const eventId = resolveEventId(item)
               const userIds = resolveUserIds(item)
@@ -348,17 +371,17 @@ const notificationsHistoryFunc = () => {
               return (
                 <div
                   key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
-                  className="p-3 mb-2 bg-white border rounded-md border-gray-200"
+                  className="p-3 mb-2 bg-white border border-gray-200 rounded-md"
                 >
-                  <div className="text-xs text-gray-600 mb-2">
+                  <div className="mb-2 text-xs text-gray-600">
                     {item.createdAt?.toLocaleString?.('ru-RU') || ''}
                   </div>
                   <div className="font-semibold">{item.title}</div>
-                  <div className="text-xs text-gray-600 mt-1">
+                  <div className="mt-1 text-xs text-gray-600">
                     Тип: {notificationTypeLabel(item)}
                   </div>
                   {item.body ? (
-                    <Note noItalic className="whitespace-pre-line mt-2 mb-1">
+                    <Note noItalic className="mt-2 mb-1 whitespace-pre-line">
                       {item.body}
                     </Note>
                   ) : null}
@@ -366,18 +389,16 @@ const notificationsHistoryFunc = () => {
                   {isEventRegistration && (
                     <div className="mt-2 space-y-2">
                       {eventId ? (
-                        <div className="border border-gray-500 rounded-sm overflow-hidden">
-                          <EventItemFromId
-                            eventId={eventId}
-                            bordered
-                            onClick={() => modalsFunc.event.view(eventId)}
-                          />
-                        </div>
+                        <EventItemFromId
+                          eventId={eventId}
+                          bordered
+                          onClick={() => modalsFunc.event.view(eventId)}
+                        />
                       ) : null}
                       {userIds.map((userId) => (
                         <div
                           key={`${item.notificationId || 'event-reg'}-${userId}`}
-                          className="border border-gray-500 rounded-sm overflow-hidden"
+                          className="overflow-hidden border border-gray-500 rounded-sm"
                         >
                           <UserItemFromId
                             userId={userId}
@@ -400,7 +421,7 @@ const notificationsHistoryFunc = () => {
                       {userIds.map((userId) => (
                         <div
                           key={`${item.notificationId || 'service-reg'}-${userId}`}
-                          className="border border-gray-500 rounded-sm overflow-hidden"
+                          className="overflow-hidden border border-gray-500 rounded-sm"
                         >
                           <UserItemFromId
                             userId={userId}
@@ -422,11 +443,10 @@ const notificationsHistoryFunc = () => {
                       />
                     </div>
                   )}
-
                 </div>
               )
             })()
-          ))
+          )
         )}
       </div>
     )
