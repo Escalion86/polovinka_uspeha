@@ -54,6 +54,17 @@ const normalizePushSubscription = (subscription) => {
   }
 }
 
+const uint8ArrayToBase64 = (buffer) => {
+  if (!buffer) return ''
+  let binary = ''
+  const bytes = new Uint8Array(buffer)
+  const len = bytes.byteLength
+  for (let i = 0; i < len; i += 1) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
 const LoggedUserNotificationsContent = (props) => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
@@ -133,6 +144,32 @@ const LoggedUserNotificationsContent = (props) => {
     loggedUserActiveRole?._id === 'dev' ||
     loggedUserActiveRole?._id === 'president'
 
+  const serializePushSubscription = useCallback((subscription) => {
+    if (!subscription) return null
+
+    const json =
+      typeof subscription?.toJSON === 'function'
+        ? subscription.toJSON()
+        : subscription
+
+    const fallbackP256dh =
+      typeof subscription?.getKey === 'function'
+        ? uint8ArrayToBase64(subscription.getKey('p256dh'))
+        : ''
+    const fallbackAuth =
+      typeof subscription?.getKey === 'function'
+        ? uint8ArrayToBase64(subscription.getKey('auth'))
+        : ''
+
+    return normalizePushSubscription({
+      ...json,
+      keys: {
+        p256dh: json?.keys?.p256dh || fallbackP256dh,
+        auth: json?.keys?.auth || fallbackAuth,
+      },
+    })
+  }, [])
+
   const subscribePush = useCallback(async () => {
     if (!pushConfigured) {
       error('Push-уведомления временно не настроены на сервере')
@@ -156,7 +193,7 @@ const LoggedUserNotificationsContent = (props) => {
     const registration = await navigator.serviceWorker.ready
     const existingSubscription = await registration.pushManager.getSubscription()
     if (existingSubscription) {
-      return normalizePushSubscription(existingSubscription.toJSON())
+      return serializePushSubscription(existingSubscription)
     }
 
     const createdSubscription = await registration.pushManager.subscribe({
@@ -164,8 +201,8 @@ const LoggedUserNotificationsContent = (props) => {
       applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
     })
 
-    return normalizePushSubscription(createdSubscription.toJSON())
-  }, [error, pushConfigured, vapidPublicKey])
+    return serializePushSubscription(createdSubscription)
+  }, [error, pushConfigured, serializePushSubscription, vapidPublicKey])
 
   const unsubscribePush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
@@ -176,56 +213,6 @@ const LoggedUserNotificationsContent = (props) => {
       await existingSubscription.unsubscribe()
     }
   }, [])
-
-  const togglePushNotifications = useCallback(async () => {
-    if (isPushBusy) return
-
-    setIsPushBusy(true)
-    try {
-      const isActiveNow = Boolean(notifications?.push?.active)
-      if (!isActiveNow) {
-        const subscription = await subscribePush()
-        if (!subscription) return
-
-        setNotifications((state) => {
-          const existingSubscriptions = Array.isArray(
-            state?.push?.subscriptions
-          )
-            ? state.push.subscriptions
-            : []
-          const subscriptionsMap = new Map(
-            existingSubscriptions
-              .map((item) => normalizePushSubscription(item))
-              .filter(Boolean)
-              .map((item) => [item.endpoint, item])
-          )
-          subscriptionsMap.set(subscription.endpoint, subscription)
-
-          return {
-            ...state,
-            push: {
-              active: true,
-              subscriptions: Array.from(subscriptionsMap.values()),
-            },
-          }
-        })
-      } else {
-        await unsubscribePush()
-        setNotifications((state) => ({
-          ...state,
-          push: {
-            ...(state?.push ?? {}),
-            active: false,
-          },
-        }))
-      }
-    } catch (toggleError) {
-      console.log('togglePushNotifications error', toggleError)
-      error('Не удалось изменить настройку push-уведомлений')
-    } finally {
-      setIsPushBusy(false)
-    }
-  }, [error, isPushBusy, notifications?.push?.active, subscribePush, unsubscribePush])
 
   const toggleNotificationsSettings = (key) =>
     setNotifications((state) => ({
@@ -274,43 +261,151 @@ const LoggedUserNotificationsContent = (props) => {
     setIsPushAvailable(available)
   }, [])
 
+  const normalizeNotificationsForSave = useCallback(
+    (notificationsSource = notifications) => {
+      const preparedNotifications = {
+        ...notificationsSource,
+        settings: {
+          ...(notificationsSource?.settings ?? {}),
+        },
+      }
+      if (
+        typeof preparedNotifications.settings.newEvents !== 'boolean' &&
+        typeof preparedNotifications.settings.newEventsByTags === 'boolean'
+      ) {
+        preparedNotifications.settings.newEvents =
+          preparedNotifications.settings.newEventsByTags
+      }
+      delete preparedNotifications.settings.newEventsByTags
+      return preparedNotifications
+    },
+    [notifications]
+  )
+
+  const saveNotifications = useCallback(
+    async ({
+      notificationsToSave = notifications,
+      consentToMailingToSave = consentToMailing,
+      redirectToUpcoming = false,
+      successMessage = 'Данные уведомлений обновлены успешно',
+      showSuccess = true,
+    } = {}) => {
+      const preparedNotifications = normalizeNotificationsForSave(
+        notificationsToSave
+      )
+
+      await putData(
+        `/api/${location}/users/${loggedUserActive._id}`,
+        {
+          notifications: preparedNotifications,
+          consentToMailing: consentToMailingToSave,
+        },
+        (data) => {
+          setLoggedUserActive(data)
+          setUserInUsersState(data)
+          if (showSuccess) {
+            success(successMessage)
+          }
+          if (redirectToUpcoming) {
+            router.push(`/${location}/cabinet/eventsUpcoming`)
+          }
+          setIsWaitingToResponse(false)
+        },
+        () => {
+          error('Ошибка обновления данных уведомлений')
+          setIsWaitingToResponse(false)
+        },
+        false,
+        loggedUserActive._id
+      )
+    },
+    [
+      consentToMailing,
+      error,
+      location,
+      loggedUserActive?._id,
+      normalizeNotificationsForSave,
+      notifications,
+      router,
+      setLoggedUserActive,
+      setUserInUsersState,
+      success,
+    ]
+  )
+
+  const togglePushNotifications = useCallback(async () => {
+    if (isPushBusy) return
+
+    setIsPushBusy(true)
+    try {
+      const isActiveNow = Boolean(notifications?.push?.active)
+      if (!isActiveNow) {
+        const subscription = await subscribePush()
+        if (!subscription) return
+
+        const existingSubscriptions = Array.isArray(
+          notifications?.push?.subscriptions
+        )
+          ? notifications.push.subscriptions
+          : []
+        const subscriptionsMap = new Map(
+          existingSubscriptions
+            .map((item) => normalizePushSubscription(item))
+            .filter(Boolean)
+            .map((item) => [item.endpoint, item])
+        )
+        subscriptionsMap.set(subscription.endpoint, subscription)
+
+        const nextNotifications = {
+          ...notifications,
+          push: {
+            active: true,
+            subscriptions: Array.from(subscriptionsMap.values()),
+          },
+        }
+
+        setNotifications(nextNotifications)
+        await saveNotifications({
+          notificationsToSave: nextNotifications,
+          successMessage: 'Push уведомления подключены',
+        })
+      } else {
+        await unsubscribePush()
+        const nextNotifications = {
+          ...notifications,
+          push: {
+            ...(notifications?.push ?? {}),
+            active: false,
+          },
+        }
+        setNotifications(nextNotifications)
+        await saveNotifications({
+          notificationsToSave: nextNotifications,
+          successMessage: 'Push уведомления отключены',
+        })
+      }
+    } catch (toggleError) {
+      console.log('togglePushNotifications error', toggleError)
+      error('Не удалось изменить настройку push-уведомлений')
+    } finally {
+      setIsPushBusy(false)
+    }
+  }, [
+    error,
+    isPushBusy,
+    notifications,
+    saveNotifications,
+    subscribePush,
+    unsubscribePush,
+  ])
+
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
-    const preparedNotifications = {
-      ...notifications,
-      settings: {
-        ...(notifications?.settings ?? {}),
-      },
-    }
-    if (
-      typeof preparedNotifications.settings.newEvents !== 'boolean' &&
-      typeof preparedNotifications.settings.newEventsByTags === 'boolean'
-    ) {
-      preparedNotifications.settings.newEvents =
-        preparedNotifications.settings.newEventsByTags
-    }
-    delete preparedNotifications.settings.newEventsByTags
-
-    await putData(
-      `/api/${location}/users/${loggedUserActive._id}`,
-      {
-        notifications: preparedNotifications,
-        consentToMailing,
-      },
-      (data) => {
-        setLoggedUserActive(data)
-        setUserInUsersState(data)
-        success('Данные уведомлений обновлены успешно')
-        router.push(`/${location}/cabinet/eventsUpcoming`)
-        setIsWaitingToResponse(false)
-      },
-      () => {
-        error('Ошибка обновления данных уведомлений')
-        setIsWaitingToResponse(false)
-      },
-      false,
-      loggedUserActive._id
-    )
+    await saveNotifications({
+      notificationsToSave: notifications,
+      consentToMailingToSave: consentToMailing,
+      redirectToUpcoming: true,
+    })
   }
 
   useEffect(() => {
@@ -380,7 +475,7 @@ const LoggedUserNotificationsContent = (props) => {
           <div className="flex flex-wrap items-center gap-x-2">
             {isPushAvailable && canUsePushSettings && (
               <YesNoPicker
-                label="Push-уведомления в браузере"
+                label="Push уведомления"
                 value={!!notifications?.push?.active}
                 readOnly={isPushBusy || !pushConfigured}
                 onChange={togglePushNotifications}
