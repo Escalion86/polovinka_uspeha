@@ -54,6 +54,22 @@ const normalizePushSubscription = (subscription) => {
   }
 }
 
+const normalizePushSubscriptionsList = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizePushSubscription(item))
+      .filter(Boolean)
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value)
+      .map((item) => normalizePushSubscription(item))
+      .filter(Boolean)
+  }
+
+  return []
+}
+
 const uint8ArrayToBase64 = (buffer) => {
   if (!buffer) return ''
   let binary = ''
@@ -186,6 +202,10 @@ const LoggedUserNotificationsContent = (props) => {
         push: {
           ...DEFAULT_USER.notifications.push,
           ...(source?.push ?? {}),
+          active: Boolean(source?.push?.active),
+          subscriptions: normalizePushSubscriptionsList(
+            source?.push?.subscriptions
+          ),
         },
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
@@ -398,6 +418,15 @@ const LoggedUserNotificationsContent = (props) => {
   )
 
   useEffect(() => {
+    const sourcePush = loggedUserActive?.notifications?.push
+    console.log('[PushDebug][Client] prepareNotifications:source', {
+      userId: loggedUserActive?._id,
+      role: loggedUserActive?.role,
+      sourcePushActive: Boolean(sourcePush?.active),
+      sourcePushSubscriptionsCount: normalizePushSubscriptionsList(
+        sourcePush?.subscriptions
+      ).length,
+    })
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
     setConsentToMailing(!!loggedUserActive?.consentToMailing)
   }, [
@@ -516,6 +545,78 @@ const LoggedUserNotificationsContent = (props) => {
       success,
     ]
   )
+
+  useEffect(() => {
+    const syncPushFromBrowser = async () => {
+      if (!canUsePushSettings || !isPushAvailable || !consentToMailing) return
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+
+      const swCandidates = [
+        `/${location}/push-sw.js`,
+        '/push-sw.js',
+        `/${location}/sw.js`,
+        '/sw.js',
+        `/${location}/service-worker.js`,
+        '/service-worker.js',
+      ]
+      const swResult = await waitForServiceWorkerRegistration({
+        scriptUrls: swCandidates,
+      })
+      const registration = swResult?.registration || null
+      if (!registration) return
+
+      const browserSubscription = await registration.pushManager.getSubscription()
+      const normalizedBrowserSubscription =
+        serializePushSubscription(browserSubscription)
+
+      if (!normalizedBrowserSubscription) return
+
+      const localSubscriptions = normalizePushSubscriptionsList(
+        notifications?.push?.subscriptions
+      )
+      const hasLocalEndpoint = localSubscriptions.some(
+        (item) => item?.endpoint === normalizedBrowserSubscription.endpoint
+      )
+      const localActive = Boolean(notifications?.push?.active)
+
+      if (localActive && hasLocalEndpoint) return
+
+      const nextNotifications = {
+        ...notifications,
+        push: {
+          active: true,
+          subscriptions: hasLocalEndpoint
+            ? localSubscriptions
+            : [...localSubscriptions, normalizedBrowserSubscription],
+        },
+      }
+
+      console.log('[PushDebug][Client] syncPushFromBrowser:recovered', {
+        userId: loggedUserActive?._id,
+        role: loggedUserActive?.role,
+        endpoint: shortEndpoint(normalizedBrowserSubscription.endpoint),
+      })
+
+      setNotifications(nextNotifications)
+      await saveNotifications({
+        notificationsToSave: nextNotifications,
+        successMessage: 'Push уведомления синхронизированы',
+        showSuccess: false,
+      })
+    }
+
+    void syncPushFromBrowser()
+  }, [
+    canUsePushSettings,
+    consentToMailing,
+    isPushAvailable,
+    location,
+    loggedUserActive?._id,
+    loggedUserActive?.role,
+    notifications,
+    saveNotifications,
+    serializePushSubscription,
+  ])
 
   const togglePushNotifications = useCallback(async () => {
     if (isPushBusy) return
