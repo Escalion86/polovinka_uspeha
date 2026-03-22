@@ -151,10 +151,6 @@ const notificationsHistoryFunc = () => {
     const [selectedTypes, setSelectedTypes] = useState([])
     const typeButtonRef = useRef(null)
     const typePanelRef = useRef(null)
-    const canSeeDebug =
-      ['dev', 'president', 'supervisor'].includes(
-        String(loggedUserActive?.role || '')
-      )
 
     const history = useMemo(
       () => normalizeHistoryList(historySource),
@@ -370,17 +366,24 @@ const notificationsHistoryFunc = () => {
                   {isEventRegistration && (
                     <div className="mt-2 space-y-2">
                       {eventId ? (
-                        <EventItemFromId
-                          eventId={eventId}
-                          onClick={() => modalsFunc.event.view(eventId)}
-                        />
+                        <div className="border border-gray-500 rounded-sm overflow-hidden">
+                          <EventItemFromId
+                            eventId={eventId}
+                            bordered
+                            onClick={() => modalsFunc.event.view(eventId)}
+                          />
+                        </div>
                       ) : null}
                       {userIds.map((userId) => (
-                        <UserItemFromId
+                        <div
                           key={`${item.notificationId || 'event-reg'}-${userId}`}
-                          userId={userId}
-                          onClick={() => modalsFunc.user.view(userId)}
-                        />
+                          className="border border-gray-500 rounded-sm overflow-hidden"
+                        >
+                          <UserItemFromId
+                            userId={userId}
+                            onClick={() => modalsFunc.user.view(userId)}
+                          />
+                        </div>
                       ))}
                     </div>
                   )}
@@ -390,15 +393,20 @@ const notificationsHistoryFunc = () => {
                       {serviceId ? (
                         <ServiceItemFromId
                           serviceId={serviceId}
+                          bordered
                           onClick={() => modalsFunc.service.view(serviceId)}
                         />
                       ) : null}
                       {userIds.map((userId) => (
-                        <UserItemFromId
+                        <div
                           key={`${item.notificationId || 'service-reg'}-${userId}`}
-                          userId={userId}
-                          onClick={() => modalsFunc.user.view(userId)}
-                        />
+                          className="border border-gray-500 rounded-sm overflow-hidden"
+                        >
+                          <UserItemFromId
+                            userId={userId}
+                            onClick={() => modalsFunc.user.view(userId)}
+                          />
+                        </div>
                       ))}
                     </div>
                   )}
@@ -415,30 +423,6 @@ const notificationsHistoryFunc = () => {
                     </div>
                   )}
 
-                  {canSeeDebug && (
-                    <details className="mt-2">
-                      <summary className="text-xs text-gray-600 cursor-pointer">
-                        Debug
-                      </summary>
-                      <pre className="mt-1 p-2 text-[11px] leading-4 overflow-auto rounded bg-gray-100 border border-gray-200">
-{JSON.stringify(
-  {
-    notificationId: item?.notificationId,
-    type: item?.type,
-    types: item?.types,
-    entities: item?.entities,
-    resolved: {
-      eventId,
-      userIds,
-      serviceId,
-    },
-  },
-  null,
-  2
-)}
-                      </pre>
-                    </details>
-                  )}
                 </div>
               )
             })()

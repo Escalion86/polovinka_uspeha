@@ -30,6 +30,7 @@ import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
 import productSelector from '@state/selectors/productSelector'
@@ -120,6 +121,7 @@ const UserItemBase = ({
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveRoleName = useAtomValue(loggedUserActiveRoleNameAtom)
+  const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
 
   if (!item) return null
 
@@ -231,7 +233,7 @@ const UserItemBase = ({
               }
             />
           )}
-          {item?.status === 'member' ? (
+          {item?.status === 'member' && loggedUserActiveStatus === 'member' ? (
             <UserStatusIcon
               status={item.status}
               size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
@@ -388,6 +390,7 @@ export const ServiceItem = ({
   item,
   onClick = null,
   active,
+  bordered = false,
   className,
   noBorder,
   style,
@@ -395,9 +398,9 @@ export const ServiceItem = ({
   <ItemContainer
     onClick={onClick}
     active={active}
-    className={cn('flex h-[50px]', className)}
+    className={cn('flex h-[50px]', bordered ? 'border border-gray-500' : '', className)}
     noPadding
-    noBorder={noBorder}
+    noBorder={noBorder || bordered}
     style={style}
   >
     {item?.images && item?.images.length > 0 && (
