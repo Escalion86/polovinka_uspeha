@@ -110,6 +110,42 @@ const waitForServiceWorkerRegistration = async ({
   return null
 }
 
+const waitForActiveServiceWorker = async (registration, timeoutMs = 8000) => {
+  if (!registration) return null
+  if (registration.active) return registration
+
+  const worker = registration.installing || registration.waiting
+  if (!worker) return null
+
+  const activatedRegistration = await new Promise((resolve) => {
+    const timeout = setTimeout(() => resolve(null), timeoutMs)
+
+    const finish = () => {
+      clearTimeout(timeout)
+      resolve(registration.active ? registration : null)
+    }
+
+    if (worker.state === 'activated') {
+      finish()
+      return
+    }
+
+    worker.addEventListener('statechange', () => {
+      if (worker.state === 'activated') {
+        finish()
+      }
+    })
+  })
+
+  if (activatedRegistration?.active) return activatedRegistration
+
+  const readyRegistration = await Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise((resolve) => setTimeout(() => resolve(null), timeoutMs)),
+  ])
+  return readyRegistration?.active ? readyRegistration : null
+}
+
 const shortEndpoint = (endpoint) => {
   const value = String(endpoint || '')
   if (!value) return null
@@ -264,21 +300,24 @@ const LoggedUserNotificationsContent = (props) => {
       scriptUrls: swCandidates,
     })
     const registration = swResult?.registration || null
+    const activeRegistration = await waitForActiveServiceWorker(registration)
     console.log('[PushDebug][Client] subscribePush:registration', {
       hasRegistration: !!registration,
       hasActive: !!registration?.active,
+      hasActiveAfterWait: !!activeRegistration?.active,
       scope: registration?.scope || null,
       usedScriptUrl: swResult?.scriptUrl || null,
       swCandidates,
     })
-    if (!registration) {
+    if (!activeRegistration) {
       error(
         `Service Worker не зарегистрирован. Проверить URL: ${swCandidates.join(', ')}`
       )
       return null
     }
 
-    const existingSubscription = await registration.pushManager.getSubscription()
+    const existingSubscription =
+      await activeRegistration.pushManager.getSubscription()
     if (existingSubscription) {
       const serialized = serializePushSubscription(existingSubscription)
       console.log('[PushDebug][Client] subscribePush:existingSubscription', {
@@ -287,7 +326,7 @@ const LoggedUserNotificationsContent = (props) => {
       return serialized
     }
 
-    const createdSubscription = await registration.pushManager.subscribe({
+    const createdSubscription = await activeRegistration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
     })
