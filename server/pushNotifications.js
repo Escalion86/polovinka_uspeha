@@ -170,45 +170,40 @@ export const notifyUsersWithPush = async ({
 
   const persistHistoryForUsers = async (deliveryStateByUserId) => {
     if (!db || !deliveryStateByUserId || deliveryStateByUserId.size === 0) return
+    const docsToInsert = []
     for (const [userId, deliveryState] of deliveryStateByUserId.entries()) {
-      try {
-        const historyItem = {
-          notificationId: crypto.randomUUID(),
-          type: resolvedTypes[0] || 'unknown',
-          types: resolvedTypes,
-          title: pushTitle,
-          body: pushBody,
-          url: data?.url || null,
-          tag: tag || `pu-${location || 'global'}`,
-          location: location || null,
-          createdAt: new Date(),
-          channels: {
-            push: {
-              attempted: Boolean(deliveryState?.attempted),
-              success: Boolean(deliveryState?.success),
-              error: deliveryState?.error || null,
-            },
+      docsToInsert.push({
+        recipientUserId: String(userId),
+        notificationId: crypto.randomUUID(),
+        type: resolvedTypes[0] || 'unknown',
+        types: resolvedTypes,
+        title: pushTitle,
+        body: pushBody,
+        url: data?.url || null,
+        tag: tag || `pu-${location || 'global'}`,
+        location: location || null,
+        deliveredAt: new Date(),
+        channels: {
+          push: {
+            attempted: Boolean(deliveryState?.attempted),
+            success: Boolean(deliveryState?.success),
+            error: deliveryState?.error || null,
           },
-        }
+        },
+      })
+    }
 
-        await db.model('Users').findByIdAndUpdate(userId, {
-          $push: {
-            'notifications.history': {
-              $each: [historyItem],
-              $slice: -200,
-            },
-            'notifications.push.history': {
-              $each: [historyItem],
-              $slice: -100,
-            },
-          },
-        })
-      } catch (error) {
-        console.log('notifyUsersWithPush history save error', {
-          userId,
-          error,
-        })
-      }
+    if (docsToInsert.length === 0) return
+
+    try {
+      await db.model('NotificationsHistory').insertMany(docsToInsert, {
+        ordered: false,
+      })
+    } catch (error) {
+      console.log('notifyUsersWithPush history save error', {
+        count: docsToInsert.length,
+        error,
+      })
     }
   }
 

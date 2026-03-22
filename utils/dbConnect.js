@@ -26,6 +26,7 @@ import testSchema from '@schemas/testSchema'
 import toolsTemplatesSchema from '@schemas/toolsTemplatesSchema'
 import usersSchema from '@schemas/usersSchema'
 import usersGoogleCalendarsSchema from '@schemas/usersGoogleCalendarsSchema'
+import notificationsHistorySchema from '@schemas/notificationsHistorySchema'
 import checkLocationValid from '@server/checkLocationValid'
 import newsLettersSchema from '@schemas/newsLettersSchema'
 import individualWeddingsSchema from '@schemas/individualWeddingsSchema'
@@ -315,6 +316,10 @@ async function dbConnect(location) {
     connections[location].model(
       'ScheduledChannels',
       mongoose.Schema(scheduledChannelsSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'NotificationsHistory',
+      mongoose.Schema(notificationsHistorySchema, { timestamps: true })
     )
   }
 

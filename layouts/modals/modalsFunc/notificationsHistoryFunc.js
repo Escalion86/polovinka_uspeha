@@ -1,6 +1,6 @@
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
 const NOTIFICATION_TYPE_TITLES = {
@@ -52,7 +52,7 @@ const notificationTypeLabel = (item) => {
 const notificationsHistoryFunc = () => {
   const NotificationsHistoryModal = () => {
     const location = useAtomValue(locationAtom)
-    const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [historySource, setHistorySource] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState('')
@@ -76,15 +76,12 @@ const notificationsHistoryFunc = () => {
         setLoadError('')
 
         try {
-          const response = await fetch(`/api/${location}/users/${userId}`)
+          const response = await fetch(`/api/${location}/notifications/history?limit=200`)
           const json = await response.json()
-          const user = json?.success ? json?.data : null
+          const history = json?.success ? json?.data?.history : null
 
-          if (!isMounted || !user?._id) return
-          setLoggedUserActive(user)
-          setHistorySource(
-            user?.notifications?.history ?? user?.notifications?.push?.history
-          )
+          if (!isMounted || !Array.isArray(history)) return
+          setHistorySource(history)
         } catch (error) {
           if (!isMounted) return
           setLoadError('Не удалось обновить историю уведомлений')
@@ -98,7 +95,7 @@ const notificationsHistoryFunc = () => {
       return () => {
         isMounted = false
       }
-    }, [location, loggedUserActive?._id, setLoggedUserActive])
+    }, [location, loggedUserActive?._id])
 
     return (
       <div className="w-full max-h-[70vh] overflow-auto pr-1">
