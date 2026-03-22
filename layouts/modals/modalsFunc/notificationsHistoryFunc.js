@@ -17,6 +17,27 @@ const NOTIFICATION_TYPE_TITLES = {
   remindDates: 'Особые даты',
 }
 
+const normalizeId = (value) => {
+  if (value === null || typeof value === 'undefined') return null
+  if (typeof value === 'string') {
+    const normalized = value.trim()
+    return normalized || null
+  }
+  if (typeof value === 'number') return String(value)
+
+  if (value && typeof value === 'object') {
+    if (typeof value.$oid === 'string' && value.$oid.trim()) {
+      return value.$oid.trim()
+    }
+    const stringified =
+      typeof value.toString === 'function' ? String(value.toString()) : ''
+    if (stringified && stringified !== '[object Object]') {
+      return stringified
+    }
+  }
+  return null
+}
+
 const normalizeHistoryList = (value) => {
   const source = Array.isArray(value)
     ? value
@@ -65,12 +86,14 @@ const getItemTypes = (item) => {
 
 const readEntityId = (item, key) => {
   const direct = item?.entities?.[key]
-  if (direct) return String(direct)
+  const directNormalized = normalizeId(direct)
+  if (directNormalized) return directNormalized
   const fromMap =
     item?.entities && typeof item.entities?.get === 'function'
       ? item.entities.get(key)
       : null
-  if (fromMap) return String(fromMap)
+  const fromMapNormalized = normalizeId(fromMap)
+  if (fromMapNormalized) return fromMapNormalized
   return null
 }
 
@@ -97,8 +120,11 @@ const resolveUserIds = (item) => {
     : value && typeof value === 'object'
       ? Object.values(value)
       : []
-  const normalized = list.map((id) => String(id || '')).filter(Boolean)
-  if (normalized.length > 0) return Array.from(new Set(normalized))
+  const normalized = list.map((id) => normalizeId(id)).filter(Boolean)
+  const validObjectIds = Array.from(new Set(normalized)).filter((id) =>
+    /^[a-fA-F0-9]{24}$/.test(String(id))
+  )
+  if (validObjectIds.length > 0) return validObjectIds
   const single = resolveUserId(item)
   return single ? [single] : []
 }
