@@ -65,19 +65,30 @@ const uint8ArrayToBase64 = (buffer) => {
   return btoa(binary)
 }
 
-const waitForServiceWorkerRegistration = async (timeoutMs = 8000) => {
+const waitForServiceWorkerRegistration = async ({
+  timeoutMs = 8000,
+  scriptUrls = ['/sw.js'],
+} = {}) => {
   if (!('serviceWorker' in navigator)) return null
 
   const existingRegistration = await navigator.serviceWorker.getRegistration('/')
   if (existingRegistration?.active) return existingRegistration
 
-  try {
-    const registered = await navigator.serviceWorker.register('/sw.js')
-    if (registered?.active || registered?.installing || registered?.waiting) {
-      return registered
+  for (const scriptUrl of scriptUrls) {
+    try {
+      const registered = await navigator.serviceWorker.register(scriptUrl)
+      if (registered?.active || registered?.installing || registered?.waiting) {
+        return { registration: registered, scriptUrl }
+      }
+    } catch (error) {
+      console.log(
+        '[PushDebug][Client] waitForServiceWorkerRegistration register error',
+        {
+          scriptUrl,
+          error,
+        }
+      )
     }
-  } catch (error) {
-    console.log('waitForServiceWorkerRegistration register /sw.js error', error)
   }
 
   const timeoutPromise = new Promise((resolve) => {
@@ -89,10 +100,14 @@ const waitForServiceWorkerRegistration = async (timeoutMs = 8000) => {
     timeoutPromise,
   ])
 
-  if (readyRegistration?.active) return readyRegistration
+  if (readyRegistration?.active) {
+    return { registration: readyRegistration, scriptUrl: null }
+  }
 
   const finalRegistration = await navigator.serviceWorker.getRegistration('/')
-  return finalRegistration || null
+  if (finalRegistration) return { registration: finalRegistration, scriptUrl: null }
+
+  return null
 }
 
 const shortEndpoint = (endpoint) => {
@@ -237,15 +252,21 @@ const LoggedUserNotificationsContent = (props) => {
       return null
     }
 
-    const registration = await waitForServiceWorkerRegistration()
+    const swCandidates = [`/${location}/sw.js`, '/sw.js', `/${location}/service-worker.js`, '/service-worker.js']
+    const swResult = await waitForServiceWorkerRegistration({
+      scriptUrls: swCandidates,
+    })
+    const registration = swResult?.registration || null
     console.log('[PushDebug][Client] subscribePush:registration', {
       hasRegistration: !!registration,
       hasActive: !!registration?.active,
       scope: registration?.scope || null,
+      usedScriptUrl: swResult?.scriptUrl || null,
+      swCandidates,
     })
     if (!registration) {
       error(
-        'Service Worker не готов. В dev-режиме push отключен, проверьте production-сборку'
+        `Service Worker не зарегистрирован. Проверить URL: ${swCandidates.join(', ')}`
       )
       return null
     }
@@ -273,6 +294,7 @@ const LoggedUserNotificationsContent = (props) => {
     canUsePushSettings,
     error,
     loggedUserActiveRole?._id,
+    location,
     pushConfigured,
     serializePushSubscription,
     vapidPublicKey,
@@ -281,13 +303,17 @@ const LoggedUserNotificationsContent = (props) => {
   const unsubscribePush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
 
-    const registration = await waitForServiceWorkerRegistration()
+    const swCandidates = [`/${location}/sw.js`, '/sw.js', `/${location}/service-worker.js`, '/service-worker.js']
+    const swResult = await waitForServiceWorkerRegistration({
+      scriptUrls: swCandidates,
+    })
+    const registration = swResult?.registration || null
     if (!registration) return
     const existingSubscription = await registration.pushManager.getSubscription()
     if (existingSubscription) {
       await existingSubscription.unsubscribe()
     }
-  }, [])
+  }, [location])
 
   const toggleNotificationsSettings = (key) =>
     setNotifications((state) => ({
