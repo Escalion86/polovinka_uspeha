@@ -48,6 +48,10 @@ const notificationsHistorySchema = {
     type: Object,
     default: {},
   },
+  entities: {
+    type: Object,
+    default: {},
+  },
   deliveredAt: {
     type: Date,
     default: () => new Date(),

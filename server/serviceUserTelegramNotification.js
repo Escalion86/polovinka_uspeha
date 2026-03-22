@@ -112,6 +112,10 @@ const serviceUserTelegramNotification = async ({
         url: serviceUrl,
         tag: `service-registration-${serviceId}`,
         notificationType: 'serviceRegistration',
+        entities: {
+          serviceId: String(serviceId),
+          userId: String(userId),
+        },
       })
     }
 

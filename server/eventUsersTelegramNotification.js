@@ -342,6 +342,10 @@ const eventUsersTelegramNotification = async ({
         url: eventUrl,
         tag: `event-users-${eventId}`,
         notificationType: 'eventRegistration',
+        entities: {
+          eventId: String(eventId),
+          userId: userId ? String(userId) : null,
+        },
       })
     }
 

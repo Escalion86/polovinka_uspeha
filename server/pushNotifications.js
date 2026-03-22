@@ -139,6 +139,7 @@ export const notifyUsersWithPush = async ({
   tag,
   notificationType = 'unknown',
   notificationTypes = [],
+  entities = {},
 }) => {
   if (!Array.isArray(users) || users.length === 0) {
     return { success: true, successCount: 0, errorCount: 0 }
@@ -209,6 +210,12 @@ export const notifyUsersWithPush = async ({
       location: location || null,
       deliveredAt: new Date(),
       audience: buildAudience(),
+      entities:
+        entities && typeof entities === 'object'
+          ? Object.fromEntries(
+              Object.entries(entities).filter(([, value]) => value !== undefined)
+            )
+          : {},
       channels: {
         push: {
           attempted: attemptedUsers > 0,

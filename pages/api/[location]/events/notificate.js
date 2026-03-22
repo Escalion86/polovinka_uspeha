@@ -204,6 +204,9 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       url: eventUrl,
       tag: `new-event-${String(event._id)}`,
       notificationType: 'newEvents',
+      entities: {
+        eventId: String(event._id),
+      },
     })
   }
 
@@ -218,6 +221,9 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       url: eventUrl,
       tag: `new-event-${String(event._id)}`,
       notificationType: 'newEvents',
+      entities: {
+        eventId: String(event._id),
+      },
     })
   }
 

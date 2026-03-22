@@ -77,6 +77,10 @@ const normalizeHistory = (items = []) =>
       item?.channels && typeof item.channels === 'object'
         ? item.channels
         : {},
+    entities:
+      item?.entities && typeof item.entities === 'object'
+        ? item.entities
+        : {},
     createdAt: item?.deliveredAt || item?.createdAt || null,
   }))
 

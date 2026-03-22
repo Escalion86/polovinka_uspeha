@@ -1,7 +1,12 @@
+import Button from '@components/Button'
+import { EventItemFromId, ServiceItemFromId, UserItemFromId } from '@components/ItemCards'
+import Note from '@components/Note'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import cn from 'classnames'
 import { useAtomValue } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 const NOTIFICATION_TYPE_TITLES = {
   newEvents: 'Новые мероприятия',
@@ -49,18 +54,101 @@ const notificationTypeLabel = (item) => {
   return types.map((type) => NOTIFICATION_TYPE_TITLES[type] || type).join(', ')
 }
 
+const getItemTypes = (item) => {
+  const types = Array.isArray(item?.types) && item.types.length > 0
+    ? item.types
+    : item?.type
+      ? [item.type]
+      : []
+  return types.map(String).filter(Boolean)
+}
+
+const readEntityId = (item, key) => {
+  const direct = item?.entities?.[key]
+  if (direct) return String(direct)
+  const fromMap =
+    item?.entities && typeof item.entities?.get === 'function'
+      ? item.entities.get(key)
+      : null
+  if (fromMap) return String(fromMap)
+  return null
+}
+
+const resolveEventId = (item) => {
+  const fromEntities = readEntityId(item, 'eventId')
+  if (fromEntities) return fromEntities
+  const url = String(item?.url || '')
+  const match = url.match(/\/event\/([a-zA-Z0-9]+)/)
+  return match?.[1] || null
+}
+
+const resolveUserId = (item) => {
+  const fromEntities = readEntityId(item, 'userId')
+  if (fromEntities) return fromEntities
+  const url = String(item?.url || '')
+  const match = url.match(/\/user\/([a-zA-Z0-9]+)/)
+  return match?.[1] || null
+}
+
+const resolveServiceId = (item) => {
+  const fromEntities = readEntityId(item, 'serviceId')
+  if (fromEntities) return fromEntities
+  const url = String(item?.url || '')
+  const match = url.match(/\/service\/([a-zA-Z0-9]+)/)
+  return match?.[1] || null
+}
+
 const notificationsHistoryFunc = () => {
   const NotificationsHistoryModal = () => {
     const location = useAtomValue(locationAtom)
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
     const [historySource, setHistorySource] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState('')
+    const [typesOpen, setTypesOpen] = useState(false)
+    const [selectedTypes, setSelectedTypes] = useState([])
+    const typeButtonRef = useRef(null)
+    const typePanelRef = useRef(null)
 
     const history = useMemo(
       () => normalizeHistoryList(historySource),
       [historySource]
     )
+
+    const availableTypes = useMemo(() => {
+      const uniq = new Set()
+      history.forEach((item) => {
+        getItemTypes(item).forEach((type) => uniq.add(type))
+      })
+      return Array.from(uniq)
+    }, [history])
+
+    const hasTypesFilter = selectedTypes.length > 0
+
+    const filteredHistory = useMemo(() => {
+      if (!hasTypesFilter) return history
+      const selected = new Set(selectedTypes.map(String))
+      return history.filter((item) =>
+        getItemTypes(item).some((type) => selected.has(type))
+      )
+    }, [hasTypesFilter, history, selectedTypes])
+
+    const typeButtonLabel = useMemo(() => {
+      if (!selectedTypes.length) return 'Все типы'
+      if (selectedTypes.length === 1) {
+        return NOTIFICATION_TYPE_TITLES[selectedTypes[0]] || selectedTypes[0]
+      }
+      return `Типы: ${selectedTypes.length}`
+    }, [selectedTypes])
+
+    const toggleType = (type) => {
+      const value = String(type)
+      setSelectedTypes((prev) => {
+        if (prev.includes(value)) return prev.filter((id) => id !== value)
+        return [...prev, value]
+      })
+    }
 
     useEffect(() => {
       let isMounted = true
@@ -114,43 +202,172 @@ const notificationsHistoryFunc = () => {
       }
     }, [location, loggedUserActive?._id])
 
+    useEffect(() => {
+      const onClickOutside = (event) => {
+        const target = event.target
+        const clickedPanel =
+          typePanelRef.current && typePanelRef.current.contains(target)
+        const clickedButton =
+          typeButtonRef.current && typeButtonRef.current.contains(target)
+        if (!clickedPanel && !clickedButton) setTypesOpen(false)
+      }
+
+      document.addEventListener('mousedown', onClickOutside)
+      return () => document.removeEventListener('mousedown', onClickOutside)
+    }, [])
+
     return (
       <div className="w-full max-h-[70vh] overflow-auto pr-1">
+        <div className="relative z-[5] mb-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              ref={typeButtonRef}
+              type="button"
+              className={cn(
+                'rounded-full border px-4 py-2 text-sm font-semibold transition',
+                hasTypesFilter
+                  ? 'border-[rgba(107,31,42,0.35)] bg-[#6b1f2a] text-white'
+                  : 'border-[#ece7ea] bg-[#f5f5f6] text-[#24171d] hover:bg-[#ece9ec]'
+              )}
+              onClick={() => setTypesOpen((state) => !state)}
+            >
+              {typeButtonLabel}
+            </button>
+            <div className="ml-auto rounded-full bg-[#f7ecf0] px-3 py-1.5 text-xs font-semibold text-[#6b1f2a]">
+              Найдено: {filteredHistory.length}
+            </div>
+          </div>
+
+          <div className="absolute left-0 z-20 w-full pointer-events-none top-full">
+            <div
+              ref={typePanelRef}
+              className={cn(
+                'pointer-events-auto absolute left-0 top-2 w-full max-w-[420px] rounded-2xl border border-[#efe3e8] bg-white p-3 shadow-[0_18px_36px_rgba(0,0,0,0.12)] origin-top transition-all duration-150 ease-out',
+                typesOpen
+                  ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
+                  : 'pointer-events-none -translate-y-2 scale-[0.98] opacity-0'
+              )}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm font-bold text-[#4b0f1c]">Типы уведомлений</div>
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[#6b1f2a] hover:underline"
+                  onClick={() => setSelectedTypes([])}
+                >
+                  Сбросить
+                </button>
+              </div>
+              <div className="max-h-[280px] overflow-y-auto pr-1">
+                {availableTypes.map((type) => {
+                  const checked = selectedTypes.includes(String(type))
+                  return (
+                    <label
+                      key={type}
+                      className={cn(
+                        'mb-1 flex cursor-pointer items-center gap-2 rounded-xl px-2 py-2 text-sm',
+                        checked ? 'bg-[#f6edf1]' : 'hover:bg-[#f5f5f6]'
+                      )}
+                    >
+                      <input
+                        className="cursor-pointer"
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleType(type)}
+                      />
+                      <span>{NOTIFICATION_TYPE_TITLES[type] || type}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {isLoading ? <div className="text-sm text-gray-600 mb-2">Загрузка истории...</div> : null}
         {loadError ? <div className="text-sm text-danger mb-2">{loadError}</div> : null}
-        {history.length === 0 ? (
+        {filteredHistory.length === 0 ? (
           <div className="text-sm text-gray-600">Пока нет сохраненных уведомлений</div>
         ) : (
-          history.map((item, index) => (
-            <div
-              key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
-              className="p-3 mb-2 bg-white border rounded-md border-gray-200"
-            >
-              <div className="font-semibold">{item.title}</div>
-              <div className="text-xs text-gray-600 mt-1">
-                Тип: {notificationTypeLabel(item)}
-              </div>
-              {item.body ? <div className="text-sm mt-1">{item.body}</div> : null}
-              <div className="text-xs text-gray-600 mt-1">
-                Push:{' '}
-                {item?.channels?.push?.success
-                  ? 'доставлено'
-                  : item?.channels?.push?.attempted
-                    ? `ошибка${item?.channels?.push?.error ? ` (${item.channels.push.error})` : ''}`
-                    : 'не отправлялось'}
-              </div>
-              <div className="text-xs text-gray-600 mt-1">
-                {item.createdAt?.toLocaleString?.('ru-RU') || ''}
-              </div>
-              {item.url ? (
-                <a
-                  href={item.url}
-                  className="text-xs underline text-general mt-1 inline-block"
+          filteredHistory.map((item, index) => (
+            (() => {
+              const eventId = resolveEventId(item)
+              const userId = resolveUserId(item)
+              const serviceId = resolveServiceId(item)
+              const itemTypes = Array.isArray(item?.types) ? item.types : []
+              const isEventRegistration =
+                item?.type === 'eventRegistration' ||
+                itemTypes.includes('eventRegistration')
+              const isServiceRegistration =
+                item?.type === 'serviceRegistration' ||
+                itemTypes.includes('serviceRegistration')
+              const hasBirthdaysType =
+                item?.type === 'birthdays' || itemTypes.includes('birthdays')
+
+              return (
+                <div
+                  key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
+                  className="p-3 mb-2 bg-white border rounded-md border-gray-200"
                 >
-                  Открыть
-                </a>
-              ) : null}
-            </div>
+                  <div className="text-xs text-gray-600 mb-2">
+                    {item.createdAt?.toLocaleString?.('ru-RU') || ''}
+                  </div>
+                  <div className="font-semibold">{item.title}</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    Тип: {notificationTypeLabel(item)}
+                  </div>
+                  {item.body ? (
+                    <Note className="whitespace-pre-line mt-2 mb-1">{item.body}</Note>
+                  ) : null}
+
+                  {isEventRegistration && (
+                    <div className="mt-2 space-y-2">
+                      {eventId ? (
+                        <EventItemFromId
+                          eventId={eventId}
+                          onClick={() => modalsFunc.event.view(eventId)}
+                        />
+                      ) : null}
+                      {userId ? (
+                        <UserItemFromId
+                          userId={userId}
+                          onClick={() => modalsFunc.user.view(userId)}
+                        />
+                      ) : null}
+                    </div>
+                  )}
+
+                  {isServiceRegistration && (
+                    <div className="mt-2 space-y-2">
+                      {serviceId ? (
+                        <ServiceItemFromId
+                          serviceId={serviceId}
+                          onClick={() => modalsFunc.service.view(serviceId)}
+                        />
+                      ) : null}
+                      {userId ? (
+                        <UserItemFromId
+                          userId={userId}
+                          onClick={() => modalsFunc.user.view(userId)}
+                        />
+                      ) : null}
+                    </div>
+                  )}
+
+                  {hasBirthdaysType && (
+                    <div className="mt-2">
+                      <Button
+                        name="Посмотреть ближайшие Дни рождения"
+                        thin
+                        onClick={() => {
+                          window.location.href = `/${item.location || location}/cabinet/birthdays`
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })()
           ))
         )}
       </div>
