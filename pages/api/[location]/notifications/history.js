@@ -96,7 +96,6 @@ export default async function handler(req, res) {
     return sendError(res, 500, 'db_error', 'Не удалось подключиться к БД')
   }
 
-  const userId = String(session.user._id)
   const limitRaw = Number(query?.limit)
   const limit = Number.isFinite(limitRaw)
     ? Math.max(1, Math.min(200, Math.floor(limitRaw)))
@@ -113,6 +112,8 @@ export default async function handler(req, res) {
       return sendError(res, 404, 'user_not_found', 'Пользователь не найден')
     }
 
+    const roleId = String(user?.role || '')
+    const userStatus = String(user?.status || '')
     const role = await getRoleForUser(db, user?.role)
     const settings =
       user?.notifications?.settings && typeof user.notifications.settings === 'object'
@@ -136,8 +137,25 @@ export default async function handler(req, res) {
     const docs = await db
       .model('NotificationsHistory')
       .find({
-        recipientUserId: userId,
+        scope: 'shared',
+        location,
         $or: [{ type: { $in: visibleTypes } }, { types: { $in: visibleTypes } }],
+        $and: [
+          {
+            $or: [
+              { 'audience.roleIds': { $exists: false } },
+              { 'audience.roleIds.0': { $exists: false } },
+              ...(roleId ? [{ 'audience.roleIds': roleId }] : []),
+            ],
+          },
+          {
+            $or: [
+              { 'audience.statuses': { $exists: false } },
+              { 'audience.statuses.0': { $exists: false } },
+              ...(userStatus ? [{ 'audience.statuses': userStatus }] : []),
+            ],
+          },
+        ],
       })
       .sort({ deliveredAt: -1, createdAt: -1 })
       .limit(limit)

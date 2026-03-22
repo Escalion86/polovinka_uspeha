@@ -168,41 +168,68 @@ export const notifyUsersWithPush = async ({
         ? [notificationType]
         : ['unknown']
 
-  const persistHistoryForUsers = async (deliveryStateByUserId) => {
-    if (!db || !deliveryStateByUserId || deliveryStateByUserId.size === 0) return
-    const docsToInsert = []
-    for (const [userId, deliveryState] of deliveryStateByUserId.entries()) {
-      docsToInsert.push({
-        recipientUserId: String(userId),
-        notificationId: crypto.randomUUID(),
-        type: resolvedTypes[0] || 'unknown',
-        types: resolvedTypes,
-        title: pushTitle,
-        body: pushBody,
-        url: data?.url || null,
-        tag: tag || `pu-${location || 'global'}`,
-        location: location || null,
-        deliveredAt: new Date(),
-        channels: {
-          push: {
-            attempted: Boolean(deliveryState?.attempted),
-            success: Boolean(deliveryState?.success),
-            error: deliveryState?.error || null,
-          },
+  const buildAudience = () => {
+    const roleIds = new Set()
+    const statuses = new Set()
+    for (const user of users) {
+      const roleId = String(user?.role || '').trim()
+      if (roleId) roleIds.add(roleId)
+      const status = String(user?.status || '').trim()
+      if (status) statuses.add(status)
+    }
+    return {
+      roleIds: Array.from(roleIds),
+      statuses: Array.from(statuses),
+    }
+  }
+
+  const persistSharedHistory = async ({
+    deliveryStateByUserId,
+    forcedError = null,
+  } = {}) => {
+    if (!db) return
+
+    const states = Array.from(deliveryStateByUserId?.values?.() || [])
+    const attemptedUsers = states.filter((state) => state?.attempted).length
+    const successUsers = states.filter((state) => state?.success).length
+    const failedUsers = states.filter(
+      (state) => state?.attempted && !state?.success
+    ).length
+    const skippedUsers = states.filter((state) => !state?.attempted).length
+
+    const historyDoc = {
+      scope: 'shared',
+      notificationId: crypto.randomUUID(),
+      type: resolvedTypes[0] || 'unknown',
+      types: resolvedTypes,
+      title: pushTitle,
+      body: pushBody,
+      url: data?.url || null,
+      tag: tag || `pu-${location || 'global'}`,
+      location: location || null,
+      deliveredAt: new Date(),
+      audience: buildAudience(),
+      channels: {
+        push: {
+          attempted: attemptedUsers > 0,
+          success: successUsers > 0,
+          error: forcedError,
+          attemptedUsers,
+          successUsers,
+          failedUsers,
+          skippedUsers,
+          totalUsers: users.length,
         },
-      })
+      },
     }
 
-    if (docsToInsert.length === 0) return
-
     try {
-      await db.model('NotificationsHistory').insertMany(docsToInsert, {
-        ordered: false,
-      })
+      await db.model('NotificationsHistory').create(historyDoc)
     } catch (error) {
       console.log('notifyUsersWithPush history save error', {
-        count: docsToInsert.length,
         error,
+        type: historyDoc.type,
+        location,
       })
     }
   }
@@ -218,7 +245,10 @@ export const notifyUsersWithPush = async ({
         error: 'PUSH_NOT_CONFIGURED',
       })
     }
-    await persistHistoryForUsers(failedByUser)
+    await persistSharedHistory({
+      deliveryStateByUserId: failedByUser,
+      forcedError: 'PUSH_NOT_CONFIGURED',
+    })
     return { success: false, reason: 'PUSH_NOT_CONFIGURED' }
   }
 
@@ -327,7 +357,9 @@ export const notifyUsersWithPush = async ({
     }
   }
 
-  await persistHistoryForUsers(deliveryByUserId)
+  await persistSharedHistory({
+    deliveryStateByUserId: deliveryByUserId,
+  })
 
   return {
     success: true,

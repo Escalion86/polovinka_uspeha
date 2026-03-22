@@ -1,7 +1,7 @@
 const notificationsHistorySchema = {
-  recipientUserId: {
+  scope: {
     type: String,
-    required: [true, 'Необходимо указать получателя уведомления'],
+    default: 'shared',
     index: true,
   },
   location: {
@@ -42,6 +42,10 @@ const notificationsHistorySchema = {
   channels: {
     type: Map,
     of: Object,
+    default: {},
+  },
+  audience: {
+    type: Object,
     default: {},
   },
   deliveredAt: {
