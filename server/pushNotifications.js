@@ -1,4 +1,5 @@
 import webpush from 'web-push'
+import crypto from 'crypto'
 
 const PUSH_PUBLIC_KEY = process.env.WEB_PUSH_VAPID_PUBLIC_KEY
 const PUSH_PRIVATE_KEY = process.env.WEB_PUSH_VAPID_PRIVATE_KEY
@@ -47,7 +48,8 @@ const normalizePushSubscription = (value) => {
 }
 
 export const canRoleUsePush = (role) =>
-  !PUSH_DEV_PRESIDENT_ONLY || ['dev', 'president'].includes(String(role || ''))
+  !PUSH_DEV_PRESIDENT_ONLY ||
+  ['dev', 'president', 'supervisor'].includes(String(role || ''))
 
 export const canUserUsePush = (user) => canRoleUsePush(user?.role)
 
@@ -151,6 +153,7 @@ export const notifyUsersWithPush = async ({
   }
 
   const staleByUserId = new Map()
+  const deliveredByUserId = new Map()
   let successCount = 0
   let errorCount = 0
 
@@ -170,6 +173,18 @@ export const notifyUsersWithPush = async ({
           })
         )
         successCount += 1
+        const userId = String(user?._id || '')
+        if (userId) {
+          deliveredByUserId.set(userId, {
+            title: pushTitle,
+            body: pushBody,
+            url: data?.url || null,
+            tag: tag || `pu-${location || 'global'}`,
+            location: location || null,
+            createdAt: new Date(),
+            notificationId: crypto.randomUUID(),
+          })
+        }
       } catch (error) {
         errorCount += 1
         const statusCode = Number(error?.statusCode)
@@ -202,6 +217,26 @@ export const notifyUsersWithPush = async ({
         })
       } catch (error) {
         console.log('notifyUsersWithPush stale cleanup error', {
+          userId,
+          error,
+        })
+      }
+    }
+  }
+
+  if (db && deliveredByUserId.size > 0) {
+    for (const [userId, notification] of deliveredByUserId.entries()) {
+      try {
+        await db.model('Users').findByIdAndUpdate(userId, {
+          $push: {
+            'notifications.push.history': {
+              $each: [notification],
+              $slice: -100,
+            },
+          },
+        })
+      } catch (error) {
+        console.log('notifyUsersWithPush history save error', {
           userId,
           error,
         })

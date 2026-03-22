@@ -70,6 +70,23 @@ const normalizePushSubscriptionsList = (value) => {
   return []
 }
 
+const normalizePushHistoryList = (value) => {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item) => item && typeof item === 'object')
+    .map((item) => ({
+      notificationId: String(item?.notificationId || ''),
+      title: String(item?.title || 'Половинка успеха'),
+      body: String(item?.body || ''),
+      url: String(item?.url || ''),
+      tag: String(item?.tag || ''),
+      location: String(item?.location || ''),
+      createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+    }))
+    .filter((item) => item.createdAt && !Number.isNaN(item.createdAt.getTime()))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+}
+
 const uint8ArrayToBase64 = (buffer) => {
   if (!buffer) return ''
   let binary = ''
@@ -206,6 +223,7 @@ const LoggedUserNotificationsContent = (props) => {
           subscriptions: normalizePushSubscriptionsList(
             source?.push?.subscriptions
           ),
+          history: normalizePushHistoryList(source?.push?.history),
         },
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
@@ -246,10 +264,12 @@ const LoggedUserNotificationsContent = (props) => {
   const pushConfigured = typeof vapidPublicKey === 'string' && !!vapidPublicKey
   const pushDevPresidentOnly =
     process.env.NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY === 'true'
+  const isPushPrivilegedRole = ['dev', 'president', 'supervisor'].includes(
+    String(loggedUserActiveRole?._id || '')
+  )
   const canUsePushSettings =
-    !pushDevPresidentOnly ||
-    loggedUserActiveRole?._id === 'dev' ||
-    loggedUserActiveRole?._id === 'president'
+    !pushDevPresidentOnly || isPushPrivilegedRole
+  const canViewPushHistory = isPushPrivilegedRole
 
   const serializePushSubscription = useCallback((subscription) => {
     if (!subscription) return null
@@ -426,6 +446,7 @@ const LoggedUserNotificationsContent = (props) => {
       sourcePushSubscriptionsCount: normalizePushSubscriptionsList(
         sourcePush?.subscriptions
       ).length,
+      sourcePushHistoryCount: normalizePushHistoryList(sourcePush?.history).length,
     })
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
     setConsentToMailing(!!loggedUserActive?.consentToMailing)
@@ -584,6 +605,7 @@ const LoggedUserNotificationsContent = (props) => {
       const nextNotifications = {
         ...notifications,
         push: {
+          ...(notifications?.push ?? {}),
           active: true,
           subscriptions: hasLocalEndpoint
             ? localSubscriptions
@@ -652,6 +674,7 @@ const LoggedUserNotificationsContent = (props) => {
         const nextNotifications = {
           ...notifications,
           push: {
+            ...(notifications?.push ?? {}),
             active: true,
             subscriptions: Array.from(subscriptionsMap.values()),
           },
@@ -816,6 +839,41 @@ const LoggedUserNotificationsContent = (props) => {
           <Note>
             Push-уведомления пока недоступны: не задан публичный VAPID ключ
           </Note>
+        )}
+        {canViewPushHistory && (
+          <InputWrapper
+            label="История push-уведомлений"
+            className="mt-3"
+            noMargin
+          >
+            <div className="w-full p-2 border rounded-md border-gray-300 bg-gray-50 max-h-72 overflow-auto">
+              {(notifications?.push?.history || []).length === 0 && (
+                <div className="text-sm text-gray-600">
+                  Пока нет сохраненных push-уведомлений
+                </div>
+              )}
+              {(notifications?.push?.history || []).map((item, index) => (
+                <div
+                  key={`${item.notificationId || item.createdAt?.toISOString?.() || 'item'}-${item.tag}-${index}`}
+                  className="p-2 mb-2 bg-white border rounded-md border-gray-200"
+                >
+                  <div className="font-semibold">{item.title}</div>
+                  {item.body && <div className="text-sm mt-1">{item.body}</div>}
+                  <div className="text-xs text-gray-600 mt-1">
+                    {item.createdAt?.toLocaleString?.('ru-RU') || ''}
+                  </div>
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      className="text-xs underline text-general mt-1 inline-block"
+                    >
+                      Открыть
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </InputWrapper>
         )}
         {consentToMailing && isNotificationActivated && (
           <>

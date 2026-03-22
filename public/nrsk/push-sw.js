@@ -27,11 +27,17 @@ self.addEventListener('push', (event) => {
   const title = payload?.title || 'Половинка успеха'
   const body = payload?.body || ''
   const url = payload?.data?.url || '/'
+  const notificationId =
+    payload?.data?.notificationId ||
+    `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  const notificationTag = payload?.tag
+    ? `${payload.tag}-${notificationId}`
+    : `pu-push-${notificationId}`
 
   event.waitUntil(
     self.registration.showNotification(title, {
       body,
-      tag: payload?.tag || 'pu-push',
+      tag: notificationTag,
       icon: '/favicon.ico',
       badge: '/favicon.ico',
       data: { url },
