@@ -4,6 +4,19 @@ import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
 import { DEFAULT_ROLES } from '@helpers/constantsServer'
 
+const NOTIFICATIONS_HISTORY_DEBUG =
+  String(process.env.NOTIFICATIONS_HISTORY_DEBUG || '').toLowerCase() ===
+  'true'
+
+const debugLog = (message, payload = null) => {
+  if (!NOTIFICATIONS_HISTORY_DEBUG) return
+  if (payload) {
+    console.log(`[NotificationsHistory][DEBUG] ${message}`, payload)
+    return
+  }
+  console.log(`[NotificationsHistory][DEBUG] ${message}`)
+}
+
 const sendError = (res, status, type, message) =>
   res.status(status).json({
     success: false,
@@ -67,9 +80,38 @@ const normalizeHistory = (items = []) =>
     createdAt: item?.deliveredAt || item?.createdAt || null,
   }))
 
+const arrayFromValue = (value) => {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean)
+  if (value && typeof value === 'object') {
+    return Object.values(value).map(String).filter(Boolean)
+  }
+  return []
+}
+
+const isAllowedByAudience = ({ audience, roleId, userStatus }) => {
+  if (!audience || typeof audience !== 'object') return true
+
+  const roleIds = arrayFromValue(audience?.roleIds)
+  const statuses = arrayFromValue(audience?.statuses)
+
+  const roleAllowed =
+    roleIds.length === 0 || (roleId ? roleIds.includes(String(roleId)) : false)
+  const statusAllowed =
+    statuses.length === 0 ||
+    (userStatus ? statuses.includes(String(userStatus)) : false)
+
+  return roleAllowed && statusAllowed
+}
+
 export default async function handler(req, res) {
   const { method, query } = req
   const location = query?.location
+
+  debugLog('incoming request', {
+    method,
+    location,
+    limit: query?.limit,
+  })
 
   if (!location || !checkLocationValid(location)) {
     return sendError(res, 400, 'location_invalid', 'Некорректная локация')
@@ -90,6 +132,12 @@ export default async function handler(req, res) {
       'Сессия пользователя принадлежит другой локации'
     )
   }
+  const userId = String(session?.user?._id || '')
+  debugLog('session resolved', {
+    sessionLocation: session?.location,
+    userId,
+    role: session?.user?.role,
+  })
 
   const db = await dbConnect(location)
   if (!db) {
@@ -102,6 +150,7 @@ export default async function handler(req, res) {
     : 100
 
   try {
+    debugLog('loading user', { userId, location })
     const user = await db
       .model('Users')
       .findById(userId)
@@ -114,6 +163,11 @@ export default async function handler(req, res) {
 
     const roleId = String(user?.role || '')
     const userStatus = String(user?.status || '')
+    debugLog('user loaded', {
+      userId,
+      roleId,
+      userStatus,
+    })
     const role = await getRoleForUser(db, user?.role)
     const settings =
       user?.notifications?.settings && typeof user.notifications.settings === 'object'
@@ -123,6 +177,10 @@ export default async function handler(req, res) {
     const visibleTypes = Object.entries(TYPE_ACCESS_CHECKS)
       .filter(([, checker]) => checker.role(role) && checker.settings(settings))
       .map(([type]) => type)
+    debugLog('visible types resolved', {
+      userId,
+      visibleTypes,
+    })
 
     if (visibleTypes.length === 0) {
       return res.status(200).json({
@@ -134,32 +192,35 @@ export default async function handler(req, res) {
       })
     }
 
-    const docs = await db
+    const docsRaw = await db
       .model('NotificationsHistory')
       .find({
         scope: 'shared',
         location,
         $or: [{ type: { $in: visibleTypes } }, { types: { $in: visibleTypes } }],
-        $and: [
-          {
-            $or: [
-              { 'audience.roleIds': { $exists: false } },
-              { 'audience.roleIds.0': { $exists: false } },
-              ...(roleId ? [{ 'audience.roleIds': roleId }] : []),
-            ],
-          },
-          {
-            $or: [
-              { 'audience.statuses': { $exists: false } },
-              { 'audience.statuses.0': { $exists: false } },
-              ...(userStatus ? [{ 'audience.statuses': userStatus }] : []),
-            ],
-          },
-        ],
       })
       .sort({ deliveredAt: -1, createdAt: -1 })
-      .limit(limit)
+      .limit(limit * 4)
       .lean()
+    debugLog('raw history loaded', {
+      userId,
+      rawCount: docsRaw.length,
+      limit,
+    })
+
+    const docs = docsRaw
+      .filter((doc) =>
+        isAllowedByAudience({
+          audience: doc?.audience,
+          roleId,
+          userStatus,
+        })
+      )
+      .slice(0, limit)
+    debugLog('history filtered', {
+      userId,
+      filteredCount: docs.length,
+    })
 
     return res.status(200).json({
       success: true,
@@ -169,7 +230,13 @@ export default async function handler(req, res) {
       },
     })
   } catch (error) {
-    console.log('notifications history api error:', error)
+    console.log('[NotificationsHistory] api error:', {
+      location,
+      userId: session?.user?._id,
+      role: session?.user?.role,
+      message: error?.message || String(error),
+      stack: error?.stack || null,
+    })
     return sendError(
       res,
       500,

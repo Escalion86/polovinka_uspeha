@@ -78,12 +78,19 @@ const notificationsHistoryFunc = () => {
         try {
           const response = await fetch(`/api/${location}/notifications/history?limit=200`)
           const json = await response.json()
+          if (!response.ok) {
+            console.log('[NotificationsHistory][Client] fetch failed', {
+              status: response.status,
+              body: json,
+            })
+          }
           const history = json?.success ? json?.data?.history : null
 
           if (!isMounted || !Array.isArray(history)) return
           setHistorySource(history)
         } catch (error) {
           if (!isMounted) return
+          console.log('[NotificationsHistory][Client] fetch error', error)
           setLoadError('Не удалось обновить историю уведомлений')
         } finally {
           if (isMounted) setIsLoading(false)
