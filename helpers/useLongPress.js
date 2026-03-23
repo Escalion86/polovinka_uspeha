@@ -1,37 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 const useLongPress = (onLongPressRepeat, onFinish) => {
-  // const [isLongPressed, setIsLongPressed] = useState(false)
-  const [timerId, setTimerId] = useState(null)
-  const [intervalId, setIntervalId] = useState(null)
+  const timerRef = useRef(null)
+  const intervalRef = useRef(null)
 
-  const handleMouseDown = () => {
-    setTimerId(
-      setTimeout(() => {
-        // setIsLongPressed(true)
-        setIntervalId(
-          setInterval(() => {
-            onLongPressRepeat()
-          }, 50)
-        )
-      }, 500)
-    )
-  }
+  const clearTimers = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }, [])
 
-  const handleMouseUp = () => {
-    // setIsLongPressed(false)
-    clearTimeout(timerId)
-    clearInterval(intervalId)
+  const handleMouseDown = useCallback(() => {
+    clearTimers()
+    timerRef.current = setTimeout(() => {
+      intervalRef.current = setInterval(() => {
+        onLongPressRepeat()
+      }, 50)
+    }, 500)
+  }, [clearTimers, onLongPressRepeat])
 
-    // if (!isLongPressed) onLongPressRepeat()
-  }
+  const handleMouseUp = useCallback(() => {
+    clearTimers()
+  }, [clearTimers])
 
   useEffect(() => {
     return () => {
-      clearTimeout(timerId)
-      clearInterval(intervalId)
+      clearTimers()
     }
-  }, [timerId, intervalId])
+  }, [clearTimers])
 
   return {
     onMouseDown: () => {

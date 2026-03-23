@@ -72,11 +72,12 @@ export const SvgBackgroundComponent = ({
   backgroundType = 'color',
   backgroundColor = '#6b1f2a',
   angle = 45,
-  gradient1Color = '#504436',
-  gradient2Color = '#7a6a53',
+  gradient1Color = '#6b1f2a',
+  gradient2Color = '#8dcff2',
   src = '',
 }) => {
   const [srcBase64, setBase64] = useState(getSafeImageUrl(src))
+  const safeImageHref = getSafeImageUrl(srcBase64)
   var anglePI = angle * (Math.PI / 180)
 
   // const onLoad = (e) => {
@@ -181,12 +182,13 @@ export const SvgBackgroundComponent = ({
           }
         />
       )}
-      {backgroundType === 'image' && (
+      {backgroundType === 'image' && safeImageHref && (
         <image
           id={'preview'}
-          href={src ? srcBase64 : undefined}
+          href={safeImageHref || null}
           height="100%"
           width="100%"
+          preserveAspectRatio="xMidYMid slice"
           // onLoad={onLoad}
         />
       )}
@@ -216,10 +218,10 @@ export const SvgBackgroundInput = ({
     value?.backgroundColor ?? '#6b1f2a'
   )
   const [gradient1Color, setGradient1Color] = useState(
-    value?.gradient1Color ?? '#7a6a53'
+    value?.gradient1Color ?? '#6b1f2a'
   )
   const [gradient2Color, setGradient2Color] = useState(
-    value?.gradient2Color ?? '#504436'
+    value?.gradient2Color ?? '#8dcff2'
   )
   const [angle, setAngle] = useState(value?.angle ?? 45)
   const [src, setSrc] = useState(value?.src ?? '')
@@ -239,8 +241,8 @@ export const SvgBackgroundInput = ({
   useEffect(() => {
     setBackgroundType(value?.backgroundType ?? 'color')
     setBackgroundColor(value?.backgroundColor ?? '#6b1f2a')
-    setGradient1Color(value?.gradient1Color ?? '#7a6a53')
-    setGradient2Color(value?.gradient2Color ?? '#504436')
+    setGradient1Color(value?.gradient1Color ?? '#6b1f2a')
+    setGradient2Color(value?.gradient2Color ?? '#8dcff2')
     setAngle(value?.angle ?? 45)
     setSrc(value?.src ?? '')
   }, [rerender])
@@ -259,6 +261,7 @@ export const SvgBackgroundInput = ({
           // className="w-[108px]"
           style={{ width: '108px' }}
           items={[
+            { value: 'transparent', name: 'Прозрачный' },
             { value: 'color', name: 'Цвет' },
             { value: 'gradient', name: 'Градиент' },
             { value: 'image', name: 'Картинка' },

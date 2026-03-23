@@ -2,9 +2,11 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import InputWrapper from './InputWrapper'
 import useLongPress from '@helpers/useLongPress'
+
+const isSameValue = (a, b) => Object.is(a, b)
 
 const InputNumber = forwardRef(
   (
@@ -42,6 +44,11 @@ const InputNumber = forwardRef(
   ) => {
     const [stateValue, setStateValue] = useState(value)
     const [isMounted, setIsMounted] = useState(false)
+    const onChangeRef = useRef(onChange)
+
+    useEffect(() => {
+      onChangeRef.current = onChange
+    }, [onChange])
 
     const longPressArrowDownEvent = useLongPress(
       () => {
@@ -90,13 +97,15 @@ const InputNumber = forwardRef(
       //   setStateValue(minValue)
       //   onChange(minValue)
       // } else
-      if (isMounted && stateValue !== undefined) onChange(stateValue)
-    }, [stateValue])
+      if (isMounted && stateValue !== undefined) {
+        onChangeRef.current && onChangeRef.current(stateValue)
+      }
+    }, [isMounted, stateValue])
 
     useEffect(() => {
       if (!isMounted) setIsMounted(true)
-      else if (value !== stateValue) setStateValue(value)
-    }, [isMounted, value])
+      else if (!isSameValue(value, stateValue)) setStateValue(value)
+    }, [isMounted, stateValue, value])
 
     const showPlaceholder =
       disabled && ['string', 'number'].includes(typeof placeholderOnDisabled)
@@ -174,18 +183,18 @@ const InputNumber = forwardRef(
           }
           defaultValue={defaultValue}
           onChange={(e) => {
-            const { value } = e.target
+            const { value: nextRawValue } = e.target
             // if (
             //   (typeof min !== 'number' || value >= min) &&
             //   (typeof max !== 'number' || value <= max)
             // ) {
-            if (stateValue === '') {
-              onChange(0)
+            if (nextRawValue === '') {
               setStateValue(0)
             } else {
-              const newValue = parseInt(value)
-              setStateValue(newValue)
-              onChange(newValue)
+              const newValue = parseInt(nextRawValue)
+              if (!Number.isNaN(newValue)) {
+                setStateValue(newValue)
+              }
             }
             // } else if (typeof min === 'number' && value < min) {
             //   setStateValue(min)
@@ -202,12 +211,10 @@ const InputNumber = forwardRef(
             const minValue = parseInt(min > 0 ? min : 0)
             if ((!stateValue && stateValue != 0) || stateValue < minValue) {
               setStateValue(minValue)
-              onChange(minValue)
             }
 
             if (typeof max === 'number' && stateValue > max) {
               setStateValue(max)
-              onChange(max)
             }
           }}
         />

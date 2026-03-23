@@ -114,6 +114,8 @@ const TO_RADIANS = Math.PI / 180
 const MAX_UPLOAD_BYTES = 900 * 1024
 const MAX_OUTPUT_SIDE = 1600
 const JPEG_QUALITIES = [0.85, 0.75, 0.65, 0.55]
+const MIME_PNG = 'image/png'
+const MIME_JPEG = 'image/jpeg'
 
 // const cropCorrecting = (crop, aspect) => {
 //   if (aspect === 1)
@@ -131,9 +133,9 @@ function blobToFile(theBlob, fileName) {
   return theBlob
 }
 
-const canvasToBlob = (canvas, quality) =>
+const canvasToBlob = (canvas, mimeType, quality) =>
   new Promise((resolve) => {
-    canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality)
+    canvas.toBlob((blob) => resolve(blob), mimeType, quality)
   })
 
 const cropImageFunc = (
@@ -167,6 +169,9 @@ const cropImageFunc = (
       rotate = 0
     ) => {
       // if (!isCropClicked) onConfirm(imgElement)
+      const sourceMime = String(src?.type || '').toLowerCase()
+      const keepAlpha = sourceMime === MIME_PNG
+      const outputMime = keepAlpha ? MIME_PNG : MIME_JPEG
 
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -243,11 +248,15 @@ const cropImageFunc = (
       if (toBlob) {
         ;(async () => {
           let selectedBlob = null
-          for (const quality of JPEG_QUALITIES) {
-            const blob = await canvasToBlob(canvas, quality)
-            if (!blob) continue
-            selectedBlob = blob
-            if (blob.size <= MAX_UPLOAD_BYTES) break
+          if (outputMime === MIME_PNG) {
+            selectedBlob = await canvasToBlob(canvas, outputMime)
+          } else {
+            for (const quality of JPEG_QUALITIES) {
+              const blob = await canvasToBlob(canvas, outputMime, quality)
+              if (!blob) continue
+              selectedBlob = blob
+              if (blob.size <= MAX_UPLOAD_BYTES) break
+            }
           }
 
           if (!selectedBlob) {
@@ -258,7 +267,7 @@ const cropImageFunc = (
           onConfirm(blobToFile(selectedBlob, src.name))
         })()
       } else {
-        onConfirm(canvas.toDataURL('image/jpeg'))
+        onConfirm(canvas.toDataURL(outputMime))
       }
     }
 

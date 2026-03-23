@@ -158,12 +158,13 @@ const modalsFuncGenerator = (get, set) => {
           onChange
         )
       ),
-    selectImage: (directory, aspect, onSelect) =>
+    selectImage: (directory, aspect, onSelect, options) =>
       addModal(
         require('../layouts/modals/modalsFunc/selectImageFunc').default(
           directory,
           aspect,
-          onSelect
+          onSelect,
+          options
         )
       ),
     selectEvents: (
