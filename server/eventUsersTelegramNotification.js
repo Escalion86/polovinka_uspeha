@@ -340,11 +340,24 @@ const eventUsersTelegramNotification = async ({
       supportsPushForUser(user)
     )
     if (usersWithPush.length > 0) {
+      const pushTitle =
+        itIsSelfRecord &&
+        deletedEventUsers.length === 0 &&
+        addedEventUsers.length === 1
+          ? 'Запись на мероприятие'
+          : itIsSelfRecord &&
+              deletedEventUsers.length === 1 &&
+              addedEventUsers.length === 0
+            ? 'Отписка от мероприятия'
+            : notificationOnMassiveChange
+              ? 'Изменение записей на мероприятие'
+              : 'Изменение записи на мероприятие'
+
       await notifyUsersWithPush({
         db,
         location,
         users: usersWithPush,
-        title: 'Изменение записи на мероприятие',
+        title: pushTitle,
         text: pushTextFromHtml(text),
         url: eventUrl,
         tag: `event-users-${eventId}`,

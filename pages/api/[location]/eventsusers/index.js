@@ -167,7 +167,7 @@ export default async function handler(req, res) {
           eventId,
           deletedEventUsers,
           addedEventUsers,
-          eventUsers,
+          notificationOnMassiveChange: true,
           location,
         })
 
