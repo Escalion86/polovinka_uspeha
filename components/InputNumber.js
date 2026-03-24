@@ -43,8 +43,9 @@ const InputNumber = forwardRef(
     ref
   ) => {
     const [stateValue, setStateValue] = useState(value)
-    const [isMounted, setIsMounted] = useState(false)
     const onChangeRef = useRef(onChange)
+    const skipFirstOnChangeRef = useRef(true)
+    const isSyncingFromPropRef = useRef(false)
 
     useEffect(() => {
       onChangeRef.current = onChange
@@ -92,20 +93,26 @@ const InputNumber = forwardRef(
     )
 
     useEffect(() => {
-      // if (!stateValue && stateValue != 0) {
-      //   const minValue = parseInt(min > 0 ? min : 0)
-      //   setStateValue(minValue)
-      //   onChange(minValue)
-      // } else
-      if (isMounted && stateValue !== undefined) {
-        onChangeRef.current && onChangeRef.current(stateValue)
-      }
-    }, [isMounted, stateValue])
+      setStateValue((prev) => {
+        if (isSameValue(prev, value)) return prev
+        isSyncingFromPropRef.current = true
+        return value
+      })
+    }, [value])
 
     useEffect(() => {
-      if (!isMounted) setIsMounted(true)
-      else if (!isSameValue(value, stateValue)) setStateValue(value)
-    }, [isMounted, stateValue, value])
+      if (skipFirstOnChangeRef.current) {
+        skipFirstOnChangeRef.current = false
+        return
+      }
+      if (isSyncingFromPropRef.current) {
+        isSyncingFromPropRef.current = false
+        return
+      }
+      if (stateValue !== undefined) {
+        onChangeRef.current && onChangeRef.current(stateValue)
+      }
+    }, [stateValue])
 
     const showPlaceholder =
       disabled && ['string', 'number'].includes(typeof placeholderOnDisabled)

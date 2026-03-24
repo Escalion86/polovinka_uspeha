@@ -2,6 +2,7 @@
 
 import Button from '@components/Button'
 import IconButtonMenu from '@components/ButtonMenu'
+import CheckBox from '@components/CheckBox'
 import ColorPicker from '@components/ColorPicker'
 import ComboBox from '@components/ComboBox'
 import Divider from '@components/Divider'
@@ -9,6 +10,7 @@ import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputNumber from '@components/InputNumber'
 import InputWrapper from '@components/InputWrapper'
+import { EventItem } from '@components/ItemCards'
 import Textarea from '@components/Textarea'
 import {
   SvgBackgroundComponent,
@@ -31,6 +33,7 @@ import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand'
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk'
 import { faImages } from '@fortawesome/free-solid-svg-icons/faImages'
 import { faPen } from '@fortawesome/free-solid-svg-icons/faPen'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
@@ -56,6 +59,7 @@ const layerTypeTitles = {
 const eventBindingSourceItems = [
   { value: 'title', name: 'Заголовок' },
   { value: 'date_weekday', name: 'Дата + день недели' },
+  { value: 'date_only', name: 'Только дата' },
   { value: 'time_range', name: 'Время' },
 ]
 
@@ -68,12 +72,14 @@ const eventBindingCaseItems = [
 const eventBindingSourceTitles = {
   title: 'Заголовок',
   date_weekday: 'Дата + день недели',
+  date_only: 'Только дата',
   time_range: 'Время',
 }
 
 const eventBindingSourcePlaceholders = {
   title: '[название мероприятия]',
   date_weekday: '[дата]',
+  date_only: '[дата]',
   time_range: '[время]',
 }
 
@@ -127,11 +133,19 @@ const mobileMainTools = [
 ]
 
 const IMAGE_CONSTRUCTOR_STORAGE_KEY = 'image_constructor_state_v1'
-const RESIZABLE_LAYER_TYPES = new Set(['rect', 'circle', 'line'])
+const RESIZABLE_LAYER_TYPES = new Set(['rect', 'circle', 'line', 'text'])
 
 const clampOpacity = (value) => {
   if (typeof value !== 'number' || Number.isNaN(value)) return 100
   return Math.min(100, Math.max(0, value))
+}
+
+const clampZoom = (value) => Math.min(4, Math.max(0.25, value))
+
+const getTouchDistance = (touchA, touchB) => {
+  const dx = Number(touchA?.clientX || 0) - Number(touchB?.clientX || 0)
+  const dy = Number(touchA?.clientY || 0) - Number(touchB?.clientY || 0)
+  return Math.hypot(dx, dy)
 }
 
 const normalizeUploadsUrl = (url) => {
@@ -174,18 +188,106 @@ const getTextVerticalAlign = (layer) => {
     : 'legacy'
 }
 
+const isTextWidthLocked = (layer) =>
+  Boolean(layer?.params?.textWidthLocked || false)
+
+const getTextMaxWidth = (layer, fallback = 640) =>
+  Math.max(20, Number(layer?.params?.textMaxWidth || fallback))
+
+const splitWordByWidth = (word, measureWidth, maxWidth) => {
+  const chunks = []
+  let current = ''
+  for (const char of String(word || '')) {
+    const next = `${current}${char}`
+    if (measureWidth(next) <= maxWidth || current.length === 0) {
+      current = next
+    } else {
+      chunks.push(current)
+      current = char
+    }
+  }
+  if (current) chunks.push(current)
+  return chunks.length ? chunks : ['']
+}
+
+const wrapTextLinesByWidth = (rawLines, maxWidth, measureWidth) => {
+  if (!Array.isArray(rawLines) || !rawLines.length) return ['']
+
+  return rawLines.flatMap((rawLine) => {
+    const line = String(rawLine || '')
+    if (!line) return ['']
+
+    const words = line.split(/\s+/).filter(Boolean)
+    if (!words.length) return ['']
+
+    const wrapped = []
+    let current = ''
+
+    words.forEach((word) => {
+      const parts = splitWordByWidth(word, measureWidth, maxWidth)
+      parts.forEach((part, partIndex) => {
+        const candidate = current ? `${current} ${part}` : part
+        if (measureWidth(candidate) <= maxWidth) {
+          current = candidate
+          return
+        }
+
+        if (current) {
+          wrapped.push(current)
+          current = part
+          return
+        }
+
+        if (partIndex < parts.length - 1) {
+          wrapped.push(part)
+          current = ''
+        } else {
+          current = part
+        }
+      })
+    })
+
+    if (current) wrapped.push(current)
+    return wrapped.length ? wrapped : ['']
+  })
+}
+
 const getTextLayoutMetrics = (layer, overrideText) => {
   const text = String(
     typeof overrideText === 'string' ? overrideText : layer?.params?.text || ''
   )
-  const lines = text.split('\n')
+  const rawLines = text.split('\n')
   const fontSize = Number(layer?.params?.fontSize || 32)
   const lineHeight = Number(layer?.params?.lineHeight || 1.2)
-  const maxLineLength = lines.reduce(
-    (acc, line) => Math.max(acc, line.length),
+  const textWidthLocked = isTextWidthLocked(layer)
+  const textMaxWidth = getTextMaxWidth(layer)
+
+  const canvas =
+    typeof document !== 'undefined' ? document.createElement('canvas') : null
+  const ctx = canvas ? canvas.getContext('2d') : null
+  if (ctx) {
+    const fontWeight = layer?.params?.fontWeight || 'normal'
+    const fontStyle = layer?.params?.fontStyle || 'normal'
+    const fontFamily = layer?.params?.fontFamily || 'Arial'
+    ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`
+  }
+  const measureWidth = (value) => {
+    const textValue = String(value || '')
+    if (ctx) return ctx.measureText(textValue).width
+    return textValue.length * fontSize * 0.62
+  }
+
+  const lines = textWidthLocked
+    ? wrapTextLinesByWidth(rawLines, textMaxWidth, measureWidth)
+    : rawLines
+
+  const measuredMaxWidth = lines.reduce(
+    (acc, line) => Math.max(acc, measureWidth(line)),
     0
   )
-  const width = Math.max(10, maxLineLength * fontSize * 0.62)
+  const width = textWidthLocked
+    ? Math.max(10, textMaxWidth)
+    : Math.max(10, measuredMaxWidth)
   const height = Math.max(fontSize, lines.length * fontSize * lineHeight)
   const x = Number(layer?.params?.x || 0)
   const y = Number(layer?.params?.y || 0)
@@ -224,6 +326,8 @@ const getTextLayoutMetrics = (layer, overrideText) => {
     lineHeight,
     width,
     height,
+    textWidthLocked,
+    textMaxWidth,
     x,
     y,
     left,
@@ -325,6 +429,9 @@ const createLayerByType = (type) => {
       fontStyle: 'normal',
       fontFamily: 'Arial',
       textAnchor: 'middle',
+      textVerticalAlign: 'legacy',
+      textWidthLocked: false,
+      textMaxWidth: 640,
       lineHeight: 1.2,
       rotate: 0,
       opacity: 100,
@@ -358,6 +465,29 @@ const buildEventBoundDateText = (event) => {
     return `${dayStart} ${monthStart}${weekStart ? ` (${weekStart})` : ''}`
   }
 
+  return `${dayStart} ${monthStart} - ${dayEnd} ${monthEnd}`
+}
+
+const buildEventBoundDateOnlyText = (event) => {
+  if (!event?.dateStart) return ''
+  const [dayStart, monthStart] = dateToDateTimeStr(
+    event?.dateStart,
+    true,
+    true,
+    false,
+    true,
+    true
+  )
+  const [dayEnd, monthEnd] = dateToDateTimeStr(
+    event?.dateEnd,
+    true,
+    true,
+    false,
+    true,
+    true
+  )
+  const sameDay = dayStart === dayEnd && monthStart === monthEnd
+  if (sameDay) return `${dayStart} ${monthStart}`
   return `${dayStart} ${monthStart} - ${dayEnd} ${monthEnd}`
 }
 
@@ -397,6 +527,8 @@ const resolveEventBoundFieldText = (source, event, caseMode = 'normal') => {
   }
   if (source === 'title') return applyCase(String(event?.title || ''))
   if (source === 'date_weekday') return applyCase(buildEventBoundDateText(event))
+  if (source === 'date_only')
+    return applyCase(buildEventBoundDateOnlyText(event))
   if (source === 'time_range')
     return applyCase(buildEventBoundTimeRangeText(event))
   return applyCase(eventBindingSourcePlaceholders[source] || '')
@@ -643,6 +775,7 @@ const TextLayerEditor = ({
   onResetEventBindingText,
   onChangeEventBindingSource,
   onChangeEventBindingCaseMode,
+  boundEvent,
 }) => (
   <FormWrapper className="flex flex-col gap-y-1">
     <Input
@@ -652,47 +785,72 @@ const TextLayerEditor = ({
       smallMargin
     />
     {item?.binding?.kind === 'event' && (
-      <div className="flex flex-wrap items-center gap-1 mb-1">
-        <span
-          className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-            item.binding?.isManual
-              ? 'bg-amber-100 text-amber-700'
-              : 'bg-sky-100 text-sky-700'
-          }`}
-        >
-          {`Поле: ${
-            eventBindingSourceTitles[getEventBindingSource(item.binding)] ||
-            'Связанное'
-          }`}
-          {item.binding?.isManual ? ' (изменено)' : ''}
-        </span>
-        <ComboBox
-          label="Формат"
-          className="w-[200px]"
-          items={eventBindingSourceItems}
-          value={getEventBindingSource(item.binding)}
-          onChange={onChangeEventBindingSource}
-        />
-        <ComboBox
-          label="Написание"
-          className="w-[220px]"
-          items={eventBindingCaseItems}
-          value={getEventBindingCaseMode(item.binding)}
-          onChange={onChangeEventBindingCaseMode}
-        />
-        <Button
-          name="Сменить мероприятие"
-          thin
-          onClick={onChangeEventBinding}
-        />
-        {item.binding?.isManual && (
-          <Button
-            name="Сбросить текст"
-            thin
-            onClick={onResetEventBindingText}
-          />
-        )}
-      </div>
+      <InputWrapper label="Связь с мероприятием" fitWidth>
+        <div className="flex flex-col w-full gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <span
+              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                item.binding?.isManual
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-sky-100 text-sky-700'
+              }`}
+            >
+              {`Поле: ${
+                eventBindingSourceTitles[getEventBindingSource(item.binding)] ||
+                'Связанное'
+              }`}
+              {item.binding?.isManual ? ' (изменено)' : ''}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="flex-1">
+              {boundEvent ? (
+                <EventItem
+                  item={boundEvent}
+                  bordered
+                  classNameHeight="h-[40px]"
+                  className="w-full"
+                />
+              ) : (
+                <div className="h-[40px] w-full border border-gray-300 rounded-sm px-2 flex items-center text-xs text-gray-500">
+                  Мероприятие не выбрано
+                </div>
+              )}
+            </div>
+            <button
+              type="button"
+              className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110 text-primary"
+              onClick={onChangeEventBinding}
+              title="Сменить мероприятие"
+            >
+              <FontAwesomeIcon icon={faPencilAlt} className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="flex flex-wrap items-center gap-1">
+            <ComboBox
+              label="Формат"
+              className="w-[200px]"
+              items={eventBindingSourceItems}
+              value={getEventBindingSource(item.binding)}
+              onChange={onChangeEventBindingSource}
+            />
+            <ComboBox
+              label="Написание"
+              className="w-[220px]"
+              items={eventBindingCaseItems}
+              value={getEventBindingCaseMode(item.binding)}
+              onChange={onChangeEventBindingCaseMode}
+            />
+            {item.binding?.isManual && (
+              <Button
+                name="Сбросить текст"
+                thin
+                onClick={onResetEventBindingText}
+              />
+            )}
+          </div>
+        </div>
+      </InputWrapper>
     )}
     <Textarea
       label="Текст"
@@ -783,6 +941,37 @@ const TextLayerEditor = ({
         items={textAnchorItems}
         value={item.params?.textAnchor || 'start'}
         onChange={(value) => setLayerState({ params: { textAnchor: value } })}
+      />
+      <ComboBox
+        label="Вертикаль"
+        className="w-[160px]"
+        items={textVerticalAlignItems}
+        value={getTextVerticalAlign(item)}
+        onChange={(value) =>
+          setLayerState({ params: { textVerticalAlign: value } })
+        }
+      />
+      <CheckBox
+        checked={Boolean(item.params?.textWidthLocked)}
+        onClick={() =>
+          setLayerState({
+            params: { textWidthLocked: !Boolean(item.params?.textWidthLocked) },
+          })
+        }
+        label="Фикс. ширина текста"
+        noMargin
+        wrapperClassName="h-7 pr-2"
+      />
+      <InputNumber
+        label="Ширина текста"
+        className="w-[150px]"
+        inputClassName="w-[70px]"
+        value={Math.max(20, Number(item.params?.textMaxWidth || 640))}
+        onChange={(value) =>
+          setLayerState({ params: { textMaxWidth: Math.max(20, value) } })
+        }
+        min={20}
+        max={5000}
       />
       <ComboBox
         label="Начертание"
@@ -1158,6 +1347,8 @@ const ToolsImageConstructorContent = () => {
   const [inlineTextDraft, setInlineTextDraft] = useState('')
   const [undoDepth, setUndoDepth] = useState(0)
   const [redoDepth, setRedoDepth] = useState(0)
+  const [canvasZoom, setCanvasZoom] = useState(1)
+  const [isWorkspacePanning, setIsWorkspacePanning] = useState(false)
   const [dragGuides, setDragGuides] = useState({
     vertical: [],
     horizontal: [],
@@ -1165,9 +1356,14 @@ const ToolsImageConstructorContent = () => {
   })
 
   const svgRef = useRef(null)
+  const canvasWrapperRef = useRef(null)
+  const workspaceRef = useRef(null)
   const inlineTextInputRef = useRef(null)
   const dragRef = useRef(null)
   const resizeRef = useRef(null)
+  const pinchZoomRef = useRef(null)
+  const workspacePanRef = useRef(null)
+  const canvasZoomRef = useRef(1)
   const mobilePanelOpenTimerRef = useRef(null)
   const mobilePanelCloseTimerRef = useRef(null)
   const hasLoadedFromStorageRef = useRef(false)
@@ -1206,6 +1402,10 @@ const ToolsImageConstructorContent = () => {
 
   const rerender = () => setRerenderState((state) => !state)
 
+  useEffect(() => {
+    canvasZoomRef.current = canvasZoom
+  }, [canvasZoom])
+
   const updateLayer = useCallback((key, patch, options = {}) => {
     setData((state) =>
       state.map((item) => {
@@ -1243,6 +1443,149 @@ const ToolsImageConstructorContent = () => {
     },
     [selectedLayerKey, updateLayer]
   )
+
+  const clearSelection = useCallback(() => {
+    setSelectedLayerKey(null)
+    setResizeModeLayerKey(null)
+    setDragGuides({ vertical: [], horizontal: [], corner: null })
+  }, [])
+
+  const handleWorkspacePointerDown = useCallback(
+    (event) => {
+      const isLayerTarget = event.target?.closest?.('[data-layer-node="true"]')
+      const isInlineEditor = event.target?.closest?.(
+        '[data-inline-text-editor="true"]'
+      )
+      const isLayerToolbar = event.target?.closest?.(
+        '[data-layer-toolbar="true"]'
+      )
+      if (!isLayerTarget && !isInlineEditor && !isLayerToolbar) {
+        clearSelection()
+        const workspace = workspaceRef.current
+        if (workspace && event.button === 0) {
+          workspacePanRef.current = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            startScrollLeft: workspace.scrollLeft,
+            startScrollTop: workspace.scrollTop,
+          }
+          setIsWorkspacePanning(true)
+          if (typeof workspace.setPointerCapture === 'function') {
+            try {
+              workspace.setPointerCapture(event.pointerId)
+            } catch {
+              // ignore setPointerCapture errors
+            }
+          }
+        }
+      }
+    },
+    [clearSelection]
+  )
+
+  const handleWorkspacePointerMove = useCallback((event) => {
+    const pan = workspacePanRef.current
+    const workspace = workspaceRef.current
+    if (!pan || !workspace) return
+    if (pan.pointerId !== event.pointerId) return
+
+    const deltaX = event.clientX - pan.startX
+    const deltaY = event.clientY - pan.startY
+    workspace.scrollLeft = pan.startScrollLeft - deltaX
+    workspace.scrollTop = pan.startScrollTop - deltaY
+  }, [])
+
+  const finishWorkspacePan = useCallback((event) => {
+    const pan = workspacePanRef.current
+    const workspace = workspaceRef.current
+    if (!pan || !workspace) return
+    if (event && pan.pointerId !== event.pointerId) return
+
+    workspacePanRef.current = null
+    setIsWorkspacePanning(false)
+    if (
+      event &&
+      typeof workspace.releasePointerCapture === 'function' &&
+      workspace.hasPointerCapture?.(event.pointerId)
+    ) {
+      try {
+        workspace.releasePointerCapture(event.pointerId)
+      } catch {
+        // ignore releasePointerCapture errors
+      }
+    }
+  }, [])
+
+  const handleWorkspaceWheel = useCallback((event) => {
+    const target = event.target
+    if (
+      target &&
+      typeof target.closest === 'function' &&
+      target.closest('[data-mobile-panel="true"]')
+    ) {
+      return
+    }
+    event.preventDefault()
+    const workspace = workspaceRef.current
+    const canvasWrapper = canvasWrapperRef.current
+    if (!workspace || !canvasWrapper) return
+
+    const prevRect = canvasWrapper.getBoundingClientRect()
+    const prevZoom = canvasZoomRef.current
+    const zoomFactor = event.deltaY < 0 ? 1.08 : 0.92
+    const nextZoom = clampZoom(prevZoom * zoomFactor)
+    if (Math.abs(nextZoom - prevZoom) < 0.0001) return
+
+    const ratioX = (event.clientX - prevRect.left) / Math.max(1, prevRect.width)
+    const ratioY = (event.clientY - prevRect.top) / Math.max(1, prevRect.height)
+
+    canvasZoomRef.current = nextZoom
+    setCanvasZoom(nextZoom)
+
+    requestAnimationFrame(() => {
+      const nextRect = canvasWrapper.getBoundingClientRect()
+      const nextPointX = nextRect.left + ratioX * nextRect.width
+      const nextPointY = nextRect.top + ratioY * nextRect.height
+      const shiftX = nextPointX - event.clientX
+      const shiftY = nextPointY - event.clientY
+      workspace.scrollLeft += shiftX
+      workspace.scrollTop += shiftY
+    })
+  }, [])
+
+  useEffect(() => {
+    const workspace = workspaceRef.current
+    if (!workspace) return
+
+    const onWheel = (event) => {
+      handleWorkspaceWheel(event)
+    }
+
+    workspace.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      workspace.removeEventListener('wheel', onWheel)
+    }
+  }, [handleWorkspaceWheel])
+
+  useEffect(() => {
+    const onPointerMove = (event) => {
+      handleWorkspacePointerMove(event)
+    }
+    const onPointerUp = (event) => {
+      finishWorkspacePan(event)
+    }
+
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerUp)
+
+    return () => {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerUp)
+    }
+  }, [finishWorkspacePan, handleWorkspacePointerMove])
 
   const addItem = useCallback((type) => {
     const newLayer = createLayerByType(type)
@@ -1513,6 +1856,16 @@ const ToolsImageConstructorContent = () => {
     setSelectedLayerKey((state) => (state === key ? null : state))
   }, [])
 
+  const toggleLayerVisibility = useCallback(
+    (key) => {
+      const layer = data.find((item) => item.key === key)
+      if (!layer) return
+      const nextShow = !layer.show
+      updateLayer(key, { show: nextShow })
+    },
+    [data, updateLayer]
+  )
+
   const duplicateLayer = useCallback(
     (key) => {
       const source = data.find((item) => item.key === key)
@@ -1642,6 +1995,21 @@ const ToolsImageConstructorContent = () => {
         return
       }
 
+      if (layer.type === 'text') {
+        const bounds = getLayerBounds(layer)
+        if (!bounds) return
+        const fixedX =
+          handle === 'w' ? bounds.x + bounds.width : bounds.x
+        resizeRef.current = {
+          layerKey: layer.key,
+          type: layer.type,
+          handle,
+          fixedX,
+          textAnchor: layer.params?.textAnchor || 'start',
+        }
+        return
+      }
+
       const bounds = getLayerBounds(layer)
       if (!bounds) return
       const left = bounds.x
@@ -1696,6 +2064,35 @@ const ToolsImageConstructorContent = () => {
               },
             })
           }
+          return
+        }
+
+        if (resize.type === 'text') {
+          const minTextWidth = 20
+          let nextWidth =
+            resize.handle === 'w'
+              ? resize.fixedX - point.x
+              : point.x - resize.fixedX
+          nextWidth = Math.max(minTextWidth, nextWidth)
+
+          const left =
+            resize.handle === 'w'
+              ? resize.fixedX - nextWidth
+              : resize.fixedX
+          const nextX =
+            resize.textAnchor === 'middle'
+              ? left + nextWidth / 2
+              : resize.textAnchor === 'end'
+                ? left + nextWidth
+                : left
+
+          updateLayer(resize.layerKey, {
+            params: {
+              x: Number(nextX.toFixed(2)),
+              textWidthLocked: true,
+              textMaxWidth: Number(nextWidth.toFixed(2)),
+            },
+          })
           return
         }
 
@@ -2169,6 +2566,68 @@ const ToolsImageConstructorContent = () => {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [canRedo, canUndo, redoLastAction, undoLastAction])
 
+  useEffect(() => {
+    const workspace = workspaceRef.current
+    if (!workspace) return
+
+    const onTouchStart = (event) => {
+      if (event.touches.length !== 2) return
+      const [touchA, touchB] = event.touches
+      pinchZoomRef.current = {
+        distance: getTouchDistance(touchA, touchB),
+      }
+    }
+
+    const onTouchMove = (event) => {
+      if (event.touches.length !== 2 || !pinchZoomRef.current) return
+      event.preventDefault()
+      const canvasWrapper = canvasWrapperRef.current
+      if (!canvasWrapper) return
+      const [touchA, touchB] = event.touches
+      const nextDistance = getTouchDistance(touchA, touchB)
+      const prevDistance = pinchZoomRef.current.distance || nextDistance
+      if (!prevDistance || !nextDistance) return
+
+      const midpointX = (touchA.clientX + touchB.clientX) / 2
+      const midpointY = (touchA.clientY + touchB.clientY) / 2
+      const prevRect = canvasWrapper.getBoundingClientRect()
+      const ratioX = (midpointX - prevRect.left) / Math.max(1, prevRect.width)
+      const ratioY = (midpointY - prevRect.top) / Math.max(1, prevRect.height)
+
+      const zoomFactor = nextDistance / prevDistance
+      const nextZoom = clampZoom(canvasZoomRef.current * zoomFactor)
+      canvasZoomRef.current = nextZoom
+      setCanvasZoom(nextZoom)
+      pinchZoomRef.current.distance = nextDistance
+
+      requestAnimationFrame(() => {
+        const nextRect = canvasWrapper.getBoundingClientRect()
+        const nextPointX = nextRect.left + ratioX * nextRect.width
+        const nextPointY = nextRect.top + ratioY * nextRect.height
+        workspace.scrollLeft += nextPointX - midpointX
+        workspace.scrollTop += nextPointY - midpointY
+      })
+    }
+
+    const onTouchEnd = () => {
+      if (pinchZoomRef.current) {
+        pinchZoomRef.current = null
+      }
+    }
+
+    workspace.addEventListener('touchstart', onTouchStart, { passive: true })
+    workspace.addEventListener('touchmove', onTouchMove, { passive: false })
+    workspace.addEventListener('touchend', onTouchEnd, { passive: true })
+    workspace.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      workspace.removeEventListener('touchstart', onTouchStart)
+      workspace.removeEventListener('touchmove', onTouchMove)
+      workspace.removeEventListener('touchend', onTouchEnd)
+      workspace.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [canvasZoom])
+
   const commitInlineTextEdit = useCallback(
     (mode = 'save') => {
       if (!inlineTextEditLayerKey) return
@@ -2401,6 +2860,7 @@ const ToolsImageConstructorContent = () => {
   const inlineTextEditStyle = useMemo(() => {
     if (!inlineTextEditLayer || inlineTextEditLayer.type !== 'text') return null
     const bounds = getLayerBounds(inlineTextEditLayer)
+    const draftMetrics = getTextLayoutMetrics(inlineTextEditLayer, inlineTextDraft)
     const svgRect = svgRef.current?.getBoundingClientRect()
     if (!bounds || !svgRect || !size.w || !size.h) return null
 
@@ -2413,53 +2873,45 @@ const ToolsImageConstructorContent = () => {
     const renderedFontSize = Math.max(10, fontSize * scaleY)
     const lineHeight = Number(inlineTextEditLayer.params?.lineHeight || 1.2)
     const textAnchor = inlineTextEditLayer.params?.textAnchor || 'start'
+    const textVerticalAlign = getTextVerticalAlign(inlineTextEditLayer)
     const initialText = String(inlineTextEditLayer.params?.text || '')
     const hasDraftChanged = inlineTextDraft !== initialText
-    const draftLines = String(inlineTextDraft || '').split('\n')
-    const measureCanvas = document.createElement('canvas')
-    const measureCtx = measureCanvas.getContext('2d')
-    if (measureCtx) {
-      const fontWeight = inlineTextEditLayer.params?.fontWeight || 'normal'
-      const fontStyle = inlineTextEditLayer.params?.fontStyle || 'normal'
-      const fontFamily = inlineTextEditLayer.params?.fontFamily || 'Arial'
-      measureCtx.font = `${fontStyle} ${fontWeight} ${renderedFontSize}px ${fontFamily}`
-    }
-    const measuredTextWidth = draftLines.reduce((acc, line) => {
-      if (!measureCtx)
-        return Math.max(
-          acc,
-          String(line || '').length * renderedFontSize * 0.62
-        )
-      return Math.max(acc, measureCtx.measureText(String(line || '')).width)
-    }, 0)
-    const textWidthByChars = Math.max(1, measuredTextWidth + 2)
-    const textHeightByLines = Math.max(
-      1,
-      draftLines.length * renderedFontSize * lineHeight
-    )
+    const textWidthByChars = Math.max(1, draftMetrics.width * scaleX)
+    const textHeightByLines = Math.max(1, draftMetrics.height * scaleY)
+    const isLockedWidth = isTextWidthLocked(inlineTextEditLayer)
     const baseLeft = bounds.x * scaleX
+    const baseTop = bounds.y * scaleY
     const baseWidth = Math.max(1, bounds.width * scaleX)
     const baseHeight = Math.max(1, bounds.height * scaleY)
     const nextWidth = hasDraftChanged
-      ? Math.max(baseWidth, textWidthByChars)
+      ? isLockedWidth
+        ? baseWidth
+        : Math.max(baseWidth, textWidthByChars)
       : baseWidth
     const nextHeight = hasDraftChanged
       ? Math.max(baseHeight, textHeightByLines)
       : baseHeight
     const widthGrowth = hasDraftChanged ? nextWidth - baseWidth : 0
+    const heightGrowth = hasDraftChanged ? nextHeight - baseHeight : 0
     const adjustedLeft =
       textAnchor === 'middle'
         ? baseLeft - widthGrowth / 2
         : textAnchor === 'end'
           ? baseLeft - widthGrowth
           : baseLeft
+    const adjustedTop =
+      textVerticalAlign === 'middle'
+        ? baseTop - heightGrowth / 2
+        : textVerticalAlign === 'end'
+          ? baseTop - heightGrowth
+          : baseTop
     const inlineOffsetX = 0.3
     const inlineOffsetY = 0.3
     const inlineWidthAdjust = 0.5
 
     return {
       left: `${adjustedLeft + inlineOffsetX - 0.5}px`,
-      top: `${bounds.y * scaleY + inlineOffsetY - 0.5}px`,
+      top: `${adjustedTop + inlineOffsetY - 0.5}px`,
       width: `${nextWidth + inlineWidthAdjust + 1}px`,
       height: `${nextHeight + 1}px`,
       fontSize: `${renderedFontSize}px`,
@@ -2476,6 +2928,11 @@ const ToolsImageConstructorContent = () => {
             : 'left',
       opacity: clampOpacity(inlineTextEditLayer.params?.opacity ?? 100) / 100,
       overflow: 'hidden',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
+      whiteSpace: isLockedWidth ? 'pre-wrap' : 'pre',
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
       padding: '0.5px',
       paddingTop: '0px',
       margin: '0',
@@ -2512,6 +2969,17 @@ const ToolsImageConstructorContent = () => {
       ]
     }
 
+    if (selectedLayer.type === 'text') {
+      if (!selectedLayerBounds) return []
+      const left = selectedLayerBounds.x
+      const right = selectedLayerBounds.x + selectedLayerBounds.width
+      const middleY = selectedLayerBounds.y + selectedLayerBounds.height / 2
+      return [
+        { key: 'w', x: left, y: middleY, cursor: 'ew-resize' },
+        { key: 'e', x: right, y: middleY, cursor: 'ew-resize' },
+      ]
+    }
+
     if (!selectedLayerBounds) return []
     const left = selectedLayerBounds.x
     const right = selectedLayerBounds.x + selectedLayerBounds.width
@@ -2527,8 +2995,7 @@ const ToolsImageConstructorContent = () => {
   }, [isResizeModeActive, selectedLayer, selectedLayerBounds])
 
   const mobileSelectedLayerToolbarStyle = useMemo(() => {
-    if (!selectedLayerBounds || !selectedLayer?.show || !size.h || !size.w)
-      return null
+    if (!selectedLayerBounds || !size.h || !size.w) return null
 
     const toolbarHeightPx = 40
     const layerGapPx = 12
@@ -2547,7 +3014,7 @@ const ToolsImageConstructorContent = () => {
         : `calc(${Math.max(0, layerBottom)}% + ${layerGapPx}px * 2)`,
       transform: 'translateX(-50%)',
     }
-  }, [selectedLayer?.show, selectedLayerBounds, size.h, size.w])
+  }, [selectedLayerBounds, size.h, size.w])
 
   const selectTemplate = (selectedTemplate) => {
     const template = selectedTemplate?.template
@@ -2592,9 +3059,16 @@ const ToolsImageConstructorContent = () => {
   const renderLayerEditorByType = (item) => {
     if (!item) return null
     if (item.type === 'text') {
+      const boundEvent =
+        item?.binding?.kind === 'event'
+          ? events.find(
+              ({ _id }) => String(_id) === String(item.binding?.eventId)
+            ) || null
+          : null
       return (
         <TextLayerEditor
           item={item}
+          boundEvent={boundEvent}
           setLayerState={(patch) =>
             updateLayer(item.key, patch, {
               markEventTextManual:
@@ -2785,11 +3259,11 @@ const ToolsImageConstructorContent = () => {
           )
         }
 
-        const text = String(layer.params?.text || '')
-        const lines = text.split('\n')
-        const lineHeight = Number(layer.params?.lineHeight || 1.2)
-        const x = Number(layer.params?.x || 0)
-        const y = Number(layer.params?.y || 0)
+        const metrics = getTextLayoutMetrics(layer)
+        const lines = metrics.lines
+        const lineHeight = metrics.lineHeight
+        const x = metrics.x
+        const y = metrics.startY
         const fontSize = Math.max(1, Number(layer.params?.fontSize || 32))
         const rotate = Number(layer.params?.rotate || 0)
 
@@ -2970,11 +3444,22 @@ const ToolsImageConstructorContent = () => {
 
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden bg-[#d5d7dc]">
-      <div className="relative flex-1 px-3 pt-3 overflow-auto pb-15">
-        <div className="relative flex items-center justify-center min-h-full">
+      <div
+        ref={workspaceRef}
+        className={`relative flex-1 px-3 pt-3 overflow-auto pb-15 ${
+          isWorkspacePanning ? 'cursor-grabbing' : 'cursor-default'
+        }`}
+        onPointerDown={handleWorkspacePointerDown}
+      >
+        <div className="relative flex items-center justify-center min-h-full min-w-full">
           <div
+            ref={canvasWrapperRef}
             className="relative w-full max-w-[560px] shadow-[0_18px_40px_rgba(15,23,42,0.12)]"
-            style={{ aspectRatio: `${size.w} / ${size.h}` }}
+            style={{
+              aspectRatio: `${size.w} / ${size.h}`,
+              width: `${canvasZoom * 100}%`,
+              maxWidth: `${560 * canvasZoom}px`,
+            }}
           >
             {renderCanvas({
               wrapperClassName:
@@ -2984,6 +3469,7 @@ const ToolsImageConstructorContent = () => {
             {inlineTextEditLayer && inlineTextEditStyle && (
               <textarea
                 ref={inlineTextInputRef}
+                data-inline-text-editor="true"
                 value={inlineTextDraft}
                 onChange={(event) => setInlineTextDraft(event.target.value)}
                 onKeyDown={(event) => {
@@ -3002,7 +3488,12 @@ const ToolsImageConstructorContent = () => {
                 }}
                 onBlur={() => commitInlineTextEdit('save')}
                 className="absolute z-30 bg-transparent outline-none resize-none"
-                wrap="off"
+                wrap={
+                  inlineTextEditLayer &&
+                  isTextWidthLocked(inlineTextEditLayer)
+                    ? 'soft'
+                    : 'off'
+                }
                 style={inlineTextEditStyle}
               />
             )}
@@ -3012,6 +3503,7 @@ const ToolsImageConstructorContent = () => {
               !inlineTextEditLayerKey &&
               mobileSelectedLayerToolbarStyle && (
                 <div
+                  data-layer-toolbar="true"
                   className="absolute z-20 rounded-full bg-white/95 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
                   style={mobileSelectedLayerToolbarStyle}
                 >
@@ -3040,6 +3532,19 @@ const ToolsImageConstructorContent = () => {
                           >
                             <FontAwesomeIcon icon={faCopy} />
                           </button>
+                        <button
+                          type="button"
+                          className={`w-8 h-8 ${
+                            selectedLayer.show
+                              ? 'text-[#7b4fb3]'
+                              : 'text-gray-500'
+                          }`}
+                          onClick={() => toggleLayerVisibility(selectedLayer.key)}
+                        >
+                          <FontAwesomeIcon
+                            icon={selectedLayer.show ? faEye : faEyeSlash}
+                          />
+                        </button>
                         <button
                           type="button"
                           className="w-8 h-8 text-red-600"
@@ -3080,13 +3585,14 @@ const ToolsImageConstructorContent = () => {
 
       {mobilePanelRendered && (
         <div
+          data-mobile-panel="true"
           className={`fixed bottom-0 left-0 right-0 tablet:left-16 z-40 max-h-[68vh] overflow-auto rounded-t-2xl border border-gray-200 border-b-0 bg-white px-2 pt-2 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-2xl transition-all duration-300 ease-out ${
             mobilePanelVisible
               ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0 pointer-events-none'
           }`}
         >
-          <div className="flex items-center justify-between px-1 mb-2">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-1 mb-2 bg-white">
             <div className="text-sm font-bold text-gray-700">
               {mobilePanelRendered === 'templates' && 'Файл'}
               {mobilePanelRendered === 'elements' && 'Элементы'}
@@ -3240,10 +3746,8 @@ const ToolsImageConstructorContent = () => {
                     )
                   }
                   onDelete={() => deleteLayer(item.key)}
-                  onToggleVisibility={() =>
-                    updateLayer(item.key, {
-                      show: !item.show,
-                    })
+                          onToggleVisibility={() =>
+                    toggleLayerVisibility(item.key)
                   }
                   onClickUp={
                     dataIndex < data.length - 1
