@@ -183,9 +183,7 @@ const normalizeImageLayerSources = (layers) =>
 
 const getTextVerticalAlign = (layer) => {
   const value = String(layer?.params?.textVerticalAlign || 'legacy')
-  return ['legacy', 'start', 'middle', 'end'].includes(value)
-    ? value
-    : 'legacy'
+  return ['legacy', 'start', 'middle', 'end'].includes(value) ? value : 'legacy'
 }
 
 const isTextWidthLocked = (layer) =>
@@ -526,7 +524,8 @@ const resolveEventBoundFieldText = (source, event, caseMode = 'normal') => {
     return applyCase(eventBindingSourcePlaceholders[source] || '[значение]')
   }
   if (source === 'title') return applyCase(String(event?.title || ''))
-  if (source === 'date_weekday') return applyCase(buildEventBoundDateText(event))
+  if (source === 'date_weekday')
+    return applyCase(buildEventBoundDateText(event))
   if (source === 'date_only')
     return applyCase(buildEventBoundDateOnlyText(event))
   if (source === 'time_range')
@@ -962,17 +961,19 @@ const TextLayerEditor = ({
         noMargin
         wrapperClassName="h-7 pr-2"
       />
-      <InputNumber
-        label="Ширина текста"
-        className="w-[150px]"
-        inputClassName="w-[70px]"
-        value={Math.max(20, Number(item.params?.textMaxWidth || 640))}
-        onChange={(value) =>
-          setLayerState({ params: { textMaxWidth: Math.max(20, value) } })
-        }
-        min={20}
-        max={5000}
-      />
+      {false && (
+        <InputNumber
+          label="Ширина текста"
+          className="w-[150px]"
+          inputClassName="w-[70px]"
+          value={Math.max(20, Number(item.params?.textMaxWidth || 640))}
+          onChange={(value) =>
+            setLayerState({ params: { textMaxWidth: Math.max(20, value) } })
+          }
+          min={20}
+          max={5000}
+        />
+      )}
       <ComboBox
         label="Начертание"
         className="w-[128px]"
@@ -1348,6 +1349,7 @@ const ToolsImageConstructorContent = () => {
   const [undoDepth, setUndoDepth] = useState(0)
   const [redoDepth, setRedoDepth] = useState(0)
   const [canvasZoom, setCanvasZoom] = useState(1)
+  const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 })
   const [isWorkspacePanning, setIsWorkspacePanning] = useState(false)
   const [dragGuides, setDragGuides] = useState({
     vertical: [],
@@ -1364,6 +1366,8 @@ const ToolsImageConstructorContent = () => {
   const pinchZoomRef = useRef(null)
   const workspacePanRef = useRef(null)
   const canvasZoomRef = useRef(1)
+  const canvasOffsetRef = useRef({ x: 0, y: 0 })
+  const lastTextTapRef = useRef({ layerKey: null, at: 0 })
   const mobilePanelOpenTimerRef = useRef(null)
   const mobilePanelCloseTimerRef = useRef(null)
   const hasLoadedFromStorageRef = useRef(false)
@@ -1380,10 +1384,7 @@ const ToolsImageConstructorContent = () => {
     [data, selectedLayerKey]
   )
   const layersForPanel = useMemo(
-    () =>
-      data
-        .map((item, dataIndex) => ({ item, dataIndex }))
-        .reverse(),
+    () => data.map((item, dataIndex) => ({ item, dataIndex })).reverse(),
     [data]
   )
   const inlineTextEditLayer = useMemo(
@@ -1405,6 +1406,10 @@ const ToolsImageConstructorContent = () => {
   useEffect(() => {
     canvasZoomRef.current = canvasZoom
   }, [canvasZoom])
+
+  useEffect(() => {
+    canvasOffsetRef.current = canvasOffset
+  }, [canvasOffset])
 
   const updateLayer = useCallback((key, patch, options = {}) => {
     setData((state) =>
@@ -1462,13 +1467,13 @@ const ToolsImageConstructorContent = () => {
       if (!isLayerTarget && !isInlineEditor && !isLayerToolbar) {
         clearSelection()
         const workspace = workspaceRef.current
-        if (workspace && event.button === 0) {
+        if (workspace && (event.button === undefined || event.button === 0)) {
           workspacePanRef.current = {
             pointerId: event.pointerId,
             startX: event.clientX,
             startY: event.clientY,
-            startScrollLeft: workspace.scrollLeft,
-            startScrollTop: workspace.scrollTop,
+            startOffsetX: canvasOffsetRef.current.x,
+            startOffsetY: canvasOffsetRef.current.y,
           }
           setIsWorkspacePanning(true)
           if (typeof workspace.setPointerCapture === 'function') {
@@ -1490,10 +1495,13 @@ const ToolsImageConstructorContent = () => {
     if (!pan || !workspace) return
     if (pan.pointerId !== event.pointerId) return
 
+    event.preventDefault()
     const deltaX = event.clientX - pan.startX
     const deltaY = event.clientY - pan.startY
-    workspace.scrollLeft = pan.startScrollLeft - deltaX
-    workspace.scrollTop = pan.startScrollTop - deltaY
+    setCanvasOffset({
+      x: pan.startOffsetX + deltaX,
+      y: pan.startOffsetY + deltaY,
+    })
   }, [])
 
   const finishWorkspacePan = useCallback((event) => {
@@ -1527,9 +1535,8 @@ const ToolsImageConstructorContent = () => {
       return
     }
     event.preventDefault()
-    const workspace = workspaceRef.current
     const canvasWrapper = canvasWrapperRef.current
-    if (!workspace || !canvasWrapper) return
+    if (!canvasWrapper) return
 
     const prevRect = canvasWrapper.getBoundingClientRect()
     const prevZoom = canvasZoomRef.current
@@ -1540,18 +1547,22 @@ const ToolsImageConstructorContent = () => {
     const ratioX = (event.clientX - prevRect.left) / Math.max(1, prevRect.width)
     const ratioY = (event.clientY - prevRect.top) / Math.max(1, prevRect.height)
 
+    const zoomRatio = nextZoom / Math.max(0.0001, prevZoom)
+    const nextWidth = prevRect.width * zoomRatio
+    const nextHeight = prevRect.height * zoomRatio
+    const prevCenterX = prevRect.left + prevRect.width / 2
+    const prevCenterY = prevRect.top + prevRect.height / 2
+    const baseCenterX = prevCenterX - canvasOffsetRef.current.x
+    const baseCenterY = prevCenterY - canvasOffsetRef.current.y
+    const desiredCenterX = event.clientX - ratioX * nextWidth + nextWidth / 2
+    const desiredCenterY = event.clientY - ratioY * nextHeight + nextHeight / 2
+
+    setCanvasOffset({
+      x: desiredCenterX - baseCenterX,
+      y: desiredCenterY - baseCenterY,
+    })
     canvasZoomRef.current = nextZoom
     setCanvasZoom(nextZoom)
-
-    requestAnimationFrame(() => {
-      const nextRect = canvasWrapper.getBoundingClientRect()
-      const nextPointX = nextRect.left + ratioX * nextRect.width
-      const nextPointY = nextRect.top + ratioY * nextRect.height
-      const shiftX = nextPointX - event.clientX
-      const shiftY = nextPointY - event.clientY
-      workspace.scrollLeft += shiftX
-      workspace.scrollTop += shiftY
-    })
   }, [])
 
   useEffect(() => {
@@ -1593,116 +1604,133 @@ const ToolsImageConstructorContent = () => {
     setSelectedLayerKey(newLayer.key)
   }, [])
 
-  const applyEventToBoundGroup = useCallback((groupId, eventId) => {
-    if (!groupId || !eventId) return
-    const event = events.find(({ _id }) => String(_id) === String(eventId))
-    if (!event) return
+  const applyEventToBoundGroup = useCallback(
+    (groupId, eventId) => {
+      if (!groupId || !eventId) return
+      const event = events.find(({ _id }) => String(_id) === String(eventId))
+      if (!event) return
 
-    setData((state) =>
-      state.map((layer) => {
-        if (layer?.binding?.kind !== 'event') return layer
-        if (String(layer.binding.groupId || '') !== String(groupId)) {
-          return layer
-        }
+      setData((state) =>
+        state.map((layer) => {
+          if (layer?.binding?.kind !== 'event') return layer
+          if (String(layer.binding.groupId || '') !== String(groupId)) {
+            return layer
+          }
 
-        const source = getEventBindingSource(layer.binding)
-        const caseMode = getEventBindingCaseMode(layer.binding)
-        return {
-          ...layer,
-          params: {
-            ...layer.params,
-            text: resolveEventBoundFieldText(source, event, caseMode),
-          },
-          binding: {
-            ...layer.binding,
-            source,
-            caseMode,
-            eventId: String(eventId),
-            isManual: false,
-          },
-        }
+          const source = getEventBindingSource(layer.binding)
+          const caseMode = getEventBindingCaseMode(layer.binding)
+          return {
+            ...layer,
+            params: {
+              ...layer.params,
+              text: resolveEventBoundFieldText(source, event, caseMode),
+            },
+            binding: {
+              ...layer.binding,
+              source,
+              caseMode,
+              eventId: String(eventId),
+              isManual: false,
+            },
+          }
+        })
+      )
+    },
+    [events]
+  )
+
+  const openEventPickerForBoundLayer = useCallback(
+    (layer) => {
+      const groupId = layer?.binding?.groupId
+      if (!groupId) return
+      const selectedEventId = layer?.binding?.eventId
+      const selectedIds = selectedEventId ? [String(selectedEventId)] : []
+
+      modalsFunc.selectEvents(
+        selectedIds,
+        {},
+        (selected) => {
+          const nextEventId = selected?.[0]
+          if (!nextEventId) return
+          applyEventToBoundGroup(groupId, nextEventId)
+        },
+        null,
+        null,
+        1,
+        false
+      )
+    },
+    [applyEventToBoundGroup, modalsFunc]
+  )
+
+  const restoreBoundLayerTextFromEvent = useCallback(
+    (layer) => {
+      const binding = layer?.binding
+      if (binding?.kind !== 'event') return
+      const event = events.find(
+        ({ _id }) => String(_id) === String(binding.eventId)
+      )
+      const source = getEventBindingSource(binding)
+      const caseMode = getEventBindingCaseMode(binding)
+      const nextText = resolveEventBoundFieldText(source, event, caseMode)
+      updateLayer(layer.key, {
+        params: { text: nextText },
+        binding: {
+          ...binding,
+          source,
+          caseMode,
+          isManual: false,
+        },
       })
-    )
-  }, [events])
+    },
+    [events, updateLayer]
+  )
 
-  const openEventPickerForBoundLayer = useCallback((layer) => {
-    const groupId = layer?.binding?.groupId
-    if (!groupId) return
-    const selectedEventId = layer?.binding?.eventId
-    const selectedIds = selectedEventId ? [String(selectedEventId)] : []
+  const setEventBindingSourceForLayer = useCallback(
+    (layer, source) => {
+      if (layer?.binding?.kind !== 'event') return
+      const event = events.find(
+        ({ _id }) => String(_id) === String(layer.binding.eventId)
+      )
+      const caseMode = getEventBindingCaseMode(layer.binding)
+      updateLayer(layer.key, {
+        params: {
+          text: resolveEventBoundFieldText(source, event, caseMode),
+        },
+        binding: {
+          ...layer.binding,
+          source,
+          caseMode,
+          isManual: false,
+        },
+      })
+    },
+    [events, updateLayer]
+  )
 
-    modalsFunc.selectEvents(
-      selectedIds,
-      {},
-      (selected) => {
-        const nextEventId = selected?.[0]
-        if (!nextEventId) return
-        applyEventToBoundGroup(groupId, nextEventId)
-      },
-      null,
-      null,
-      1,
-      false
-    )
-  }, [applyEventToBoundGroup, modalsFunc])
-
-  const restoreBoundLayerTextFromEvent = useCallback((layer) => {
-    const binding = layer?.binding
-    if (binding?.kind !== 'event') return
-    const event = events.find(({ _id }) => String(_id) === String(binding.eventId))
-    const source = getEventBindingSource(binding)
-    const caseMode = getEventBindingCaseMode(binding)
-    const nextText = resolveEventBoundFieldText(source, event, caseMode)
-    updateLayer(layer.key, {
-      params: { text: nextText },
-      binding: {
-        ...binding,
-        source,
-        caseMode,
-        isManual: false,
-      },
-    })
-  }, [events, updateLayer])
-
-  const setEventBindingSourceForLayer = useCallback((layer, source) => {
-    if (layer?.binding?.kind !== 'event') return
-    const event = events.find(
-      ({ _id }) => String(_id) === String(layer.binding.eventId)
-    )
-    const caseMode = getEventBindingCaseMode(layer.binding)
-    updateLayer(layer.key, {
-      params: {
-        text: resolveEventBoundFieldText(source, event, caseMode),
-      },
-      binding: {
-        ...layer.binding,
-        source,
-        caseMode,
-        isManual: false,
-      },
-    })
-  }, [events, updateLayer])
-
-  const setEventBindingCaseModeForLayer = useCallback((layer, caseMode) => {
-    if (layer?.binding?.kind !== 'event') return
-    const normalizedCaseMode =
-      caseMode === 'upper' || caseMode === 'lower' ? caseMode : 'normal'
-    const source = getEventBindingSource(layer.binding)
-    const event = events.find(
-      ({ _id }) => String(_id) === String(layer.binding.eventId)
-    )
-    updateLayer(layer.key, {
-      params: {
-        text: resolveEventBoundFieldText(source, event, normalizedCaseMode),
-      },
-      binding: {
-        ...layer.binding,
-        source,
-        caseMode: normalizedCaseMode,
-        isManual: false,
-      },
-    })
-  }, [events, updateLayer])
+  const setEventBindingCaseModeForLayer = useCallback(
+    (layer, caseMode) => {
+      if (layer?.binding?.kind !== 'event') return
+      const normalizedCaseMode =
+        caseMode === 'upper' || caseMode === 'lower' ? caseMode : 'normal'
+      const source = getEventBindingSource(layer.binding)
+      const event = events.find(
+        ({ _id }) => String(_id) === String(layer.binding.eventId)
+      )
+      updateLayer(layer.key, {
+        params: {
+          text: resolveEventBoundFieldText(source, event, normalizedCaseMode),
+        },
+        binding: {
+          ...layer.binding,
+          source,
+          caseMode: normalizedCaseMode,
+          isManual: false,
+        },
+      })
+    },
+    [events, updateLayer]
+  )
 
   const addEventGroup = useCallback(() => {
     if (hasEventBoundLayers) {
@@ -1948,6 +1976,12 @@ const ToolsImageConstructorContent = () => {
       const point = getSvgPoint(event)
       if (!point) return
 
+      // First click only selects the layer. Drag starts only for already selected layer.
+      if (selectedLayerKey !== layer.key) {
+        setSelectedLayerKey(layer.key)
+        return
+      }
+
       event.preventDefault()
       isTransformingRef.current = true
       pendingTransformSnapshotRef.current = null
@@ -1967,7 +2001,7 @@ const ToolsImageConstructorContent = () => {
         startLayerY2: Number(layer.params?.y2 || 0),
       }
     },
-    [getSvgPoint, inlineTextEditLayerKey, resizeModeLayerKey]
+    [getSvgPoint, inlineTextEditLayerKey, resizeModeLayerKey, selectedLayerKey]
   )
 
   const startResizeLayer = useCallback(
@@ -1998,8 +2032,7 @@ const ToolsImageConstructorContent = () => {
       if (layer.type === 'text') {
         const bounds = getLayerBounds(layer)
         if (!bounds) return
-        const fixedX =
-          handle === 'w' ? bounds.x + bounds.width : bounds.x
+        const fixedX = handle === 'w' ? bounds.x + bounds.width : bounds.x
         resizeRef.current = {
           layerKey: layer.key,
           type: layer.type,
@@ -2076,9 +2109,7 @@ const ToolsImageConstructorContent = () => {
           nextWidth = Math.max(minTextWidth, nextWidth)
 
           const left =
-            resize.handle === 'w'
-              ? resize.fixedX - nextWidth
-              : resize.fixedX
+            resize.handle === 'w' ? resize.fixedX - nextWidth : resize.fixedX
           const nextX =
             resize.textAnchor === 'middle'
               ? left + nextWidth / 2
@@ -2536,26 +2567,30 @@ const ToolsImageConstructorContent = () => {
     }
 
     const onKeyDown = (event) => {
+      const code = String(event.code || '')
       const key = String(event.key || '').toLowerCase()
       const mod = event.ctrlKey || event.metaKey
       if (!mod) return
       if (isTypingTarget(event.target)) return
 
-      if (key === 'z' && event.shiftKey) {
+      const isUndoKey = code === 'KeyZ' || key === 'z'
+      const isRedoKey = code === 'KeyY' || key === 'y'
+
+      if (isUndoKey && event.shiftKey) {
         if (!canRedo) return
         event.preventDefault()
         redoLastAction()
         return
       }
 
-      if (key === 'z') {
+      if (isUndoKey) {
         if (!canUndo) return
         event.preventDefault()
         undoLastAction()
         return
       }
 
-      if (key === 'y') {
+      if (isRedoKey) {
         if (!canRedo) return
         event.preventDefault()
         redoLastAction()
@@ -2595,18 +2630,25 @@ const ToolsImageConstructorContent = () => {
       const ratioY = (midpointY - prevRect.top) / Math.max(1, prevRect.height)
 
       const zoomFactor = nextDistance / prevDistance
+      const prevZoom = canvasZoomRef.current
       const nextZoom = clampZoom(canvasZoomRef.current * zoomFactor)
+      const zoomRatio = nextZoom / Math.max(0.0001, prevZoom)
+      const nextWidth = prevRect.width * zoomRatio
+      const nextHeight = prevRect.height * zoomRatio
+      const prevCenterX = prevRect.left + prevRect.width / 2
+      const prevCenterY = prevRect.top + prevRect.height / 2
+      const baseCenterX = prevCenterX - canvasOffsetRef.current.x
+      const baseCenterY = prevCenterY - canvasOffsetRef.current.y
+      const desiredCenterX = midpointX - ratioX * nextWidth + nextWidth / 2
+      const desiredCenterY = midpointY - ratioY * nextHeight + nextHeight / 2
+
+      setCanvasOffset({
+        x: desiredCenterX - baseCenterX,
+        y: desiredCenterY - baseCenterY,
+      })
       canvasZoomRef.current = nextZoom
       setCanvasZoom(nextZoom)
       pinchZoomRef.current.distance = nextDistance
-
-      requestAnimationFrame(() => {
-        const nextRect = canvasWrapper.getBoundingClientRect()
-        const nextPointX = nextRect.left + ratioX * nextRect.width
-        const nextPointY = nextRect.top + ratioY * nextRect.height
-        workspace.scrollLeft += nextPointX - midpointX
-        workspace.scrollTop += nextPointY - midpointY
-      })
     }
 
     const onTouchEnd = () => {
@@ -2639,9 +2681,13 @@ const ToolsImageConstructorContent = () => {
         editingLayer?.type === 'text' &&
         String(editingLayer.params?.text || '') !== inlineTextDraft
       ) {
-        updateLayer(inlineTextEditLayerKey, {
-          params: { text: inlineTextDraft },
-        }, { markEventTextManual: editingLayer?.binding?.kind === 'event' })
+        updateLayer(
+          inlineTextEditLayerKey,
+          {
+            params: { text: inlineTextDraft },
+          },
+          { markEventTextManual: editingLayer?.binding?.kind === 'event' }
+        )
       }
       setInlineTextEditLayerKey(null)
       setInlineTextDraft('')
@@ -2657,6 +2703,26 @@ const ToolsImageConstructorContent = () => {
     setInlineTextEditLayerKey(layer.key)
     setInlineTextDraft(String(layer.params?.text || ''))
   }, [])
+
+  const handleTextPointerDown = useCallback(
+    (event, layer) => {
+      if (event.pointerType === 'touch') {
+        const now = Date.now()
+        const sameLayer = lastTextTapRef.current.layerKey === layer.key
+        const isDoubleTap = sameLayer && now - lastTextTapRef.current.at <= 320
+        lastTextTapRef.current = { layerKey: layer.key, at: now }
+
+        if (isDoubleTap) {
+          event.preventDefault()
+          event.stopPropagation()
+          startInlineTextEdit(layer)
+          return
+        }
+      }
+      startDragLayer(event, layer)
+    },
+    [startDragLayer, startInlineTextEdit]
+  )
 
   useEffect(() => {
     if (!inlineTextEditLayerKey) return
@@ -2860,12 +2926,20 @@ const ToolsImageConstructorContent = () => {
   const inlineTextEditStyle = useMemo(() => {
     if (!inlineTextEditLayer || inlineTextEditLayer.type !== 'text') return null
     const bounds = getLayerBounds(inlineTextEditLayer)
-    const draftMetrics = getTextLayoutMetrics(inlineTextEditLayer, inlineTextDraft)
-    const svgRect = svgRef.current?.getBoundingClientRect()
-    if (!bounds || !svgRect || !size.w || !size.h) return null
+    const draftMetrics = getTextLayoutMetrics(
+      inlineTextEditLayer,
+      inlineTextDraft
+    )
+    const svgElement = svgRef.current
+    const svgClientWidth = Number(svgElement?.clientWidth || 0)
+    const svgClientHeight = Number(svgElement?.clientHeight || 0)
+    if (!bounds || !size.w || !size.h || !svgClientWidth || !svgClientHeight)
+      return null
 
-    const scaleX = svgRect.width / size.w
-    const scaleY = svgRect.height / size.h
+    // Use layout size (clientWidth/clientHeight) instead of getBoundingClientRect,
+    // because the wrapper can be transformed (zoom/pan) and children are transformed together.
+    const scaleX = svgClientWidth / size.w
+    const scaleY = svgClientHeight / size.h
     const fontSize = Math.max(
       1,
       Number(inlineTextEditLayer.params?.fontSize || 32)
@@ -2905,7 +2979,7 @@ const ToolsImageConstructorContent = () => {
         : textVerticalAlign === 'end'
           ? baseTop - heightGrowth
           : baseTop
-    const inlineOffsetX = 0.3
+    const inlineOffsetX = 0
     const inlineOffsetY = 0.3
     const inlineWidthAdjust = 0.5
 
@@ -2999,6 +3073,7 @@ const ToolsImageConstructorContent = () => {
 
     const toolbarHeightPx = 40
     const layerGapPx = 12
+    const safeZoom = Math.max(0.0001, canvasZoom)
     const centerX =
       ((selectedLayerBounds.x + selectedLayerBounds.width / 2) / size.w) * 100
     const layerTop = (selectedLayerBounds.y / size.h) * 100
@@ -3006,15 +3081,19 @@ const ToolsImageConstructorContent = () => {
       ((selectedLayerBounds.y + selectedLayerBounds.height) / size.h) * 100
     const showAbove = layerTop > 14
     const safeCenter = Math.max(28, Math.min(72, centerX))
+    const inverseScale = 1 / safeZoom
+    const aboveOffsetPx = (toolbarHeightPx + layerGapPx) / safeZoom
+    const belowOffsetPx = (layerGapPx * 2) / safeZoom
 
     return {
       left: `${safeCenter}%`,
       top: showAbove
-        ? `calc(${Math.max(0, layerTop)}% - ${toolbarHeightPx + layerGapPx}px)`
-        : `calc(${Math.max(0, layerBottom)}% + ${layerGapPx}px * 2)`,
-      transform: 'translateX(-50%)',
+        ? `calc(${Math.max(0, layerTop)}% - ${aboveOffsetPx}px)`
+        : `calc(${Math.max(0, layerBottom)}% + ${belowOffsetPx}px)`,
+      transform: `translateX(-50%) scale(${inverseScale})`,
+      transformOrigin: 'center center',
     }
-  }, [selectedLayerBounds, size.h, size.w])
+  }, [canvasZoom, selectedLayerBounds, size.h, size.w])
 
   const selectTemplate = (selectedTemplate) => {
     const template = selectedTemplate?.template
@@ -3287,7 +3366,7 @@ const ToolsImageConstructorContent = () => {
               cursor: getLayerPointerStyle(false),
               userSelect: 'none',
             }}
-            onPointerDown={(event) => startDragLayer(event, layer)}
+            onPointerDown={(event) => handleTextPointerDown(event, layer)}
             onDoubleClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -3447,18 +3526,23 @@ const ToolsImageConstructorContent = () => {
       <div
         ref={workspaceRef}
         className={`relative flex-1 px-3 pt-3 overflow-auto pb-15 ${
-          isWorkspacePanning ? 'cursor-grabbing' : 'cursor-default'
-        }`}
+          isWorkspacePanning
+            ? 'cursor-grabbing select-none'
+            : canvasZoom > 1
+              ? 'cursor-grab'
+              : 'cursor-default'
+        } touch-none`}
         onPointerDown={handleWorkspacePointerDown}
       >
-        <div className="relative flex items-center justify-center min-h-full min-w-full">
+        <div className="relative flex items-center justify-center min-w-full min-h-full">
           <div
             ref={canvasWrapperRef}
             className="relative w-full max-w-[560px] shadow-[0_18px_40px_rgba(15,23,42,0.12)]"
             style={{
               aspectRatio: `${size.w} / ${size.h}`,
-              width: `${canvasZoom * 100}%`,
-              maxWidth: `${560 * canvasZoom}px`,
+              transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px) scale(${canvasZoom})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
             }}
           >
             {renderCanvas({
@@ -3489,8 +3573,7 @@ const ToolsImageConstructorContent = () => {
                 onBlur={() => commitInlineTextEdit('save')}
                 className="absolute z-30 bg-transparent outline-none resize-none"
                 wrap={
-                  inlineTextEditLayer &&
-                  isTextWidthLocked(inlineTextEditLayer)
+                  inlineTextEditLayer && isTextWidthLocked(inlineTextEditLayer)
                     ? 'soft'
                     : 'off'
                 }
@@ -3517,21 +3600,21 @@ const ToolsImageConstructorContent = () => {
                         <FontAwesomeIcon icon={faCheck} />
                       </button>
                     ) : (
-                        <>
-                          <button
-                            type="button"
-                            className="w-8 h-8 text-orange-500"
-                            onClick={() => setMobilePanel('text')}
-                          >
-                            <FontAwesomeIcon icon={faPen} />
-                          </button>
-                          <button
-                            type="button"
-                            className="w-8 h-8 text-[#1d9bf0]"
-                            onClick={() => duplicateLayer(selectedLayer.key)}
-                          >
-                            <FontAwesomeIcon icon={faCopy} />
-                          </button>
+                      <>
+                        <button
+                          type="button"
+                          className="w-8 h-8 text-orange-500"
+                          onClick={() => setMobilePanel('text')}
+                        >
+                          <FontAwesomeIcon icon={faPen} />
+                        </button>
+                        <button
+                          type="button"
+                          className="w-8 h-8 text-[#1d9bf0]"
+                          onClick={() => duplicateLayer(selectedLayer.key)}
+                        >
+                          <FontAwesomeIcon icon={faCopy} />
+                        </button>
                         <button
                           type="button"
                           className={`w-8 h-8 ${
@@ -3539,7 +3622,9 @@ const ToolsImageConstructorContent = () => {
                               ? 'text-[#7b4fb3]'
                               : 'text-gray-500'
                           }`}
-                          onClick={() => toggleLayerVisibility(selectedLayer.key)}
+                          onClick={() =>
+                            toggleLayerVisibility(selectedLayer.key)
+                          }
                         >
                           <FontAwesomeIcon
                             icon={selectedLayer.show ? faEye : faEyeSlash}
@@ -3586,13 +3671,13 @@ const ToolsImageConstructorContent = () => {
       {mobilePanelRendered && (
         <div
           data-mobile-panel="true"
-          className={`fixed bottom-0 left-0 right-0 tablet:left-16 z-40 max-h-[68vh] overflow-auto rounded-t-2xl border border-gray-200 border-b-0 bg-white px-2 pt-2 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-2xl transition-all duration-300 ease-out ${
+          className={`fixed bottom-0 left-0 right-0 tablet:left-16 z-40 max-h-[68vh] overflow-auto rounded-t-2xl border border-gray-200 border-b-0 bg-white px-2 pt-0 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-2xl transition-all duration-300 ease-out ${
             mobilePanelVisible
               ? 'translate-y-0 opacity-100'
               : 'translate-y-full opacity-0 pointer-events-none'
           }`}
         >
-          <div className="sticky top-0 z-10 flex items-center justify-between px-1 mb-2 bg-white">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-1 pt-2 pb-2 mb-2 bg-white border-b border-gray-200">
             <div className="text-sm font-bold text-gray-700">
               {mobilePanelRendered === 'templates' && 'Файл'}
               {mobilePanelRendered === 'elements' && 'Элементы'}
@@ -3746,9 +3831,7 @@ const ToolsImageConstructorContent = () => {
                     )
                   }
                   onDelete={() => deleteLayer(item.key)}
-                          onToggleVisibility={() =>
-                    toggleLayerVisibility(item.key)
-                  }
+                  onToggleVisibility={() => toggleLayerVisibility(item.key)}
                   onClickUp={
                     dataIndex < data.length - 1
                       ? () => bringLayerForward(dataIndex)

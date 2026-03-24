@@ -753,7 +753,7 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      imageConstructor: false,
+      imageConstructor: true,
       individualWeddings: false,
     },
     newsletters: {
@@ -895,7 +895,7 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      imageConstructor: false,
+      imageConstructor: true,
       individualWeddings: true,
     },
     newsletters: {
