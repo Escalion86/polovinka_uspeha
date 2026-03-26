@@ -86,7 +86,7 @@ const UserActiveSignedUpBadge = ({ userId }) => {
     return null
 
   return (
-    <span className="inline-flex items-center rounded-full border border-[#f0e5ea] bg-white/80 px-2 py-0.5 text-[10px] tablet:text-[12px] font-semibold tracking-[0.1em] text-[#1f6e9c]">
+    <span className="inline-flex items-center rounded-full border border-[#f0e5ea] bg-white/80 px-2 py-0.5 text-[10px] tablet:text-[12px] uppercase font-semibold tracking-[0.1em] text-[#1f6e9c]">
       {activeSignedUpCount}
       <span className="ml-1 opacity-70">Записан</span>
     </span>
