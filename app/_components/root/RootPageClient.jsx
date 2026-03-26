@@ -8,6 +8,7 @@ import { captureAttributionFromBrowser } from '@helpers/attribution'
 import { fetchingGlobalAboutSpaceCards } from '@helpers/fetchers'
 import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
 import TitleHeroSection from '@components/TitleHeroSection'
+import { useRouter } from 'next/navigation'
 
 const valueCards = [
   {
@@ -68,8 +69,10 @@ export default function RootPageClient({
   initialCities,
   initialAboutSpaceCards,
 }) {
+  const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showLocationModal, setShowLocationModal] = useState(false)
+  const [openingCity, setOpeningCity] = useState(null)
   const [globalCities, setGlobalCities] = useState(() =>
     prepareCities(initialCities)
   )
@@ -153,6 +156,13 @@ export default function RootPageClient({
   }, [initialAboutSpaceCards])
 
   const locations = globalCities.length > 0 ? globalCities : fallbackLocations
+
+  const navigateToCity = (cityKey, cityTitle) => {
+    if (!cityKey || openingCity) return
+    setOpeningCity(cityTitle || cityKey.toUpperCase())
+    router.push(`/${cityKey}`)
+  }
+
   const scrollToSection = (id) => {
     const target = document.getElementById(id)
     if (!target) return
@@ -388,12 +398,14 @@ export default function RootPageClient({
                     : 'Локальная команда и офлайн-мероприятия в вашем городе.'}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-5">
-                  <Link
-                    href={`/${item.key}`}
+                  <button
+                    type="button"
                     className="rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] px-4 py-2 text-sm font-semibold text-white"
+                    onClick={() => navigateToCity(item.key, item.city)}
+                    disabled={Boolean(openingCity)}
                   >
                     Перейти в город
-                  </Link>
+                  </button>
                   <Link
                     href={`/${item.key}/register`}
                     className="rounded-full border border-[rgba(107,31,42,0.2)] px-4 py-2 text-sm font-semibold text-[#6b1f2a]"
@@ -454,13 +466,18 @@ export default function RootPageClient({
             </div>
             <div className="grid gap-2">
               {locations.map((item) => (
-                <Link
+                <button
+                  type="button"
                   key={item.key}
-                  href={`/${item.key}`}
                   className="rounded-xl border border-[rgba(107,31,42,0.2)] bg-[linear-gradient(135deg,rgba(107,31,42,0.04),rgba(79,176,232,0.12))] px-4 py-3 font-semibold text-[#4b0f1c] transition hover:bg-[linear-gradient(135deg,rgba(107,31,42,0.08),rgba(79,176,232,0.18))]"
+                  onClick={() => {
+                    setShowLocationModal(false)
+                    navigateToCity(item.key, item.city)
+                  }}
+                  disabled={Boolean(openingCity)}
                 >
                   {item.city}
-                </Link>
+                </button>
               ))}
             </div>
             <button
@@ -470,6 +487,16 @@ export default function RootPageClient({
             >
               Закрыть
             </button>
+          </div>
+        </div>
+      ) : null}
+      {openingCity ? (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 px-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 text-[#4b0f1c] shadow-[0_24px_60px_rgba(0,0,0,0.25)]">
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#8dcff2] border-t-[#6b1f2a]" />
+            <span className="text-sm font-semibold">
+              Открывается {openingCity}...
+            </span>
           </div>
         </div>
       ) : null}

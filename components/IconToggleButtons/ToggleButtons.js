@@ -58,9 +58,7 @@ const ToggleButtons = ({
             className={cn(
               'flex items-center gap-x-1',
               cfg.className,
-              isActive
-                ? cfg.activeClassName
-                : cfg.inactiveClassName,
+              isActive ? cfg.activeClassName : cfg.inactiveClassName,
               !isActive && cfg.color && !cfg.skipDefaultColorClass
                 ? `text-${cfg.color}`
                 : null
@@ -68,7 +66,10 @@ const ToggleButtons = ({
             aria-label={cfg.value}
           >
             {cfg.icon && (
-              <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={cfg.icon} />
+              <FontAwesomeIcon
+                className="w-6 h-6 min-h-6 min-w-6"
+                icon={cfg.icon}
+              />
             )}
             {!iconsOnly && cfg.name}
             {names ? names[cfg.value] : null}

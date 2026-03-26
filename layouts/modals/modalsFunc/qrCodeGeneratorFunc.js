@@ -1,10 +1,11 @@
 import FormWrapper from '@components/FormWrapper'
+import LoadingSpinner from '@components/LoadingSpinner'
 import copyToClipboard from '@helpers/copyToClipboard'
 import useSnackbar from '@helpers/useSnackbar'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
   const QRCodeGeneratorFuncModal = ({
@@ -12,6 +13,7 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
     setOnConfirmFunc,
   }) => {
     const { info } = useSnackbar()
+    const [isQrLoading, setIsQrLoading] = useState(true)
     const location = useAtomValue(locationAtom)
     const router = useRouter()
     const origin =
@@ -27,6 +29,10 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
     const encodedLink = encodeURIComponent(targetLink)
 
     useEffect(() => {
+      setIsQrLoading(true)
+    }, [encodedLink])
+
+    useEffect(() => {
       setOnConfirmFunc(() => {
         copyToClipboard(targetLink)
         info('Ссылка скопирована в буфер обмена')
@@ -36,26 +42,24 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
 
     return (
       <FormWrapper flex className="flex justify-center">
-        {/* <div className="relative"> */}
-        <img
-          className="max-w-[300px] aspect-1 w-full"
-          src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodedLink}&size=300x300`}
-          alt="qr-code"
-        />
-        {/* <Image
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-2xl top-1/2 left-1/2"
-            src="/maskable_icon_x192.png"
-            width={52}
-            height={52}
-            // fill
-            alt="logo"
-            // priority
-            // placeholder="blur"
-            // blurDataURL={'/img/logo_heart_24px.png'}
-            // style={{ width: 'auto', height: 'auto' }}
-          /> */}
-        {/* </div> */}
-        {/* {!qrCode ? <LoadingSpinner /> : <div>Загружено</div>} */}
+        <div className="relative flex items-center justify-center max-w-[300px] aspect-1 w-full min-h-[300px]">
+          {isQrLoading && (
+            <LoadingSpinner
+              size="sm"
+              text="Загружаем QR-код..."
+              className="absolute inset-0 z-10"
+            />
+          )}
+          <img
+            className={`max-w-[300px] aspect-1 w-full transition-opacity duration-150 ${
+              isQrLoading ? 'opacity-0' : 'opacity-100'
+            }`}
+            src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodedLink}&size=300x300`}
+            alt="qr-code"
+            onLoad={() => setIsQrLoading(false)}
+            onError={() => setIsQrLoading(false)}
+          />
+        </div>
       </FormWrapper>
     )
   }

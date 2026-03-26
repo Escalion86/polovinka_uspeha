@@ -16,7 +16,7 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-// import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
+import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import userCutedSelector from '@state/selectors/userCutedSelector'
@@ -76,6 +76,23 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 //   </Suspense>
 // )
 
+const UserActiveSignedUpBadge = ({ userId }) => {
+  const eventsUsersSignedUpCount = useAtomValue(
+    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+  )
+  const activeSignedUpCount = eventsUsersSignedUpCount?.signUp
+
+  if (typeof activeSignedUpCount !== 'number' || activeSignedUpCount <= 0)
+    return null
+
+  return (
+    <span className="inline-flex items-center rounded-full border border-[#f0e5ea] bg-white/80 px-2 py-0.5 text-[10px] tablet:text-[12px] font-semibold tracking-[0.1em] text-[#1f6e9c]">
+      {activeSignedUpCount}
+      <span className="ml-1 opacity-70">Записан</span>
+    </span>
+  )
+}
+
 const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -91,6 +108,7 @@ const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
     loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
   // const itemFunc = useAtomValue(itemsFuncAtom)
+  const resolvedUserId = user?._id ?? userId
 
   const userGender =
     user?.gender && GENDERS.find((gender) => gender.value === user?.gender)
@@ -218,6 +236,15 @@ const UserCard = ({ userId, user: userProp, hidden = false, style }) => {
                             {user?.signedUpEventsCount}
                             <span className="ml-1 opacity-70">событий</span>
                           </span>
+                        )}
+                        {resolvedUserId && (
+                          <Suspense
+                            fallback={
+                              <div className="w-20 h-5 bg-gray-200 rounded-full" />
+                            }
+                          >
+                            <UserActiveSignedUpBadge userId={resolvedUserId} />
+                          </Suspense>
                         )}
                       </div>
                       <div className="flex items-center flex-1">

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   ADDITIONAL_BLOCK_TILE_COLORS,
   LOCATIONS,
@@ -157,17 +157,29 @@ const DEFAULT_CLOSED_SPACE_SUBTITLE = 'ЗАКРЫТОЕ ПРОСТРАНСТВО
 const DEFAULT_CLOSED_SPACE_DESCRIPTION =
   'Это формат с камерными встречами, где мы собираем небольшие группы по ценностям. Здесь больше глубины, доверия и долгих разговоров. Доступ открывается после знакомства с командой и участия в открытых мероприятиях.'
 
-const AuthorizeButton = ({ location }) => (
-  <Link
-    href={`/${location}/register`}
-    className="rounded-full btn-gradient-hover px-7 py-3 tracking-[0.05em] text-white"
+const AuthorizeButton = ({ onClick, disabled = false }) => (
+  <button
+    type="button"
+    className="rounded-full btn-gradient-hover px-7 py-3 tracking-[0.05em] text-white disabled:cursor-not-allowed disabled:opacity-70"
+    onClick={onClick}
+    disabled={disabled}
   >
     <div className="flex flex-col items-center justify-center leading-5">
       <div className="font-semibold uppercase">Присоединиться к нам</div>
       <div>(зарегистрироваться)</div>
     </div>
-  </Link>
+  </button>
 )
+
+AuthorizeButton.propTypes = {
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+}
+
+AuthorizeButton.defaultProps = {
+  onClick: undefined,
+  disabled: false,
+}
 
 export default function LocationIndexClient({
   location,
@@ -175,6 +187,7 @@ export default function LocationIndexClient({
   initialSiteSettings,
   initialGlobalAboutSpaceCards,
 }) {
+  const router = useRouter()
   const [activeDay, setActiveDay] = useState(null)
   const [calendarCursorDate, setCalendarCursorDate] = useState(() => {
     const now = new Date()
@@ -203,6 +216,7 @@ export default function LocationIndexClient({
   )
   const [activeReview, setActiveReview] = useState(null)
   const [activeSpace, setActiveSpace] = useState(null)
+  const [openingMessage, setOpeningMessage] = useState('')
   const reviewTextRefs = useRef(new Map())
   const [reviewOverflowMap, setReviewOverflowMap] = useState({})
   useEffect(() => {
@@ -486,6 +500,12 @@ export default function LocationIndexClient({
 
     return { primary, socials }
   }, [defaultLocation, siteSettings])
+
+  const navigateWithLoading = (href, message) => {
+    if (!href || openingMessage) return
+    setOpeningMessage(message || 'Открывается...')
+    router.push(href)
+  }
 
   const participantsByEventId = useMemo(
     () =>
@@ -843,13 +863,20 @@ export default function LocationIndexClient({
                 {item.label}
               </a>
             ))}
-            <Link
-              href={`/${defaultLocation}/login`}
+            <button
+              type="button"
               className="text-center rounded-full btn-gradient-hover px-3.5 py-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-white"
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                setMenuOpen(false)
+                navigateWithLoading(
+                  `/${defaultLocation}/login`,
+                  'Откраваем страниццу авторизации'
+                )
+              }}
+              disabled={Boolean(openingMessage)}
             >
               Войти в пространство
-            </Link>
+            </button>
           </nav>
         </div>
       </header>
@@ -894,7 +921,15 @@ export default function LocationIndexClient({
           }
           afterGridContent={
             <div className="flex justify-center mt-8">
-              <AuthorizeButton location={defaultLocation} />
+              <AuthorizeButton
+                onClick={() =>
+                  navigateWithLoading(
+                    `/${defaultLocation}/register`,
+                    'Открываем остраницу регистрации'
+                  )
+                }
+                disabled={Boolean(openingMessage)}
+              />
             </div>
           }
         />
@@ -989,7 +1024,15 @@ export default function LocationIndexClient({
             </div>
           ) : null}
           <div className="flex justify-center px-[6vw] pt-20">
-            <AuthorizeButton location={defaultLocation} />
+            <AuthorizeButton
+              onClick={() =>
+                navigateWithLoading(
+                  `/${defaultLocation}/register`,
+                  'Открываем остраницу регистрации'
+                )
+              }
+              disabled={Boolean(openingMessage)}
+            />
           </div>
         </Section>
 
@@ -1075,7 +1118,15 @@ export default function LocationIndexClient({
         </Section> */}
 
         <div className="flex justify-center px-[6vw]">
-          <AuthorizeButton location={defaultLocation} />
+          <AuthorizeButton
+            onClick={() =>
+              navigateWithLoading(
+                `/${defaultLocation}/register`,
+                'Открываем остраницу регистрации'
+              )
+            }
+            disabled={Boolean(openingMessage)}
+          />
         </div>
 
         {index2AdditionalBlocks.map((block) => (
@@ -1249,7 +1300,15 @@ export default function LocationIndexClient({
             </div>
           </div>
           <div className="flex justify-center px-[6vw] pt-20">
-            <AuthorizeButton location={defaultLocation} />
+            <AuthorizeButton
+              onClick={() =>
+                navigateWithLoading(
+                  `/${defaultLocation}/register`,
+                  'Открываем остраницу регистрации'
+                )
+              }
+              disabled={Boolean(openingMessage)}
+            />
           </div>
         </Section>
 
@@ -1478,6 +1537,14 @@ export default function LocationIndexClient({
           </div>
         </Section>
       </main>
+      {openingMessage ? (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 px-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 text-[#4b0f1c] shadow-[0_24px_60px_rgba(0,0,0,0.25)]">
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#8dcff2] border-t-[#6b1f2a]" />
+            <span className="text-sm font-semibold">{openingMessage}</span>
+          </div>
+        </div>
+      ) : null}
       <style jsx global>{`
         [data-reveal] {
           opacity: 0;
