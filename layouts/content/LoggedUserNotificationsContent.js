@@ -503,8 +503,6 @@ const LoggedUserNotificationsContent = () => {
       const sourcePush =
         getFromObjectOrMap(loggedUserActive?.notifications, 'push') ?? {}
       const preparedNotifications = {
-        ...prepareNotifications(loggedUserActive?.notifications),
-        ...notificationsSource,
         telegram: {
           ...DEFAULT_USER.notifications.telegram,
           ...sourceTelegram,
@@ -527,6 +525,11 @@ const LoggedUserNotificationsContent = () => {
           ...(notificationsSource?.settings ?? {}),
         },
       }
+
+      // Не сохраняем историю уведомлений из клиента в профиль пользователя.
+      delete preparedNotifications?.history
+      delete preparedNotifications?.push?.history
+
       if (
         typeof preparedNotifications.settings.newEvents !== 'boolean' &&
         typeof preparedNotifications.settings.newEventsByTags === 'boolean'
