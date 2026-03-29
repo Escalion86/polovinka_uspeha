@@ -67,30 +67,14 @@ const normalizeNotifications = (user = {}) => {
         : user.notifications
       : {}
 
-  const settingsSource =
-    notifications?.settings && typeof notifications.settings === 'object'
-      ? notifications.settings
-      : {}
-  const settings = { ...settingsSource }
-
-  if (
-    typeof settings.newEvents !== 'boolean' &&
-    typeof settings.newEventsByTags === 'boolean'
-  ) {
-    settings.newEvents = settings.newEventsByTags
-  }
-  delete settings.newEventsByTags
-
   const telegramActiveSource = notifications?.telegram?.active
-  if (typeof telegramActiveSource === 'boolean') {
-    settings.telegramActive = telegramActiveSource
-  }
 
   const consentToMailing =
     typeof user?.consentToMailing === 'boolean' ? user.consentToMailing : false
 
   return {
-    settings,
+    telegramActive:
+      typeof telegramActiveSource === 'boolean' ? telegramActiveSource : null,
     consentToMailing,
   }
 }
@@ -284,10 +268,14 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
       ? preferredLocalProfileData.notifications
       : {}
   const preferredNotifications = {
-    settings: {
-      ...(preferredNotificationsSource?.settings || {}),
-      ...(incomingNotifications?.settings || {}),
-    },
+    // Глобально храним только согласие на рассылку.
+    // Настройки notification.settings остаются локальными (по городу).
+    telegramActive:
+      typeof incomingNotifications?.telegramActive === 'boolean'
+        ? incomingNotifications.telegramActive
+        : typeof preferredNotificationsSource?.telegramActive === 'boolean'
+          ? preferredNotificationsSource.telegramActive
+          : null,
     consentToMailing:
       typeof incomingNotifications?.consentToMailing === 'boolean'
         ? incomingNotifications.consentToMailing
@@ -314,7 +302,9 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
 
   const setPayload = {
     [`cityProfiles.${location}`]: cityProfile,
-    notifications: preferredNotifications,
+    notifications: {
+      consentToMailing: preferredNotifications.consentToMailing,
+    },
     password: preferredCore.password,
     personalStatus: preferredCore.personalStatus,
     registrationType: preferredCore.registrationType,

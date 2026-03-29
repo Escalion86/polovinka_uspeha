@@ -1,5 +1,6 @@
 'use client'
 
+import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import ComboBox from '@components/ComboBox'
 // import Input from '@components/Input'
@@ -733,27 +734,6 @@ const LoggedUserNotificationsContent = () => {
       notifications
     )
 
-  useEffect(() => {
-    if (!loggedUserActive?._id || !formChanged || isPushBusy) return undefined
-
-    const timeoutId = setTimeout(() => {
-      void saveNotifications({
-        notificationsToSave: notifications,
-        consentToMailingToSave: consentToMailing,
-        showSuccess: false,
-      })
-    }, 500)
-
-    return () => clearTimeout(timeoutId)
-  }, [
-    consentToMailing,
-    formChanged,
-    isPushBusy,
-    loggedUserActive?._id,
-    notifications,
-    saveNotifications,
-  ])
-
   const telegramId = normalizeTelegramIdValue(notifications?.telegram?.id)
   const isTelegramConnected = Boolean(telegramId)
   const isTelegramActive = Boolean(notifications?.telegram?.active)
@@ -913,7 +893,7 @@ const LoggedUserNotificationsContent = () => {
                       setNotifications((state) => ({
                         ...state,
                         settings: {
-                          ...notifications?.settings,
+                          ...(state?.settings ?? {}),
                           time,
                         },
                       }))
@@ -994,6 +974,18 @@ const LoggedUserNotificationsContent = () => {
             </InputWrapper>
           </>
         )}
+        <div className="mt-3">
+          <Button
+            name="Применить"
+            disabled={!formChanged || isPushBusy}
+            onClick={() =>
+              void saveNotifications({
+                notificationsToSave: notifications,
+                consentToMailingToSave: consentToMailing,
+              })
+            }
+          />
+        </div>
       </div>
     </div>
   )

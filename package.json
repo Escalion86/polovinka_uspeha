@@ -32,6 +32,9 @@
     "invalid-users:delete-no-visits:apply": "node scripts/delete-invalid-users-without-visits.cjs --write",
     "invalid-users:delete-no-visits:dry-run:test": "cross-env DELETE_INVALID_USERS_DB_SUFFIX=_test node scripts/delete-invalid-users-without-visits.cjs",
     "validate:city-policy:analytics": "node scripts/validate-city-policy-analytics.cjs",
+    "consent:global-from-cities:dry-run": "node scripts/sync-global-consent-from-cities.cjs",
+    "consent:global-from-cities:apply": "node scripts/sync-global-consent-from-cities.cjs --write",
+    "consent:global-from-cities:dry-run:test": "cross-env SYNC_GLOBAL_CONSENT_DB_SUFFIX=_test node scripts/sync-global-consent-from-cities.cjs",
     "analyze": "ANALYZE=true npm run build",
     "knip": "knip",
     "postinstall": "flowbite-react build"

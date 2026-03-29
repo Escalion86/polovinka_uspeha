@@ -1119,12 +1119,13 @@ export const authOptions = {
         session.user.security =
           Object.keys(globalSecurity).length > 0 ? globalSecurity : result.security
         const localNotifications = toPlainObject(result.notifications)
+        const localNotificationSettings =
+          normalizeNotificationSettings(localNotifications)
         session.user.notifications = {
           ...localNotifications,
-          settings: resolveGlobalFirst(
-            normalizeNotificationSettings(globalNotifications),
-            normalizeNotificationSettings(localNotifications)
-          ),
+          // Настройки уведомлений хранятся по локациям (локально),
+          // а не в глобальном профиле пользователя.
+          settings: localNotificationSettings,
         }
         session.user.eventAchievements = result.eventAchievements
         session.user.registrationType = resolveGlobalFirst(
