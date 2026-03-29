@@ -196,6 +196,13 @@ const shortEndpoint = (endpoint) => {
   return value.length > 36 ? `...${value.slice(-36)}` : value
 }
 
+const getFromObjectOrMap = (source, key) => {
+  if (!source || typeof source !== 'object') return undefined
+  if (Object.prototype.hasOwnProperty.call(source, key)) return source[key]
+  if (typeof source.get === 'function') return source.get(key)
+  return undefined
+}
+
 const LoggedUserNotificationsContent = () => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
@@ -222,33 +229,40 @@ const LoggedUserNotificationsContent = () => {
 
   const prepareNotifications = useMemo(
     () =>
-      (source = {}) => ({
+      (source = {}) => {
+        const telegramSource = getFromObjectOrMap(source, 'telegram') ?? {}
+        const pushSource = getFromObjectOrMap(source, 'push') ?? {}
+        const settingsSource = getFromObjectOrMap(source, 'settings') ?? {}
+        const historySource =
+          getFromObjectOrMap(source, 'history') ??
+          getFromObjectOrMap(pushSource, 'history')
+
+        return {
         telegram: {
           ...DEFAULT_USER.notifications.telegram,
-          ...(source?.telegram ?? {}),
-          ...(source?.telegram?.username && !source?.telegram?.userName
-            ? { userName: source.telegram.username }
+          ...(telegramSource ?? {}),
+          ...(telegramSource?.username && !telegramSource?.userName
+            ? { userName: telegramSource.username }
             : {}),
         },
         push: {
           ...DEFAULT_USER.notifications.push,
-          ...(source?.push ?? {}),
-          active: Boolean(source?.push?.active),
+          ...(pushSource ?? {}),
+          active: Boolean(pushSource?.active),
           subscriptions: normalizePushSubscriptionsList(
-            source?.push?.subscriptions
+            pushSource?.subscriptions
           ),
           history: normalizePushHistoryList(
-            source?.history ?? source?.push?.history
+            historySource
           ),
         },
-        history: normalizePushHistoryList(
-          source?.history ?? source?.push?.history
-        ),
+        history: normalizePushHistoryList(historySource),
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
-          ...(source?.settings ?? {}),
+          ...(settingsSource ?? {}),
         },
-      }),
+      }
+      },
     []
   )
 
@@ -484,8 +498,10 @@ const LoggedUserNotificationsContent = () => {
 
   const normalizeNotificationsForSave = useCallback(
     (notificationsSource = notifications) => {
-      const sourceTelegram = loggedUserActive?.notifications?.telegram ?? {}
-      const sourcePush = loggedUserActive?.notifications?.push ?? {}
+      const sourceTelegram =
+        getFromObjectOrMap(loggedUserActive?.notifications, 'telegram') ?? {}
+      const sourcePush =
+        getFromObjectOrMap(loggedUserActive?.notifications, 'push') ?? {}
       const preparedNotifications = {
         ...prepareNotifications(loggedUserActive?.notifications),
         ...notificationsSource,
