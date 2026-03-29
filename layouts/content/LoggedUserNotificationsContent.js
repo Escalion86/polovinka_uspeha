@@ -197,6 +197,37 @@ const getFromObjectOrMap = (source, key) => {
   return undefined
 }
 
+const normalizeTelegramIdValue = (value) => {
+  if (value === null || typeof value === 'undefined') return null
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    return trimmed || null
+  }
+  if (typeof value === 'number' || typeof value === 'bigint') {
+    return String(value)
+  }
+  if (typeof value === 'object') {
+    if (typeof value.$numberLong === 'string' && value.$numberLong.trim()) {
+      return value.$numberLong.trim()
+    }
+    const nested = [
+      value.id,
+      value.telegramId,
+      value.chat_id,
+      value.chatId,
+    ]
+    for (const candidate of nested) {
+      const normalized = normalizeTelegramIdValue(candidate)
+      if (normalized) return normalized
+    }
+    if (typeof value.toString === 'function') {
+      const asString = value.toString()
+      if (asString && asString !== '[object Object]') return asString
+    }
+  }
+  return null
+}
+
 const LoggedUserNotificationsContent = () => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
@@ -723,7 +754,8 @@ const LoggedUserNotificationsContent = () => {
     saveNotifications,
   ])
 
-  const isTelegramConnected = Boolean(notifications?.telegram?.id)
+  const telegramId = normalizeTelegramIdValue(notifications?.telegram?.id)
+  const isTelegramConnected = Boolean(telegramId)
   const isTelegramActive = Boolean(notifications?.telegram?.active)
 
   return (
@@ -751,15 +783,24 @@ const LoggedUserNotificationsContent = () => {
             <div className="px-3 py-2 border rounded-lg">
               <div className="mb-1 font-semibold">Telegram-уведомления</div>
               <div className="flex flex-col">
-                <Note>
-                  Для подключения или переподключения Telegram-уведомлений
-                  авторизуйтесь через кнопку ниже
-                </Note>
-                <TelegramLoginButton
-                  dataOnauth={handleTelegramResponse}
-                  botName={telegramBotName}
-                  lang="ru"
-                />
+                {!isTelegramConnected ? (
+                  <>
+                    <Note>
+                      Для подключения Telegram-уведомлений авторизуйтесь через
+                      кнопку ниже
+                    </Note>
+                    <TelegramLoginButton
+                      dataOnauth={handleTelegramResponse}
+                      botName={telegramBotName}
+                      lang="ru"
+                    />
+                  </>
+                ) : (
+                  <Note>
+                    Авторизация в Telegram пройдена.
+                    {telegramId ? ` Telegram ID: ${telegramId}` : ''}
+                  </Note>
+                )}
               </div>
               {isTelegramConnected ? (
                 <div className="flex flex-wrap items-center gap-2">
