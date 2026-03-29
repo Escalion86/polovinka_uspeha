@@ -124,13 +124,7 @@ const waitForServiceWorkerRegistration = async ({
         return { registration: registered, scriptUrl }
       }
     } catch (error) {
-      console.log(
-        '[PushDebug][Client] waitForServiceWorkerRegistration register error',
-        {
-          scriptUrl,
-          error,
-        }
-      )
+      void error
     }
   }
 
@@ -206,7 +200,6 @@ const getFromObjectOrMap = (source, key) => {
 const LoggedUserNotificationsContent = () => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
-  console.log('location', location)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const telegramBotName = useAtomValue(telegramBotNameAtom)
@@ -221,11 +214,7 @@ const LoggedUserNotificationsContent = () => {
   const newEventsNotificationAllowed =
     loggedUserActiveRole?.notifications?.newEvents ??
     loggedUserActiveRole?.notifications?.newEventsByTags
-  const isLoggedUserDev = loggedUserActiveRole?.dev
   const setUserInUsersState = useSetAtom(userEditSelector)
-
-  console.log('serviceRegistration', serviceRegistration)
-  console.log('loggedUserActive', loggedUserActive)
 
   const prepareNotifications = useMemo(
     () =>
@@ -330,17 +319,6 @@ const LoggedUserNotificationsContent = () => {
   }, [])
 
   const subscribePush = useCallback(async () => {
-    console.log('[PushDebug][Client] subscribePush:start', {
-      pushConfigured,
-      canUsePushSettings,
-      role: loggedUserActiveRole?._id,
-      isSecureContext:
-        typeof window !== 'undefined' ? window.isSecureContext : null,
-      hasServiceWorker:
-        typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
-      hasPushManager: typeof window !== 'undefined' && 'PushManager' in window,
-    })
-
     if (!pushConfigured) {
       error('Push-уведомления временно не настроены на сервере')
       return null
@@ -355,7 +333,6 @@ const LoggedUserNotificationsContent = () => {
     }
 
     const permission = await Notification.requestPermission()
-    console.log('[PushDebug][Client] subscribePush:permission', { permission })
     if (permission !== 'granted') {
       error('Браузер не разрешил push-уведомления')
       return null
@@ -374,14 +351,6 @@ const LoggedUserNotificationsContent = () => {
     })
     const registration = swResult?.registration || null
     const activeRegistration = await waitForActiveServiceWorker(registration)
-    console.log('[PushDebug][Client] subscribePush:registration', {
-      hasRegistration: !!registration,
-      hasActive: !!registration?.active,
-      hasActiveAfterWait: !!activeRegistration?.active,
-      scope: registration?.scope || null,
-      usedScriptUrl: swResult?.scriptUrl || null,
-      swCandidates,
-    })
     if (!activeRegistration) {
       error(
         `Service Worker не зарегистрирован. Проверить URL: ${swCandidates.join(', ')}`
@@ -393,9 +362,6 @@ const LoggedUserNotificationsContent = () => {
       await activeRegistration.pushManager.getSubscription()
     if (existingSubscription) {
       const serialized = serializePushSubscription(existingSubscription)
-      console.log('[PushDebug][Client] subscribePush:existingSubscription', {
-        endpoint: shortEndpoint(serialized?.endpoint),
-      })
       return serialized
     }
 
@@ -405,9 +371,6 @@ const LoggedUserNotificationsContent = () => {
     })
 
     const serialized = serializePushSubscription(createdSubscription)
-    console.log('[PushDebug][Client] subscribePush:createdSubscription', {
-      endpoint: shortEndpoint(serialized?.endpoint),
-    })
     return serialized
   }, [
     canUsePushSettings,
@@ -467,18 +430,6 @@ const LoggedUserNotificationsContent = () => {
   )
 
   useEffect(() => {
-    const sourcePush = loggedUserActive?.notifications?.push
-    console.log('[PushDebug][Client] prepareNotifications:source', {
-      userId: loggedUserActive?._id,
-      role: loggedUserActive?.role,
-      sourcePushActive: Boolean(sourcePush?.active),
-      sourcePushSubscriptionsCount: normalizePushSubscriptionsList(
-        sourcePush?.subscriptions
-      ).length,
-      sourcePushHistoryCount: normalizePushHistoryList(
-        loggedUserActive?.notifications?.history ?? sourcePush?.history
-      ).length,
-    })
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
     setConsentToMailing(!!loggedUserActive?.consentToMailing)
   }, [
@@ -554,18 +505,6 @@ const LoggedUserNotificationsContent = () => {
       let savedUser = null
       const preparedNotifications =
         normalizeNotificationsForSave(notificationsToSave)
-      console.log('[PushDebug][Client] saveNotifications:request', {
-        userId: loggedUserActive?._id,
-        role: loggedUserActiveRole?._id,
-        consentToMailing: consentToMailingToSave,
-        pushActive: Boolean(preparedNotifications?.push?.active),
-        pushSubscriptionsCount: Array.isArray(
-          preparedNotifications?.push?.subscriptions
-        )
-          ? preparedNotifications.push.subscriptions.length
-          : 0,
-      })
-
       await putData(
         `/api/${location}/users/${loggedUserActive._id}`,
         {
@@ -574,19 +513,6 @@ const LoggedUserNotificationsContent = () => {
         },
         (data) => {
           savedUser = data
-          console.log('[PushDebug][Client] saveNotifications:response', {
-            userId: data?._id,
-            role: data?.role,
-            pushActive: Boolean(data?.notifications?.push?.active),
-            pushSubscriptionsCount: Array.isArray(
-              data?.notifications?.push?.subscriptions
-            )
-              ? data.notifications.push.subscriptions.length
-              : 0,
-            pushEndpoint: shortEndpoint(
-              data?.notifications?.push?.subscriptions?.[0]?.endpoint
-            ),
-          })
           setLoggedUserActive(data)
           setUserInUsersState(data)
           if (showSuccess) {
@@ -597,9 +523,6 @@ const LoggedUserNotificationsContent = () => {
           }
         },
         () => {
-          console.log('[PushDebug][Client] saveNotifications:error', {
-            userId: loggedUserActive?._id,
-          })
           error('Ошибка обновления данных уведомлений')
         },
         false,
@@ -670,12 +593,6 @@ const LoggedUserNotificationsContent = () => {
         },
       }
 
-      console.log('[PushDebug][Client] syncPushFromBrowser:recovered', {
-        userId: loggedUserActive?._id,
-        role: loggedUserActive?.role,
-        endpoint: shortEndpoint(normalizedBrowserSubscription.endpoint),
-      })
-
       setNotifications(nextNotifications)
       await saveNotifications({
         notificationsToSave: nextNotifications,
@@ -703,16 +620,6 @@ const LoggedUserNotificationsContent = () => {
     setIsPushBusy(true)
     try {
       const isActiveNow = Boolean(notifications?.push?.active)
-      console.log('[PushDebug][Client] togglePushNotifications:click', {
-        isActiveNow,
-        role: loggedUserActiveRole?._id,
-        canUsePushSettings,
-        localSubscriptionsCount: Array.isArray(
-          notifications?.push?.subscriptions
-        )
-          ? notifications.push.subscriptions.length
-          : 0,
-      })
       if (!isActiveNow) {
         const subscription = await subscribePush()
         if (!subscription) return
@@ -750,15 +657,6 @@ const LoggedUserNotificationsContent = () => {
           ? savedPush.subscriptions.length
           : 0
         if (!savedActive || savedSubscriptionsCount === 0) {
-          console.log(
-            '[PushDebug][Client] togglePushNotifications:serverRejectedOrLost',
-            {
-              savedActive,
-              savedSubscriptionsCount,
-              role: loggedUserActiveRole?._id,
-              pushDevPresidentOnly,
-            }
-          )
           error(
             'Push не сохранился на сервере. Проверьте роль пользователя и env-флаги PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY / NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY'
           )
@@ -779,7 +677,6 @@ const LoggedUserNotificationsContent = () => {
         })
       }
     } catch (toggleError) {
-      console.log('togglePushNotifications error', toggleError)
       error(
         `Не удалось изменить настройку push-уведомлений${toggleError?.message ? `: ${toggleError.message}` : ''}`
       )
@@ -1042,22 +939,16 @@ const LoggedUserNotificationsContent = () => {
                     label="Новые мероприятия"
                   />
                 )}
-                {isLoggedUserDev && (
-                  <CheckBox
-                    checked={notifications.settings?.eventUserMoves}
-                    onClick={() =>
-                      toggleNotificationsSettings('eventUserMoves')
-                    }
-                    label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
-                  />
-                )}
-                {isLoggedUserDev && (
-                  <CheckBox
-                    checked={notifications.settings?.eventCancel}
-                    onClick={() => toggleNotificationsSettings('eventCancel')}
-                    label="Отмена мероприятия на которое я записан"
-                  />
-                )}
+                <CheckBox
+                  checked={notifications.settings?.eventUserMoves}
+                  onClick={() => toggleNotificationsSettings('eventUserMoves')}
+                  label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
+                />
+                <CheckBox
+                  checked={notifications.settings?.eventCancel}
+                  onClick={() => toggleNotificationsSettings('eventCancel')}
+                  label="Отмена/Возобновление мероприятия на которое я записан"
+                />
               </div>
             </InputWrapper>
           </>

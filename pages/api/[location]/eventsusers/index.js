@@ -5,6 +5,35 @@ import userSignIn from '@server/userSignIn'
 import dbConnect from '@utils/dbConnect'
 import assertCityOperationAllowed from '@server/assertCityOperationAllowed'
 import { syncEventUsersGoogleCalendar } from '@server/userGoogleCalendar'
+import { notifyUsersAboutOwnEventMove } from '@server/userEventNotifications'
+
+const resolvePrimarySignupStatus = (eventUsers = []) => {
+  if (!Array.isArray(eventUsers) || eventUsers.length === 0) return null
+  if (eventUsers.some((eventUser) => eventUser?.status === 'participant')) {
+    return 'participant'
+  }
+  if (eventUsers.some((eventUser) => eventUser?.status === 'reserve')) {
+    return 'reserve'
+  }
+  return null
+}
+
+const collectSignupStatusByUserId = (eventUsers = []) => {
+  const byUserId = new Map()
+  for (const eventUser of eventUsers) {
+    const userId = String(eventUser?.userId || '')
+    if (!userId) continue
+    const current = byUserId.get(userId) || []
+    current.push(eventUser)
+    byUserId.set(userId, current)
+  }
+
+  const result = new Map()
+  for (const [userId, items] of byUserId.entries()) {
+    result.set(userId, resolvePrimarySignupStatus(items))
+  }
+  return result
+}
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -57,6 +86,9 @@ export default async function handler(req, res) {
           .model('EventsUsers')
           .find({ eventId })
           .lean()
+
+        const oldStatusByUserId = collectSignupStatusByUserId(eventUsers)
+        const newStatusByUserId = collectSignupStatusByUserId(eventUsersStatuses)
         const oldEventUsers = eventUsers.filter((eventUser) =>
           eventUsersStatuses.find(
             (data) =>
@@ -170,6 +202,51 @@ export default async function handler(req, res) {
           notificationOnMassiveChange: true,
           location,
         })
+
+        const movedUsers = []
+        const allUserIds = new Set([
+          ...oldStatusByUserId.keys(),
+          ...newStatusByUserId.keys(),
+        ])
+        for (const movedUserId of allUserIds) {
+          const oldStatus = oldStatusByUserId.get(movedUserId)
+          const newStatus = newStatusByUserId.get(movedUserId)
+          if (
+            !['participant', 'reserve'].includes(oldStatus) ||
+            !['participant', 'reserve'].includes(newStatus) ||
+            oldStatus === newStatus
+          ) {
+            continue
+          }
+
+          const nextRow = eventUsersStatuses.find(
+            (item) =>
+              String(item?.userId || '') === movedUserId &&
+              item?.status === newStatus
+          )
+          const prevRow = eventUsers.find(
+            (item) =>
+              String(item?.userId || '') === movedUserId &&
+              item?.status === oldStatus
+          )
+
+          movedUsers.push({
+            userId: movedUserId,
+            fromStatus: oldStatus,
+            toStatus: newStatus,
+            subEventId: nextRow?.subEventId || prevRow?.subEventId || null,
+          })
+        }
+
+        if (movedUsers.length > 0) {
+          const event = await db.model('Events').findById(eventId).lean()
+          await notifyUsersAboutOwnEventMove({
+            db,
+            location,
+            event,
+            moves: movedUsers,
+          })
+        }
 
         return res
           ?.status(201)

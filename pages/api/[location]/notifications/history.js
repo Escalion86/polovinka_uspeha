@@ -4,19 +4,6 @@ import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
 import { DEFAULT_ROLES } from '@helpers/constantsServer'
 
-const NOTIFICATIONS_HISTORY_DEBUG =
-  String(process.env.NOTIFICATIONS_HISTORY_DEBUG || '').toLowerCase() ===
-  'true'
-
-const debugLog = (message, payload = null) => {
-  if (!NOTIFICATIONS_HISTORY_DEBUG) return
-  if (payload) {
-    console.log(`[NotificationsHistory][DEBUG] ${message}`, payload)
-    return
-  }
-  console.log(`[NotificationsHistory][DEBUG] ${message}`)
-}
-
 const sendError = (res, status, type, message) =>
   res.status(status).json({
     success: false,
@@ -51,6 +38,14 @@ const TYPE_ACCESS_CHECKS = {
   remindDates: {
     role: (role) => Boolean(role?.notifications?.remindDates),
     settings: (settings) => Boolean(settings?.remindDates),
+  },
+  eventUserMoves: {
+    role: () => true,
+    settings: (settings) => Boolean(settings?.eventUserMoves),
+  },
+  eventCancel: {
+    role: () => true,
+    settings: (settings) => Boolean(settings?.eventCancel),
   },
 }
 
@@ -111,12 +106,6 @@ export default async function handler(req, res) {
   const { method, query } = req
   const location = query?.location
 
-  debugLog('incoming request', {
-    method,
-    location,
-    limit: query?.limit,
-  })
-
   if (!location || !checkLocationValid(location)) {
     return sendError(res, 400, 'location_invalid', 'Некорректная локация')
   }
@@ -137,12 +126,6 @@ export default async function handler(req, res) {
     )
   }
   const userId = String(session?.user?._id || '')
-  debugLog('session resolved', {
-    sessionLocation: session?.location,
-    userId,
-    role: session?.user?.role,
-  })
-
   const db = await dbConnect(location)
   if (!db) {
     return sendError(res, 500, 'db_error', 'Не удалось подключиться к БД')
@@ -154,7 +137,6 @@ export default async function handler(req, res) {
     : 100
 
   try {
-    debugLog('loading user', { userId, location })
     const user = await db
       .model('Users')
       .findById(userId)
@@ -167,11 +149,6 @@ export default async function handler(req, res) {
 
     const roleId = String(user?.role || '')
     const userStatus = String(user?.status || 'novice')
-    debugLog('user loaded', {
-      userId,
-      roleId,
-      userStatus,
-    })
     const role = await getRoleForUser(db, user?.role)
     const settings =
       user?.notifications?.settings && typeof user.notifications.settings === 'object'
@@ -181,11 +158,6 @@ export default async function handler(req, res) {
     const visibleTypes = Object.entries(TYPE_ACCESS_CHECKS)
       .filter(([, checker]) => checker.role(role) && checker.settings(settings))
       .map(([type]) => type)
-    debugLog('visible types resolved', {
-      userId,
-      visibleTypes,
-    })
-
     if (visibleTypes.length === 0) {
       return res.status(200).json({
         success: true,
@@ -206,12 +178,6 @@ export default async function handler(req, res) {
       .sort({ deliveredAt: -1, createdAt: -1 })
       .limit(limit * 4)
       .lean()
-    debugLog('raw history loaded', {
-      userId,
-      rawCount: docsRaw.length,
-      limit,
-    })
-
     const docs = docsRaw
       .filter((doc) =>
         isAllowedByAudience({
@@ -221,11 +187,6 @@ export default async function handler(req, res) {
         })
       )
       .slice(0, limit)
-    debugLog('history filtered', {
-      userId,
-      filteredCount: docs.length,
-    })
-
     return res.status(200).json({
       success: true,
       data: {

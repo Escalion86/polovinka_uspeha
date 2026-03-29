@@ -19,6 +19,8 @@ const NOTIFICATION_TYPE_TITLES = {
   serviceRegistration: 'Заявка на услугу',
   birthdays: 'Дни рождения',
   remindDates: 'Особые даты',
+  eventUserMoves: 'Перевод между резервом и основным составом',
+  eventCancel: 'Отмена/возобновление моего мероприятия',
 }
 
 const normalizeId = (value) => {

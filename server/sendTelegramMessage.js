@@ -232,10 +232,6 @@ const sendTelegramMessage = async ({
 
   const normalizedTelegramIds = normalizeTelegramIds(telegramIds)
   if (normalizedTelegramIds.length === 0) {
-    console.log('[sendTelegramMessage] skip: invalid telegramIds', {
-      type: typeof telegramIds,
-      hasValue: Boolean(telegramIds),
-    })
     return { successes: [], errors: [], successCount: 0, errorCount: 0 }
   }
 

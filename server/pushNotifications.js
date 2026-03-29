@@ -7,6 +7,17 @@ const PUSH_SUBJECT =
   process.env.WEB_PUSH_VAPID_SUBJECT || 'mailto:support@polovinka-uspeha.ru'
 const PUSH_DEV_PRESIDENT_ONLY =
   process.env.PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY === 'true'
+const PRIVILEGED_PUSH_ROLES = new Set([
+  'dev',
+  'president',
+  'admin',
+  'supervisor',
+])
+const PUBLIC_PUSH_NOTIFICATION_TYPES = new Set([
+  'newEvents',
+  'eventUserMoves',
+  'eventCancel',
+])
 
 let vapidInitialized = false
 
@@ -69,25 +80,9 @@ export const sanitizePushNotificationsForUserData = (
       ? { ...userData.notifications }
       : {}
 
-  const incomingPushActive = Boolean(notifications?.push?.active)
-  const incomingPushSubscriptionsCount = Array.isArray(
-    notifications?.push?.subscriptions
-  )
-    ? notifications.push.subscriptions.length
-    : 0
-
   notifications.push = {
     active: false,
     subscriptions: [],
-  }
-
-  if (incomingPushActive || incomingPushSubscriptionsCount > 0) {
-    console.log('[PushDebug][Server] sanitizePushNotificationsForUserData:blocked', {
-      role: String(role || ''),
-      pushDevPresidentOnly: PUSH_DEV_PRESIDENT_ONLY,
-      incomingPushActive,
-      incomingPushSubscriptionsCount,
-    })
   }
 
   return {
@@ -129,6 +124,14 @@ export const supportsPushForUser = (user) =>
 
 export const pushTextFromHtml = (text) => stripHtml(text)
 
+const isPublicPushNotificationType = (type) =>
+  PUBLIC_PUSH_NOTIFICATION_TYPES.has(String(type || '').trim())
+
+const canUserReceivePushNotificationType = (user, type) => {
+  if (isPublicPushNotificationType(type)) return true
+  return PRIVILEGED_PUSH_ROLES.has(String(user?.role || '').trim())
+}
+
 export const notifyUsersWithPush = async ({
   db,
   location,
@@ -168,11 +171,26 @@ export const notifyUsersWithPush = async ({
       : notificationType
         ? [notificationType]
         : ['unknown']
+  const hasSensitiveType = resolvedTypes.some(
+    (type) => !isPublicPushNotificationType(type)
+  )
+  const targetUsers = users.filter((user) => {
+    if (hasSensitiveType) {
+      return PRIVILEGED_PUSH_ROLES.has(String(user?.role || '').trim())
+    }
+    return resolvedTypes.some((type) =>
+      canUserReceivePushNotificationType(user, type)
+    )
+  })
+
+  if (targetUsers.length === 0) {
+    return { success: true, successCount: 0, errorCount: 0 }
+  }
 
   const buildAudience = () => {
     const roleIds = new Set()
     const statuses = new Set()
-    for (const user of users) {
+    for (const user of targetUsers) {
       const roleId = String(user?.role || '').trim()
       if (roleId) roleIds.add(roleId)
       const status = String(user?.status || '').trim()
@@ -225,7 +243,7 @@ export const notifyUsersWithPush = async ({
           successUsers,
           failedUsers,
           skippedUsers,
-          totalUsers: users.length,
+          totalUsers: targetUsers.length,
         },
       },
     }
@@ -243,7 +261,7 @@ export const notifyUsersWithPush = async ({
 
   if (!ensureVapid()) {
     const failedByUser = new Map()
-    for (const user of users) {
+    for (const user of targetUsers) {
       const userId = String(user?._id || '')
       if (!userId) continue
       failedByUser.set(userId, {
@@ -259,7 +277,7 @@ export const notifyUsersWithPush = async ({
     return { success: false, reason: 'PUSH_NOT_CONFIGURED' }
   }
 
-  for (const user of users) {
+  for (const user of targetUsers) {
     const userId = String(user?._id || '')
     if (userId) {
       deliveryByUserId.set(userId, {
