@@ -4,6 +4,26 @@ import telegramPost from './telegramApi'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 import splitText from '@helpers/splitText'
 
+const normalizeTelegramIds = (value) => {
+  if (value === null || typeof value === 'undefined') return []
+  if (['string', 'number'].includes(typeof value)) return [value]
+  if (Array.isArray(value)) return value.filter(Boolean)
+  if (value instanceof Set) return Array.from(value).filter(Boolean)
+  if (value instanceof Map) return Array.from(value.values()).filter(Boolean)
+  if (typeof value === 'object') {
+    if (
+      ['string', 'number'].includes(typeof value.telegramId) &&
+      value.telegramId
+    ) {
+      return [value.telegramId]
+    }
+    if (['string', 'number'].includes(typeof value.id) && value.id) {
+      return [value.id]
+    }
+  }
+  return []
+}
+
 const sendMessageToTelegramId = async ({
   telegramId,
   text,
@@ -38,10 +58,10 @@ const sendMessageToTelegramId = async ({
     )
   }
   if (text && typeof text === 'string') {
-    const reply_markup = inline_keyboard // && req?.headers?.origin?.substr(0, 5) === 'https'
+    const reply_markup = Array.isArray(inline_keyboard) // && req?.headers?.origin?.substr(0, 5) === 'https'
       ? JSON.stringify({
-          inline_keyboard: inline_keyboard.filter((button) => button),
-        })
+        inline_keyboard: inline_keyboard.filter((button) => button),
+      })
       : undefined
 
     // if (text.length > 4096) {
@@ -154,15 +174,25 @@ const sendTelegramMessage = async ({
   //   return undefined
   // }
 
+  const normalizedTelegramIds = normalizeTelegramIds(telegramIds)
+  if (normalizedTelegramIds.length === 0) {
+    console.log('[sendTelegramMessage] skip: invalid telegramIds', {
+      type: typeof telegramIds,
+      hasValue: Boolean(telegramIds),
+    })
+    return { successes: [], errors: [], successCount: 0, errorCount: 0 }
+  }
+
   const successes = []
   const errors = []
   let error = false
   let errorCount = 0
   let successCount = 0
-  if (['string', 'number'].includes(typeof telegramIds)) {
+  if (normalizedTelegramIds.length === 1) {
+    const targetTelegramId = normalizedTelegramIds[0]
     const res = await sendMessageWithRepeats(
       {
-        telegramId: telegramIds,
+        telegramId: targetTelegramId,
         text,
         images,
         inline_keyboard,
@@ -176,7 +206,7 @@ const sendTelegramMessage = async ({
     if (res.error) {
       errors.push({
         body: {
-          telegramId: telegramIds,
+          telegramId: targetTelegramId,
           text,
           images,
           inline_keyboard,
@@ -187,7 +217,7 @@ const sendTelegramMessage = async ({
     } else {
       successes.push({
         body: {
-          telegramId: telegramIds,
+          telegramId: targetTelegramId,
           text,
           images,
           inline_keyboard,
@@ -197,7 +227,7 @@ const sendTelegramMessage = async ({
       ++successCount
     }
   } else {
-    for (const telegramId of telegramIds) {
+    for (const telegramId of normalizedTelegramIds) {
       const res = await sendMessageWithRepeats(
         {
           telegramId,
