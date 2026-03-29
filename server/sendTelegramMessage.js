@@ -5,21 +5,77 @@ import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 import splitText from '@helpers/splitText'
 
 const normalizeTelegramIds = (value) => {
+  const normalizeSingleTelegramId = (rawValue) => {
+    if (rawValue === null || typeof rawValue === 'undefined') return null
+
+    if (typeof rawValue === 'string') {
+      const trimmed = rawValue.trim()
+      return trimmed ? trimmed : null
+    }
+
+    if (typeof rawValue === 'number') {
+      return Number.isFinite(rawValue) ? String(rawValue) : null
+    }
+
+    if (typeof rawValue === 'bigint') {
+      return String(rawValue)
+    }
+
+    if (typeof rawValue === 'object') {
+      if (
+        typeof rawValue.$numberLong === 'string' &&
+        rawValue.$numberLong.trim()
+      ) {
+        return rawValue.$numberLong.trim()
+      }
+
+      const nestedCandidates = [
+        rawValue.id,
+        rawValue.telegramId,
+        rawValue.chat_id,
+        rawValue.chatId,
+        rawValue?.telegram?.id,
+        rawValue?.notifications?.telegram?.id,
+      ]
+      for (const candidate of nestedCandidates) {
+        const normalized = normalizeSingleTelegramId(candidate)
+        if (normalized) return normalized
+      }
+
+      if (typeof rawValue.toString === 'function') {
+        const asString = rawValue.toString()
+        if (asString && asString !== '[object Object]') {
+          return asString
+        }
+      }
+    }
+
+    return null
+  }
+
   if (value === null || typeof value === 'undefined') return []
-  if (['string', 'number'].includes(typeof value)) return [value]
-  if (Array.isArray(value)) return value.filter(Boolean)
-  if (value instanceof Set) return Array.from(value).filter(Boolean)
-  if (value instanceof Map) return Array.from(value.values()).filter(Boolean)
+  if (['string', 'number', 'bigint'].includes(typeof value)) {
+    const normalized = normalizeSingleTelegramId(value)
+    return normalized ? [normalized] : []
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizeSingleTelegramId(item))
+      .filter(Boolean)
+  }
+  if (value instanceof Set) {
+    return Array.from(value)
+      .map((item) => normalizeSingleTelegramId(item))
+      .filter(Boolean)
+  }
+  if (value instanceof Map) {
+    return Array.from(value.values())
+      .map((item) => normalizeSingleTelegramId(item))
+      .filter(Boolean)
+  }
   if (typeof value === 'object') {
-    if (
-      ['string', 'number'].includes(typeof value.telegramId) &&
-      value.telegramId
-    ) {
-      return [value.telegramId]
-    }
-    if (['string', 'number'].includes(typeof value.id) && value.id) {
-      return [value.id]
-    }
+    const normalized = normalizeSingleTelegramId(value)
+    if (normalized) return [normalized]
   }
   return []
 }
