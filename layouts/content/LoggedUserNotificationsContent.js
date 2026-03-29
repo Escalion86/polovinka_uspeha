@@ -1,10 +1,10 @@
 'use client'
 
-import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import ComboBox from '@components/ComboBox'
 // import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
+import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import { putData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
@@ -196,7 +196,7 @@ const shortEndpoint = (endpoint) => {
   return value.length > 36 ? `...${value.slice(-36)}` : value
 }
 
-const LoggedUserNotificationsContent = (props) => {
+const LoggedUserNotificationsContent = () => {
   const router = useRouter()
   const location = useAtomValue(locationAtom)
   console.log('location', location)
@@ -444,8 +444,6 @@ const LoggedUserNotificationsContent = (props) => {
 
   // const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
-
   const isNotificationActivated = Boolean(
     (notifications?.telegram?.id && notifications?.telegram?.active) ||
     (canUsePushSettings &&
@@ -578,14 +576,12 @@ const LoggedUserNotificationsContent = (props) => {
           if (redirectToUpcoming) {
             router.push(`/${location}/cabinet/eventsUpcoming`)
           }
-          setIsWaitingToResponse(false)
         },
         () => {
           console.log('[PushDebug][Client] saveNotifications:error', {
             userId: loggedUserActive?._id,
           })
           error('Ошибка обновления данных уведомлений')
-          setIsWaitingToResponse(false)
         },
         false,
         loggedUserActive._id
@@ -783,21 +779,6 @@ const LoggedUserNotificationsContent = (props) => {
     unsubscribePush,
   ])
 
-  const onClickConfirm = async () => {
-    setIsWaitingToResponse(true)
-    await saveNotifications({
-      notificationsToSave: notifications,
-      consentToMailingToSave: consentToMailing,
-      redirectToUpcoming: true,
-    })
-  }
-
-  useEffect(() => {
-    if (isWaitingToResponse) {
-      setIsWaitingToResponse(false)
-    }
-  }, [props])
-
   const formChanged =
     loggedUserActive?.consentToMailing !== consentToMailing ||
     !compareObjects(
@@ -805,27 +786,32 @@ const LoggedUserNotificationsContent = (props) => {
       notifications
     )
 
-  const buttonDisabled = !formChanged
+  useEffect(() => {
+    if (!loggedUserActive?._id || !formChanged || isPushBusy) return undefined
+
+    const timeoutId = setTimeout(() => {
+      void saveNotifications({
+        notificationsToSave: notifications,
+        consentToMailingToSave: consentToMailing,
+        showSuccess: false,
+      })
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [
+    consentToMailing,
+    formChanged,
+    isPushBusy,
+    loggedUserActive?._id,
+    notifications,
+    saveNotifications,
+  ])
+
   const isTelegramConnected = Boolean(notifications?.telegram?.id)
   const isTelegramActive = Boolean(notifications?.telegram?.active)
 
   return (
     <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
-      <div className="flex items-center w-full p-1 gap-x-1">
-        <div className="flex flex-row-reverse flex-1">
-          {!buttonDisabled && (
-            <span className="leading-4 text-right tablet:text-lg">
-              Чтобы изменения вступили в силу нажмите:
-            </span>
-          )}
-        </div>
-        <Button
-          name="Применить"
-          disabled={buttonDisabled}
-          onClick={onClickConfirm}
-          loading={isWaitingToResponse}
-        />
-      </div>
       <div className="p-2">
         <CheckBox
           label={
@@ -848,31 +834,23 @@ const LoggedUserNotificationsContent = (props) => {
           <div className="mt-2 space-y-3">
             <div className="px-3 py-2 border rounded-lg">
               <div className="mb-1 font-semibold">Telegram-уведомления</div>
-              {!isTelegramConnected ? (
-                <div className="flex flex-col">
-                  <Note>
-                    Для подключения Telegram-уведомлений авторизуйтесь через
-                    кнопку ниже
-                  </Note>
-                  <TelegramLoginButton
-                    dataOnauth={handleTelegramResponse}
-                    botName={telegramBotName}
-                    lang="ru"
-                  />
-                </div>
-              ) : (
+              <div className="flex flex-col">
+                <Note>
+                  Для подключения или переподключения Telegram-уведомлений
+                  авторизуйтесь через кнопку ниже
+                </Note>
+                <TelegramLoginButton
+                  dataOnauth={handleTelegramResponse}
+                  botName={telegramBotName}
+                  lang="ru"
+                />
+              </div>
+              {isTelegramConnected ? (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm">
-                    Статус: {isTelegramActive ? 'включены' : 'отключены'}
-                  </span>
-                  <Button
-                    thin
-                    name={
-                      isTelegramActive
-                        ? 'Отключить Telegram'
-                        : 'Включить Telegram'
-                    }
-                    onClick={() => {
+                  <YesNoPicker
+                    label="Оповещения в Telegram"
+                    value={isTelegramActive}
+                    onChange={() => {
                       setNotifications((state) => ({
                         ...state,
                         telegram: {
@@ -883,27 +861,18 @@ const LoggedUserNotificationsContent = (props) => {
                     }}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
 
             <div className="px-3 py-2 border rounded-lg">
               <div className="mb-1 font-semibold">Push-уведомления</div>
               {isPushAvailable && canUsePushSettings ? (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm">
-                    Статус:{' '}
-                    {notifications?.push?.active ? 'включены' : 'отключены'}
-                  </span>
-                  <Button
-                    thin
-                    disabled={isPushBusy || !pushConfigured}
-                    name={
-                      notifications?.push?.active
-                        ? 'Отключить Push'
-                        : 'Включить Push'
-                    }
-                    onClick={togglePushNotifications}
-                    loading={isPushBusy}
+                  <YesNoPicker
+                    label="Push уведомления"
+                    value={!!notifications?.push?.active}
+                    readOnly={isPushBusy || !pushConfigured}
+                    onChange={togglePushNotifications}
                   />
                 </div>
               ) : (
