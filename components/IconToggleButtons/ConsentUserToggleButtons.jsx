@@ -6,6 +6,7 @@ const ConsentUserToggleButtons = (props) => {
       value: 'consented',
       name: 'С согласием',
       color: 'primary',
+      activeClassName: 'text-white',
     },
     {
       value: 'notConsented',
@@ -13,7 +14,7 @@ const ConsentUserToggleButtons = (props) => {
       color: 'red',
       skipDefaultColorClass: true,
       inactiveClassName: 'text-red-900 border-red-900',
-      activeClassName: 'bg-red-900 hover:bg-red-800 border-red-900',
+      activeClassName: 'bg-red-900 hover:bg-red-800 border-red-900 text-white',
     },
   ]
 

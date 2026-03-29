@@ -146,7 +146,7 @@ const parseAttributionInput = (value) => {
 }
 
 const toPlainObject = (value) => {
-  if (!value) return {}
+  if (value === null || typeof value === 'undefined') return value
   if (value instanceof Map) {
     return Array.from(value.entries()).reduce((acc, [key, mapValue]) => {
       acc[key] = toPlainObject(mapValue)
@@ -162,7 +162,7 @@ const toPlainObject = (value) => {
       return acc
     }, {})
   }
-  return {}
+  return value
 }
 
 const normalizeNotificationSettings = (source = {}) => {
