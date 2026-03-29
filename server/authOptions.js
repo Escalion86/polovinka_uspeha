@@ -147,8 +147,21 @@ const parseAttributionInput = (value) => {
 
 const toPlainObject = (value) => {
   if (!value) return {}
-  if (typeof value.toObject === 'function') return value.toObject()
-  if (typeof value === 'object') return value
+  if (value instanceof Map) {
+    return Array.from(value.entries()).reduce((acc, [key, mapValue]) => {
+      acc[key] = toPlainObject(mapValue)
+      return acc
+    }, {})
+  }
+  if (Array.isArray(value)) return value.map((item) => toPlainObject(item))
+  if (value instanceof Date) return value
+  if (typeof value.toObject === 'function') return toPlainObject(value.toObject())
+  if (typeof value === 'object') {
+    return Object.entries(value).reduce((acc, [key, objectValue]) => {
+      acc[key] = toPlainObject(objectValue)
+      return acc
+    }, {})
+  }
   return {}
 }
 
