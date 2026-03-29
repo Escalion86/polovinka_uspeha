@@ -14,6 +14,7 @@ const userToEventStatus = ({
   eventUsersFull,
   subEventSum,
   rules,
+  activeRoleName,
   ignoreEventIsExpired = false,
 }) => {
   if (!event?._id)
@@ -147,15 +148,20 @@ const userToEventStatus = ({
     subEventSum,
     rules
   )
+  const isGenderAccessBlocked =
+    (user.gender === 'male' && subEventSum.maxMans === 0) ||
+    (user.gender === 'famale' && subEventSum.maxWomans === 0)
+  const roleForAccess = activeRoleName || user.role
 
   // TODO Поправить права роли
   const canSee =
-    ['admin', 'moder', 'dev'].includes(user.role) ||
+    ['admin', 'moder', 'dev'].includes(roleForAccess) ||
     (!isEventHidden &&
       (alreadySignIn ||
         (isAgeOfUserCorrect &&
           isUserStatusCorrect &&
-          isUserRelationshipCorrect)))
+          isUserRelationshipCorrect &&
+          !isGenderAccessBlocked)))
 
   // if (user.status === 'ban' || userEvent?.status === 'ban')
   //   return {
@@ -261,6 +267,10 @@ const userToEventStatus = ({
     isUserStatusCorrect &&
     isUserRelationshipCorrect
 
+  const canSignInReserveFinal = isGenderAccessBlocked
+    ? false
+    : canSignInReserve
+
   if (
     typeof subEventSum.maxParticipants === 'number' &&
     subEventSum.maxParticipants <= eventParticipantsCount
@@ -269,7 +279,7 @@ const userToEventStatus = ({
       canSee,
       alreadySignIn,
       canSignIn: false,
-      canSignInReserve,
+      canSignInReserve: canSignInReserveFinal,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -291,7 +301,7 @@ const userToEventStatus = ({
       canSee,
       alreadySignIn,
       canSignIn: false,
-      canSignInReserve,
+      canSignInReserve: canSignInReserveFinal,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -313,7 +323,7 @@ const userToEventStatus = ({
       canSee,
       alreadySignIn,
       canSignIn: false,
-      canSignInReserve,
+      canSignInReserve: canSignInReserveFinal,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -349,7 +359,7 @@ const userToEventStatus = ({
         canSee,
         alreadySignIn,
         canSignIn: false,
-        canSignInReserve,
+        canSignInReserve: canSignInReserveFinal,
         canSignOut,
         isEventExpired,
         isEventInProcess,
@@ -370,7 +380,7 @@ const userToEventStatus = ({
         canSee,
         alreadySignIn,
         canSignIn: false,
-        canSignInReserve,
+        canSignInReserve: canSignInReserveFinal,
         canSignOut,
         isEventExpired,
         isEventInProcess,
@@ -394,7 +404,7 @@ const userToEventStatus = ({
         canSee,
         alreadySignIn,
         canSignIn: false,
-        canSignInReserve,
+        canSignInReserve: canSignInReserveFinal,
         canSignOut,
         isEventExpired,
         isEventInProcess,
@@ -415,7 +425,7 @@ const userToEventStatus = ({
         canSee,
         alreadySignIn,
         canSignIn: false,
-        canSignInReserve,
+        canSignInReserve: canSignInReserveFinal,
         canSignOut,
         isEventExpired,
         isEventInProcess,
@@ -434,7 +444,7 @@ const userToEventStatus = ({
     alreadySignIn,
     canSignIn:
       isAgeOfUserCorrect && isUserStatusCorrect && isUserRelationshipCorrect,
-    canSignInReserve,
+    canSignInReserve: canSignInReserveFinal,
     canSignOut,
     isEventExpired,
     isEventInProcess,

@@ -149,6 +149,7 @@ const EventViewModal = ({
   setBottomLeftComponent,
   setConfirmButtonName,
   setDeclineButtonShow,
+  setDisableConfirm,
 }) => {
   const { eventId } = data
   const event = useAtomValue(eventSelector(eventId))
@@ -194,10 +195,14 @@ const EventViewModal = ({
 
     const activeStatus = eventUser?.status
     const isAlreadySignedUp = ['participant', 'reserve'].includes(activeStatus)
+    const canSignInDirect =
+      !isAlreadySignedUp && loggedUserEventStatus?.canSignIn === true
     const canSignInReserveOnly =
       !isAlreadySignedUp &&
       loggedUserEventStatus?.canSignIn === false &&
       loggedUserEventStatus?.canSignInReserve === true
+    const canNotSignIn =
+      !isAlreadySignedUp && !canSignInDirect && !canSignInReserveOnly
 
     if (typeof setConfirmButtonName === 'function') {
       setConfirmButtonName(
@@ -205,10 +210,15 @@ const EventViewModal = ({
           ? activeStatus === 'reserve'
             ? 'Отписаться из резерва'
             : 'Отписаться'
+          : canNotSignIn
+            ? 'Мест нет'
           : canSignInReserveOnly
             ? 'Записаться в резерв'
             : 'Записаться'
       )
+    }
+    if (typeof setDisableConfirm === 'function') {
+      setDisableConfirm(canNotSignIn)
     }
     if (typeof setOnConfirmFunc === 'function') {
       setOnConfirmFunc(() => {
@@ -242,6 +252,9 @@ const EventViewModal = ({
       if (typeof setConfirmButtonName === 'function') {
         setConfirmButtonName('Записаться')
       }
+      if (typeof setDisableConfirm === 'function') {
+        setDisableConfirm(false)
+      }
       // setDeclineButtonShow(true)
       // setConfirmButtonName('Подтвердить')
     }
@@ -251,6 +264,7 @@ const EventViewModal = ({
     loggedUserEventStatus?.canSignIn,
     loggedUserEventStatus?.canSignInReserve,
     modalsFunc,
+    setDisableConfirm,
     setBottomLeftComponent,
     setConfirmButtonName,
     setDeclineButtonShow,

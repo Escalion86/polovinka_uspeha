@@ -9,6 +9,7 @@ import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector
 import subEventsSumOfEventSelector from './subEventsSumOfEventSelector'
 import eventSelector from './eventSelector'
 import directionSelector from './directionSelector'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 
 const loggedUserToEventStatusSelector = atomFamily((id) =>
   atom(async (get) => {
@@ -17,6 +18,7 @@ const loggedUserToEventStatusSelector = atomFamily((id) =>
     const eventUsers = await get(eventsUsersFullByEventIdSelector(id))
     const subEventSum = await get(subEventsSumOfEventSelector(id))
     const direction = get(directionSelector(event.directionId))
+    const activeRoleName = get(loggedUserActiveRoleNameAtom)
     const rules = direction?.rules
 
     return userToEventStatus({
@@ -25,6 +27,7 @@ const loggedUserToEventStatusSelector = atomFamily((id) =>
       eventUsersFull: eventUsers,
       subEventSum,
       rules,
+      activeRoleName,
     })
   })
 )

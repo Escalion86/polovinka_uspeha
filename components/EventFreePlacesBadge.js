@@ -81,21 +81,35 @@ const EventFreePlacesBadge = ({
   const freeWomansPlaces = getFree(limits.maxWomans, participantsWomansCount)
   const freeMansPlaces = getFree(limits.maxMans, participantsMansCount)
   const participantsCount = participants.length
+  const womansPlacesText =
+    hasWomansLimit && limits.maxWomans === 0
+      ? 'нет'
+      : hasWomansLimit
+        ? `${freeWomansPlaces} из ${limits.maxWomans}`
+        : `неогр. (записей ${participantsWomansCount})`
+  const mansPlacesText =
+    hasMansLimit && limits.maxMans === 0
+      ? 'нет'
+      : hasMansLimit
+        ? `${freeMansPlaces} из ${limits.maxMans}`
+        : `неогр. (записей ${participantsMansCount})`
 
   const text = hasGenderLimits ? (
     <>
-      <span className="whitespace-nowrap">{'Свободно мест:'}</span>
+      <span className="hidden whitespace-nowrap tablet:inline">{'Свободно мест:'}</span>
+      <span className="whitespace-nowrap tablet:hidden">{'Свободно:'}</span>
       <span className="whitespace-nowrap">
         <span className="text-base font-bold text-[#6b1f2a]">{'Ж'}</span>
-        {` ${hasWomansLimit ? `${freeWomansPlaces} из ${limits.maxWomans}` : 'неогр.'}`}
+        {` ${womansPlacesText}`}
         {' · '}
         <span className="text-base font-bold text-[#6b1f2a]">{'М'}</span>
-        {` ${hasMansLimit ? `${freeMansPlaces} из ${limits.maxMans}` : 'неогр.'}`}
+        {` ${mansPlacesText}`}
       </span>
     </>
   ) : typeof limits.maxParticipants === 'number' ? (
     <>
-      <span className="whitespace-nowrap">{'Свободно мест:'}</span>
+      <span className="hidden whitespace-nowrap tablet:inline">{'Свободно мест:'}</span>
+      <span className="whitespace-nowrap tablet:hidden">{'Свободно:'}</span>
       <span className="whitespace-nowrap">{`${Math.max(
         0,
         (limits.maxParticipants ?? 0) - participantsCount

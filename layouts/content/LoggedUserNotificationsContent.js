@@ -5,7 +5,6 @@ import CheckBox from '@components/CheckBox'
 import ComboBox from '@components/ComboBox'
 // import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
-import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import { putData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
@@ -56,9 +55,7 @@ const normalizePushSubscription = (subscription) => {
 
 const normalizePushSubscriptionsList = (value) => {
   if (Array.isArray(value)) {
-    return value
-      .map((item) => normalizePushSubscription(item))
-      .filter(Boolean)
+    return value.map((item) => normalizePushSubscription(item)).filter(Boolean)
   }
 
   if (value && typeof value === 'object') {
@@ -86,9 +83,13 @@ const normalizePushHistoryList = (value) => {
       tag: String(item?.tag || ''),
       location: String(item?.location || ''),
       type: String(item?.type || ''),
-      types: Array.isArray(item?.types) ? item.types.map(String).filter(Boolean) : [],
+      types: Array.isArray(item?.types)
+        ? item.types.map(String).filter(Boolean)
+        : [],
       channels:
-        item?.channels && typeof item.channels === 'object' ? item.channels : {},
+        item?.channels && typeof item.channels === 'object'
+          ? item.channels
+          : {},
       createdAt: item?.createdAt ? new Date(item.createdAt) : null,
     }))
     .filter((item) => item.createdAt && !Number.isNaN(item.createdAt.getTime()))
@@ -112,7 +113,8 @@ const waitForServiceWorkerRegistration = async ({
 } = {}) => {
   if (!('serviceWorker' in navigator)) return null
 
-  const existingRegistration = await navigator.serviceWorker.getRegistration('/')
+  const existingRegistration =
+    await navigator.serviceWorker.getRegistration('/')
   if (existingRegistration?.active) return existingRegistration
 
   for (const scriptUrl of scriptUrls) {
@@ -146,7 +148,8 @@ const waitForServiceWorkerRegistration = async ({
   }
 
   const finalRegistration = await navigator.serviceWorker.getRegistration('/')
-  if (finalRegistration) return { registration: finalRegistration, scriptUrl: null }
+  if (finalRegistration)
+    return { registration: finalRegistration, scriptUrl: null }
 
   return null
 }
@@ -223,6 +226,9 @@ const LoggedUserNotificationsContent = (props) => {
         telegram: {
           ...DEFAULT_USER.notifications.telegram,
           ...(source?.telegram ?? {}),
+          ...(source?.telegram?.username && !source?.telegram?.userName
+            ? { userName: source.telegram.username }
+            : {}),
         },
         push: {
           ...DEFAULT_USER.notifications.push,
@@ -265,8 +271,9 @@ const LoggedUserNotificationsContent = (props) => {
     setNotifications((state) => ({
       ...state,
       telegram: {
+        ...state?.telegram,
         id,
-        username,
+        userName: username,
         active: true,
       },
     }))
@@ -280,8 +287,7 @@ const LoggedUserNotificationsContent = (props) => {
   const isPushPrivilegedRole = ['dev', 'president', 'supervisor'].includes(
     String(loggedUserActiveRole?._id || '')
   )
-  const canUsePushSettings =
-    !pushDevPresidentOnly || isPushPrivilegedRole
+  const canUsePushSettings = !pushDevPresidentOnly || isPushPrivilegedRole
 
   const serializePushSubscription = useCallback((subscription) => {
     if (!subscription) return null
@@ -314,7 +320,8 @@ const LoggedUserNotificationsContent = (props) => {
       pushConfigured,
       canUsePushSettings,
       role: loggedUserActiveRole?._id,
-      isSecureContext: typeof window !== 'undefined' ? window.isSecureContext : null,
+      isSecureContext:
+        typeof window !== 'undefined' ? window.isSecureContext : null,
       hasServiceWorker:
         typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
       hasPushManager: typeof window !== 'undefined' && 'PushManager' in window,
@@ -414,7 +421,8 @@ const LoggedUserNotificationsContent = (props) => {
     })
     const registration = swResult?.registration || null
     if (!registration) return
-    const existingSubscription = await registration.pushManager.getSubscription()
+    const existingSubscription =
+      await registration.pushManager.getSubscription()
     if (existingSubscription) {
       await existingSubscription.unsubscribe()
     }
@@ -427,10 +435,7 @@ const LoggedUserNotificationsContent = (props) => {
         ...(state?.settings ?? {}),
         [key]:
           key === 'newEvents'
-            ? !(
-                state?.settings?.newEvents ??
-                state?.settings?.newEventsByTags
-              )
+            ? !(state?.settings?.newEvents ?? state?.settings?.newEventsByTags)
             : state?.settings
               ? !state?.settings[key]
               : true,
@@ -443,10 +448,10 @@ const LoggedUserNotificationsContent = (props) => {
 
   const isNotificationActivated = Boolean(
     (notifications?.telegram?.id && notifications?.telegram?.active) ||
-      (canUsePushSettings &&
-        notifications?.push?.active &&
-        Array.isArray(notifications?.push?.subscriptions) &&
-        notifications.push.subscriptions.length > 0)
+    (canUsePushSettings &&
+      notifications?.push?.active &&
+      Array.isArray(notifications?.push?.subscriptions) &&
+      notifications.push.subscriptions.length > 0)
   )
 
   useEffect(() => {
@@ -481,8 +486,29 @@ const LoggedUserNotificationsContent = (props) => {
 
   const normalizeNotificationsForSave = useCallback(
     (notificationsSource = notifications) => {
+      const sourceTelegram = loggedUserActive?.notifications?.telegram ?? {}
+      const sourcePush = loggedUserActive?.notifications?.push ?? {}
       const preparedNotifications = {
+        ...prepareNotifications(loggedUserActive?.notifications),
         ...notificationsSource,
+        telegram: {
+          ...DEFAULT_USER.notifications.telegram,
+          ...sourceTelegram,
+          ...(notificationsSource?.telegram ?? {}),
+          ...(notificationsSource?.telegram?.username &&
+          !notificationsSource?.telegram?.userName
+            ? { userName: notificationsSource.telegram.username }
+            : {}),
+        },
+        push: {
+          ...DEFAULT_USER.notifications.push,
+          ...sourcePush,
+          ...(notificationsSource?.push ?? {}),
+          active: Boolean(notificationsSource?.push?.active),
+          subscriptions: normalizePushSubscriptionsList(
+            notificationsSource?.push?.subscriptions
+          ),
+        },
         settings: {
           ...(notificationsSource?.settings ?? {}),
         },
@@ -509,15 +535,16 @@ const LoggedUserNotificationsContent = (props) => {
       showSuccess = true,
     } = {}) => {
       let savedUser = null
-      const preparedNotifications = normalizeNotificationsForSave(
-        notificationsToSave
-      )
+      const preparedNotifications =
+        normalizeNotificationsForSave(notificationsToSave)
       console.log('[PushDebug][Client] saveNotifications:request', {
         userId: loggedUserActive?._id,
         role: loggedUserActiveRole?._id,
         consentToMailing: consentToMailingToSave,
         pushActive: Boolean(preparedNotifications?.push?.active),
-        pushSubscriptionsCount: Array.isArray(preparedNotifications?.push?.subscriptions)
+        pushSubscriptionsCount: Array.isArray(
+          preparedNotifications?.push?.subscriptions
+        )
           ? preparedNotifications.push.subscriptions.length
           : 0,
       })
@@ -600,7 +627,8 @@ const LoggedUserNotificationsContent = (props) => {
       const registration = swResult?.registration || null
       if (!registration) return
 
-      const browserSubscription = await registration.pushManager.getSubscription()
+      const browserSubscription =
+        await registration.pushManager.getSubscription()
       const normalizedBrowserSubscription =
         serializePushSubscription(browserSubscription)
 
@@ -664,7 +692,9 @@ const LoggedUserNotificationsContent = (props) => {
         isActiveNow,
         role: loggedUserActiveRole?._id,
         canUsePushSettings,
-        localSubscriptionsCount: Array.isArray(notifications?.push?.subscriptions)
+        localSubscriptionsCount: Array.isArray(
+          notifications?.push?.subscriptions
+        )
           ? notifications.push.subscriptions.length
           : 0,
       })
@@ -705,12 +735,15 @@ const LoggedUserNotificationsContent = (props) => {
           ? savedPush.subscriptions.length
           : 0
         if (!savedActive || savedSubscriptionsCount === 0) {
-          console.log('[PushDebug][Client] togglePushNotifications:serverRejectedOrLost', {
-            savedActive,
-            savedSubscriptionsCount,
-            role: loggedUserActiveRole?._id,
-            pushDevPresidentOnly,
-          })
+          console.log(
+            '[PushDebug][Client] togglePushNotifications:serverRejectedOrLost',
+            {
+              savedActive,
+              savedSubscriptionsCount,
+              role: loggedUserActiveRole?._id,
+              pushDevPresidentOnly,
+            }
+          )
           error(
             'Push не сохранился на сервере. Проверьте роль пользователя и env-флаги PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY / NEXT_PUBLIC_PUSH_NOTIFICATIONS_DEV_PRESIDENT_ONLY'
           )
@@ -773,6 +806,8 @@ const LoggedUserNotificationsContent = (props) => {
     )
 
   const buttonDisabled = !formChanged
+  const isTelegramConnected = Boolean(notifications?.telegram?.id)
+  const isTelegramActive = Boolean(notifications?.telegram?.active)
 
   return (
     <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
@@ -809,51 +844,87 @@ const LoggedUserNotificationsContent = (props) => {
           checked={consentToMailing}
           onChange={() => setConsentToMailing((state) => !state)}
         />
-        {consentToMailing && !notifications?.telegram?.id && (
-          <div className="flex flex-col">
-            <Note>
-              Для подключения оповещений через Телеграм - нажмите на кнопку ниже
-              и авторизируйтесь
-            </Note>
-            <TelegramLoginButton
-              dataOnauth={handleTelegramResponse}
-              botName={telegramBotName}
-              lang="ru"
-            />
-          </div>
-        )}
         {consentToMailing && (
-          <div className="flex flex-wrap items-center gap-x-2">
-            {isPushAvailable && canUsePushSettings && (
-              <YesNoPicker
-                label="Push уведомления"
-                value={!!notifications?.push?.active}
-                readOnly={isPushBusy || !pushConfigured}
-                onChange={togglePushNotifications}
-              />
-            )}
-            {notifications?.telegram?.id && (
-              <YesNoPicker
-                label="Оповещения в Telegram"
-                value={!!notifications?.telegram?.active}
-                onChange={() => {
-                  setNotifications((state) => ({
-                    ...state,
-                    telegram: {
-                      ...state?.telegram,
-                      active: !state?.telegram?.active,
-                    },
-                  }))
-                }}
-              />
-            )}
+          <div className="mt-2 space-y-3">
+            <div className="px-3 py-2 border rounded-lg">
+              <div className="mb-1 font-semibold">Telegram-уведомления</div>
+              {!isTelegramConnected ? (
+                <div className="flex flex-col">
+                  <Note>
+                    Для подключения Telegram-уведомлений авторизуйтесь через
+                    кнопку ниже
+                  </Note>
+                  <TelegramLoginButton
+                    dataOnauth={handleTelegramResponse}
+                    botName={telegramBotName}
+                    lang="ru"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm">
+                    Статус: {isTelegramActive ? 'включены' : 'отключены'}
+                  </span>
+                  <Button
+                    thin
+                    name={
+                      isTelegramActive
+                        ? 'Отключить Telegram'
+                        : 'Включить Telegram'
+                    }
+                    onClick={() => {
+                      setNotifications((state) => ({
+                        ...state,
+                        telegram: {
+                          ...state?.telegram,
+                          active: !state?.telegram?.active,
+                        },
+                      }))
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="px-3 py-2 border rounded-lg">
+              <div className="mb-1 font-semibold">Push-уведомления</div>
+              {isPushAvailable && canUsePushSettings ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm">
+                    Статус:{' '}
+                    {notifications?.push?.active ? 'включены' : 'отключены'}
+                  </span>
+                  <Button
+                    thin
+                    disabled={isPushBusy || !pushConfigured}
+                    name={
+                      notifications?.push?.active
+                        ? 'Отключить Push'
+                        : 'Включить Push'
+                    }
+                    onClick={togglePushNotifications}
+                    loading={isPushBusy}
+                  />
+                </div>
+              ) : (
+                <Note>
+                  Push-уведомления недоступны в этом браузере или для текущей
+                  роли
+                </Note>
+              )}
+              {consentToMailing &&
+                isPushAvailable &&
+                canUsePushSettings &&
+                !pushConfigured && (
+                  <Note type="error">
+                    Push-уведомления пока недоступны: не задан публичный VAPID
+                    ключ
+                  </Note>
+                )}
+            </div>
           </div>
         )}
-        {consentToMailing && isPushAvailable && canUsePushSettings && !pushConfigured && (
-          <Note>
-            Push-уведомления пока недоступны: не задан публичный VAPID ключ
-          </Note>
-        )}
+
         {consentToMailing && isNotificationActivated && (
           <>
             {(birthdays || remindDates) && (
@@ -977,7 +1048,7 @@ const LoggedUserNotificationsContent = (props) => {
                   <CheckBox
                     checked={Boolean(
                       notifications.settings?.newEvents ??
-                        notifications.settings?.newEventsByTags
+                      notifications.settings?.newEventsByTags
                     )}
                     onClick={() => toggleNotificationsSettings('newEvents')}
                     label="Новые мероприятия"

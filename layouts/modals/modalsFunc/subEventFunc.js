@@ -171,11 +171,42 @@ const subEventFunc = (props, onChange, rules) => {
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
+    const limitsValidationErrors = useMemo(() => {
+      const validationErrors = {}
+
+      if (!maxParticipantsCheck && Number(maxParticipants) === 0) {
+        validationErrors.maxParticipantsLimit =
+          'Лимит "max участников" не может быть 0. Укажите число больше 0 или включите "Без ограничений".'
+      }
+
+      const isMansLimitZero = !maxMansCheck && Number(maxMans) === 0
+      const isWomansLimitZero = !maxWomansCheck && Number(maxWomans) === 0
+      if (isMansLimitZero && isWomansLimitZero) {
+        validationErrors.maxGenderLimits =
+          'Нельзя одновременно устанавливать 0 для мужчин и женщин.'
+      }
+
+      return validationErrors
+    }, [
+      maxParticipants,
+      maxParticipantsCheck,
+      maxMans,
+      maxMansCheck,
+      maxWomans,
+      maxWomansCheck,
+    ])
+
+    const hasLimitsValidationErrors =
+      Object.keys(limitsValidationErrors).length > 0
+
     const onClickConfirm = async () => {
       let isErrorsExists = checkErrors({
         title,
         usersRelationshipAccess,
       })
+      if (hasLimitsValidationErrors) {
+        isErrorsExists = true
+      }
       if (!isErrorsExists) {
         closeModal()
         onChange({
@@ -229,8 +260,10 @@ const subEventFunc = (props, onChange, rules) => {
 
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
+      setDisableConfirm(!isFormChanged || hasLimitsValidationErrors)
+      setOnConfirmFunc(
+        isFormChanged && !hasLimitsValidationErrors ? onClickConfirm : undefined
+      )
     }, [
       title,
       description,
@@ -257,6 +290,7 @@ const subEventFunc = (props, onChange, rules) => {
       usersStatusDiscount,
       usersRelationshipAccess,
       isReserveActive,
+      hasLimitsValidationErrors,
     ])
 
     const handleFocus = (event) => event.target.select()
@@ -451,7 +485,7 @@ const subEventFunc = (props, onChange, rules) => {
                 onChange={setMaxParticipants}
                 // placeholder={'Без ограничений'}
                 disabled={maxParticipantsCheck}
-                min={0}
+                min={1}
                 onFocus={handleFocus}
                 fullWidth={false}
                 noMargin
@@ -716,7 +750,7 @@ const subEventFunc = (props, onChange, rules) => {
             </FormRow>
           </TabPanel>
         </TabContext>
-        <ErrorsList errors={errors} />
+        <ErrorsList errors={{ ...errors, ...limitsValidationErrors }} />
       </>
     )
   }

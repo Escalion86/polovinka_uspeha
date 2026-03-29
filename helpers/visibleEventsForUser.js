@@ -101,6 +101,13 @@ const visibleEventsForUser = (
       )
         return false
 
+      // Если для пола пользователя мест изначально нет, не показываем событие в кабинете.
+      if (
+        (user.gender === 'male' && subEventsSum.maxMans === 0) ||
+        (user.gender === 'famale' && subEventsSum.maxWomans === 0)
+      )
+        return false
+
       return true
     })
   }

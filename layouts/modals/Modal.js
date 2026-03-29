@@ -50,6 +50,8 @@ const Modal = ({
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
   const widthNum = useWindowDimensionsTailwindNum()
   const effectRan = useRef(false)
+  const confirmClickInProgressRef = useRef(false)
+  const confirmClickTimeoutRef = useRef(null)
   const modals = useAtomValue(modalsAtom)
   const [titleState, setTitleState] = useState(title)
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -98,6 +100,39 @@ const Modal = ({
     },
     [id, onClose, setModals]
   )
+
+  const runConfirmAction = useCallback((action) => {
+    if (typeof action !== 'function' || confirmClickInProgressRef.current)
+      return undefined
+
+    confirmClickInProgressRef.current = true
+
+    if (confirmClickTimeoutRef.current) {
+      clearTimeout(confirmClickTimeoutRef.current)
+      confirmClickTimeoutRef.current = null
+    }
+
+    try {
+      const result = action()
+
+      if (result && typeof result.then === 'function') {
+        return result.finally(() => {
+          confirmClickInProgressRef.current = false
+        })
+      }
+
+      // Если обработчик синхронный (или fire-and-forget), короткая защита от даблклика.
+      confirmClickTimeoutRef.current = setTimeout(() => {
+        confirmClickInProgressRef.current = false
+        confirmClickTimeoutRef.current = null
+      }, 500)
+
+      return result
+    } catch (error) {
+      confirmClickInProgressRef.current = false
+      throw error
+    }
+  }, [])
 
   const refreshPage = () => {
     router.replace(router.asPath)
@@ -181,21 +216,25 @@ const Modal = ({
 
   const onConfirmClick =
     typeof onConfirmFunc === 'function'
-      ? () => onConfirmFunc(refreshPage)
+      ? () => runConfirmAction(() => onConfirmFunc(refreshPage))
       : typeof onConfirm === 'function'
         ? () => {
-            onConfirm(refreshPage)
-            closeModal()
+            runConfirmAction(() => {
+              onConfirm(refreshPage)
+              closeModal()
+            })
           }
         : undefined
 
   const onConfirm2Click =
     typeof onConfirm2Func === 'function'
-      ? () => onConfirm2Func(refreshPage)
+      ? () => runConfirmAction(() => onConfirm2Func(refreshPage))
       : typeof onConfirm2 === 'function'
         ? () => {
-            onConfirm2(refreshPage)
-            closeModal()
+            runConfirmAction(() => {
+              onConfirm2(refreshPage)
+              closeModal()
+            })
           }
         : undefined
 
@@ -257,6 +296,9 @@ const Modal = ({
       window.history.pushState(null, null, window.location.pathname)
     }
     return () => {
+      if (confirmClickTimeoutRef.current) {
+        clearTimeout(confirmClickTimeoutRef.current)
+      }
       effectRan.current = true
     }
   }, [])
