@@ -87,6 +87,66 @@ const normalizeLegacyNotificationKeys = (schema, data) => {
   return data
 }
 
+const normalizeTelegramIdForCompare = (value) => {
+  if (value === null || typeof value === 'undefined') return null
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    return trimmed || null
+  }
+
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? String(value) : null
+  }
+
+  if (typeof value === 'bigint') {
+    return String(value)
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const normalized = normalizeTelegramIdForCompare(item)
+      if (normalized) return normalized
+    }
+    return null
+  }
+
+  if (value instanceof Map) {
+    for (const item of value.values()) {
+      const normalized = normalizeTelegramIdForCompare(item)
+      if (normalized) return normalized
+    }
+    return null
+  }
+
+  if (typeof value === 'object') {
+    if (typeof value.$numberLong === 'string' && value.$numberLong.trim()) {
+      return value.$numberLong.trim()
+    }
+
+    const nestedCandidates = [
+      value.id,
+      value.telegramId,
+      value.chat_id,
+      value.chatId,
+      value?.telegram?.id,
+      value?.notifications?.telegram?.id,
+    ]
+
+    for (const candidate of nestedCandidates) {
+      const normalized = normalizeTelegramIdForCompare(candidate)
+      if (normalized) return normalized
+    }
+
+    if (typeof value.toString === 'function') {
+      const asString = value.toString()
+      if (asString && asString !== '[object Object]') return asString
+    }
+  }
+
+  return null
+}
+
 // const test_callback = {
 //   update_id: 173172137,
 //   callback_query: {
@@ -1101,10 +1161,18 @@ export default async function handler(Schema, req, res, props = {}) {
             }
 
             // Если Telegram ID был обновлен
-            const oldTelegramId = oldData.notifications?.telegram?.id
-            const newTelegramId = data.notifications?.telegram?.id
-            const oldTelegramActivate = oldData.notifications?.telegram?.active
-            const newTelegramActivate = data.notifications?.telegram?.active
+            const oldTelegramId = normalizeTelegramIdForCompare(
+              oldData.notifications?.telegram?.id
+            )
+            const newTelegramId = normalizeTelegramIdForCompare(
+              data.notifications?.telegram?.id
+            )
+            const oldTelegramActivate = Boolean(
+              oldData.notifications?.telegram?.active
+            )
+            const newTelegramActivate = Boolean(
+              data.notifications?.telegram?.active
+            )
 
             if (
               oldTelegramId !== newTelegramId ||
