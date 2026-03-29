@@ -98,7 +98,7 @@ export default async function handler(req, res) {
           updatedBy: body?.userId ?? null,
         },
         {
-          new: true,
+          returnDocument: 'after',
           upsert: true,
           setDefaultsOnInsert: true,
         }
@@ -118,7 +118,7 @@ export default async function handler(req, res) {
           updatedBy: body?.userId ?? null,
         },
         {
-          new: true,
+          returnDocument: 'after',
           upsert: true,
           setDefaultsOnInsert: true,
         }
@@ -180,7 +180,7 @@ export default async function handler(req, res) {
           updatedBy: body?.userId ?? null,
         },
         {
-          new: true,
+          returnDocument: 'after',
           upsert: true,
           setDefaultsOnInsert: true,
         }
@@ -200,7 +200,7 @@ export default async function handler(req, res) {
           updatedBy: body?.userId ?? null,
         },
         {
-          new: true,
+          returnDocument: 'after',
           upsert: true,
           setDefaultsOnInsert: true,
         }

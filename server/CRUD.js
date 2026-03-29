@@ -1063,16 +1063,24 @@ export default async function handler(Schema, req, res, props = {}) {
             console.log('result :>> ', result)
           }
 
-          const difference = compareObjectsWithDif(oldData, data)
-          difference._id = new mongoose.Types.ObjectId(id)
+          try {
+            const difference = compareObjectsWithDif(oldData, data)
+            difference._id = new mongoose.Types.ObjectId(id)
 
-          await db.model('Histories').create({
-            schema: lowercasedSchema,
-            action: 'update',
-            data: difference,
-            userId: body.userId,
-            difference: true,
-          })
+            await db.model('Histories').create({
+              schema: lowercasedSchema,
+              action: 'update',
+              data: difference,
+              userId: body.userId,
+              difference: true,
+            })
+          } catch (historyError) {
+            console.log('[CRUD] Histories create on update failed:', {
+              schema: Schema,
+              id,
+              message: historyError?.message || String(historyError),
+            })
+          }
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
           if (Schema === 'Users') {
@@ -1102,32 +1110,41 @@ export default async function handler(Schema, req, res, props = {}) {
               oldTelegramId !== newTelegramId ||
               oldTelegramActivate !== newTelegramActivate
             ) {
-              // Если ID есть и переключили на active или обновили ID
-              if (newTelegramId && newTelegramActivate) {
-                await sendTelegramMessage({
-                  telegramIds: newTelegramId,
-                  text: '\u{2705} Уведомления подключены!',
-                  location,
-                })
-              }
-              // Если выключили уведомления
-              if (
-                oldTelegramActivate &&
-                !newTelegramActivate &&
-                newTelegramId
-              ) {
-                await sendTelegramMessage({
-                  telegramIds: newTelegramId,
-                  text: '\u{26D4} Уведомления отключены!',
-                  location,
-                })
-              }
-              // Если ID удален
-              if (oldTelegramId && !newTelegramId) {
-                await sendTelegramMessage({
-                  telegramIds: oldTelegramId,
-                  text: '\u{26D4} Уведомления отключены!',
-                  location,
+              try {
+                // Если ID есть и переключили на active или обновили ID
+                if (newTelegramId && newTelegramActivate) {
+                  await sendTelegramMessage({
+                    telegramIds: newTelegramId,
+                    text: '\u{2705} Уведомления подключены!',
+                    location,
+                  })
+                }
+                // Если выключили уведомления
+                if (
+                  oldTelegramActivate &&
+                  !newTelegramActivate &&
+                  newTelegramId
+                ) {
+                  await sendTelegramMessage({
+                    telegramIds: newTelegramId,
+                    text: '\u{26D4} Уведомления отключены!',
+                    location,
+                  })
+                }
+                // Если ID удален
+                if (oldTelegramId && !newTelegramId) {
+                  await sendTelegramMessage({
+                    telegramIds: oldTelegramId,
+                    text: '\u{26D4} Уведомления отключены!',
+                    location,
+                  })
+                }
+              } catch (telegramNotifyError) {
+                console.log('[CRUD] Telegram notify on user update failed:', {
+                  userId: id,
+                  message:
+                    telegramNotifyError?.message ||
+                    String(telegramNotifyError),
                 })
               }
             }

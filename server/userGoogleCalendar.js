@@ -167,7 +167,11 @@ const updateIntegrationByUserId = async (db, userId, patch = {}) => {
   if (!db || !userId) return null
   return await db
     .model('UsersGoogleCalendars')
-    .findOneAndUpdate({ userId }, patch, { new: true, upsert: true })
+    .findOneAndUpdate(
+      { userId },
+      patch,
+      { returnDocument: 'after', upsert: true }
+    )
     .lean()
 }
 
@@ -437,7 +441,7 @@ export const disconnectGoogleCalendar = async ({ db, location, userId }) => {
         oauthState: null,
       },
     },
-    { new: true, upsert: true }
+    { returnDocument: 'after', upsert: true }
   )
 
   await db.model('EventsUsers').updateMany(

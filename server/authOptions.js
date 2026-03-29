@@ -583,7 +583,7 @@ export const authOptions = {
                 authProviders: 'vk',
               },
             },
-            { new: true, lean: true }
+            { returnDocument: 'after', lean: true }
           )
 
           const userByVkId = await usersModel
@@ -659,7 +659,7 @@ export const authOptions = {
                     authProviders: 'vk',
                   },
                 },
-                { new: true, lean: true }
+                { returnDocument: 'after', lean: true }
               )
 
               await syncGlobalLinkSafe({
@@ -840,7 +840,7 @@ export const authOptions = {
                     authProviders: 'telegram',
                   },
                 },
-                { new: true }
+                { returnDocument: 'after' }
               )
               .lean()
 

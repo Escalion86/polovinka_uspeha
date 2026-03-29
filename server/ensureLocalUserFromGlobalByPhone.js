@@ -276,7 +276,11 @@ const ensureLocalUserFromGlobalByPhone = async ({
       hasPatch
         ? await db
             .model('Users')
-            .findByIdAndUpdate(localExisting._id, { $set: patch }, { new: true })
+            .findByIdAndUpdate(
+              localExisting._id,
+              { $set: patch },
+              { returnDocument: 'after' }
+            )
             .lean()
         : localExisting
 
@@ -300,7 +304,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
         },
       },
       {
-        new: true,
+        returnDocument: 'after',
         upsert: true,
         setDefaultsOnInsert: true,
       }
@@ -391,7 +395,7 @@ const ensureLocalUserFromGlobalByPhone = async ({
       },
     },
     {
-      new: true,
+      returnDocument: 'after',
       upsert: true,
       setDefaultsOnInsert: true,
     }

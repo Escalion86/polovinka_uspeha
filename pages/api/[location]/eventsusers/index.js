@@ -236,7 +236,7 @@ export default async function handler(req, res) {
               {
                 [key]: value,
               },
-              { new: true }
+              { returnDocument: 'after' }
             )
           result.push(updatedEventUser)
         }

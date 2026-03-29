@@ -448,7 +448,7 @@ export default async function handler(req, res) {
                 },
               },
               {
-                new: true,
+                returnDocument: 'after',
               }
             )
 

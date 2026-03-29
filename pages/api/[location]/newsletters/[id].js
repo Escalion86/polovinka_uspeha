@@ -103,7 +103,7 @@ export default async function handler(req, res) {
         {
           newsletters: updatedNewsletters,
         },
-        { new: true }
+        { returnDocument: 'after' }
       )
       // console.log('updatedNewsletter :>> ', updatedNewsletter)
       return res?.status(200).json({ success: true, data: updatedNewsletter })

@@ -77,7 +77,7 @@ export default async function handler(req, res) {
       const data = await db
         .model('SiteSettings')
         .findOneAndUpdate({}, preparedData, {
-          new: true,
+          returnDocument: 'after',
           upsert: true, // Make this update into an upsert
         })
       if (!data) {

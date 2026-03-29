@@ -348,7 +348,7 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
       },
     },
     {
-      new: true,
+      returnDocument: 'after',
       upsert: true,
       setDefaultsOnInsert: true,
     }
