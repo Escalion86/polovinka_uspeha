@@ -81,9 +81,15 @@ const sortFunctions = {
   },
   name: {
     asc: (a, b) =>
-      a.firstName.toLowerCase() < b.firstName.toLowerCase() ? -1 : 1,
+      String(a?.firstName || '').toLowerCase() <
+      String(b?.firstName || '').toLowerCase()
+        ? -1
+        : 1,
     desc: (a, b) =>
-      a.firstName.toLowerCase() > b.firstName.toLowerCase() ? -1 : 1,
+      String(a?.firstName || '').toLowerCase() >
+      String(b?.firstName || '').toLowerCase()
+        ? -1
+        : 1,
   },
   birthday: {
     asc: (a, b) =>

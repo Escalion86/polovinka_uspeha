@@ -98,11 +98,18 @@ const resolveGlobalConsentMap = async (users) => {
 
 const applyGlobalConsent = async (users) => {
   const globalConsentMap = await resolveGlobalConsentMap(users)
-  if (globalConsentMap.size === 0) return users
+  if (globalConsentMap.size === 0) {
+    return users.map((user) =>
+      user && typeof user?.toObject === 'function' ? user.toObject() : user
+    )
+  }
 
   return users.map((user) => {
-    const globalUserId = String(user?.globalUserId || '').trim()
-    const normalizedPhone = normalizePhone(user?.phone)
+    const plainUser =
+      user && typeof user?.toObject === 'function' ? user.toObject() : user
+
+    const globalUserId = String(plainUser?.globalUserId || '').trim()
+    const normalizedPhone = normalizePhone(plainUser?.phone)
 
     const hasConsentById = globalConsentMap.has(`id:${globalUserId}`)
     const hasConsentByPhone = globalConsentMap.has(`phone:${normalizedPhone}`)
@@ -115,11 +122,11 @@ const applyGlobalConsent = async (users) => {
         : undefined
 
     return {
-      ...user,
+      ...plainUser,
       consentToMailing:
         hasGlobalConsent && typeof globalConsent === 'boolean'
           ? globalConsent
-          : Boolean(user?.consentToMailing),
+          : Boolean(plainUser?.consentToMailing),
       consentToMailingGlobal:
         hasGlobalConsent && typeof globalConsent === 'boolean'
           ? globalConsent
