@@ -1864,7 +1864,7 @@ export const CONTENTS = Object.freeze({
   },
   members: {
     Component: MembersContent,
-    name: 'Участники закрытого рпостранства',
+    name: 'Участники закрытого пространства',
     roleAccess: (role, status) =>
       (role?.users?.see && role?.users?.seeMembersOnly) ||
       (status === 'member' && !role?.users?.see),
