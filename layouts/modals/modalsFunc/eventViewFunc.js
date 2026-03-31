@@ -116,7 +116,12 @@ const EventOrganizersAndAssistantsBlockComponent = ({ event, eventId }) => {
       <UserName user={organizer} noWrap />
       <div className="mt-1">
         <TextLine label="Контакты организатора">
-          <ContactsIconsButtons user={organizer} gapX={4} className="ml-1" />
+          <ContactsIconsButtons
+            user={organizer}
+            gapX={4}
+            className="ml-1"
+            forceShowAll
+          />
         </TextLine>
       </div>
       {!isSingleAssistantOrganizer ? (
