@@ -153,6 +153,7 @@ const EventViewModal = ({
 }) => {
   const { eventId } = data
   const event = useAtomValue(eventSelector(eventId))
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(eventId))
   const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
@@ -212,9 +213,9 @@ const EventViewModal = ({
             : 'Отписаться'
           : canNotSignIn
             ? 'Мест нет'
-          : canSignInReserveOnly
-            ? 'Записаться в резерв'
-            : 'Записаться'
+            : canSignInReserveOnly
+              ? 'Записаться в резерв'
+              : 'Записаться'
       )
     }
     if (typeof setDisableConfirm === 'function') {
@@ -335,7 +336,9 @@ const EventViewModal = ({
           {isLoggedUserDev ? (
             <div className="mt-2">
               <TextLine label="Создано">
-                {event?.createdAt ? formatDateTime(event.createdAt) : '[не указано]'}
+                {event?.createdAt
+                  ? formatDateTime(event.createdAt)
+                  : '[не указано]'}
               </TextLine>
             </div>
           ) : null}
@@ -421,6 +424,26 @@ const EventViewModal = ({
             </div>
           </ModalPillPanel>
         </ModalSurface>
+
+        {typeof setBottomLeftComponent !== 'function' ? (
+          <ModalSurface
+            paddingClassName="p-3"
+            className="flex items-center justify-center gap-x-2"
+          >
+            <div className="text-sm font-bold uppercase tracking-[0.08em] text-[#6b1f2a]">
+              Стоимость
+            </div>
+            <div className="flex justify-center">
+              <div className="inline-flex rounded-full bg-[#f7f1f4] px-3 py-1">
+                <PriceDiscount
+                  item={subEvent || subEventSum}
+                  priceForStatus={loggedUserActive ? undefined : 'novice'}
+                  className="font-futura font-semibold text-[18px] text-[#6b1f2a]"
+                />
+              </div>
+            </div>
+          </ModalSurface>
+        ) : null}
       </div>
     </div>
   )

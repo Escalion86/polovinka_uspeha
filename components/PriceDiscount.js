@@ -38,28 +38,33 @@ const PriceDiscount = ({
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
   if (!item) return null
 
+  const safePrice = typeof item.price === 'number' ? item.price : 0
+
   const fixedUserStatus =
     !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
       ? 'novice'
       : loggedUserActiveStatus
 
-  const eventPriceForUser = item.price
+  const getPriceForStatus = (status) => {
+    if (item.usersStatusDiscountResult) {
+      const resultPrice = item.usersStatusDiscountResult[status]
+      if (typeof resultPrice === 'number') return resultPrice / 100
+    }
+
+    const discount =
+      typeof item.usersStatusDiscount?.[status] === 'number'
+        ? item.usersStatusDiscount[status]
+        : 0
+
+    return (safePrice - discount) / 100
+  }
+
+  const eventPriceForUser = safePrice
     ? priceForStatus
-      ? (item.price -
-          (item.usersStatusDiscount
-            ? item.usersStatusDiscount[priceForStatus]
-            : 0)) /
-        100
+      ? getPriceForStatus(priceForStatus)
       : loggedUserActiveStatus
-        ? (item.usersStatusDiscountResult
-            ? item.usersStatusDiscountResult[fixedUserStatus]
-            : item.price -
-              (item.usersStatusDiscount
-                ? typeof item.usersStatusDiscount[fixedUserStatus] === 'number'
-                  ? item.usersStatusDiscount[fixedUserStatus]
-                  : 0
-                : 0)) / 100
-        : item.price / 100
+        ? getPriceForStatus(fixedUserStatus)
+        : safePrice / 100
     : 0
 
   return (
