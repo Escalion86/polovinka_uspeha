@@ -7,6 +7,7 @@ import { whatsappConstants } from '@server/constants'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import { pushTextFromHtml } from '@server/pushNotifications'
 import dbConnect from '@utils/dbConnect'
+import dbConnectGlobal from '@utils/dbConnectGlobal'
 import webpush from 'web-push'
 
 const PUSH_PUBLIC_KEY = process.env.WEB_PUSH_VAPID_PUBLIC_KEY
@@ -326,6 +327,82 @@ const sendNewsletterMessages = async ({
     }
   }
 
+  // Подтягиваем telegramId из БД для пользователей, у которых он отсутствует
+  const telegramIdFallback = {}
+  if (useTelegram) {
+    const missingTelegramUsers = usersMessages.filter(
+      (u) => !u.telegramId && u.userId
+    )
+    if (missingTelegramUsers.length > 0) {
+      const missingIds = missingTelegramUsers.map((u) => u.userId)
+      // Загружаем городские профили для получения globalUserId
+      const cityUsers = await db
+        .model('Users')
+        .find(
+          { _id: { $in: missingIds } },
+          { 'notifications.telegram.id': 1, globalUserId: 1 }
+        )
+        .lean()
+
+      // Сначала пробуем получить telegramId из глобальных профилей
+      const globalUserIds = []
+      const globalToLocalMap = {}
+      const cityUserMap = {}
+
+      for (const cu of cityUsers) {
+        cityUserMap[String(cu._id)] = cu
+        if (cu.globalUserId) {
+          globalUserIds.push(cu.globalUserId)
+          globalToLocalMap[cu.globalUserId] = String(cu._id)
+        }
+      }
+
+      if (globalUserIds.length > 0) {
+        try {
+          const globalDb = await dbConnectGlobal()
+          if (globalDb) {
+            const globalUsers = await globalDb
+              .model('GlobalUsers')
+              .find(
+                { _id: { $in: globalUserIds } },
+                { 'authProviders.telegram.id': 1 }
+              )
+              .lean()
+            for (const gu of globalUsers) {
+              const globalTgId = gu?.authProviders?.telegram?.id
+              const localUserId = globalToLocalMap[String(gu._id)]
+              if (globalTgId && localUserId) {
+                telegramIdFallback[localUserId] = globalTgId
+                console.log(
+                  '[Newsletter] Telegram ID resolved from global user for',
+                  localUserId,
+                  ':',
+                  globalTgId
+                )
+              }
+            }
+          }
+        } catch (err) {
+          console.log(
+            '[Newsletter] Failed to fetch global telegram IDs:',
+            err.message
+          )
+        }
+      }
+
+      // Фоллбэк: для тех, кого не нашли в глобальном — берём из городского профиля
+      for (const cu of cityUsers) {
+        const localId = String(cu._id)
+        if (!telegramIdFallback[localId]) {
+          const cityTgId = cu?.notifications?.telegram?.id
+          if (cityTgId) {
+            telegramIdFallback[localId] = cityTgId
+          }
+        }
+      }
+    }
+  }
+
   const pushMessage = usePush ? pushTextFromHtml(message) : ''
 
   const variablesInMessage = extractVariables(telegramMessage)
@@ -338,7 +415,14 @@ const sendNewsletterMessages = async ({
   const result = []
 
   for (let i = 0; i < usersMessages.length; i++) {
-    const { whatsappPhone, telegramId, userId, variables } = usersMessages[i]
+    const {
+      whatsappPhone,
+      telegramId: originalTelegramId,
+      userId,
+      variables,
+    } = usersMessages[i]
+    const telegramId =
+      originalTelegramId || telegramIdFallback[String(userId)] || null
     let resultJson = {}
     let whatsappImageResult
 
