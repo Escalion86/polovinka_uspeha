@@ -124,6 +124,10 @@ const selectUsersFunc = (
         withId: true,
         withoutId: true,
       },
+      push: {
+        withPush: true,
+        withoutPush: true,
+      },
       ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
 
@@ -179,6 +183,12 @@ const selectUsersFunc = (
               ((filter.telegram.withId && user?.notifications?.telegram?.id) ||
                 (filter.telegram.withoutId &&
                   !user?.notifications?.telegram?.id)) &&
+              ((filter.push.withPush &&
+                user?.notifications?.push?.active &&
+                user?.notifications?.push?.subscriptions?.length > 0) ||
+                (filter.push.withoutPush &&
+                  (!user?.notifications?.push?.active ||
+                    !user?.notifications?.push?.subscriptions?.length))) &&
               (!filter.ages ||
                 (user.age >= (filter.ages.min || 18) &&
                   user.age <= (filter.ages.max || 70)))

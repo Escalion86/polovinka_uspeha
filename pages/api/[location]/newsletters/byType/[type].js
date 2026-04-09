@@ -24,21 +24,34 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     if (type === 'sendMessage') {
-      const { name, usersMessages, message, sendType, image } = body.data || {}
-      if (!name || !Array.isArray(usersMessages) || !usersMessages.length || !message) {
-        return res?.status(400).json({ success: false, error: 'Invalid payload' })
+      const { name, usersMessages, message, sendType, channels, image } =
+        body.data || {}
+      if (
+        !name ||
+        !Array.isArray(usersMessages) ||
+        !usersMessages.length ||
+        !message
+      ) {
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'Invalid payload' })
       }
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
 
       try {
-        const { result, normalizedSendType } = await sendNewsletterMessages({
+        const {
+          result,
+          normalizedSendType,
+          channels: resolvedChannels,
+        } = await sendNewsletterMessages({
           location,
           name,
           usersMessages,
           message,
           sendType,
+          channels,
           image,
           db,
         })
@@ -49,6 +62,7 @@ export default async function handler(req, res) {
           status: 'active',
           message,
           sendType: normalizedSendType,
+          channels: resolvedChannels,
           image,
           sendMode: NEWSLETTER_SEND_MODES.IMMEDIATE,
           sendingStatus: NEWSLETTER_SENDING_STATUSES.SENT,

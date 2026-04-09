@@ -111,12 +111,17 @@ const processScheduledNewsletters = async ({
 
   for (const newsletter of newsletters) {
     try {
-      const { result, normalizedSendType } = await sendNewsletterMessages({
+      const {
+        result,
+        normalizedSendType,
+        channels: resolvedChannels,
+      } = await sendNewsletterMessages({
         location,
         name: newsletter.name,
         usersMessages: newsletter.newsletters,
         message: newsletter.message,
         sendType: newsletter.sendType,
+        channels: newsletter.channels,
         image: newsletter.image,
         db,
       })
@@ -124,6 +129,7 @@ const processScheduledNewsletters = async ({
       await db.model('Newsletters').findByIdAndUpdate(newsletter._id, {
         newsletters: result,
         sendType: normalizedSendType,
+        channels: resolvedChannels,
         sendingStatus: NEWSLETTER_SENDING_STATUSES.SENT,
         status: 'active',
         sendMode: NEWSLETTER_SEND_MODES.SCHEDULED,

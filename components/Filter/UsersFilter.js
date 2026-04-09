@@ -7,6 +7,7 @@ import ToggleButtons from '@components/IconToggleButtons/ToggleButtons'
 import Slider from '@components/Slider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
+import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
 
 const UsersFilter = ({
   value,
@@ -77,6 +78,31 @@ const UsersFilter = ({
               <span className="relative flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faTelegram}
+                  className="w-6 h-6 text-gray-500 min-h-6"
+                />
+                <span className="absolute w-8 h-0.5 bg-red-500 rotate-45" />
+              </span>
+            ),
+          }}
+          iconsOnly
+        />
+      )}
+      {value?.push && (
+        <ToggleButtons
+          value={value.push}
+          onChange={(value) => onChange((state) => ({ ...state, push: value }))}
+          buttonsConfig={[
+            { value: 'withPush', color: 'green' },
+            { value: 'withoutPush', color: 'secondary' },
+          ]}
+          names={{
+            withPush: (
+              <FontAwesomeIcon icon={faBell} className="w-6 h-6 min-h-6" />
+            ),
+            withoutPush: (
+              <span className="relative flex items-center justify-center">
+                <FontAwesomeIcon
+                  icon={faBell}
                   className="w-6 h-6 text-gray-500 min-h-6"
                 />
                 <span className="absolute w-8 h-0.5 bg-red-500 rotate-45" />

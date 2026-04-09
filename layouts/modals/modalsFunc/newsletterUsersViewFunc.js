@@ -35,6 +35,7 @@ const WhatsAppStatus = ({
   success,
   errorMessage,
   used = true,
+  onErrorClick,
 }) => {
   // const location = useAtomValue(locationAtom)
   // console.log('statusMessage :>> ', statusMessage)
@@ -130,7 +131,18 @@ const WhatsAppStatus = ({
                 : 'Whatsapp: ошибка'
             }
           >
-            <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+            <FontAwesomeIcon
+              className="w-5 h-5 cursor-pointer text-danger"
+              icon={faTimes}
+              onClick={() =>
+                onErrorClick &&
+                onErrorClick(
+                  typeof normalizedStatus === 'string'
+                    ? normalizedStatus
+                    : 'ошибка'
+                )
+              }
+            />
           </Tooltip>
         )}
     </div>
@@ -142,6 +154,7 @@ const TelegramStatus = ({
   success,
   errorMessage,
   used = true,
+  onErrorClick,
 }) => {
   if (!used)
     return (
@@ -193,9 +206,70 @@ const TelegramStatus = ({
                 : 'Telegram: ошибка'
             }
           >
-            <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+            <FontAwesomeIcon
+              className="w-5 h-5 cursor-pointer text-danger"
+              icon={faTimes}
+              onClick={() =>
+                onErrorClick &&
+                onErrorClick(
+                  typeof normalizedStatus === 'string'
+                    ? normalizedStatus
+                    : 'ошибка'
+                )
+              }
+            />
           </Tooltip>
         )}
+    </div>
+  )
+}
+
+const PushStatus = ({ success, errorMessage, used = true, onErrorClick }) => {
+  if (!used)
+    return (
+      <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
+        <Tooltip title="Push не выбран для этой рассылки">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-400" icon={faMinus} />
+        </Tooltip>
+      </div>
+    )
+
+  const normalizedStatus = normalizeStatus(null, success, errorMessage)
+
+  return (
+    <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
+      {(!normalizedStatus || normalizedStatus === 'pending') && (
+        <Tooltip title="Push: отправляется">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faClock} />
+        </Tooltip>
+      )}
+      {normalizedStatus === 'sent' && (
+        <Tooltip title="Push: отправлено">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faCheck} />
+        </Tooltip>
+      )}
+      {normalizedStatus && !['sent', 'pending'].includes(normalizedStatus) && (
+        <Tooltip
+          title={
+            typeof normalizedStatus === 'string'
+              ? `Push: ${normalizedStatus}`
+              : 'Push: ошибка'
+          }
+        >
+          <FontAwesomeIcon
+            className="w-5 h-5 cursor-pointer text-danger"
+            icon={faTimes}
+            onClick={() =>
+              onErrorClick &&
+              onErrorClick(
+                typeof normalizedStatus === 'string'
+                  ? normalizedStatus
+                  : 'ошибка'
+              )
+            }
+          />
+        </Tooltip>
+      )}
     </div>
   )
 }
@@ -228,6 +302,7 @@ const newsletterUsersViewFunc = (newsletterId) => {
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
     const newslettersList = newsletter?.newsletters || []
     const sendType = newsletter?.sendType || 'whatsapp-only'
+    const channels = newsletter?.channels
 
     const newsellersStatusCount = useMemo(
       () => ({
@@ -302,8 +377,23 @@ const newsletterUsersViewFunc = (newsletterId) => {
     if (!newsletter) return null
 
     const usersIds = filteredNewsletters.map(({ userId }) => userId)
-    const usesWhatsapp = sendType !== 'telegram-only'
-    const usesTelegram = sendType !== 'whatsapp-only'
+    const usesWhatsapp = channels
+      ? !!channels.whatsapp
+      : sendType !== 'telegram-only'
+    const usesTelegram = channels
+      ? !!channels.telegram
+      : sendType !== 'whatsapp-only'
+    const usesPush = !!channels?.push
+
+    const handleErrorClick = (channelName, errorText) => {
+      modalsFunc.add({
+        title: `Ошибка отправки — ${channelName}`,
+        text: errorText || 'Неизвестная ошибка',
+        confirmButtonName: 'Закрыть',
+        onConfirm: true,
+        showDecline: false,
+      })
+    }
 
     return (
       <FormWrapper className="flex flex-col h-full">
@@ -347,12 +437,26 @@ const newsletterUsersViewFunc = (newsletterId) => {
                     success={filteredNewsletters[index].whatsappSuccess}
                     errorMessage={filteredNewsletters[index].whatsappError}
                     used={usesWhatsapp}
+                    onErrorClick={(errorText) =>
+                      handleErrorClick('WhatsApp', errorText)
+                    }
                   />
                   <TelegramStatus
                     statusMessage={filteredNewsletters[index].telegramStatus}
                     success={filteredNewsletters[index].telegramSuccess}
                     errorMessage={filteredNewsletters[index].telegramError}
                     used={usesTelegram}
+                    onErrorClick={(errorText) =>
+                      handleErrorClick('Telegram', errorText)
+                    }
+                  />
+                  <PushStatus
+                    success={filteredNewsletters[index].pushSuccess}
+                    errorMessage={filteredNewsletters[index].pushError}
+                    used={usesPush}
+                    onErrorClick={(errorText) =>
+                      handleErrorClick('Push', errorText)
+                    }
                   />
                 </div>
               </div>

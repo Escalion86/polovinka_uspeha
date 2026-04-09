@@ -18,6 +18,7 @@ import EditableTextarea from '@components/EditableTextarea'
 // import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import getNoun, { getNounUsers } from '@helpers/getNoun'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
 // import Divider from '@components/Divider'
 // import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
@@ -217,6 +218,14 @@ const newsletterFunc = (
     const [newsletterSendType, setNewsletterSendType] = useState(
       isWhatsappReady ? newsletter?.sendType || 'both' : 'telegram-only'
     )
+    const [newsletterChannels, setNewsletterChannels] = useState(() => {
+      if (newsletter?.channels) return { ...newsletter.channels }
+      return {
+        push: false,
+        whatsapp: isWhatsappReady,
+        telegram: true,
+      }
+    })
     const [sendMode, setSendMode] = useState(NEWSLETTER_SEND_MODES.IMMEDIATE)
     const [plannedSendDate, setPlannedSendDate] = useState(
       dayjs().format('YYYY-MM-DD')
@@ -233,17 +242,16 @@ const newsletterFunc = (
     const toggleRerender = () => setRerender((state) => !state)
 
     useEffect(() => {
-      if (
-        !isWhatsappReady &&
-        ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
-      ) {
-        setNewsletterSendType('telegram-only')
+      if (!isWhatsappReady && newsletterChannels.whatsapp) {
+        setNewsletterChannels((prev) => ({ ...prev, whatsapp: false }))
       }
-    }, [newsletterSendType, isWhatsappReady])
+    }, [newsletterChannels.whatsapp, isWhatsappReady])
 
     useEffect(() => {
       if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
-    }, [newsletter?.sendType])
+      if (newsletter?.channels)
+        setNewsletterChannels({ ...newsletter.channels })
+    }, [newsletter?.sendType, newsletter?.channels])
 
     useEffect(() => {
       setNewsletterImage(defaultImageState)
@@ -256,42 +264,30 @@ const newsletterFunc = (
       )
     }, [selectedUsers, blackList, checkBlackList])
 
-    const sendTypeOptions = useMemo(() => {
+    const channelOptions = useMemo(() => {
       const options = [
+        { key: 'push', label: 'Push-уведомления', alwaysAvailable: true },
         {
-          value: 'both',
-          label: 'Whatsapp и Telegram',
-          requiresWhatsapp: true,
+          key: 'whatsapp',
+          label: 'WhatsApp',
+          alwaysAvailable: false,
+          disabled: !isWhatsappReady,
         },
-        {
-          value: 'telegram-first',
-          label: 'Сначала Telegram, если ошибка — Whatsapp',
-          requiresWhatsapp: true,
-        },
-        {
-          value: 'whatsapp-only',
-          label: 'Только Whatsapp',
-          requiresWhatsapp: true,
-        },
-        {
-          value: 'telegram-only',
-          label: 'Только Telegram',
-          requiresWhatsapp: false,
-        },
+        { key: 'telegram', label: 'Telegram', alwaysAvailable: true },
       ]
-
-      if (isWhatsappReady) return options
-
-      return options.filter(({ requiresWhatsapp }) => !requiresWhatsapp)
+      return options
     }, [isWhatsappReady])
 
-    const sendTypeTitles = useMemo(
-      () =>
-        sendTypeOptions.reduce((acc, option) => {
-          acc[option.value] = option.label
-          return acc
-        }, {}),
-      [sendTypeOptions]
+    const channelLabels = useMemo(() => {
+      return channelOptions
+        .filter((opt) => newsletterChannels[opt.key])
+        .map((opt) => opt.label)
+        .join(', ')
+    }, [channelOptions, newsletterChannels])
+
+    const hasAnyChannel = useMemo(
+      () => Object.values(newsletterChannels).some(Boolean),
+      [newsletterChannels]
     )
 
     const selectedUsersData = useMemo(
@@ -681,13 +677,32 @@ const newsletterFunc = (
     }, [filteredSelectedUsers, prepearedText])
 
     const sendMessage = useCallback(
-      async (name, message) => {
-        const usersMessages = buildUsersMessagesPayload()
+      async (name, message, { testUserId } = {}) => {
+        let usersMessages = buildUsersMessagesPayload()
+
+        if (testUserId) {
+          usersMessages = usersMessages.filter((u) => u.userId === testUserId)
+          if (!usersMessages.length) {
+            const loggedUser =
+              filteredSelectedUsers.find((u) => u._id === testUserId) ||
+              loggedUserActive
+            usersMessages = [
+              {
+                userId: testUserId,
+                whatsappPhone: loggedUser?.whatsapp || loggedUser?.phone,
+                telegramId: loggedUser?.notifications?.telegram?.id,
+                variables: {},
+              },
+            ]
+          }
+        }
+
         postData(
           `/api/${location}/newsletters/byType/sendMessage`,
           {
             name,
             sendType: newsletterSendType,
+            channels: newsletterChannels,
             usersMessages,
             image: newsletterImage,
             message,
@@ -700,15 +715,24 @@ const newsletterFunc = (
           }
         )
 
-        closeModal()
-        info('Рассылка отправлена и далее сообщения попадут в очередь отправки')
+        if (!testUserId) {
+          closeModal()
+        }
+        info(
+          testUserId
+            ? 'Тестовая рассылка отправлена'
+            : 'Рассылка отправлена и далее сообщения попадут в очередь отправки'
+        )
       },
       [
         buildUsersMessagesPayload,
         closeModal,
         error,
+        filteredSelectedUsers,
         info,
         location,
+        loggedUserActive,
+        newsletterChannels,
         newsletterImage,
         newsletterSendType,
         setNewsletter,
@@ -734,6 +758,7 @@ const newsletterFunc = (
           message: messageState,
           image: newsletterImage,
           sendType: newsletterSendType,
+          channels: newsletterChannels,
           sendMode,
           sendingStatus,
           plannedSendDate,
@@ -1035,8 +1060,12 @@ const newsletterFunc = (
         return
       }
 
-      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
-      if (isWhatsappRequired && !isWhatsappReady) {
+      if (newsletterChannels.whatsapp && !isWhatsappReady) {
+        setOnConfirmFunc()
+        return
+      }
+
+      if (!hasAnyChannel) {
         setOnConfirmFunc()
         return
       }
@@ -1049,7 +1078,7 @@ const newsletterFunc = (
             'пользователю',
             'пользователям',
             'пользователям'
-          )} (${sendTypeTitles[newsletterSendType]})?`,
+          )} (${channelLabels})?`,
           onConfirm: () => {
             sendMessage(newsletterName, messageState)
           },
@@ -1064,12 +1093,13 @@ const newsletterFunc = (
       messageState,
       modalsFunc,
       newsletterName,
-      newsletterSendType,
+      newsletterChannels,
+      channelLabels,
+      hasAnyChannel,
       plannedSendDate,
       plannedSendTime,
       sendMessage,
       sendMode,
-      sendTypeTitles,
       sendingStatus,
     ])
     if (!loggedUserActiveRole?.newsletters?.add)
@@ -1323,27 +1353,35 @@ const newsletterFunc = (
           onChange={setNewsletterName}
           required
         />
-        <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
+        <InputWrapper
+          label="Каналы рассылки"
+          wrapperClassName="flex-col gap-y-1"
+        >
           <div className="flex flex-col gap-y-1">
-            {sendTypeOptions.map((option) => {
-              const disabled = option.requiresWhatsapp && !isWhatsappReady
-              return (
-                <RadioBox
-                  key={option.value}
-                  label={option.label}
-                  checked={newsletterSendType === option.value}
-                  onChange={() => {
-                    if (disabled) return
-                    setNewsletterSendType(option.value)
-                  }}
-                  disabled={disabled}
-                  noMargin
-                />
-              )
-            })}
+            {channelOptions.map((option) => (
+              <CheckBox
+                key={option.key}
+                label={option.label}
+                checked={!!newsletterChannels[option.key]}
+                onChange={() => {
+                  if (option.disabled) return
+                  setNewsletterChannels((prev) => ({
+                    ...prev,
+                    [option.key]: !prev[option.key],
+                  }))
+                }}
+                disabled={option.disabled}
+                noMargin
+              />
+            ))}
             {!isWhatsappReady && (
               <div className="text-sm text-gray-500">
-                Отправка в Whatsapp сейчас недоступна.
+                Отправка в WhatsApp сейчас недоступна.
+              </div>
+            )}
+            {!hasAnyChannel && (
+              <div className="text-sm text-danger">
+                Выберите хотя бы один канал рассылки.
               </div>
             )}
           </div>
@@ -1556,6 +1594,18 @@ const newsletterFunc = (
             }}
           />
         </div> */}
+        <div className="pt-2 border-t border-gray-400">
+          <Button
+            name="Тестовая рассылка себе"
+            icon={faPaperPlane}
+            disabled={!messageState || !newsletterName || !hasAnyChannel}
+            onClick={() => {
+              sendMessage(newsletterName, messageState, {
+                testUserId: loggedUserActive?._id,
+              })
+            }}
+          />
+        </div>
       </div>
     )
   }

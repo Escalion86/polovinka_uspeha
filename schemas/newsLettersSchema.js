@@ -20,6 +20,9 @@ const newsLettersSchema = {
         telegramStatus: String,
         whatsappError: String,
         telegramError: String,
+        pushSuccess: Boolean,
+        pushStatus: String,
+        pushError: String,
         variables: Object,
       },
     ],
@@ -47,6 +50,14 @@ const newsLettersSchema = {
   sendType: {
     type: String,
     default: 'whatsapp-only',
+  },
+  channels: {
+    type: Object,
+    default: {
+      push: false,
+      whatsapp: false,
+      telegram: true,
+    },
   },
   image: {
     type: String,
