@@ -225,6 +225,13 @@ const sendNewsletterMessages = async ({
   const sendTelegram = async (telegramId, messageToSend, imageUrl) => {
     if (!telegramId) return { success: false, error: 'no telegram id' }
 
+    console.log(
+      '[Newsletter] Sending telegram to:',
+      telegramId,
+      'location:',
+      location
+    )
+
     const telegramResult = await sendTelegramMessage({
       telegramIds: telegramId,
       text: messageToSend,
@@ -233,6 +240,21 @@ const sendNewsletterMessages = async ({
       repeats: 1,
       retryOnUnknown: false,
     })
+
+    console.log(
+      '[Newsletter] Telegram result for',
+      telegramId,
+      ':',
+      JSON.stringify({
+        successCount: telegramResult?.successCount,
+        errorCount: telegramResult?.errorCount,
+        errors: telegramResult?.errors?.map((e) => ({
+          telegramId: e?.body?.telegramId,
+          result: e?.result,
+        })),
+        successes: telegramResult?.successes?.length,
+      })
+    )
 
     const success = telegramResult?.successCount > 0
     const telegramResultEntry = telegramResult?.successes?.[0]?.result?.[0]
@@ -245,16 +267,36 @@ const sendNewsletterMessages = async ({
       lastMessageResult?.result?.result?.message_id ||
       telegramResult?.successes?.[0]?.result?.result?.message_id
 
-    const errorText = telegramResult?.errors?.[0]
-      ? typeof telegramResult.errors[0] === 'string'
-        ? telegramResult.errors[0]
-        : JSON.stringify(telegramResult.errors[0])
-      : undefined
+    // Извлекаем текст ошибки из errors
+    let errorText
+    if (!success && telegramResult?.errors?.length) {
+      const firstError = telegramResult.errors[0]
+      const errorResult = firstError?.result?.[0]
+      // Пробуем разные форматы ошибок
+      if (errorResult?.description) {
+        errorText = errorResult.description
+      } else if (errorResult?.result?.description) {
+        errorText = errorResult.result.description
+      } else if (typeof firstError === 'string') {
+        errorText = firstError
+      } else {
+        errorText = JSON.stringify(firstError)
+      }
+    }
+
+    if (!success) {
+      console.log(
+        '[Newsletter] Telegram FAILED for',
+        telegramId,
+        'error:',
+        errorText
+      )
+    }
 
     return {
       success,
       messageId,
-      error: success ? undefined : errorText,
+      error: success ? undefined : errorText || 'unknown telegram error',
     }
   }
 

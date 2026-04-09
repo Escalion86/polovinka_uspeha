@@ -37,7 +37,20 @@ const telegramPost = async (
     })
 
     if (!res.ok) {
-      throw new Error(res.status)
+      let errorBody = null
+      try {
+        errorBody = await res.json()
+      } catch (_) {
+        // ignore parse error
+      }
+      const errorResult = {
+        ok: false,
+        error_code: res.status,
+        description:
+          errorBody?.description || `HTTP ${res.status} ${res.statusText}`,
+      }
+      if (callbackOnError) callbackOnError(errorResult)
+      return errorResult
     }
 
     const json = await res.json()
@@ -49,8 +62,13 @@ const telegramPost = async (
   } catch (error) {
     console.log('Failed to add (POST) on ' + url)
     console.log(error)
-    if (callbackOnError) callbackOnError(error)
-    return null
+    const errorResult = {
+      ok: false,
+      error_code: 0,
+      description: error?.message || 'Network error',
+    }
+    if (callbackOnError) callbackOnError(errorResult)
+    return errorResult
   }
 }
 
