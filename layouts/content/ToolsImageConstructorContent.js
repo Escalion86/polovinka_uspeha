@@ -133,7 +133,13 @@ const mobileMainTools = [
 ]
 
 const IMAGE_CONSTRUCTOR_STORAGE_KEY = 'image_constructor_state_v1'
-const RESIZABLE_LAYER_TYPES = new Set(['rect', 'circle', 'line', 'text'])
+const RESIZABLE_LAYER_TYPES = new Set([
+  'rect',
+  'circle',
+  'line',
+  'text',
+  'image',
+])
 
 const clampOpacity = (value) => {
   if (typeof value !== 'number' || Number.isNaN(value)) return 100
@@ -2144,6 +2150,18 @@ const ToolsImageConstructorContent = () => {
           return
         }
 
+        if (resize.type === 'image') {
+          updateLayer(resize.layerKey, {
+            params: {
+              x: Number(nextLeft.toFixed(2)),
+              y: Number(nextTop.toFixed(2)),
+              width: Number(nextWidth.toFixed(2)),
+              height: Number(nextHeight.toFixed(2)),
+            },
+          })
+          return
+        }
+
         const diameter = Math.max(nextWidth, nextHeight)
         updateLayer(resize.layerKey, {
           params: {
@@ -3615,6 +3633,15 @@ const ToolsImageConstructorContent = () => {
                         >
                           <FontAwesomeIcon icon={faCopy} />
                         </button>
+                        {selectedLayer.type === 'image' && (
+                          <button
+                            type="button"
+                            className="w-8 h-8 text-sky-600"
+                            onClick={() => openSelectImageForLayer(selectedLayer.key)}
+                          >
+                            <FontAwesomeIcon icon={faImages} />
+                          </button>
+                        )}
                         <button
                           type="button"
                           className={`w-8 h-8 ${
