@@ -23,6 +23,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import EventCard2Skeleton from './Skeletons/EventCard2Skeleton'
 import Skeleton from 'react-loading-skeleton'
+import { memo } from 'react'
 
 const badgeClassName =
   'inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]'
@@ -246,9 +247,19 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
   )
 }
 
+const areEventCard2PropsEqual = (prev, next) =>
+  prev.eventId === next.eventId &&
+  prev.noButtons === next.noButtons &&
+  prev.hidden === next.hidden &&
+  (prev.style?.top ?? null) === (next.style?.top ?? null) &&
+  (prev.style?.height ?? null) === (next.style?.height ?? null) &&
+  (prev.style?.width ?? null) === (next.style?.width ?? null)
+
+const EventCard2Memo = memo(EventCard2, areEventCard2PropsEqual)
+
 const EventCard2Wrapper = (props) => (
   <Suspense fallback={<EventCard2Skeleton {...props} />}>
-    <EventCard2 {...props} />
+    <EventCard2Memo {...props} />
   </Suspense>
 )
 

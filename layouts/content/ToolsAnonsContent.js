@@ -21,6 +21,7 @@ import getEventsYears from '@helpers/getEventsYears'
 import getNoun from '@helpers/getNoun'
 import sortFunctions from '@helpers/sortFunctions'
 import eventsAtom from '@state/atoms/eventsAtom'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
@@ -70,13 +71,14 @@ const save2 = async (listsCount, name) => {
     const fileName = `${name}${
       listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
     }.png`
-    saveSvgAsPng(input, fileName)
+    await saveSvgAsPng(input, fileName)
   }
 }
 
 const ToolsAnonsContent = () => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const events = useAtomValue(eventsAtom)
+  const snackbar = useAtomValue(snackbarAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
@@ -704,12 +706,13 @@ const ToolsAnonsContent = () => {
       <div className="flex items-center gap-x-2">
         <Button
           name="Сохранить"
-          onClick={() =>
-            save2(
+          onClick={async () => {
+            await save2(
               listsWithPreparedItems.length,
               'Анонс ' + MONTHS_FULL_1[month]
             )
-          }
+            snackbar?.success?.('Картинка загружена')
+          }}
         />
         <div>
           {getNoun(

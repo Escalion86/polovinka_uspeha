@@ -5,9 +5,10 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import cn from 'classnames'
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue } from 'jotai'
+import { unwrap } from 'jotai/utils'
 import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
@@ -27,18 +28,34 @@ const TextStatus = ({ children, className }) => (
 )
 
 const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
-  const event = useAtomValue(eventSelector(eventId))
-  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
-
-  const { userStatus, userEventStatus } = eventStatus
-
-  const sumOfPaymentsFromLoggedUserToEvent = useAtomValue(
-    sumOfPaymentsFromLoggedUserToEventSelector(event._id)
+  const eventAtom = useMemo(
+    () => unwrap(eventSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const eventStatusAtom = useMemo(
+    () => unwrap(loggedUserToEventStatusSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const eventUserAtom = useMemo(
+    () => unwrap(eventLoggedUserByEventIdSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const sumAtom = useMemo(
+    () =>
+      unwrap(sumOfPaymentsFromLoggedUserToEventSelector(eventId), (prev) => prev),
+    [eventId]
   )
 
-  const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(event._id))
+  const event = useAtomValue(eventAtom)
+  const eventStatus = useAtomValue(eventStatusAtom)
+
+  const { userStatus, userEventStatus } = eventStatus ?? {}
+
+  const sumOfPaymentsFromLoggedUserToEvent = useAtomValue(sumAtom) ?? 0
+  const eventUser = useAtomValue(eventUserAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   if (
+    !event ||
     !eventUser ||
     !loggedUserActive ||
     !userEventStatus ||
@@ -86,17 +103,31 @@ const Status = ({
   className,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const event = useAtomValue(eventSelector(eventId))
-  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
+  const eventAtom = useMemo(
+    () => unwrap(eventSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const eventStatusAtom = useMemo(
+    () => unwrap(loggedUserToEventStatusSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const eventUserAtom = useMemo(
+    () => unwrap(eventLoggedUserByEventIdSelector(eventId), (prev) => prev),
+    [eventId]
+  )
+  const event = useAtomValue(eventAtom)
+  const eventStatus = useAtomValue(eventStatusAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
 
-  const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(event._id))
+  const eventUser = useAtomValue(eventUserAtom)
 
   const isUserQuestionnaireFilled =
     isUserQuestionnaireFilledFunc(loggedUserActive)
+
+  if (!event || !eventStatus) return null
 
   const {
     canSee,

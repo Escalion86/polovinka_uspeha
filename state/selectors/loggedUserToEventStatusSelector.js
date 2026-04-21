@@ -17,7 +17,7 @@ const loggedUserToEventStatusSelector = atomFamily((id) =>
     const loggedUserActive = get(loggedUserActiveAtom)
     const eventUsers = await get(eventsUsersFullByEventIdSelector(id))
     const subEventSum = await get(subEventsSumOfEventSelector(id))
-    const direction = get(directionSelector(event.directionId))
+    const direction = get(directionSelector(event?.directionId))
     const activeRoleName = get(loggedUserActiveRoleNameAtom)
     const rules = direction?.rules
 

@@ -39,7 +39,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 import Tooltip from '@components/Tooltip'
 import Note from '@components/Note'
-import { RESET, loadable } from 'jotai/utils'
+import { RESET, unwrap } from 'jotai/utils'
 
 const ItemButton = ({
   onClick,
@@ -383,33 +383,18 @@ const eventUsersFunc = (eventId) => {
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const eventLoadable = useAtomValue(loadable(eventSelector(eventId)))
+    const eventAtom = useMemo(
+      () => unwrap(eventSelector(eventId), (prev) => prev),
+      [eventId]
+    )
     const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
     // const users = useAtomValue(usersAtomAsync)
-    const eventUsersLoadable = useAtomValue(
-      loadable(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsersAtom = useMemo(
+      () => unwrap(eventsUsersFullByEventIdSelector(eventId), (prev) => prev ?? []),
+      [eventId]
     )
-    const [eventCached, setEventCached] = useState(null)
-    const [eventUsersCached, setEventUsersCached] = useState([])
-
-    useEffect(() => {
-      if (eventLoadable.state === 'hasData') {
-        setEventCached(eventLoadable.data)
-      }
-    }, [eventLoadable])
-
-    useEffect(() => {
-      if (eventUsersLoadable.state === 'hasData') {
-        setEventUsersCached(eventUsersLoadable.data ?? [])
-      }
-    }, [eventUsersLoadable])
-
-    const event =
-      eventLoadable.state === 'hasData' ? eventLoadable.data : eventCached
-    const eventUsers =
-      eventUsersLoadable.state === 'hasData'
-        ? (eventUsersLoadable.data ?? [])
-        : eventUsersCached
+    const event = useAtomValue(eventAtom)
+    const eventUsers = useAtomValue(eventUsersAtom) ?? []
     const eventIdValue = event?._id ?? eventId
     const subEvents = event?.subEvents ?? []
 
@@ -1300,9 +1285,11 @@ const eventUsersFunc = (eventId) => {
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
     const [isRefreshing, setIsRefreshing] = useState(true)
-    const dataLoadable = useAtomValue(
-      loadable(asyncEventsUsersByEventIdAtom(eventId))
+    const dataAtom = useMemo(
+      () => unwrap(asyncEventsUsersByEventIdAtom(eventId), (prev) => prev ?? []),
+      [eventId]
     )
+    const data = useAtomValue(dataAtom) ?? []
     const refreshEventState = useSetAtom(asyncEventsUsersByEventIdAtom(eventId))
     const [prevData, setPrevData] = useState(null)
     const [currentData, setCurrentData] = useState(null)
@@ -1316,9 +1303,7 @@ const eventUsersFunc = (eventId) => {
         setIsRefreshed(false)
         setPrevData(null)
         setCurrentData(null)
-        if (dataLoadable.state === 'hasData') {
-          setPrevData(dataLoadable.data ?? [])
-        }
+        setPrevData(Array.isArray(data) ? data : [])
         await refreshEventState(RESET)
         if (isMounted) {
           setIsRefreshing(false)
@@ -1331,12 +1316,11 @@ const eventUsersFunc = (eventId) => {
     }, [])
 
     useEffect(() => {
-      if (isRefreshing || dataLoadable.state !== 'hasData') return
-      const data = dataLoadable.data ?? []
+      if (isRefreshing) return
       if (prevData === null) setPrevData(data)
       setCurrentData(data)
       setIsRefreshed(true)
-    }, [dataLoadable, isRefreshing, prevData])
+    }, [data, isRefreshing, prevData])
 
     const normalizeEventUsers = useCallback((list) => {
       if (!Array.isArray(list)) return []

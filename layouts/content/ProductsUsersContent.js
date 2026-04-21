@@ -17,9 +17,9 @@ import asyncProductsUsersAtom from '@state/async/asyncProductsUsersAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { unwrap } from 'jotai/utils'
 
 const defaultFilterValue = {
   products: null,
@@ -27,14 +27,17 @@ const defaultFilterValue = {
 
 const ProductsUsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const productsUsersLoadable = useAtomValue(loadable(asyncProductsUsersAtom))
-  const usersLoadable = useAtomValue(loadable(usersAtomAsync))
+  const productsUsersAtom = useMemo(
+    () => unwrap(asyncProductsUsersAtom, (prev) => prev ?? []),
+    []
+  )
+  const usersAtom = useMemo(() => unwrap(usersAtomAsync, (prev) => prev ?? []), [])
+  const productsUsers = useAtomValue(productsUsersAtom)
+  const users = useAtomValue(usersAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.productsUsers?.add
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
-  const [productsUsersCached, setProductsUsersCached] = useState([])
-  const [usersCached, setUsersCached] = useState([])
 
   const [filter, setFilter] = useState({
     gender: {
@@ -51,25 +54,6 @@ const ProductsUsersContent = () => {
       canceled: false,
     },
   })
-
-  useEffect(() => {
-    if (productsUsersLoadable.state === 'hasData') {
-      setProductsUsersCached(productsUsersLoadable.data ?? [])
-    }
-  }, [productsUsersLoadable])
-
-  useEffect(() => {
-    if (usersLoadable.state === 'hasData') {
-      setUsersCached(usersLoadable.data ?? [])
-    }
-  }, [usersLoadable])
-
-  const productsUsers =
-    productsUsersLoadable.state === 'hasData'
-      ? productsUsersLoadable.data ?? []
-      : productsUsersCached
-  const users =
-    usersLoadable.state === 'hasData' ? usersLoadable.data ?? [] : usersCached
 
   // const usersIds = servicesUsers.map((serviceUser) => serviceUser.userId)
   // const usersWithServices = users.filter((user) => usersIds.includes(user._id))

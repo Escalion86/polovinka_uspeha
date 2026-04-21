@@ -12,7 +12,12 @@ const eventLoggedUserByEventIdSelector = atomFamily((id) =>
     const loggedUser = get(loggedUserActiveAtom)
     if (!loggedUser) return
 
-    const eventsUser = await get(asyncEventsUsersByUserIdAtom(loggedUser._id))
+    const eventsUserRaw = await get(asyncEventsUsersByUserIdAtom(loggedUser._id))
+    const eventsUser = Array.isArray(eventsUserRaw)
+      ? eventsUserRaw
+      : Array.isArray(eventsUserRaw?.data)
+        ? eventsUserRaw.data
+        : []
     const eventUser = eventsUser.find(({ eventId }) => eventId === id)
 
     return eventUser

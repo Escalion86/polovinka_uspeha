@@ -42,6 +42,7 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -133,6 +134,14 @@ const mobileMainTools = [
 ]
 
 const IMAGE_CONSTRUCTOR_STORAGE_KEY = 'image_constructor_state_v1'
+const DEFAULT_BACKGROUND_PROPS = {
+  backgroundType: 'color',
+  backgroundColor: '#ffffff',
+  angle: 45,
+  gradient1Color: '#6b1f2a',
+  gradient2Color: '#8dcff2',
+  src: '',
+}
 const RESIZABLE_LAYER_TYPES = new Set([
   'rect',
   'circle',
@@ -186,6 +195,14 @@ const normalizeImageLayerSources = (layers) =>
           : layer
       )
     : []
+
+const normalizeBackgroundProps = (value) => {
+  if (!value || typeof value !== 'object') return { ...DEFAULT_BACKGROUND_PROPS }
+  return {
+    ...DEFAULT_BACKGROUND_PROPS,
+    ...value,
+  }
+}
 
 const getTextVerticalAlign = (layer) => {
   const value = String(layer?.params?.textVerticalAlign || 'legacy')
@@ -1336,13 +1353,16 @@ const MobileMainToolButton = ({ icon, name, isActive, onClick, disabled }) => (
 const ToolsImageConstructorContent = () => {
   const { imageFolder } = useAtomValue(locationPropsSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const snackbar = useAtomValue(snackbarAtom)
   const events = useAtomValue(eventsAtom)
 
   const [templateName, setTemplateName] = useState('Изображение')
   const [size, setSize] = useState({ w: 1080, h: 1080 })
   const [data, setData] = useState([])
   const [selectedLayerKey, setSelectedLayerKey] = useState(null)
-  const [backgroundProps, setBackgroundProps] = useState()
+  const [backgroundProps, setBackgroundProps] = useState(
+    DEFAULT_BACKGROUND_PROPS
+  )
   const [rerenderState, setRerenderState] = useState(false)
   const [mobilePanel, setMobilePanel] = useState(null)
   const [isDraggingLayer, setIsDraggingLayer] = useState(false)
@@ -1357,6 +1377,7 @@ const ToolsImageConstructorContent = () => {
   const [canvasZoom, setCanvasZoom] = useState(1)
   const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 })
   const [isWorkspacePanning, setIsWorkspacePanning] = useState(false)
+  const [toolbarLayoutTick, setToolbarLayoutTick] = useState(0)
   const [dragGuides, setDragGuides] = useState({
     vertical: [],
     horizontal: [],
@@ -2407,7 +2428,7 @@ const ToolsImageConstructorContent = () => {
           parsed.backgroundProps &&
           typeof parsed.backgroundProps === 'object'
         ) {
-          setBackgroundProps(parsed.backgroundProps)
+          setBackgroundProps(normalizeBackgroundProps(parsed.backgroundProps))
         }
       }
     } catch {
@@ -2524,7 +2545,7 @@ const ToolsImageConstructorContent = () => {
         ? currentSelectedKey
         : null
     )
-    setBackgroundProps(prevSnapshot?.backgroundProps)
+    setBackgroundProps(normalizeBackgroundProps(prevSnapshot?.backgroundProps))
     setUndoDepth(historyRef.current.length)
     setRedoDepth(redoRef.current.length)
   }, [currentConstructorSnapshot])
@@ -2565,7 +2586,7 @@ const ToolsImageConstructorContent = () => {
         ? currentSelectedKey
         : null
     )
-    setBackgroundProps(nextSnapshot?.backgroundProps)
+    setBackgroundProps(normalizeBackgroundProps(nextSnapshot?.backgroundProps))
     setUndoDepth(historyRef.current.length)
     setRedoDepth(redoRef.current.length)
   }, [currentConstructorSnapshot])
@@ -2809,6 +2830,9 @@ const ToolsImageConstructorContent = () => {
     if (!svgRef.current) return
     const sourceSvg = svgRef.current
     const exportSvg = sourceSvg.cloneNode(true)
+    exportSvg
+      .querySelectorAll('[data-export-ignore="true"]')
+      .forEach((node) => node.remove())
     const imageNodes = Array.from(exportSvg.querySelectorAll('image'))
     if (!imageNodes.length) return exportSvg
 
@@ -2863,6 +2887,7 @@ const ToolsImageConstructorContent = () => {
         scale: 1,
         encoderOptions: 1,
       })
+      snackbar?.success?.('Картинка загружена')
     } catch {
       modalsFunc.error({
         title: 'Ошибка сохранения PNG',
@@ -2872,10 +2897,13 @@ const ToolsImageConstructorContent = () => {
     setMobilePanel(null)
   }
 
-  const saveSvg = () => {
+  const saveSvg = async () => {
     if (!svgRef.current) return
 
-    const serializedSvg = new XMLSerializer().serializeToString(svgRef.current)
+    const exportSvg = await buildExportSvgWithInlinedImages()
+    const serializedSvg = new XMLSerializer().serializeToString(
+      exportSvg || svgRef.current
+    )
     const blob = new Blob([serializedSvg], {
       type: 'image/svg+xml;charset=utf-8',
     })
@@ -2887,6 +2915,7 @@ const ToolsImageConstructorContent = () => {
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+    snackbar?.success?.('Картинка загружена')
     setMobilePanel(null)
   }
 
@@ -3086,32 +3115,61 @@ const ToolsImageConstructorContent = () => {
     ]
   }, [isResizeModeActive, selectedLayer, selectedLayerBounds])
 
-  const mobileSelectedLayerToolbarStyle = useMemo(() => {
-    if (!selectedLayerBounds || !size.h || !size.w) return null
-
-    const toolbarHeightPx = 40
-    const layerGapPx = 12
+  const resizeHandleVisual = useMemo(() => {
     const safeZoom = Math.max(0.0001, canvasZoom)
-    const centerX =
-      ((selectedLayerBounds.x + selectedLayerBounds.width / 2) / size.w) * 100
-    const layerTop = (selectedLayerBounds.y / size.h) * 100
-    const layerBottom =
-      ((selectedLayerBounds.y + selectedLayerBounds.height) / size.h) * 100
-    const showAbove = layerTop > 14
-    const safeCenter = Math.max(28, Math.min(72, centerX))
-    const inverseScale = 1 / safeZoom
-    const aboveOffsetPx = (toolbarHeightPx + layerGapPx) / safeZoom
-    const belowOffsetPx = (layerGapPx * 2) / safeZoom
+    return {
+      scale: Math.max(0.35, 1 / safeZoom),
+      radius: 16,
+      hitRadius: 26,
+      strokeWidth: 3,
+    }
+  }, [canvasZoom])
+
+  const mobileSelectedLayerToolbarStyle = useMemo(() => {
+    if (!selectedLayerKey) return null
+    const svgElement = svgRef.current
+    const workspaceElement = workspaceRef.current
+    if (!svgElement || !workspaceElement) return null
+
+    const selectedNode = svgElement.querySelector(
+      `[data-layer-key="${selectedLayerKey}"]`
+    )
+    if (!selectedNode || typeof selectedNode.getBoundingClientRect !== 'function')
+      return null
+
+    const nodeRect = selectedNode.getBoundingClientRect()
+    const workspaceRect = workspaceElement.getBoundingClientRect()
+    if (!nodeRect.width || !nodeRect.height) return null
+
+    const layerGapPx = 32
+    const centerXLocal =
+      nodeRect.left - workspaceRect.left + nodeRect.width / 2
+    const layerTopLocal = nodeRect.top - workspaceRect.top
+    const layerBottomLocal = nodeRect.bottom - workspaceRect.top
+    const showAbove = layerTopLocal > 80
 
     return {
-      left: `${safeCenter}%`,
+      left: `${centerXLocal}px`,
       top: showAbove
-        ? `calc(${Math.max(0, layerTop)}% - ${aboveOffsetPx}px)`
-        : `calc(${Math.max(0, layerBottom)}% + ${belowOffsetPx}px)`,
-      transform: `translateX(-50%) scale(${inverseScale})`,
+        ? `${Math.max(0, layerTopLocal - layerGapPx)}px`
+        : `${Math.max(0, layerBottomLocal + layerGapPx)}px`,
+      transform: showAbove
+        ? 'translate(-50%, -100%)'
+        : 'translateX(-50%)',
       transformOrigin: 'center center',
     }
-  }, [canvasZoom, selectedLayerBounds, size.h, size.w])
+  }, [
+    canvasOffset,
+    canvasZoom,
+    selectedLayerKey,
+    toolbarLayoutTick,
+  ])
+
+  useEffect(() => {
+    const onResize = () => setToolbarLayoutTick((state) => state + 1)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   const selectTemplate = (selectedTemplate) => {
     const template = selectedTemplate?.template
@@ -3122,7 +3180,7 @@ const ToolsImageConstructorContent = () => {
     }
     setData(normalizeImageLayerSources(template?.data))
     setSelectedLayerKey(null)
-    setBackgroundProps(template?.backgroundProps)
+    setBackgroundProps(normalizeBackgroundProps(template?.backgroundProps))
     rerender()
     setMobilePanel(null)
   }
@@ -3147,7 +3205,7 @@ const ToolsImageConstructorContent = () => {
     setSize({ w: 1080, h: 1080 })
     setData([])
     setSelectedLayerKey(null)
-    setBackgroundProps(undefined)
+    setBackgroundProps(DEFAULT_BACKGROUND_PROPS)
     setDragGuides({ vertical: [], horizontal: [], corner: null })
     rerender()
     setMobilePanel(null)
@@ -3259,6 +3317,7 @@ const ToolsImageConstructorContent = () => {
             <rect
               key={layer.key}
               data-layer-node="true"
+              data-layer-key={layer.key}
               x={x}
               y={y}
               width={Math.max(1, width)}
@@ -3284,6 +3343,7 @@ const ToolsImageConstructorContent = () => {
             <circle
               key={layer.key}
               data-layer-node="true"
+              data-layer-key={layer.key}
               cx={Number(layer.params?.cx || 0)}
               cy={Number(layer.params?.cy || 0)}
               r={Math.max(1, Number(layer.params?.r || 0))}
@@ -3302,6 +3362,7 @@ const ToolsImageConstructorContent = () => {
             <line
               key={layer.key}
               data-layer-node="true"
+              data-layer-key={layer.key}
               x1={Number(layer.params?.x || 0)}
               y1={Number(layer.params?.y || 0)}
               x2={Number(layer.params?.x2 || 0)}
@@ -3327,6 +3388,7 @@ const ToolsImageConstructorContent = () => {
             <image
               key={layer.key}
               data-layer-node="true"
+              data-layer-key={layer.key}
               href={src}
               x={x}
               y={y}
@@ -3341,6 +3403,7 @@ const ToolsImageConstructorContent = () => {
             <rect
               key={layer.key}
               data-layer-node="true"
+              data-layer-key={layer.key}
               x={x}
               y={y}
               width={width}
@@ -3370,6 +3433,7 @@ const ToolsImageConstructorContent = () => {
           <text
             key={layer.key}
             data-layer-node="true"
+            data-layer-key={layer.key}
             x={x}
             y={y}
             fontSize={fontSize}
@@ -3407,6 +3471,7 @@ const ToolsImageConstructorContent = () => {
       {isDraggingLayer && (
         <>
           <line
+            data-export-ignore="true"
             x1={0.5}
             y1={0}
             x2={0.5}
@@ -3418,6 +3483,7 @@ const ToolsImageConstructorContent = () => {
             opacity="0.55"
           />
           <line
+            data-export-ignore="true"
             x1={size.w - 0.5}
             y1={0}
             x2={size.w - 0.5}
@@ -3429,6 +3495,7 @@ const ToolsImageConstructorContent = () => {
             opacity="0.55"
           />
           <line
+            data-export-ignore="true"
             x1={0}
             y1={0.5}
             x2={size.w}
@@ -3440,6 +3507,7 @@ const ToolsImageConstructorContent = () => {
             opacity="0.55"
           />
           <line
+            data-export-ignore="true"
             x1={0}
             y1={size.h - 0.5}
             x2={size.w}
@@ -3455,6 +3523,7 @@ const ToolsImageConstructorContent = () => {
 
       {dragGuides.vertical.map((guideX) => (
         <line
+          data-export-ignore="true"
           key={`guide_x_${guideX}`}
           x1={guideX}
           y1={0}
@@ -3469,6 +3538,7 @@ const ToolsImageConstructorContent = () => {
       ))}
       {dragGuides.horizontal.map((guideY) => (
         <line
+          data-export-ignore="true"
           key={`guide_y_${guideY}`}
           x1={0}
           y1={guideY}
@@ -3484,6 +3554,7 @@ const ToolsImageConstructorContent = () => {
       {dragGuides.corner && (
         <>
           <circle
+            data-export-ignore="true"
             cx={dragGuides.corner.x}
             cy={dragGuides.corner.y}
             r="10"
@@ -3494,6 +3565,7 @@ const ToolsImageConstructorContent = () => {
             pointerEvents="none"
           />
           <circle
+            data-export-ignore="true"
             cx={dragGuides.corner.x}
             cy={dragGuides.corner.y}
             r="4"
@@ -3508,6 +3580,7 @@ const ToolsImageConstructorContent = () => {
         selectedLayer?.show &&
         !(inlineTextEditLayerKey && selectedLayer?.type === 'text') && (
           <rect
+            data-export-ignore="true"
             x={selectedLayerBounds.x}
             y={selectedLayerBounds.y}
             width={Math.max(1, selectedLayerBounds.width)}
@@ -3521,21 +3594,37 @@ const ToolsImageConstructorContent = () => {
         )}
 
       {selectedResizeHandles.map((handle) => (
-        <circle
+        <g
           key={`resize_${handle.key}`}
           data-layer-node="true"
-          cx={handle.x}
-          cy={handle.y}
-          r="10"
-          fill="#ffffff"
-          stroke="#13B981"
-          strokeWidth="2"
-          style={{ cursor: handle.cursor }}
-          onPointerDown={(event) =>
-            startResizeLayer(event, selectedLayer, handle.key)
-          }
-        />
+          data-export-ignore="true"
+          transform={`translate(${handle.x} ${handle.y}) scale(${resizeHandleVisual.scale})`}
+        >
+          <circle
+            cx={0}
+            cy={0}
+            r={resizeHandleVisual.radius}
+            fill="#ffffff"
+            stroke="#13B981"
+            strokeWidth={resizeHandleVisual.strokeWidth}
+            vectorEffect="non-scaling-stroke"
+            pointerEvents="none"
+          />
+          <circle
+            data-layer-node="true"
+            data-export-ignore="true"
+            cx={0}
+            cy={0}
+            r={resizeHandleVisual.hitRadius}
+            fill="transparent"
+            style={{ cursor: handle.cursor }}
+            onPointerDown={(event) =>
+              startResizeLayer(event, selectedLayer, handle.key)
+            }
+          />
+        </g>
       ))}
+
     </svg>
   )
 
@@ -3551,8 +3640,9 @@ const ToolsImageConstructorContent = () => {
               : 'cursor-default'
         } touch-none`}
         onPointerDown={handleWorkspacePointerDown}
+        onScroll={() => setToolbarLayoutTick((state) => state + 1)}
       >
-        <div className="relative flex items-center justify-center min-w-full min-h-full">
+        <div className="flex items-center justify-center min-w-full min-h-full">
           <div
             ref={canvasWrapperRef}
             className="relative w-full max-w-[560px] shadow-[0_18px_40px_rgba(15,23,42,0.12)]"
@@ -3598,100 +3688,96 @@ const ToolsImageConstructorContent = () => {
                 style={inlineTextEditStyle}
               />
             )}
-            {selectedLayer &&
-              !isDraggingLayer &&
-              !isResizingLayer &&
-              !inlineTextEditLayerKey &&
-              mobileSelectedLayerToolbarStyle && (
-                <div
-                  data-layer-toolbar="true"
-                  className="absolute z-20 rounded-full bg-white/95 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
-                  style={mobileSelectedLayerToolbarStyle}
-                >
-                  <div className="flex items-center px-2 py-1 gap-x-1">
-                    {isResizeModeActive ? (
+          </div>
+          {selectedLayer &&
+            !isDraggingLayer &&
+            !isResizingLayer &&
+            !inlineTextEditLayerKey &&
+            mobileSelectedLayerToolbarStyle && (
+              <div
+                data-layer-toolbar="true"
+                className="absolute z-20 rounded-full bg-white/95 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
+                style={mobileSelectedLayerToolbarStyle}
+              >
+                <div className="flex items-center px-2 py-1 gap-x-1">
+                  {isResizeModeActive ? (
+                    <button
+                      type="button"
+                      className="w-8 h-8 text-[#13B981]"
+                      onClick={() => setResizeModeLayerKey(null)}
+                    >
+                      <FontAwesomeIcon icon={faCheck} />
+                    </button>
+                  ) : (
+                    <>
                       <button
                         type="button"
-                        className="w-8 h-8 text-[#13B981]"
-                        onClick={() => setResizeModeLayerKey(null)}
+                        className="w-8 h-8 text-orange-500"
+                        onClick={() => setMobilePanel('text')}
                       >
-                        <FontAwesomeIcon icon={faCheck} />
+                        <FontAwesomeIcon icon={faPen} />
                       </button>
-                    ) : (
-                      <>
+                      <button
+                        type="button"
+                        className="w-8 h-8 text-[#1d9bf0]"
+                        onClick={() => duplicateLayer(selectedLayer.key)}
+                      >
+                        <FontAwesomeIcon icon={faCopy} />
+                      </button>
+                      {selectedLayer.type === 'image' && (
                         <button
                           type="button"
-                          className="w-8 h-8 text-orange-500"
-                          onClick={() => setMobilePanel('text')}
+                          className="w-8 h-8 text-sky-600"
+                          onClick={() => openSelectImageForLayer(selectedLayer.key)}
                         >
-                          <FontAwesomeIcon icon={faPen} />
+                          <FontAwesomeIcon icon={faImages} />
                         </button>
-                        <button
-                          type="button"
-                          className="w-8 h-8 text-[#1d9bf0]"
-                          onClick={() => duplicateLayer(selectedLayer.key)}
-                        >
-                          <FontAwesomeIcon icon={faCopy} />
-                        </button>
-                        {selectedLayer.type === 'image' && (
-                          <button
-                            type="button"
-                            className="w-8 h-8 text-sky-600"
-                            onClick={() => openSelectImageForLayer(selectedLayer.key)}
-                          >
-                            <FontAwesomeIcon icon={faImages} />
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          className={`w-8 h-8 ${
-                            selectedLayer.show
-                              ? 'text-[#7b4fb3]'
-                              : 'text-gray-500'
-                          }`}
-                          onClick={() =>
-                            toggleLayerVisibility(selectedLayer.key)
-                          }
-                        >
-                          <FontAwesomeIcon
-                            icon={selectedLayer.show ? faEye : faEyeSlash}
-                          />
-                        </button>
-                        <button
-                          type="button"
-                          className="w-8 h-8 text-red-600"
-                          onClick={() => deleteLayer(selectedLayer.key)}
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                        {canResizeSelectedLayer && (
-                          <button
-                            type="button"
-                            className="w-8 h-8 text-gray-700"
-                            onClick={() => {
-                              setResizeModeLayerKey(selectedLayer.key)
-                              setMobilePanel(null)
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faExpand} />
-                          </button>
-                        )}
+                      )}
+                      <button
+                        type="button"
+                        className={`w-8 h-8 ${
+                          selectedLayer.show ? 'text-[#7b4fb3]' : 'text-gray-500'
+                        }`}
+                        onClick={() => toggleLayerVisibility(selectedLayer.key)}
+                      >
+                        <FontAwesomeIcon
+                          icon={selectedLayer.show ? faEye : faEyeSlash}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="w-8 h-8 text-red-600"
+                        onClick={() => deleteLayer(selectedLayer.key)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                      {canResizeSelectedLayer && (
                         <button
                           type="button"
                           className="w-8 h-8 text-gray-700"
                           onClick={() => {
-                            setSelectedLayerKey(null)
+                            setResizeModeLayerKey(selectedLayer.key)
                             setMobilePanel(null)
                           }}
                         >
-                          <FontAwesomeIcon icon={faTimes} />
+                          <FontAwesomeIcon icon={faExpand} />
                         </button>
-                      </>
-                    )}
-                  </div>
+                      )}
+                      <button
+                        type="button"
+                        className="w-8 h-8 text-gray-700"
+                        onClick={() => {
+                          setSelectedLayerKey(null)
+                          setMobilePanel(null)
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
+                    </>
+                  )}
                 </div>
-              )}
-          </div>
+              </div>
+            )}
         </div>
       </div>
 

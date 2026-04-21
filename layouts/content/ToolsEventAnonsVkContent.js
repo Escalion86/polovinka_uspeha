@@ -16,6 +16,7 @@ import getDaysBetween from '@helpers/getDaysBetween'
 import textArrayFunc from '@helpers/textArrayFunc'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -33,12 +34,13 @@ const getPreview = async () => {
 
 const save = async (name) => {
   const input = document.querySelector('#input')
-  saveSvgAsPng(input, name)
+  await saveSvgAsPng(input, name)
 }
 
 const ToolsEventAnonsVkContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const events = useAtomValue(eventsAtom)
+  const snackbar = useAtomValue(snackbarAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
@@ -479,7 +481,10 @@ const ToolsEventAnonsVkContent = () => {
       <div className="flex items-center gap-x-2">
         <Button
           name="Сохранить"
-          onClick={() => save('Анонс' + (text ? ' ' + text : ''))}
+          onClick={async () => {
+            await save('Анонс' + (text ? ' ' + text : ''))
+            snackbar?.success?.('Картинка загружена')
+          }}
         />
         <div>Картинка 2028х1536</div>
       </div>

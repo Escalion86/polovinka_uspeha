@@ -14,21 +14,8 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { unwrap } from 'jotai/utils'
 import eventSelector from '@state/selectors/eventSelector'
-
-const isLikesModalDebugEnabled = () => {
-  if (typeof window === 'undefined') return false
-  return (
-    window.localStorage?.getItem('debugLikesModal') === '1' ||
-    window.__DEBUG_LIKES_MODAL__ === true
-  )
-}
-
-const debugLikesModalLog = (...args) => {
-  if (!isLikesModalDebugEnabled()) return
-  console.log('[LikeEditModal]', ...args)
-}
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
@@ -115,31 +102,29 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setTitle,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
-    const eventLoadable = useAtomValue(loadable(eventSelector(eventId)))
-    const userLoadable = useAtomValue(loadable(userSelector(userId)))
-    // const snackbar = useAtomValue(snackbarAtom)
-    const eventUsersLoadable = useAtomValue(
-      loadable(eventsUsersFullByEventIdSelector(eventId))
+    const eventAtom = useMemo(
+      () => unwrap(eventSelector(eventId), (prev) => prev),
+      [eventId]
     )
-    const participantsWithoutRelationshipLoadable = useAtomValue(
-      loadable(eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId))
+    const userAtom = useMemo(
+      () => unwrap(userSelector(userId), (prev) => prev),
+      [userId]
     )
-
-    const eventResolvedRef = useRef(null)
-    const userResolvedRef = useRef(null)
-    const eventUsersResolvedRef = useRef(null)
-    const participantsResolvedRef = useRef(null)
-
-    if (eventLoadable.state === 'hasData') eventResolvedRef.current = eventLoadable.data
-    if (userLoadable.state === 'hasData') userResolvedRef.current = userLoadable.data
-    if (eventUsersLoadable.state === 'hasData')
-      eventUsersResolvedRef.current = eventUsersLoadable.data
-    if (participantsWithoutRelationshipLoadable.state === 'hasData')
-      participantsResolvedRef.current = participantsWithoutRelationshipLoadable.data
-
-    const event = eventResolvedRef.current
-    const user = userResolvedRef.current
-    const eventUsers = eventUsersResolvedRef.current ?? []
+    const eventUsersAtom = useMemo(
+      () => unwrap(eventsUsersFullByEventIdSelector(eventId), (prev) => prev ?? []),
+      [eventId]
+    )
+    const participantsWithoutRelationshipAtom = useMemo(
+      () =>
+        unwrap(
+          eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId),
+          (prev) => prev ?? []
+        ),
+      [eventId]
+    )
+    const event = useAtomValue(eventAtom)
+    const user = useAtomValue(userAtom)
+    const eventUsers = useAtomValue(eventUsersAtom) ?? []
     const eventUser = useMemo(
       () => eventUsers.find((eventUser) => eventUser.userId === userId),
       [eventUsers]
@@ -149,38 +134,24 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const isModalButtonsConfiguredRef = useRef(false)
     const lastCloseButtonNameRef = useRef(null)
     const lastTitleRef = useRef(null)
-    const instanceIdRef = useRef(
-      `${eventId}:${userId}:${Math.random().toString(36).slice(2, 8)}`
-    )
-    const renderCountRef = useRef(0)
     const initializedEventUserIdRef = useRef(null)
     const likesRef = useRef(likes)
     const isLikesProcessActiveRef = useRef(event?.likesProcessActive)
     const eventUserLikesRef = useRef(eventUser?.likes)
-    renderCountRef.current += 1
 
-    const participantsWithoutRelationship = participantsResolvedRef.current ?? []
+    const participantsWithoutRelationship =
+      useAtomValue(participantsWithoutRelationshipAtom) ?? []
 
     const setEventUserData = useAtomValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
     useEffect(() => {
       likesRef.current = likes
-      debugLikesModalLog('likes changed', {
-        instance: instanceIdRef.current,
-        likesLength: likes?.length ?? 0,
-        likes,
-      })
     }, [likes])
 
     useEffect(() => {
       isLikesProcessActiveRef.current = event?.likesProcessActive
       eventUserLikesRef.current = eventUser?.likes
-      debugLikesModalLog('source changed', {
-        instance: instanceIdRef.current,
-        likesProcessActive: event?.likesProcessActive,
-        eventUserLikes: eventUser?.likes,
-      })
     }, [event?.likesProcessActive, eventUser?.likes])
 
     useEffect(() => {
@@ -196,11 +167,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const saveLikes = useCallback(
       async (likesValue) => {
         if (!eventUser?._id) return
-        debugLikesModalLog('saveLikes:start', {
-          instance: instanceIdRef.current,
-          eventUserId: eventUser._id,
-          likesValue,
-        })
         return await setEventUserData(
           eventId,
           {
@@ -222,19 +188,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
           ? currentLikes.filter((id) => id !== targetUserId)
           : [...currentLikes, targetUserId]
 
-        debugLikesModalLog('toggleLike', {
-          instance: instanceIdRef.current,
-          targetUserId,
-          currentLikes,
-          nextLikes,
-        })
         likesRef.current = nextLikes
         setLikes(nextLikes)
-        const saveResult = await saveLikes(nextLikes)
-        debugLikesModalLog('saveLikes:done', {
-          instance: instanceIdRef.current,
-          saveResult,
-        })
+        await saveLikes(nextLikes)
       },
       [saveLikes]
     )
@@ -250,30 +206,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
       closeModal()
     }, [closeModal, saveLikes])
-
-    useEffect(() => {
-      debugLikesModalLog('mount', {
-        instance: instanceIdRef.current,
-        eventId,
-        userId,
-      })
-      return () => {
-        debugLikesModalLog('unmount', {
-          instance: instanceIdRef.current,
-        })
-      }
-    }, [eventId, userId])
-
-    useEffect(() => {
-      debugLikesModalLog('render', {
-        instance: instanceIdRef.current,
-        renderCount: renderCountRef.current,
-        likesLength: likes?.length ?? 0,
-        eventTitle: event?.title,
-        likesProcessActive: event?.likesProcessActive,
-        eventUserId: eventUser?._id,
-      })
-    })
 
     useEffect(() => {
       if (
@@ -314,9 +246,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       if (isModalButtonsConfiguredRef.current) return
       isModalButtonsConfiguredRef.current = true
 
-      debugLikesModalLog('configure modal buttons', {
-        instance: instanceIdRef.current,
-      })
       setOnConfirmFunc(undefined)
       setOnDeclineFunc(undefined)
       setOnCloseButtonFunc(onCloseButtonClick)
@@ -342,10 +271,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
       if (lastCloseButtonNameRef.current === nextCloseButtonName) return
       lastCloseButtonNameRef.current = nextCloseButtonName
-      debugLikesModalLog('setCloseButtonName', {
-        instance: instanceIdRef.current,
-        nextCloseButtonName,
-      })
       setCloseButtonName(nextCloseButtonName)
     }, [event?.likesProcessActive, likes, setCloseButtonName, user?.gender])
 
@@ -355,15 +280,11 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
         if (lastTitleRef.current === nextTitle) return
         lastTitleRef.current = nextTitle
-        debugLikesModalLog('setTitle', {
-          instance: instanceIdRef.current,
-          nextTitle,
-        })
         setTitle(nextTitle)
       }
     }, [event?.likesProcessActive, setTitle, user?.gender])
 
-    if (!event || !user || !eventUsersResolvedRef.current || !participantsResolvedRef.current) {
+    if (!event || !user) {
       return <div className="py-4 text-center text-gray-500">Загрузка...</div>
     }
 

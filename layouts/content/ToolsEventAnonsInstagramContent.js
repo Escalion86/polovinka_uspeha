@@ -19,6 +19,7 @@ import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import textArrayFunc from '@helpers/textArrayFunc'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -36,12 +37,13 @@ const getPreview = async () => {
 
 const save = async (name) => {
   const input = document.querySelector('#input')
-  saveSvgAsPng(input, name)
+  await saveSvgAsPng(input, name)
 }
 
 const ToolsEventAnonsInstagramContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const events = useAtomValue(eventsAtom)
+  const snackbar = useAtomValue(snackbarAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
@@ -466,7 +468,10 @@ const ToolsEventAnonsInstagramContent = () => {
       <div className="flex items-center gap-x-2">
         <Button
           name="Сохранить"
-          onClick={() => save('Анонс' + (text ? ' ' + text : ''))}
+          onClick={async () => {
+            await save('Анонс' + (text ? ' ' + text : ''))
+            snackbar?.success?.('Картинка загружена')
+          }}
         />
         <div>Картинка 1080х1080</div>
       </div>

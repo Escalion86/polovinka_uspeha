@@ -17,6 +17,7 @@ import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import useRouter from '@utils/useRouter'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
+import { unwrap } from 'jotai/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 const WEEKDAY_LABELS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
@@ -97,9 +98,39 @@ const EventsCalendarPageContent = () => {
   const loggedUserStatus = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserRole = useAtomValue(loggedUserActiveRoleSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const eventsUsers = useAtomValue(
-    asyncEventsUsersByUserIdAtom(loggedUser?._id)
+  const eventsUsersAtom = useMemo(
+    () =>
+      unwrap(asyncEventsUsersByUserIdAtom(loggedUser?._id), (prev) => prev ?? []),
+    [loggedUser?._id]
   )
+  const eventsUsers = useAtomValue(eventsUsersAtom)
+  const eventsUsersVisibilityRef = useRef([])
+  const eventsUsersForVisibility = useMemo(() => {
+    const source = Array.isArray(eventsUsers) ? eventsUsers : []
+    const next = source.map(({ _id, userId, eventId, status, subEventId }) => ({
+      _id,
+      userId,
+      eventId,
+      status,
+      subEventId,
+    }))
+
+    const prev = eventsUsersVisibilityRef.current
+    const isSame =
+      prev.length === next.length &&
+      prev.every(
+        (item, index) =>
+          item?._id === next[index]?._id &&
+          item?.userId === next[index]?.userId &&
+          item?.eventId === next[index]?.eventId &&
+          item?.status === next[index]?.status &&
+          item?.subEventId === next[index]?.subEventId
+      )
+
+    if (isSame) return prev
+    eventsUsersVisibilityRef.current = next
+    return next
+  }, [eventsUsers])
   const { loading: cityAccessLoading, allowEventManagement } =
     useCityManagementAccess()
   const canUseAdminStatusFilter = Boolean(
@@ -119,7 +150,7 @@ const EventsCalendarPageContent = () => {
   const upcomingEvents = useMemo(() => {
     const visible = visibleEventsForUser(
       Array.isArray(events) ? events : [],
-      Array.isArray(eventsUsers) ? eventsUsers : [],
+      eventsUsersForVisibility,
       loggedUser,
       false,
       loggedUserRole?.events?.seeHidden,
@@ -133,7 +164,13 @@ const EventsCalendarPageContent = () => {
         return true
       })
       .sort((a, b) => new Date(a.dateStart) - new Date(b.dateStart))
-  }, [events, eventsUsers, loggedUser, loggedUserRole, loggedUserStatus])
+  }, [
+    events,
+    eventsUsersForVisibility,
+    loggedUser,
+    loggedUserRole,
+    loggedUserStatus,
+  ])
 
   const [selectedDirectionIds, setSelectedDirectionIds] = useState([])
   const [showCanceledEvents, setShowCanceledEvents] = useState(false)

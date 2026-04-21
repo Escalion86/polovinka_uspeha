@@ -13,6 +13,29 @@ import { List } from 'react-window'
 
 const scrollOffsetsByKey = new Map()
 
+const RowComponent = ({ index, style, data }) => {
+  const { itemCount, itemKey, children, itemData } = data
+  const baseStyle = {
+    ...style,
+    zIndex: itemCount - index,
+    overflow: 'visible',
+  }
+  const renderedChild = children({ index, style, data: itemData })
+  if (!isValidElement(renderedChild)) return renderedChild
+
+  const mergedStyle = {
+    ...baseStyle,
+    ...(renderedChild.props?.style ?? {}),
+  }
+
+  if (itemKey) {
+    const key = itemKey(index, itemData)
+    return cloneElement(renderedChild, { key, style: mergedStyle })
+  }
+
+  return cloneElement(renderedChild, { style: mergedStyle })
+}
+
 const ListWrapper = ({
   itemCount = 0,
   itemSize = 0,
@@ -27,37 +50,17 @@ const ListWrapper = ({
 }) => {
   const rowProps = useMemo(
     () => ({
-      data: itemData,
+      data: {
+        itemData,
+        itemCount,
+        itemKey,
+        children,
+      },
     }),
-    [itemData]
+    [children, itemCount, itemData, itemKey]
   )
 
   const listRef = useRef(null)
-
-  const Row = useCallback(
-    ({ index, style, data }) => {
-      const baseStyle = {
-        ...style,
-        zIndex: itemCount - index,
-        overflow: 'visible',
-      }
-      const renderedChild = children({ index, style, data })
-      if (!isValidElement(renderedChild)) return renderedChild
-
-      const mergedStyle = {
-        ...baseStyle,
-        ...(renderedChild.props?.style ?? {}),
-      }
-
-      if (itemKey) {
-        const key = itemKey(index, data)
-        return cloneElement(renderedChild, { key, style: mergedStyle })
-      }
-
-      return cloneElement(renderedChild, { style: mergedStyle })
-    },
-    [children, itemCount, itemKey]
-  )
 
   const wrapperStyle = maxHeight ? { height: maxHeight, maxHeight } : undefined
   const handleScroll = useCallback(
@@ -90,7 +93,7 @@ const ListWrapper = ({
     >
       <List
         listRef={listRef}
-        rowComponent={Row}
+        rowComponent={RowComponent}
         rowCount={itemCount}
         rowHeight={itemSize}
         rowProps={rowProps}
