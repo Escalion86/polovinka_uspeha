@@ -3,8 +3,8 @@
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
 
-import userSelector from './userSelector'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
+import userSelector from './userSelector'
 import eventSelector from './eventSelector'
 
 const eventsUsersFullByEventIdSelector = atomFamily((id) =>
@@ -12,7 +12,6 @@ const eventsUsersFullByEventIdSelector = atomFamily((id) =>
     if (!id) return []
 
     const eventsUsers = await get(asyncEventsUsersByEventIdAtom(id))
-
     if (!eventsUsers) return []
 
     const eventsUsersFull = await Promise.all(
@@ -32,4 +31,3 @@ const eventsUsersFullByEventIdSelector = atomFamily((id) =>
 )
 
 export default eventsUsersFullByEventIdSelector
-

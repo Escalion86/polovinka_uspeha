@@ -14,7 +14,21 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import { loadable } from 'jotai/utils'
 import eventSelector from '@state/selectors/eventSelector'
+
+const isLikesModalDebugEnabled = () => {
+  if (typeof window === 'undefined') return false
+  return (
+    window.localStorage?.getItem('debugLikesModal') === '1' ||
+    window.__DEBUG_LIKES_MODAL__ === true
+  )
+}
+
+const debugLikesModalLog = (...args) => {
+  if (!isLikesModalDebugEnabled()) return
+  console.log('[LikeEditModal]', ...args)
+}
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
@@ -87,6 +101,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
+    setOnCloseButtonFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
@@ -100,28 +115,92 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setTitle,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
-    const event = useAtomValue(eventSelector(eventId))
-    const user = useAtomValue(userSelector(userId))
+    const eventLoadable = useAtomValue(loadable(eventSelector(eventId)))
+    const userLoadable = useAtomValue(loadable(userSelector(userId)))
     // const snackbar = useAtomValue(snackbarAtom)
-    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsersLoadable = useAtomValue(
+      loadable(eventsUsersFullByEventIdSelector(eventId))
+    )
+    const participantsWithoutRelationshipLoadable = useAtomValue(
+      loadable(eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId))
+    )
+
+    const eventResolvedRef = useRef(null)
+    const userResolvedRef = useRef(null)
+    const eventUsersResolvedRef = useRef(null)
+    const participantsResolvedRef = useRef(null)
+
+    if (eventLoadable.state === 'hasData') eventResolvedRef.current = eventLoadable.data
+    if (userLoadable.state === 'hasData') userResolvedRef.current = userLoadable.data
+    if (eventUsersLoadable.state === 'hasData')
+      eventUsersResolvedRef.current = eventUsersLoadable.data
+    if (participantsWithoutRelationshipLoadable.state === 'hasData')
+      participantsResolvedRef.current = participantsWithoutRelationshipLoadable.data
+
+    const event = eventResolvedRef.current
+    const user = userResolvedRef.current
+    const eventUsers = eventUsersResolvedRef.current ?? []
     const eventUser = useMemo(
       () => eventUsers.find((eventUser) => eventUser.userId === userId),
       [eventUsers]
     )
 
     const [likes, setLikes] = useState(eventUser?.likes ?? [])
-    const pendingLikesRef = useRef(null)
-    const isLikesSavingRef = useRef(false)
-
-    const participantsWithoutRelationship = useAtomValue(
-      eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
+    const isModalButtonsConfiguredRef = useRef(false)
+    const lastCloseButtonNameRef = useRef(null)
+    const lastTitleRef = useRef(null)
+    const instanceIdRef = useRef(
+      `${eventId}:${userId}:${Math.random().toString(36).slice(2, 8)}`
     )
+    const renderCountRef = useRef(0)
+    const initializedEventUserIdRef = useRef(null)
+    const likesRef = useRef(likes)
+    const isLikesProcessActiveRef = useRef(event?.likesProcessActive)
+    const eventUserLikesRef = useRef(eventUser?.likes)
+    renderCountRef.current += 1
+
+    const participantsWithoutRelationship = participantsResolvedRef.current ?? []
 
     const setEventUserData = useAtomValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+
+    useEffect(() => {
+      likesRef.current = likes
+      debugLikesModalLog('likes changed', {
+        instance: instanceIdRef.current,
+        likesLength: likes?.length ?? 0,
+        likes,
+      })
+    }, [likes])
+
+    useEffect(() => {
+      isLikesProcessActiveRef.current = event?.likesProcessActive
+      eventUserLikesRef.current = eventUser?.likes
+      debugLikesModalLog('source changed', {
+        instance: instanceIdRef.current,
+        likesProcessActive: event?.likesProcessActive,
+        eventUserLikes: eventUser?.likes,
+      })
+    }, [event?.likesProcessActive, eventUser?.likes])
+
+    useEffect(() => {
+      if (!eventUser?._id) return
+      if (initializedEventUserIdRef.current === eventUser._id) return
+      initializedEventUserIdRef.current = eventUser._id
+
+      const initialLikes = eventUser?.likes ?? []
+      likesRef.current = initialLikes
+      setLikes(initialLikes)
+    }, [eventUser?._id, eventUser?.likes])
+
     const saveLikes = useCallback(
       async (likesValue) => {
         if (!eventUser?._id) return
+        debugLikesModalLog('saveLikes:start', {
+          instance: instanceIdRef.current,
+          eventUserId: eventUser._id,
+          likesValue,
+        })
         return await setEventUserData(
           eventId,
           {
@@ -129,53 +208,78 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
               [eventUser._id]: likesValue,
             },
           },
+          true,
           true
         )
       },
       [eventId, eventUser?._id, setEventUserData]
     )
 
-    const flushLikesSaveQueue = useCallback(async () => {
-      if (isLikesSavingRef.current || !eventUser?._id) return
-      isLikesSavingRef.current = true
-
-      try {
-        while (pendingLikesRef.current !== null) {
-          const likesToSave = pendingLikesRef.current
-          pendingLikesRef.current = null
-          const res = await saveLikes(likesToSave)
-
-          if (!res) {
-            pendingLikesRef.current = null
-            break
-          }
-        }
-      } finally {
-        isLikesSavingRef.current = false
-      }
-    }, [eventUser?._id, saveLikes])
-
     const toggleLike = useCallback(
-      (targetUserId) => {
-        setLikes((state) => {
-          const nextLikes = state.includes(targetUserId)
-            ? state.filter((id) => id !== targetUserId)
-            : [...state, targetUserId]
+      async (targetUserId) => {
+        const currentLikes = likesRef.current ?? []
+        const nextLikes = currentLikes.includes(targetUserId)
+          ? currentLikes.filter((id) => id !== targetUserId)
+          : [...currentLikes, targetUserId]
 
-          pendingLikesRef.current = nextLikes
-          flushLikesSaveQueue()
-
-          return nextLikes
+        debugLikesModalLog('toggleLike', {
+          instance: instanceIdRef.current,
+          targetUserId,
+          currentLikes,
+          nextLikes,
+        })
+        likesRef.current = nextLikes
+        setLikes(nextLikes)
+        const saveResult = await saveLikes(nextLikes)
+        debugLikesModalLog('saveLikes:done', {
+          instance: instanceIdRef.current,
+          saveResult,
         })
       },
-      [flushLikesSaveQueue]
+      [saveLikes]
     )
+
+    const onCloseButtonClick = useCallback(async () => {
+      if (
+        isLikesProcessActiveRef.current &&
+        (!likesRef.current || likesRef.current.length === 0) &&
+        eventUserLikesRef.current === null
+      ) {
+        await saveLikes([])
+      }
+
+      closeModal()
+    }, [closeModal, saveLikes])
+
+    useEffect(() => {
+      debugLikesModalLog('mount', {
+        instance: instanceIdRef.current,
+        eventId,
+        userId,
+      })
+      return () => {
+        debugLikesModalLog('unmount', {
+          instance: instanceIdRef.current,
+        })
+      }
+    }, [eventId, userId])
+
+    useEffect(() => {
+      debugLikesModalLog('render', {
+        instance: instanceIdRef.current,
+        renderCount: renderCountRef.current,
+        likesLength: likes?.length ?? 0,
+        eventTitle: event?.title,
+        likesProcessActive: event?.likesProcessActive,
+        eventUserId: eventUser?._id,
+      })
+    })
 
     useEffect(() => {
       if (
         eventUser?._id &&
         !adminView &&
-        !event.likesProcessActive &&
+        !event?.likesProcessActive &&
         !eventUser?.seeLikesResult
       ) {
         setTimeout(() => {
@@ -186,11 +290,82 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                 [eventUser._id]: true,
               },
             },
+            true,
             true
           )
         }, 500)
       }
     }, [eventUser?.seeLikesResult, event?.likesProcessActive, adminView])
+
+    // const onClickConfirm = () => {
+    //   setEventUserData(
+    //     eventId,
+    //     {
+    //       likes: {
+    //         [eventUser._id]: likes,
+    //       },
+    //     },
+    //     true
+    //   )
+    //   closeModal()
+    // }
+
+    useEffect(() => {
+      if (isModalButtonsConfiguredRef.current) return
+      isModalButtonsConfiguredRef.current = true
+
+      debugLikesModalLog('configure modal buttons', {
+        instance: instanceIdRef.current,
+      })
+      setOnConfirmFunc(undefined)
+      setOnDeclineFunc(undefined)
+      setOnCloseButtonFunc(onCloseButtonClick)
+      setDeclineButtonShow(false)
+      setCloseButtonShow(true)
+      setConfirmButtonName('Закрыть')
+    }, [
+      onCloseButtonClick,
+      setCloseButtonShow,
+      setConfirmButtonName,
+      setDeclineButtonShow,
+      setOnConfirmFunc,
+      setOnDeclineFunc,
+      setOnCloseButtonFunc,
+    ])
+
+    useEffect(() => {
+      const genderSuffix = user?.gender === 'male' ? '' : 'а'
+      const nextCloseButtonName =
+        event?.likesProcessActive && (!likes || likes.length === 0)
+          ? `Решил${genderSuffix} никому не ставить лайк`
+          : 'Закрыть'
+
+      if (lastCloseButtonNameRef.current === nextCloseButtonName) return
+      lastCloseButtonNameRef.current = nextCloseButtonName
+      debugLikesModalLog('setCloseButtonName', {
+        instance: instanceIdRef.current,
+        nextCloseButtonName,
+      })
+      setCloseButtonName(nextCloseButtonName)
+    }, [event?.likesProcessActive, likes, setCloseButtonName, user?.gender])
+
+    useEffect(() => {
+      if (!event?.likesProcessActive) {
+        const nextTitle = `Совпадения лайков с участни${user?.gender === 'male' ? 'ц' : 'к'}ами`
+
+        if (lastTitleRef.current === nextTitle) return
+        lastTitleRef.current = nextTitle
+        debugLikesModalLog('setTitle', {
+          instance: instanceIdRef.current,
+          nextTitle,
+        })
+        setTitle(nextTitle)
+      }
+    }, [event?.likesProcessActive, setTitle, user?.gender])
+
+    if (!event || !user || !eventUsersResolvedRef.current || !participantsResolvedRef.current) {
+      return <div className="py-4 text-center text-gray-500">Загрузка...</div>
+    }
 
     if (!eventUser)
       return adminView
@@ -241,50 +416,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const other = eventUsersOtherGenderWithCoincidences.filter(
       (eventUser) => !eventUser?.iLike
     )
-
-    // const onClickConfirm = () => {
-    //   setEventUserData(
-    //     eventId,
-    //     {
-    //       likes: {
-    //         [eventUser._id]: likes,
-    //       },
-    //     },
-    //     true
-    //   )
-    //   closeModal()
-    // }
-
-    useEffect(() => {
-      // const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
-      // setConfirmButtonName(
-      //   !likes || likes?.length === 0
-      //     ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
-      //     : eventUser.likes && !isFormChanged
-      //       ? 'Оставить как было'
-      //       : adminView
-      //         ? 'Сохранить выбор'
-      //         : 'Отправить мой выбор'
-      // )
-      // setDisableConfirm(eventUser.likes && !isFormChanged)
-      // setOnConfirmFunc(
-      //   !event.likesProcessActive
-      //     ? undefined
-      //     : eventUser.likes && !isFormChanged
-      //       ? closeModal
-      //       : onClickConfirm
-      // )
-      setOnConfirmFunc(undefined)
-      setOnDeclineFunc(undefined)
-      setDeclineButtonShow(false)
-      setCloseButtonShow(true)
-      setConfirmButtonName('Закрыть')
-      setCloseButtonName('Закрыть')
-      if (!event.likesProcessActive)
-        setTitle(
-          `Совпадения лайков с участни${user.gender === 'male' ? 'ц' : 'к'}ами`
-        )
-    }, [event, user.gender, setOnConfirmFunc, setOnDeclineFunc])
 
     return (
       <div className="flex flex-col">

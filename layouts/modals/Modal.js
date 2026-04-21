@@ -68,6 +68,7 @@ const Modal = ({
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
+  const [onCloseButtonFunc, setOnCloseButtonFunc] = useState(null)
   const setModals = useSetAtom(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
@@ -339,6 +340,10 @@ const Modal = ({
     (func) => setOnDeclineFunc(func ? () => func : null),
     [setOnDeclineFunc]
   )
+  const handleSetOnCloseButtonFunc = useCallback(
+    (func) => setOnCloseButtonFunc(func ? () => func : null),
+    [setOnCloseButtonFunc]
+  )
 
   return (
     <m.div
@@ -438,6 +443,7 @@ const Modal = ({
                 setOnConfirmFunc={handleSetOnConfirmFunc}
                 setOnConfirm2Func={handleSetOnConfirm2Func}
                 setOnDeclineFunc={handleSetOnDeclineFunc}
+                setOnCloseButtonFunc={handleSetOnCloseButtonFunc}
                 setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
                 setDisableConfirm={setDisableConfirm}
                 setDisableDecline={setDisableDecline}
@@ -480,6 +486,7 @@ const Modal = ({
             onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}
             onConfirm2Click={!onlyCloseButtonShowState && onConfirm2Click}
             onDeclineClick={!onlyCloseButtonShowState && onDeclineClick}
+            onCloseButtonClick={onCloseButtonFunc}
             // showConfirm={!onlyCloseButtonShow && showConfirm}
             // showConfirm2={!onlyCloseButtonShow && showConfirm2}
             // showDecline={!onlyCloseButtonShowState && showDecline}

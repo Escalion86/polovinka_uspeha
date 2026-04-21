@@ -19,6 +19,7 @@ const ModalButtons = ({
   closeButtonShow,
   declineButtonShow,
   closeModal,
+  onCloseButtonClick,
   bottomLeftButton,
   bottomLeftComponent,
   declineButtonBgClassName = 'bg-danger',
@@ -76,7 +77,11 @@ const ModalButtons = ({
               <Button
                 name={closeButtonName}
                 classBgColor="bg-general"
-                onClick={closeModal}
+                onClick={
+                  typeof onCloseButtonClick === 'function'
+                    ? onCloseButtonClick
+                    : closeModal
+                }
               />
             )
           )}

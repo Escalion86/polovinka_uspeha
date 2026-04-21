@@ -717,21 +717,26 @@ const itemsFuncGenerator = (get, set) => {
     )
   }
 
-  obj.eventsUser.setData = async (eventId, data, dontShowSnackBar) => {
-    setLoadingCard('event' + eventId)
+  obj.eventsUser.setData = async (
+    eventId,
+    data,
+    dontShowSnackBar,
+    withoutLoadingCard = false
+  ) => {
+    if (!withoutLoadingCard) setLoadingCard('event' + eventId)
     return await putData(
       `/api/${location}/eventsusers`,
       { data },
       (res) => {
         !dontShowSnackBar &&
           snackbar.success('Лайки участников мероприятия обновлены')
-        setNotLoadingCard('event' + eventId)
+        if (!withoutLoadingCard) setNotLoadingCard('event' + eventId)
         props.updateEventsUsers(eventId, res)
       },
       (error) => {
         !dontShowSnackBar &&
           snackbar.error('Не удалось обновить лайки участников мероприятия')
-        setErrorCard('event' + eventId)
+        if (!withoutLoadingCard) setErrorCard('event' + eventId)
         const res = {
           errorPlace: 'setLikes ERROR',
           eventId,
