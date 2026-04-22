@@ -87,6 +87,8 @@ const ClientErrorReporter = () => {
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
 
+    const CHUNK_RELOAD_MARKER = 'clientChunkReloadAttemptAt'
+    const CHUNK_RELOAD_COOLDOWN_MS = 5 * 60 * 1000
     let isMounted = true
     let isReporting = false
     const queue = []
@@ -193,6 +195,46 @@ const ClientErrorReporter = () => {
       void processQueue()
     }
 
+    const isRecoverableChunkError = (payload = {}) => {
+      const message = String(payload?.error?.message || '').toLowerCase()
+      const stack = String(payload?.error?.stack || '').toLowerCase()
+      const source = String(payload?.meta?.source || '').toLowerCase()
+      const combined = `${message}\n${stack}\n${source}`
+
+      return (
+        combined.includes('chunkloaderror') ||
+        combined.includes('loading chunk') ||
+        combined.includes('failed to fetch dynamically imported module') ||
+        combined.includes('dynamically imported module') ||
+        combined.includes('importing a module script failed')
+      )
+    }
+
+    const tryRecoverByReload = (payload) => {
+      if (!isRecoverableChunkError(payload)) return false
+
+      try {
+        const now = Date.now()
+        const lastAttemptAt = Number(
+          sessionStorage.getItem(CHUNK_RELOAD_MARKER) || 0
+        )
+        if (
+          Number.isFinite(lastAttemptAt) &&
+          now - lastAttemptAt < CHUNK_RELOAD_COOLDOWN_MS
+        ) {
+          return false
+        }
+
+        sessionStorage.setItem(CHUNK_RELOAD_MARKER, String(now))
+        setTimeout(() => {
+          if (typeof window !== 'undefined') window.location.reload()
+        }, 30)
+        return true
+      } catch (error) {
+        return false
+      }
+    }
+
     const handleError = (error, componentStack = '', meta = {}) => {
       const location = resolveLocation()
       if (!location) return
@@ -216,6 +258,7 @@ const ClientErrorReporter = () => {
       signatures.add(signature)
 
       enqueuePayload(payload)
+      tryRecoverByReload(payload)
     }
 
     const handleWindowError = (message, source, lineno, colno, error) => {
@@ -234,6 +277,20 @@ const ClientErrorReporter = () => {
       })
     }
 
+    const handleResourceError = (event) => {
+      const target = event?.target
+      if (!target || target === window) return
+
+      const source = target?.src || target?.href
+      if (!source) return
+
+      handleError(new Error(`Resource load error: ${source}`), '', {
+        type: 'resource_error',
+        tagName: target?.tagName || '',
+        source,
+      })
+    }
+
     const previousOnError = window.onerror
     window.onerror = (message, source, lineno, colno, error) => {
       if (typeof previousOnError === 'function') {
@@ -247,11 +304,13 @@ const ClientErrorReporter = () => {
     }
 
     window.addEventListener('unhandledrejection', handleUnhandledRejection)
+    window.addEventListener('error', handleResourceError, true)
 
     return () => {
       isMounted = false
       window.onerror = previousOnError ?? null
       window.removeEventListener('unhandledrejection', handleUnhandledRejection)
+      window.removeEventListener('error', handleResourceError, true)
     }
   }, [])
 

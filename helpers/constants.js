@@ -204,6 +204,9 @@ const IndividualWeddingsContent = dynamic(
 const SettingsAchievementsContent = dynamic(
   () => import('@layouts/content/SettingsAchievementsContent')
 )
+const ClientErrorLogsContent = dynamic(
+  () => import('@layouts/content/ClientErrorLogsContent')
+)
 
 import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
@@ -2044,6 +2047,11 @@ export const CONTENTS = Object.freeze({
     name: 'Особые даты ПУ',
     roleAccess: (role, status) => role?.siteSettings?.remindDatesEdit,
   },
+  clientErrorLogs: {
+    Component: ClientErrorLogsContent,
+    name: 'Тех / Клиентские ошибки',
+    roleAccess: (role) => role?.dev || role?.president,
+  },
 })
 
 export const pages = [
@@ -2532,6 +2540,14 @@ export const pages = [
     icon: faBug,
     // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
+  },
+  {
+    id: 98.1,
+    group: 99,
+    name: 'Клиентские ошибки',
+    href: 'clientErrorLogs',
+    icon: faBug,
+    roleAccess: CONTENTS['clientErrorLogs'].roleAccess,
   },
 ]
 
