@@ -1,13 +1,13 @@
 import Button from '@components/Button'
+import useEventCardState from '@components/useEventCardState'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import cn from 'classnames'
 import { Suspense, useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useAtomValue } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -27,14 +27,13 @@ const TextStatus = ({ children, className }) => (
   </div>
 )
 
-const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
+const PaymentsFromLoggedUser = ({ eventId, event: eventProp, noBorders = true }) => {
   const eventAtom = useMemo(
-    () => unwrap(eventSelector(eventId), (prev) => prev),
-    [eventId]
-  )
-  const eventStatusAtom = useMemo(
-    () => unwrap(loggedUserToEventStatusSelector(eventId), (prev) => prev),
-    [eventId]
+    () =>
+      eventProp
+        ? atom(eventProp)
+        : unwrap(eventSelector(eventId), (prev) => prev),
+    [eventId, eventProp]
   )
   const eventUserAtom = useMemo(
     () => unwrap(eventLoggedUserByEventIdSelector(eventId), (prev) => prev),
@@ -47,7 +46,8 @@ const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
   )
 
   const event = useAtomValue(eventAtom)
-  const eventStatus = useAtomValue(eventStatusAtom)
+  const eventCardState = useEventCardState(eventId)
+  const eventStatus = eventCardState?.status
 
   const { userStatus, userEventStatus } = eventStatus ?? {}
 
@@ -97,6 +97,7 @@ const PaymentsFromLoggedUser = ({ eventId, noBorders = true }) => {
 
 const Status = ({
   eventId,
+  event: eventProp,
   thin,
   classNameProfit,
   noButtonIfAlreadySignIn,
@@ -104,19 +105,19 @@ const Status = ({
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const eventAtom = useMemo(
-    () => unwrap(eventSelector(eventId), (prev) => prev),
-    [eventId]
-  )
-  const eventStatusAtom = useMemo(
-    () => unwrap(loggedUserToEventStatusSelector(eventId), (prev) => prev),
-    [eventId]
+    () =>
+      eventProp
+        ? atom(eventProp)
+        : unwrap(eventSelector(eventId), (prev) => prev),
+    [eventId, eventProp]
   )
   const eventUserAtom = useMemo(
     () => unwrap(eventLoggedUserByEventIdSelector(eventId), (prev) => prev),
     [eventId]
   )
   const event = useAtomValue(eventAtom)
-  const eventStatus = useAtomValue(eventStatusAtom)
+  const eventCardState = useEventCardState(eventId)
+  const eventStatus = eventCardState?.status
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
@@ -251,6 +252,7 @@ const Status = ({
 
 const EventButtonSignIn = ({
   eventId,
+  event,
   className,
   noButtonIfAlreadySignIn,
   thin,
@@ -266,12 +268,17 @@ const EventButtonSignIn = ({
         />
       }
     >
-      <PaymentsFromLoggedUser eventId={eventId} noBorders={noBorders} />
+      <PaymentsFromLoggedUser
+        eventId={eventId}
+        event={event}
+        noBorders={noBorders}
+      />
     </Suspense>
     <Suspense fallback={<Skeleton className="h-[80%] w-[100px] mr-1" />}>
       <div className="flex items-center pl-1">
         <Status
           eventId={eventId}
+          event={event}
           thin={thin}
           classNameProfit={classNameProfit}
           noButtonIfAlreadySignIn={noButtonIfAlreadySignIn}

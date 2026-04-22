@@ -9,7 +9,6 @@ import BurgerLayout from '@layouts/BurgerLayout'
 import CabinetHeader from '@layouts/CabinetHeader'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
-import locationAtom from '@state/atoms/locationAtom'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
@@ -17,7 +16,7 @@ import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
 import dynamic from 'next/dynamic'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CountDown from '@blocks/components/CountDown'
 
@@ -42,7 +41,6 @@ const sortByIndexAndTitle = (a, b) => {
 function CabinetDirectionClient(props) {
   const { location, directionId } = props
   const router = useRouter()
-  const [locationState, setLocationState] = useAtom(locationAtom)
   const isPWA = useAtomValue(isPWAAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
@@ -69,8 +67,6 @@ function CabinetDirectionClient(props) {
     [events, directionId]
   )
 
-  useEffect(() => setLocationState(location), [location, setLocationState])
-
   useEffect(() => {
     if (isPWA) {
       router.push(
@@ -91,7 +87,6 @@ function CabinetDirectionClient(props) {
 
   if (props.wrongSession) return <SignOut />
   if (isPWA) return null
-  if (!locationState) return null
   if (!canSeeDirectionsMenu) return null
 
   const activePage = router.asPath.split('?')[0]

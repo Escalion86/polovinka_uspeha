@@ -14,10 +14,9 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import serviceSelector from '@state/selectors/serviceSelector'
 import SignOut from '@components/SignOut'
-import locationAtom from '@state/atoms/locationAtom'
 
 const Service = ({ service }) => {
   const serviceView = serviceViewFunc(service._id)
@@ -41,7 +40,6 @@ const Service = ({ service }) => {
 
 function ServicePage(props) {
   const { location } = props
-  const [locationState, setLocationState] = useAtom(locationAtom)
 
   const serviceId = props.id
 
@@ -71,11 +69,7 @@ function ServicePage(props) {
   //     ? servicesState.find((service) => service._id === serviceId)
   //     : undefined
 
-  useEffect(() => setLocationState(location), [location])
-
   if (props.wrongSession) return <SignOut />
-
-  if (!locationState) return null
 
   const title = service?.title ?? ''
   const query = service?._id ? { service: service._id } : {}

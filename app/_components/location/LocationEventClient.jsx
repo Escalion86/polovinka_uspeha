@@ -16,12 +16,10 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
 import eventSelector from '@state/selectors/eventSelector'
 import SignOut from '@components/SignOut'
-import locationAtom from '@state/atoms/locationAtom'
 
 const Event = ({ event }) => {
   const eventView = eventViewFunc(event._id)
@@ -76,9 +74,8 @@ const Event = ({ event }) => {
   )
 }
 
-const EventBlock = ({ event, eventId }) => {
+const EventBlock = ({ event, eventId, location }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  const location = useAtomValue(locationAtom)
 
   return (
     <BlockContainer small>
@@ -123,9 +120,6 @@ const EventBlock = ({ event, eventId }) => {
 
 function EventPage(props) {
   const { location } = props
-  useHydrateAtoms([[locationAtom, location]])
-  const [locationState, setLocationState] = useAtom(locationAtom)
-
   const eventId = props.id
   const event = useAtomValue(eventSelector(eventId))
 
@@ -142,11 +136,7 @@ function EventPage(props) {
     })
   }, [])
 
-  useEffect(() => setLocationState(location), [location, setLocationState])
-
   if (props.wrongSession) return <SignOut />
-
-  if (!locationState) return null
 
   // const event =
   //   eventsState?.length > 0
@@ -159,7 +149,7 @@ function EventPage(props) {
     <>
       <StateLoader {...props}>
         <Header noMenu={isPWA} fullLinkInMenu />
-        <EventBlock event={event} eventId={eventId} />
+        <EventBlock event={event} eventId={eventId} location={location} />
 
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}

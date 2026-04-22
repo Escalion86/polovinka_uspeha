@@ -20,9 +20,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
 import { Suspense, useEffect } from 'react'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import locationAtom from '@state/atoms/locationAtom'
+import { useAtomValue } from 'jotai'
 import SignOut from '@components/SignOut'
 
 // const DevToolsClient = () => {
@@ -45,15 +43,6 @@ const SuspenseChild = () => (
 function CabinetPage(props) {
   const router = useRouter()
   const { location } = props
-
-  useHydrateAtoms([[locationAtom, location]])
-  const setLocationState = useSetAtom(locationAtom)
-
-  const locationState = useAtomValue(locationAtom)
-
-  useEffect(() => {
-    if (location) setLocationState(location)
-  }, [location, setLocationState])
 
   const page = router.asPath.replace(`/${location}/cabinet/`, '').split('?')[0]
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
@@ -94,10 +83,10 @@ function CabinetPage(props) {
   useEffect(() => {
     // if (loggedUserActiveRole?.dev) console.log('redirect :>> ', redirect)
     if (redirect) router.push(redirect, '', { shallow: true })
-  }, [redirect])
+  }, [redirect, router])
 
   if (props.wrongSession)
-    return <SignOut callbackUrl={locationState ? `/${locationState}` : '/'} />
+    return <SignOut callbackUrl={location ? `/${location}` : '/'} />
 
   if (redirect) return null
 

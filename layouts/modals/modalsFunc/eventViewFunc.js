@@ -423,7 +423,7 @@ const EventViewModal = ({
                   color="green-500"
                   icon={faUsers}
                   hoverable
-                  onClick={() => modalsFunc.event.users(eventId)}
+                  onClick={() => modalsFunc.event.users(eventId, event)}
                 />
               ) : null}
             </div>

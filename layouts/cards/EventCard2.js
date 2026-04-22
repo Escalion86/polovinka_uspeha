@@ -212,6 +212,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
                 >
                   <EventButtonSignIn
                     eventId={eventId}
+                    event={event}
                     noButtonIfAlreadySignIn
                     className="rounded-full"
                   />
@@ -237,6 +238,7 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
           >
             <EventButtonSignIn
               eventId={eventId}
+              event={event}
               noButtonIfAlreadySignIn
               className="rounded-full"
             />

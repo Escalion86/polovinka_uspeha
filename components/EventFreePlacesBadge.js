@@ -1,11 +1,7 @@
 'use client'
 
-import subEventsSummator from '@helpers/subEventsSummator'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-import eventSelector from '@state/selectors/eventSelector'
-import { useAtomValue } from 'jotai'
+import useEventCardState from '@components/useEventCardState'
 import PropTypes from 'prop-types'
-import { useMemo } from 'react'
 import cn from 'classnames'
 
 const defaultClassName =
@@ -16,83 +12,38 @@ const EventFreePlacesBadge = ({
   event,
   className = defaultClassName,
 }) => {
-  const eventFromState = useAtomValue(eventSelector(eventId))
-  const eventToUse = event || eventFromState
-  const targetEventId = eventToUse?._id || eventId
-  const eventUsers = useAtomValue(
-    eventsUsersFullByEventIdSelector(targetEventId)
-  )
+  const targetEventId = event?._id || eventId
+  const eventCardState = useEventCardState(targetEventId)
 
-  const participants = useMemo(
-    () => (eventUsers || []).filter((item) => item?.status === 'participant'),
-    [eventUsers]
-  )
+  if (!eventCardState) return null
 
-  const participantsMansCount = useMemo(
-    () => participants.filter((item) => item?.user?.gender === 'male').length,
-    [participants]
-  )
-  const participantsWomansCount = useMemo(
-    () => participants.filter((item) => item?.user?.gender === 'famale').length,
-    [participants]
-  )
+  const {
+    hasGenderLimits,
+    maxParticipants,
+    maxMans,
+    maxWomans,
+    freePlaces,
+    freeMalePlaces,
+    freeFemalePlaces,
+    participantsCount,
+    participantsMaleCount,
+    participantsFemaleCount,
+  } = eventCardState
 
-  const limits = useMemo(() => {
-    if (!eventToUse)
-      return { maxParticipants: null, maxMans: null, maxWomans: null }
-
-    const hasSubEvents =
-      Array.isArray(eventToUse?.subEvents) && eventToUse.subEvents.length > 0
-    if (hasSubEvents) {
-      const summary = subEventsSummator(eventToUse.subEvents)
-      return {
-        maxParticipants:
-          typeof summary?.maxParticipants === 'number'
-            ? summary.maxParticipants
-            : null,
-        maxMans: typeof summary?.maxMans === 'number' ? summary.maxMans : null,
-        maxWomans:
-          typeof summary?.maxWomans === 'number' ? summary.maxWomans : null,
-      }
-    }
-
-    return {
-      maxParticipants:
-        typeof eventToUse?.maxParticipants === 'number'
-          ? eventToUse.maxParticipants
-          : null,
-      maxMans:
-        typeof eventToUse?.maxMans === 'number' ? eventToUse.maxMans : null,
-      maxWomans:
-        typeof eventToUse?.maxWomans === 'number' ? eventToUse.maxWomans : null,
-    }
-  }, [eventToUse])
-
-  if (!eventToUse) return null
-
-  const hasGenderLimits =
-    typeof limits.maxMans === 'number' || typeof limits.maxWomans === 'number'
-
-  const getFree = (max, count) =>
-    typeof max === 'number' ? Math.max(0, (max ?? 0) - (count ?? 0)) : null
-
-  const hasWomansLimit = typeof limits.maxWomans === 'number'
-  const hasMansLimit = typeof limits.maxMans === 'number'
-  const freeWomansPlaces = getFree(limits.maxWomans, participantsWomansCount)
-  const freeMansPlaces = getFree(limits.maxMans, participantsMansCount)
-  const participantsCount = participants.length
+  const hasWomansLimit = typeof maxWomans === 'number'
+  const hasMansLimit = typeof maxMans === 'number'
   const womansPlacesText =
-    hasWomansLimit && limits.maxWomans === 0
+    hasWomansLimit && maxWomans === 0
       ? 'нет'
       : hasWomansLimit
-        ? `${freeWomansPlaces} из ${limits.maxWomans}`
-        : `неогр. (записей ${participantsWomansCount})`
+        ? `${freeFemalePlaces} из ${maxWomans}`
+        : `неогр. (записей ${participantsFemaleCount})`
   const mansPlacesText =
-    hasMansLimit && limits.maxMans === 0
+    hasMansLimit && maxMans === 0
       ? 'нет'
       : hasMansLimit
-        ? `${freeMansPlaces} из ${limits.maxMans}`
-        : `неогр. (записей ${participantsMansCount})`
+        ? `${freeMalePlaces} из ${maxMans}`
+        : `неогр. (записей ${participantsMaleCount})`
 
   const text = hasGenderLimits ? (
     <>
@@ -106,14 +57,11 @@ const EventFreePlacesBadge = ({
         {` ${mansPlacesText}`}
       </span>
     </>
-  ) : typeof limits.maxParticipants === 'number' ? (
+  ) : typeof maxParticipants === 'number' ? (
     <>
       <span className="hidden whitespace-nowrap tablet:inline">{'Свободно мест:'}</span>
       <span className="whitespace-nowrap tablet:hidden">{'Свободно:'}</span>
-      <span className="whitespace-nowrap">{`${Math.max(
-        0,
-        (limits.maxParticipants ?? 0) - participantsCount
-      )} из ${limits.maxParticipants}`}</span>
+      <span className="whitespace-nowrap">{`${freePlaces} из ${maxParticipants}`}</span>
     </>
   ) : (
     <span className="whitespace-nowrap">{`Мест неограничено · Записано ${participantsCount}`}</span>

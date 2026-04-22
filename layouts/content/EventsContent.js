@@ -30,6 +30,7 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
+import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -41,6 +42,7 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
   const events = useAtomValue(eventsAtom)
   const location = useAtomValue(locationAtom)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -240,8 +242,10 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
     () => applyFiltersAndSort(events),
     [applyFiltersAndSort, events]
   )
-  const eventFromQueryId =
-    typeof router.query?.event === 'string' ? router.query.event : null
+  const eventFromQueryId = useMemo(() => {
+    const raw = searchParams?.get('event')
+    return raw || null
+  }, [searchParams])
 
   const eventFromAllLoadedEvents = useMemo(() => {
     if (!eventFromQueryId) return null

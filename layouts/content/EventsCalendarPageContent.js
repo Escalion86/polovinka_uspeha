@@ -16,6 +16,7 @@ import isEventExpired from '@helpers/isEventExpired'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
 import useRouter from '@utils/useRouter'
 import cn from 'classnames'
+import { useSearchParams } from 'next/navigation'
 import { useAtomValue } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -94,6 +95,7 @@ const EventsCalendarPageContent = () => {
   const directions = useAtomValue(directionsAtom)
   const location = useAtomValue(locationAtom)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const loggedUserStatus = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -204,10 +206,9 @@ const EventsCalendarPageContent = () => {
   const handledQueryEventRef = useRef(null)
 
   const eventFromQueryId = useMemo(() => {
-    const raw = router.query?.event
-    if (Array.isArray(raw)) return raw[0] || null
-    return typeof raw === 'string' ? raw : null
-  }, [router.query])
+    const raw = searchParams?.get('event')
+    return raw || null
+  }, [searchParams])
 
   useEffect(() => {
     if (!eventFromQueryId || !location) return

@@ -1,6 +1,6 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.37",
+  "version": "2.0.44",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",

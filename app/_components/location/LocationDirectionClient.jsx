@@ -12,14 +12,13 @@ import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import Header from '@layouts/Header'
 import isPWAAtom from '@state/atoms/isPWAAtom'
-import locationAtom from '@state/atoms/locationAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
 import dynamic from 'next/dynamic'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CountDown from '@blocks/components/CountDown'
 
@@ -43,7 +42,6 @@ const sortByIndexAndTitle = (a, b) => {
 
 function LocationDirectionClient(props) {
   const { location, directionId } = props
-  const [locationState, setLocationState] = useAtom(locationAtom)
   const isPWA = useAtomValue(isPWAAtom)
   const router = useRouter()
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -75,8 +73,6 @@ function LocationDirectionClient(props) {
     [events, directionId]
   )
 
-  useEffect(() => setLocationState(location), [location, setLocationState])
-
   useEffect(() => {
     if (isPWA) {
       router.push(
@@ -91,7 +87,6 @@ function LocationDirectionClient(props) {
 
   if (props.wrongSession) return <SignOut />
   if (isPWA) return null
-  if (!locationState) return null
 
   return (
     <StateLoader {...props}>

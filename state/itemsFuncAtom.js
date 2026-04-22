@@ -53,6 +53,7 @@ import newsletterEditSelector from './selectors/newsletterEditSelector'
 import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
 import individualWeddingEditSelector from './selectors/individualWeddingEditSelector'
 import individualWeddingDeleteSelector from './selectors/individualWeddingDeleteSelector'
+import { invalidateEventCardStateByEvent } from '@utils/eventCardStateClient'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -608,6 +609,7 @@ const itemsFuncGenerator = (get, set) => {
             } на мероприятие прошла успешно`
           )
           setNotLoadingCard('event' + eventId)
+          invalidateEventCardStateByEvent(eventId)
           props.addEventsUser(data)
           if (typeof onSuccess === 'function') onSuccess(data)
         }
@@ -647,6 +649,7 @@ const itemsFuncGenerator = (get, set) => {
           } мероприятия`
         )
         setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         props.deleteEventsUser(data.data)
       },
       (error) => {
@@ -695,6 +698,7 @@ const itemsFuncGenerator = (get, set) => {
       (data) => {
         snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         // props.deleteEventsUsersByEventId(eventId)
         props.setEventsUsers(eventId, data)
       },

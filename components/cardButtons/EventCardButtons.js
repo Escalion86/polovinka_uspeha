@@ -122,7 +122,7 @@ const EventCardButtons = ({
         key: 'event-users',
         icon: faUsers,
         onClick: () => {
-          modalsFunc.event.users(item._id)
+          modalsFunc.event.users(item._id, item)
         },
         color: 'green',
         tooltipText: 'Участники мероприятия',

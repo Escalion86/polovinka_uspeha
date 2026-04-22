@@ -1,7 +1,6 @@
 import CardButton from '@components/CardButton'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import InputWrapper from '@components/InputWrapper'
-// import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleLeft'
@@ -9,7 +8,6 @@ import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons/faArr
 import { faHeartCirclePlus } from '@fortawesome/free-solid-svg-icons/faHeartCirclePlus'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
 import { faStreetView } from '@fortawesome/free-solid-svg-icons/faStreetView'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
 import compareObjects from '@helpers/compareObjects'
@@ -17,21 +15,17 @@ import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
-// import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
-// import Note from '@components/Note'
 import cn from 'classnames'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
-import CheckBox from '@components/CheckBox'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { UserItem } from '@components/ItemCards'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
@@ -39,7 +33,8 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
 import Tooltip from '@components/Tooltip'
 import Note from '@components/Note'
-import { RESET, unwrap } from 'jotai/utils'
+import { atom as jotaiAtom } from 'jotai'
+import { unwrap } from 'jotai/utils'
 
 const ItemButton = ({
   onClick,
@@ -230,130 +225,7 @@ const EventUsers2 = ({
     </div>
   )
 }
-// const EventsUsers = ({
-//   event,
-//   label,
-//   modalTitle,
-//   selectedIds = [],
-//   setSelectedIds,
-//   exceptedIds,
-//   canEdit,
-//   toReserveFunc,
-//   fromReserveFunc,
-//   noButtons,
-//   itemChildren,
-//   nameFieldWrapperClassName,
-//   createdAtObject,
-// }) => {
-//   const modalsFunc = useAtomValue(modalsFuncAtom)
-
-//   const isEventClosed = isEventClosedFunc(event)
-
-//   return (
-//     <>
-//       <SelectUserList
-//         showCounter={false}
-//         className="w-full"
-//         filter={{ gender: { operand: '!==', value: null } }}
-//         label={label}
-//         modalTitle={modalTitle}
-//         usersId={selectedIds}
-//         onChange={setSelectedIds}
-//         exceptedIds={exceptedIds}
-//         readOnly={!canEdit || isEventClosed}
-//         itemChildren={
-//           createdAtObject
-//             ? (user) => {
-//                 return (
-//                   <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
-//                     <div
-//                       className={cn(
-//                         'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
-//                         createdAtObject[user._id] ? 'bg-teal-50' : 'bg-red-50'
-//                       )}
-//                     >
-//                       {createdAtObject[user._id]
-//                         ? formatDateTime(createdAtObject[user._id])
-//                         : 'Запись еще не создана'}
-//                     </div>
-//                   </div>
-//                 )
-//               }
-//             : undefined
-//         }
-//         nameFieldWrapperClassName={createdAtObject ? 'pb-2' : undefined}
-//         buttons={
-//           !noButtons && canEdit && !isEventClosed
-//             ? [
-//                 event.subEvents.length > 1
-//                   ? (id) => ({
-//                       onClick: () => {
-//                         modalsFunc.eventUser.editSubEvent({
-//                           eventId: event._id,
-//                           userId: id,
-//                         })
-//                       },
-//                       icon: faStreetView,
-//                       iconClassName: 'text-blue-600',
-//                       tooltip: 'Изменить вариант участия',
-//                     })
-//                   : undefined,
-//                 toReserveFunc
-//                   ? (id) => ({
-//                       onClick: () => {
-//                         setSelectedIds(
-//                           selectedIds.filter((userId) => userId !== id)
-//                         )
-//                         toReserveFunc(id)
-//                         // setReservedParticipantsIds(
-//                         //   sortUsersIds([...reservedParticipantsIds, id])
-//                         // )
-//                       },
-//                       icon: faArrowAltCircleRight,
-//                       iconClassName: 'text-general',
-//                       tooltip: 'Перенести в резерв',
-//                     })
-//                   : undefined,
-//                 fromReserveFunc
-//                   ? (id) => ({
-//                       onClick: () => {
-//                         fromReserveFunc(id)
-//                         // setSelectedIds([...selectedIds, id])
-//                         setSelectedIds(
-//                           selectedIds.filter((userId) => userId !== id)
-//                         )
-//                       },
-//                       icon: faArrowAltCircleLeft,
-//                       iconClassName: 'text-general',
-//                       tooltip: 'Перенести в активный состав',
-//                     })
-//                   : undefined,
-//               ]
-//             : []
-//         }
-//       />
-//     </>
-//   )
-// }
-
-const sortFunctionEventUser = (a, b) =>
-  a.user?.firstName < b.user?.firstName ? -1 : 1
-
-const genderSplitAndSort = (eventUsers) =>
-  genderSplitAndSort?.length === 0
-    ? [[], []]
-    : [
-        [...eventUsers.filter(({ user }) => user.gender === 'male')].sort(
-          sortFunctionEventUser
-        ),
-        [...eventUsers.filter(({ user }) => user.gender === 'famale')].sort(
-          sortFunctionEventUser
-        ),
-      ]
-
-// const getIds = (eventUsers) => eventUsers.map(({ user }) => user._id)
-
-const eventUsersFunc = (eventId) => {
+const eventUsersFunc = (eventId, eventFromProps = null) => {
   const EventUsersModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -361,8 +233,6 @@ const eventUsersFunc = (eventId) => {
     setDisableConfirm,
     setOnlyCloseButtonShow,
     setTopLeftComponent,
-    isDataChanged,
-    dataChanges,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -373,28 +243,27 @@ const eventUsersFunc = (eventId) => {
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard ||
       loggedUserActiveRole?.dev
 
-    const [dataChanged, setDataChanged] = useState(isDataChanged)
     const [sortType, setSortType] = useState('genderAndFirstName')
-    const users = useAtomValue(usersAtomAsync)
-    useEffect(() => {
-      if (isDataChanged) setDataChanged(true)
-    }, [isDataChanged])
-    // const [sortType, setSortType] = useState('name')
-    // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
-    // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+    const usersAtom = useMemo(
+      () => unwrap(usersAtomAsync, (prev) => prev ?? []),
+      []
+    )
+    const users = useAtomValue(usersAtom) ?? []
+    const eventUsersRawAtom = useMemo(
+      () => unwrap(asyncEventsUsersByEventIdAtom(eventId), (prev) => prev ?? []),
+      [eventId]
+    )
+    const eventUsersData = useAtomValue(eventUsersRawAtom) ?? []
 
     const eventAtom = useMemo(
-      () => unwrap(eventSelector(eventId), (prev) => prev),
-      [eventId]
+      () =>
+        eventFromProps
+          ? jotaiAtom(eventFromProps)
+          : unwrap(eventSelector(eventId), (prev) => prev),
+      [eventId, eventFromProps]
     )
     const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
-    // const users = useAtomValue(usersAtomAsync)
-    const eventUsersAtom = useMemo(
-      () => unwrap(eventsUsersFullByEventIdSelector(eventId), (prev) => prev ?? []),
-      [eventId]
-    )
     const event = useAtomValue(eventAtom)
-    const eventUsers = useAtomValue(eventUsersAtom) ?? []
     const eventIdValue = event?._id ?? eventId
     const subEvents = event?.subEvents ?? []
 
@@ -402,10 +271,27 @@ const eventUsersFunc = (eventId) => {
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event?.likes
 
-    // const sortedUsers = useMemo(
-    //   () => [...users].sort(sortFunctions.genderAndFirstName.asc),
-    //   [users]
-    // )
+    const usersById = useMemo(() => {
+      const map = {}
+      if (Array.isArray(users)) {
+        users.forEach((user) => {
+          map[user._id] = user
+        })
+      }
+      return map
+    }, [users])
+
+    const eventUsers = useMemo(
+      () =>
+        (eventUsersData ?? [])
+          .map((eventUser) => ({
+            ...eventUser,
+            user: usersById[eventUser.userId] ?? null,
+            event,
+          }))
+          .filter((eventUser) => !!eventUser.user),
+      [eventUsersData, usersById, event]
+    )
 
     const eventUsersCreatedAtObject = useMemo(
       () =>
@@ -415,36 +301,6 @@ const eventUsersFunc = (eventId) => {
         }, {}),
       [eventUsers]
     )
-
-    // const filteredUsers = useMemo(
-    //   () => eventUsers.map(({ user }) => user),
-    //   [eventUsers]
-    // )
-
-    // const sortUsersByIds = useCallback(
-    //   (ids) =>
-    //     users
-    //       .filter((user) => ids.includes(user._id))
-    //       .map((user) => ({
-    //         ...user,
-    //         eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-    //       })),
-    //   [users]
-    // )
-
-    // const sortUsersByCreatedAt = useCallback(
-    //   (ids) => {
-    //     const filteredUsers = users.filter((user) => ids.includes(user._id))
-    //     const filteredEventUsers = filteredUsers.map((user) => ({
-    //       ...(eventUsers.find(({ userId }) => userId === user._id) || { user }),
-    //       eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
-    //     }))
-    //     filteredEventUsers.sort(sortFunctions.eventUserCreatedAt.asc)
-    //     const result = filteredEventUsers.map(({ user }) => user)
-    //     return result
-    //   },
-    //   [users]
-    // )
 
     const sortUsersByGenderAndFirstNameFull = useCallback(
       (selectedUsers) => {
@@ -924,50 +780,6 @@ const eventUsersFunc = (eventId) => {
 
     const readOnly = !canEdit || isEventClosed
 
-    const usersById = useMemo(() => {
-      const map = {}
-      if (Array.isArray(users)) {
-        users.forEach((user) => {
-          map[user._id] = user
-        })
-      }
-      return map
-    }, [users])
-
-    const formatUserName = useCallback(
-      (userId, status) => {
-        const user = usersById[userId]
-        const name = user
-          ? [user.secondName, user.firstName, user.thirdName]
-              .filter(Boolean)
-              .join(' ')
-          : userId
-        return status ? `${name} (${status})` : name
-      },
-      [usersById]
-    )
-
-    const addedNames = useMemo(
-      () =>
-        (dataChanges?.addedItems ?? [])
-          .map(({ userId, status }) => formatUserName(userId, status))
-          .filter(Boolean),
-      [dataChanges, formatUserName]
-    )
-
-    const removedNames = useMemo(
-      () =>
-        (dataChanges?.removedItems ?? [])
-          .map(({ userId, status }) => formatUserName(userId, status))
-          .filter(Boolean),
-      [dataChanges, formatUserName]
-    )
-
-    const changedNames = useMemo(
-      () => (dataChanges?.changedIds ?? []).map(formatUserName).filter(Boolean),
-      [dataChanges, formatUserName]
-    )
-
     return (
       <>
         {/* <div className="absolute z-50 top-1 right-11">
@@ -1015,30 +827,6 @@ const eventUsersFunc = (eventId) => {
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
           </Note>
-        )}
-        {event && canEdit && dataChanged && (
-          <div
-            className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
-            onClick={() => setDataChanged(false)}
-          >
-            <Note type="warning">
-              Обратите внимание! Данные были изменены с момента предыдущей
-              загрузки. Отображены актуальные данные.
-              {!!addedNames.length && (
-                <div>Добавлены: {addedNames.join(', ')}</div>
-              )}
-              {!!removedNames.length && (
-                <div>Удалены: {removedNames.join(', ')}</div>
-              )}
-              {!!changedNames.length && (
-                <div>Изменены: {changedNames.join(', ')}</div>
-              )}
-            </Note>
-            <FontAwesomeIcon
-              className="w-4 h-4 min-w-4 min-h-4"
-              icon={faTimesCircle}
-            />
-          </div>
         )}
         {event && (
           <TabContext value="Участники">
@@ -1282,148 +1070,10 @@ const eventUsersFunc = (eventId) => {
     )
   }
 
-  const ModalRefresher = (props) => {
-    const [isRefreshed, setIsRefreshed] = useState(false)
-    const [isRefreshing, setIsRefreshing] = useState(true)
-    const dataAtom = useMemo(
-      () => unwrap(asyncEventsUsersByEventIdAtom(eventId), (prev) => prev ?? []),
-      [eventId]
-    )
-    const data = useAtomValue(dataAtom) ?? []
-    const refreshEventState = useSetAtom(asyncEventsUsersByEventIdAtom(eventId))
-    const [prevData, setPrevData] = useState(null)
-    const [currentData, setCurrentData] = useState(null)
-    // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-    // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
-
-    useEffect(() => {
-      let isMounted = true
-      const refreshFunc = async () => {
-        setIsRefreshing(true)
-        setIsRefreshed(false)
-        setPrevData(null)
-        setCurrentData(null)
-        setPrevData(Array.isArray(data) ? data : [])
-        await refreshEventState(RESET)
-        if (isMounted) {
-          setIsRefreshing(false)
-        }
-      }
-      refreshFunc()
-      return () => {
-        isMounted = false
-      }
-    }, [])
-
-    useEffect(() => {
-      if (isRefreshing) return
-      if (prevData === null) setPrevData(data)
-      setCurrentData(data)
-      setIsRefreshed(true)
-    }, [data, isRefreshing, prevData])
-
-    const normalizeEventUsers = useCallback((list) => {
-      if (!Array.isArray(list)) return []
-      return list
-        .map(({ userId, status, subEventId }) => ({
-          userId,
-          status: status ?? null,
-          subEventId: subEventId ?? null,
-        }))
-        .sort((a, b) => {
-          const aId = a.userId ?? ''
-          const bId = b.userId ?? ''
-          if (aId !== bId) return aId < bId ? -1 : 1
-          if (a.status !== b.status) return a.status < b.status ? -1 : 1
-          const aSub = a.subEventId ?? ''
-          const bSub = b.subEventId ?? ''
-          return aSub < bSub ? -1 : 1
-        })
-    }, [])
-
-    const isDataChanged =
-      prevData && currentData
-        ? JSON.stringify(normalizeEventUsers(prevData)) !==
-          JSON.stringify(normalizeEventUsers(currentData))
-        : false
-
-    const dataChanges = useMemo(() => {
-      if (!prevData || !currentData) {
-        return {
-          addedItems: [],
-          removedItems: [],
-          changedIds: [],
-        }
-      }
-      const prevIds = new Set(
-        prevData.map(({ userId }) => userId).filter(Boolean)
-      )
-      const currentIds = new Set(
-        currentData.map(({ userId }) => userId).filter(Boolean)
-      )
-      const statusLabel = (status) => {
-        if (status === 'participant') return 'участник'
-        if (status === 'reserve') return 'резерв'
-        if (status === 'assistant') return 'ведущий'
-        if (status === 'ban') return 'бан'
-        return status || 'статус не указан'
-      }
-
-      const prevStatusMap = new Map(
-        prevData.map(({ userId, status, subEventId }) => [
-          userId,
-          `${status ?? ''}:${subEventId ?? ''}`,
-        ])
-      )
-      const currentStatusMap = new Map(
-        currentData.map(({ userId, status, subEventId }) => [
-          userId,
-          `${status ?? ''}:${subEventId ?? ''}`,
-        ])
-      )
-
-      const addedItems = Array.from(currentIds)
-        .filter((id) => !prevIds.has(id))
-        .map((id) => {
-          const [status] = (currentStatusMap.get(id) || '').split(':')
-          return { userId: id, status: statusLabel(status) }
-        })
-      const removedItems = Array.from(prevIds)
-        .filter((id) => !currentIds.has(id))
-        .map((id) => {
-          const [status] = (prevStatusMap.get(id) || '').split(':')
-          return { userId: id, status: statusLabel(status) }
-        })
-      const changedIds = []
-      for (const [userId, signature] of currentStatusMap.entries()) {
-        if (
-          prevStatusMap.has(userId) &&
-          prevStatusMap.get(userId) !== signature
-        )
-          changedIds.push(userId)
-      }
-      return { addedItems, removedItems, changedIds }
-    }, [prevData, currentData])
-
-    return isRefreshed ? (
-      <EventUsersModal
-        {...props}
-        isDataChanged={isDataChanged}
-        dataChanges={dataChanges}
-      />
-    ) : (
-      <div className="py-4 text-center text-gray-500">
-        Проверка обновлений...
-      </div>
-    )
-  }
-
   return {
     title: `Участники мероприятия`,
     confirmButtonName: 'Применить',
-    Children:
-      // EventUsersModal,
-      ModalRefresher,
+    Children: EventUsersModal,
   }
 }
 

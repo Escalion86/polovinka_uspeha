@@ -30,7 +30,6 @@ import questionnairesUsersAtom from '@state/atoms/questionnairesUsersAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import productsAtom from '@state/atoms/productsAtom'
-import modeAtom from '@state/atoms/modeAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
@@ -63,7 +62,6 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 // import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
-import useRouter from '@utils/useRouter'
 import { postData } from '@helpers/CRUD'
 // import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 import browserVer from '@helpers/browserVer'
@@ -72,8 +70,9 @@ import TopInfo from './TopInfo'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
 import snackbarAtom from '@state/atoms/snackbarAtom'
-import routerAtom from '@state/atoms/routerAtom'
 import CheckBrowserUpdate from './CheckBrowserUpdate'
+import useRouter from '@utils/useRouter'
+import { setNavigationRuntime } from '@utils/navigationRuntime'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
 // import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
@@ -83,8 +82,6 @@ const StateLoader = (props) => {
 
   const snackbar = useSnackbar()
 
-  const router = useRouter()
-
   const location = useAtomValue(locationAtom)
 
   // const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -92,8 +89,7 @@ const StateLoader = (props) => {
   const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
   const setTelegramBotName = useSetAtom(telegramBotNameAtom)
   const setSnackbar = useSetAtom(snackbarAtom)
-  const setRouter = useSetAtom(routerAtom)
-  const [mode, setMode] = useAtom(modeAtom)
+  const mode = props.mode ?? 'production'
   // const [location, setLocation] = useAtom(locationAtom)
   const setLocationState = useSetAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
@@ -161,6 +157,7 @@ const StateLoader = (props) => {
   // ------ Finish Jotai
 
   useWindowDimensionsStore()
+  const router = useRouter()
 
   // useEffect(() => {
   //   const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive, location)
@@ -186,7 +183,7 @@ const StateLoader = (props) => {
   // ])
 
   useEffect(() => {
-    setRouter(router)
+    setNavigationRuntime(router)
     setSnackbar(snackbar)
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
@@ -234,7 +231,6 @@ const StateLoader = (props) => {
     setAchievementsUsersState(props.achievementsUsers ?? [])
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
-    setMode(props.mode ?? 'production')
     setTelegramBotName(props.telegramBotName)
     setLocationState(props.location ?? null)
     setIsSiteLoading(false)
@@ -289,9 +285,10 @@ const StateLoader = (props) => {
     props.achievements,
     props.achievementsUsers,
     props.serverSettings,
-    props.mode,
     props.telegramBotName,
     setLocationState,
+    router,
+    snackbar,
   ])
 
   useEffect(() => {

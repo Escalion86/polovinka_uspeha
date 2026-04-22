@@ -8,11 +8,10 @@ import { H2 } from '@components/tags'
 import StateLoader from '@components/StateLoader'
 import SignOut from '@components/SignOut'
 import { useEffect } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import BlockContainer from '@components/BlockContainer'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
-import locationAtom from '@state/atoms/locationAtom'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 
 const User = ({ user }) => {
@@ -36,9 +35,6 @@ const User = ({ user }) => {
 }
 
 function UserPage(props) {
-  const { location } = props
-  const [locationState, setLocationState] = useAtom(locationAtom)
-
   const userId = props.id
 
   // const router = useRouter()
@@ -68,11 +64,7 @@ function UserPage(props) {
     })
   }, [])
 
-  useEffect(() => setLocationState(location), [location])
-
   if (props.wrongSession) return <SignOut />
-
-  if (!locationState) return null
 
   // const title = event?.title ?? ''
   // const query = event?._id ? { event: event._id } : {}

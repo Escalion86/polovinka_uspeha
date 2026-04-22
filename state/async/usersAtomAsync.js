@@ -9,6 +9,7 @@ import atomWithRefreshAndDefault from '@state/atomWithRefreshAndDefault'
 
 const usersAtomAsync = atomWithRefreshAndDefault(async (get) => {
   const location = get(locationAtom)
+  if (!location || location === 'null' || location === 'undefined') return []
   const res = await getData(`/api/${location}/users/`, {}, null, null, false)
   store.set(isLoadedAtom('usersAtomAsync'), true)
   return res

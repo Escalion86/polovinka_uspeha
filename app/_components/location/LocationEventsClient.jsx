@@ -8,16 +8,15 @@ import StateLoader from '@components/StateLoader'
 import Header from '@layouts/Header'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import CityAccessLoading from '@components/CityAccessLoading'
 import CityAccessUnavailable from '@components/CityAccessUnavailable'
 import useCityAccess from '@hooks/useCityAccess'
 
 function LocationEventsClient(props) {
-  const [locationState, setLocationState] = useAtom(locationAtom)
+  const { location } = props
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
   const isPWA = useAtomValue(isPWAAtom)
@@ -39,10 +38,6 @@ function LocationEventsClient(props) {
     return newQuery
   }, [router])
 
-  const { location } = props
-
-  useEffect(() => setLocationState(location), [location, setLocationState])
-
   if (isPWA) {
     router.push(
       {
@@ -54,8 +49,6 @@ function LocationEventsClient(props) {
     )
     return null
   }
-
-  if (!locationState) return null
 
   if (accessLoading) {
     return (

@@ -8,8 +8,8 @@ import addModalSelector from '@state/selectors/addModalSelector'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
-import routerAtom from './atoms/routerAtom'
 import store from './store'
+import { getNavigationRuntime } from '@utils/navigationRuntime'
 
 const modalsFuncGenerator = (get, set) => {
   const itemsFunc = get(itemsFuncAtom)
@@ -18,7 +18,7 @@ const modalsFuncGenerator = (get, set) => {
 
   const loggedUser = get(loggedUserActiveAtom)
   const location = get(locationAtom)
-  const router = get(routerAtom)
+  const router = getNavigationRuntime()
   const locationPrefix = location ? `/${location}` : ''
 
   const addModal = (value) => set(addModalSelector, value)
@@ -452,10 +452,11 @@ const modalsFuncGenerator = (get, set) => {
             )
           }
         ),
-      users: (eventId) =>
+      users: (eventId, event) =>
         addModal(
           require('../layouts/modals/modalsFunc/eventUsersFunc').default(
-            eventId
+            eventId,
+            event
           )
         ),
       history: (eventId) =>
