@@ -4,31 +4,46 @@ import dbConnect from '@utils/dbConnect'
 export default async function handler(req, res) {
   const { query, method } = req
   const location = query?.location
+  const eventId = query?.eventId
 
   if (!location) {
-    return res?.status(400).json({ success: false, error: 'No location' })
+    return res?.status(400).json({
+      success: false,
+      data: { error: { type: 'bad_request', message: 'No location' } },
+    })
   }
 
   if (!checkLocationValid(location)) {
-    return res
-      ?.status(400)
-      .json({ success: false, error: 'Invalid location' })
+    return res?.status(400).json({
+      success: false,
+      data: { error: { type: 'bad_request', message: 'Invalid location' } },
+    })
   }
 
   if (method !== 'GET') {
     res.setHeader('Allow', ['GET'])
-    return res
-      ?.status(405)
-      .json({ success: false, error: `Method ${method} Not Allowed` })
+    return res?.status(405).json({
+      success: false,
+      data: {
+        error: {
+          type: 'method_not_allowed',
+          message: `Method ${method} Not Allowed`,
+        },
+      },
+    })
   }
 
   try {
     const db = await dbConnect(location)
     if (!db) {
-      return res?.status(500).json({ success: false, error: 'db error' })
+      return res?.status(500).json({
+        success: false,
+        data: { error: { type: 'db_error', message: 'db error' } },
+      })
     }
 
-    const eventsUsers = await db.model('EventsUsers').aggregate([
+    const pipeline = [
+      ...(eventId ? [{ $match: { eventId } }] : []),
       {
         $addFields: {
           eventObjectId: {
@@ -99,13 +114,21 @@ export default async function handler(req, res) {
           },
         },
       },
-    ])
+    ]
+
+    const eventsUsers = await db.model('EventsUsers').aggregate(pipeline)
 
     return res?.status(200).json({ success: true, data: eventsUsers })
   } catch (error) {
     console.error('Failed to fetch events users with details', error)
-    return res
-      ?.status(500)
-      .json({ success: false, error: 'Failed to load events users' })
+    return res?.status(500).json({
+      success: false,
+      data: {
+        error: {
+          type: 'internal_error',
+          message: 'Failed to load events users',
+        },
+      },
+    })
   }
 }

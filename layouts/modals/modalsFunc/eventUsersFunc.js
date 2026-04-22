@@ -14,10 +14,9 @@ import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
-import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersFullByEventIdAtom from '@state/async/asyncEventsUsersFullByEventIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
-import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -244,16 +243,12 @@ const eventUsersFunc = (eventId, eventFromProps = null) => {
       loggedUserActiveRole?.dev
 
     const [sortType, setSortType] = useState('genderAndFirstName')
-    const usersAtom = useMemo(
-      () => unwrap(usersAtomAsync, (prev) => prev ?? []),
-      []
-    )
-    const users = useAtomValue(usersAtom) ?? []
-    const eventUsersRawAtom = useMemo(
-      () => unwrap(asyncEventsUsersByEventIdAtom(eventId), (prev) => prev ?? []),
+    const eventUsersFullAtom = useMemo(
+      () =>
+        unwrap(asyncEventsUsersFullByEventIdAtom(eventId), (prev) => prev ?? []),
       [eventId]
     )
-    const eventUsersData = useAtomValue(eventUsersRawAtom) ?? []
+    const eventUsersData = useAtomValue(eventUsersFullAtom) ?? []
 
     const eventAtom = useMemo(
       () =>
@@ -271,26 +266,16 @@ const eventUsersFunc = (eventId, eventFromProps = null) => {
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event?.likes
 
-    const usersById = useMemo(() => {
-      const map = {}
-      if (Array.isArray(users)) {
-        users.forEach((user) => {
-          map[user._id] = user
-        })
-      }
-      return map
-    }, [users])
-
     const eventUsers = useMemo(
       () =>
         (eventUsersData ?? [])
           .map((eventUser) => ({
             ...eventUser,
-            user: usersById[eventUser.userId] ?? null,
-            event,
+            user: eventUser.user ?? null,
+            event: eventUser.event ?? event,
           }))
           .filter((eventUser) => !!eventUser.user),
-      [eventUsersData, usersById, event]
+      [eventUsersData, event]
     )
 
     const eventUsersCreatedAtObject = useMemo(
