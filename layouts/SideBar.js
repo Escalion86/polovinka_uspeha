@@ -8,8 +8,9 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 // import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
-import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
+import badgeUnviewedAchievementsSelector from '@state/selectors/badgeUnviewedAchievementsSelector'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import Link from 'next/link'
@@ -191,12 +192,19 @@ const Group = ({
   // setMenuScrollPos,
 }) => {
   const location = useAtomValue(locationAtom)
-  const { groupHidden, pagesIdsWithBadge } = useAtomValue(
-    badgesGroupSelector(item.id)
-  )
+  const userStatisticsBadge = useAtomValue(badgeUnviewedAchievementsSelector)
+  const likesBadge = useAtomValue(badgeLoggedUserLikesToSeeSelector)
+  const pagesIdsWithBadge = item.items.reduce((acc, page) => {
+    if (page?.href === 'userStatistics') {
+      acc[page.id] = userStatisticsBadge
+    }
+    if (page?.href === 'likes') {
+      acc[page.id] = likesBadge
+    }
+    return acc
+  }, {})
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
 
-  if (groupHidden && !item.forceShow) return null
   const items = item.items
   const groupBadge = items.reduce((total, { id }) => {
     if (pagesIdsWithBadge[id]) return total + pagesIdsWithBadge[id]

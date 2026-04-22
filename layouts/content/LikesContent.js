@@ -4,7 +4,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useAtomValue } from 'jotai'
 import { EventItem, UserItemFromId } from '@components/ItemCards'
-import eventsLoggedUserWithLikesSelector from '@state/selectors/eventsLoggedUserWithLikesSelector'
+import likesDashboardSelector from '@state/selectors/likesDashboardSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 // import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
@@ -104,37 +104,8 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
 
 const LikesContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  const eventsWithLikes = useAtomValue(eventsLoggedUserWithLikesSelector)
-
-  const usersWithLikesCoincidences = eventsWithLikes.reduce(
-    (acc, { likesProcessActive, eventUsers }) => {
-      if (likesProcessActive) return acc
-      const eventLoggedUser = eventUsers.find(
-        ({ userId }) => userId === loggedUserActive._id
-      )
-      if (!eventLoggedUser.seeLikesResult || !eventLoggedUser.likes) return acc
-      return eventUsers.reduce((acc2, { userId, likes }) => {
-        if (
-          likes &&
-          likes.includes(loggedUserActive._id) &&
-          eventLoggedUser.likes.includes(userId) &&
-          !acc.includes(userId)
-        )
-          return [...acc2, userId]
-
-        return acc2
-      }, acc)
-    },
-    []
-  )
-
-  const eventsWithWaitingLikes = eventsWithLikes.filter(
-    ({ likesProcessActive }) => likesProcessActive
-  )
-  const eventsWithSettedLikes = eventsWithLikes.filter(
-    ({ likesProcessActive }) => !likesProcessActive
-  )
+  const { eventsWithWaitingLikes, eventsWithSettedLikes, usersWithLikesCoincidences } =
+    useAtomValue(likesDashboardSelector)
 
   return (
     <div className="flex flex-col px-1 pb-2 overflow-y-auto">

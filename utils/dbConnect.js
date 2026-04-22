@@ -171,6 +171,37 @@ if (!connections) {
   connections = global.mongoose = {}
 }
 
+let ensuredIndexes = global.mongooseEnsuredIndexes
+
+if (!ensuredIndexes) {
+  ensuredIndexes = global.mongooseEnsuredIndexes = {}
+}
+
+const ensurePerformanceIndexes = async (connection, location) => {
+  if (!connection || !location) return
+  if (ensuredIndexes[location]) return
+
+  try {
+    await Promise.all([
+      connection.model('Events').collection.createIndex(
+        { likes: 1, likesProcessActive: 1, status: 1, dateStart: 1 },
+        { name: 'events_likes_state_dateStart_idx' }
+      ),
+      connection.model('EventsUsers').collection.createIndex(
+        { userId: 1, status: 1, eventId: 1, likes: 1 },
+        { name: 'eventsUsers_user_status_event_likes_idx' }
+      ),
+    ])
+
+    ensuredIndexes[location] = true
+  } catch (error) {
+    console.log('[dbConnect] ensurePerformanceIndexes error:', {
+      location,
+      message: error?.message || String(error),
+    })
+  }
+}
+
 // let test = global.test
 
 // if (!test) {
@@ -335,7 +366,10 @@ async function dbConnect(location) {
   // console.log('connections :>> ', Object.keys(connections))
   // console.log('test :>> ', test)
 
-  return connections[location].asPromise()
+  const connection = await connections[location].asPromise()
+  await ensurePerformanceIndexes(connection, location)
+
+  return connection
 
   // // if (prevDbConnection && prevDbConnection !== dbName) {
   // //   console.log('location changed (dbConnect)')
