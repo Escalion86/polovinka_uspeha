@@ -23,27 +23,27 @@ const getNewsletterSendTimestamp = (newsletter) => {
 const sortFunctions = {
   genderAndFirstName: {
     asc: (a, b) =>
-      a.gender === 'male'
-        ? b.gender === 'male'
-          ? a.firstName < b.firstName
+      a?.gender === 'male'
+        ? b?.gender === 'male'
+          ? String(a?.firstName || '') < String(b?.firstName || '')
             ? -1
             : 1
           : -1
-        : b.gender === 'male'
+        : b?.gender === 'male'
           ? 1
-          : a.firstName < b.firstName
+          : String(a?.firstName || '') < String(b?.firstName || '')
             ? -1
             : 1,
     desc: (a, b) =>
-      a.gender === 'male'
-        ? b.gender === 'male'
-          ? a.firstName > b.firstName
+      a?.gender === 'male'
+        ? b?.gender === 'male'
+          ? String(a?.firstName || '') > String(b?.firstName || '')
             ? -1
             : 1
           : -1
-        : b.gender === 'male'
+        : b?.gender === 'male'
           ? 1
-          : a.firstName > b.firstName
+          : String(a?.firstName || '') > String(b?.firstName || '')
             ? -1
             : 1,
   },

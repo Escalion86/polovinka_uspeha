@@ -6,16 +6,19 @@ import directionSelector from '@state/selectors/directionSelector'
 import store from '@state/store'
 
 const visibleEventsForUser = (
-  events,
-  eventsUsers,
+  events = [],
+  eventsUsers = [],
   user,
   onlyNew = false,
   seeAll,
   userStatusName
 ) => {
-  if (!events || events?.length === 0) return []
+  const safeEvents = Array.isArray(events) ? events : []
+  const safeEventsUsers = Array.isArray(eventsUsers) ? eventsUsers : []
+
+  if (safeEvents.length === 0) return []
   if (!user) {
-    return events.filter((event) => {
+    return safeEvents.filter((event) => {
       const subEventsSum = subEventsSummator(event.subEvents)
       if (
         // !event.usersStatusAccess?.noReg ||
@@ -30,18 +33,21 @@ const visibleEventsForUser = (
       )
     })
   } else {
-    if (seeAll) return events
+    if (seeAll) return safeEvents
 
     const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
     const userAge = new Number(
       birthDateToAge(user.birthday, serverDate, false, false)
     )
-    const eventsUser = eventsUsers.filter((event) => event.userId === user._id)
+    const eventsUser = safeEventsUsers.filter(
+      (event) => event?.userId === user._id
+    )
 
-    return events.filter((event) => {
+    return safeEvents.filter((event) => {
+      if (!event) return false
       if (event.blank) return true
       const subEventsSum = subEventsSummator(event.subEvents)
-      const direction = store.get(directionSelector(event.directionId))
+      const direction = store.get(directionSelector(event?.directionId))
       const rules = direction?.rules
 
       if (

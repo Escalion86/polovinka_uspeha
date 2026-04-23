@@ -4,18 +4,33 @@ export default async function handler(req, res) {
   const { method, body } = req
 
   if (method !== 'POST') {
-    return res?.status(405).json({ success: false, error: 'Method not allowed' })
+    return res?.status(405).json({
+      success: false,
+      data: {
+        error: { type: 'method_not_allowed', message: 'Method not allowed' },
+      },
+    })
   }
 
   const location = body?.location
   if (!location) {
-    return res?.status(400).json({ success: false, error: 'No location provided' })
+    return res?.status(400).json({
+      success: false,
+      data: {
+        error: { type: 'bad_request', message: 'No location provided' },
+      },
+    })
   }
 
   try {
     const db = await dbConnect(location)
     if (!db) {
-      return res?.status(400).json({ success: false, error: 'Database connection error' })
+      return res?.status(400).json({
+        success: false,
+        data: {
+          error: { type: 'db_error', message: 'Database connection error' },
+        },
+      })
     }
 
     const {
@@ -43,6 +58,11 @@ export default async function handler(req, res) {
     })
   } catch (error) {
     console.error('Failed to persist client error log', error)
-    return res?.status(500).json({ success: false, error: 'Failed to log error' })
+    return res?.status(500).json({
+      success: false,
+      data: {
+        error: { type: 'internal_error', message: 'Failed to log error' },
+      },
+    })
   }
 }

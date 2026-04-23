@@ -240,6 +240,7 @@ const ClientErrorReporter = () => {
       if (!location) return
 
       const serialized = serializeError(error)
+      const activeUser = resolveUserInfo()
       const payload = {
         location,
         error: {
@@ -249,8 +250,29 @@ const ClientErrorReporter = () => {
           url: window.location?.href ?? '',
           userAgent: navigator?.userAgent ?? '',
         },
-        user: resolveUserInfo(),
-        meta: { ...meta, timestamp: new Date().toISOString() },
+        user: activeUser
+          ? {
+              _id: activeUser._id ?? null,
+              role: activeUser.role ?? null,
+              status: activeUser.status ?? null,
+              gender: activeUser.gender ?? null,
+              globalUserId: activeUser.globalUserId ?? null,
+            }
+          : null,
+        meta: {
+          ...meta,
+          appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? '',
+          buildId: process.env.NEXT_PUBLIC_BUILD_ID ?? '',
+          timestamp: new Date().toISOString(),
+          pathname: window.location?.pathname ?? '',
+          search: window.location?.search ?? '',
+          referrer: document?.referrer ?? '',
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          },
+          online: navigator?.onLine ?? null,
+        },
       }
 
       const signature = `${location}|${payload.error.message}|${payload.error.stack}|${payload.error.componentStack}`
@@ -284,9 +306,18 @@ const ClientErrorReporter = () => {
       const source = target?.src || target?.href
       if (!source) return
 
+      const tagName = String(target?.tagName || '').toUpperCase()
+      const normalizedSource = String(source).toLowerCase()
+      const isChunkOrScript =
+        tagName === 'SCRIPT' ||
+        normalizedSource.includes('/_next/static/chunks/') ||
+        normalizedSource.endsWith('.js')
+
+      if (!isChunkOrScript) return
+
       handleError(new Error(`Resource load error: ${source}`), '', {
         type: 'resource_error',
-        tagName: target?.tagName || '',
+        tagName,
         source,
       })
     }

@@ -74,6 +74,9 @@ export default function useRouter() {
         const url = buildUrl(href)
         return url ? router.prefetch(url, options) : Promise.resolve()
       },
+      reload: () => {
+        if (typeof window !== 'undefined') window.location.reload()
+      },
       pathname,
       asPath,
       query,

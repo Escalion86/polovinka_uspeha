@@ -29,6 +29,17 @@ const eventSignUpFunc = (
   onSuccess
 ) => {
   const isReserve = status === 'reserve'
+  if (!event) {
+    return {
+      title: 'Запись на мероприятие',
+      confirmButtonName: 'Записаться',
+      Children: () => (
+        <div className="py-4 text-center text-gray-500">
+          Мероприятие не найдено
+        </div>
+      ),
+    }
+  }
 
   const EventSignUpModal = ({
     closeModal,

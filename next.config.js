@@ -1,4 +1,11 @@
 const path = require('path')
+const packageJson = require('./package.json')
+
+const buildId =
+  process.env.NEXT_PUBLIC_BUILD_ID ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  process.env.GIT_COMMIT_SHA ||
+  `${packageJson.version}-${Date.now()}`
 
 // const __dirname = new URL('.', import.meta.url).pathname
 
@@ -37,6 +44,11 @@ module.exports = withFlowbiteReact(
     // },
     // swcMinify: false,
     output: 'standalone',
+    env: {
+      NEXT_PUBLIC_APP_VERSION: packageJson.version,
+      NEXT_PUBLIC_BUILD_ID: buildId,
+    },
+    generateBuildId: async () => buildId,
     experimental: {
       largePageDataBytes: 512 * 100000,
     },
@@ -50,10 +62,6 @@ module.exports = withFlowbiteReact(
         },
       ]
     },
-    // env: {
-    //   // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
-    //   RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
-    // },
     images: {
       // domains: ['localhost', 'escalioncloud.ru', 't.me'],
       remotePatterns: [

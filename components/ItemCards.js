@@ -272,7 +272,9 @@ export const EventItem = ({
   noBorder,
   noStatusIcon,
 }) => {
-  const direction = useAtomValue(directionSelector(item.directionId))
+  const direction = useAtomValue(directionSelector(item?.directionId))
+
+  if (!item) return null
 
   const eventStatus = eventStatusFunc(item)
   const eventStatusObj = EVENT_STATUSES_WITH_TIME.find(

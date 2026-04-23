@@ -33,7 +33,7 @@ const eventUserSubEventChangeFunc = (
   }) => {
     const event = useAtomValue(eventSelector(eventId))
     const user = useAtomValue(userSelector(userId))
-    const direction = useAtomValue(directionSelector(event.directionId))
+    const direction = useAtomValue(directionSelector(event?.directionId))
     const rules = direction?.rules
     const isEventExpired = isEventExpiredFunc(event)
 
@@ -47,11 +47,11 @@ const eventUserSubEventChangeFunc = (
     // const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
 
     const [subEventId, setSubEventId] = useState(
-      selectedSubEventId ?? eventUser.subEventId
+      selectedSubEventId ?? eventUser?.subEventId
     )
 
     const isFormChanged =
-      subEventId !== (selectedSubEventId ?? eventUser.subEventId)
+      subEventId !== (selectedSubEventId ?? eventUser?.subEventId)
 
     const onClickConfirm = async () => {
       closeModal()
