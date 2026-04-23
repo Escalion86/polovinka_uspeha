@@ -5,7 +5,8 @@ import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useEffect, useState, useCallback } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { RESET, unwrap } from 'jotai/utils'
 import locationAtom from '@state/atoms/locationAtom'
 import { fetchUser } from '@helpers/fetchers'
 import UsersFilter from '@components/Filter/UsersFilter'
@@ -20,6 +21,9 @@ import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons/faFileCircle
 import compareObjects from '@helpers/compareObjects'
 import birthDateToAge from '@helpers/birthDateToAge'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+
+const DEFAULT_MIN_AGE = 18
+const DEFAULT_MAX_AGE = 70
 
 const selectUsersFunc = (
   selectedUsersState,
@@ -46,11 +50,20 @@ const selectUsersFunc = (
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const location = useAtomValue(locationAtom)
-    const users = useAtomValue(usersAtomAsync)
+    const usersAtom = useMemo(
+      () => unwrap(usersAtomAsync, (prev) => prev ?? []),
+      []
+    )
+    const users = useAtomValue(usersAtom) ?? []
+    const refreshUsers = useSetAtom(usersAtomAsync)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
     // const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
     const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
+
+    useEffect(() => {
+      refreshUsers(RESET)
+    }, [refreshUsers])
 
     const defaultUsersState = useMemo(
       () =>
@@ -87,14 +100,23 @@ const selectUsersFunc = (
     )
 
     const minMaxAges = useMemo(
-      () =>
-        acceptedUsersWithAges.reduce(
+      () => {
+        const usersWithValidAge = acceptedUsersWithAges.filter(
+          ({ age }) => typeof age === 'number' && !Number.isNaN(age)
+        )
+
+        if (usersWithValidAge.length === 0) {
+          return { min: DEFAULT_MIN_AGE, max: DEFAULT_MAX_AGE }
+        }
+
+        return usersWithValidAge.reduce(
           (acc, user) => ({
             min: user.age < acc.min ? user.age : acc.min,
             max: user.age > acc.max ? user.age : acc.max,
           }),
-          { min: 70, max: 18 }
-        ),
+          { min: DEFAULT_MAX_AGE, max: DEFAULT_MIN_AGE }
+        )
+      },
       [acceptedUsersWithAges]
     )
 
@@ -130,6 +152,25 @@ const selectUsersFunc = (
       },
       ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
+
+    useEffect(() => {
+      setFilter((state) => {
+        const currentAges = state.ages ?? {}
+        const isStillDefaultRange =
+          currentAges.min === DEFAULT_MIN_AGE &&
+          currentAges.max === DEFAULT_MAX_AGE
+
+        if (!isStillDefaultRange) return state
+
+        return {
+          ...state,
+          ages: {
+            min: minMaxAges.min,
+            max: minMaxAges.max,
+          },
+        }
+      })
+    }, [minMaxAges])
 
     const [searchText, setSearchText] = useState('')
 

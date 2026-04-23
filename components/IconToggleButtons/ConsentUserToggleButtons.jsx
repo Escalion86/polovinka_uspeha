@@ -6,7 +6,7 @@ const ConsentUserToggleButtons = (props) => {
       value: 'consented',
       name: 'С согласием',
       color: 'primary',
-      activeClassName: 'text-white',
+      activeClassName: '!text-white',
     },
     {
       value: 'notConsented',
