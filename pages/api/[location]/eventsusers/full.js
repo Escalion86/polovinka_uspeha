@@ -106,6 +106,7 @@ export default async function handler(req, res) {
             firstName: '$user.firstName',
             secondName: '$user.secondName',
             thirdName: '$user.thirdName',
+            images: { $slice: ['$user.images', 1] },
             gender: '$user.gender',
             status: '$user.status',
             relationship: '$user.relationship',
