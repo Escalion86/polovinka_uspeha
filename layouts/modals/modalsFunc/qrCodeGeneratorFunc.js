@@ -16,6 +16,7 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
     const [isQrLoading, setIsQrLoading] = useState(true)
     const [qrSrc, setQrSrc] = useState('')
     const [hasQrError, setHasQrError] = useState(false)
+    const [qrErrorText, setQrErrorText] = useState('')
     const location = useAtomValue(locationAtom)
     const router = useRouter()
     const origin =
@@ -35,10 +36,12 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
     useEffect(() => {
       setIsQrLoading(true)
       setHasQrError(false)
+      setQrErrorText('')
       setQrSrc('')
       if (!qrServiceBaseUrl) {
         setQrSrc('')
         setHasQrError(true)
+        setQrErrorText('Не задан NEXT_PUBLIC_QR_SERVICE_URL')
         setIsQrLoading(false)
         return
       }
@@ -59,22 +62,33 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
               options: {
                 width: 300,
                 margin: 2,
-                errorCorrectionLevel: 'M',
+                errorCorrectionLevel: 'H',
               },
             }),
             signal: controller.signal,
           })
 
-          if (!response.ok) throw new Error('QR service response error')
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => '')
+            throw new Error(
+              `QR service response error: ${response.status}${
+                errorText ? ` (${errorText})` : ''
+              }`
+            )
+          }
 
           const blob = await response.blob()
           objectUrl = URL.createObjectURL(blob)
           setQrSrc(objectUrl)
           setHasQrError(false)
-        } catch {
+          setQrErrorText('')
+        } catch (error) {
           if (controller.signal.aborted) return
           setQrSrc('')
           setHasQrError(true)
+          setQrErrorText(
+            error?.message || 'Ошибка генерации QR на сервисе'
+          )
         } finally {
           if (!controller.signal.aborted) setIsQrLoading(false)
         }
@@ -107,19 +121,31 @@ const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
             />
           )}
           {qrSrc ? (
-            <img
-              className={`max-w-[300px] aspect-1 w-full transition-opacity duration-150 ${
-                isQrLoading ? 'opacity-0' : 'opacity-100'
-              }`}
-              src={qrSrc}
-              alt="qr-code"
-            />
+            <>
+              <img
+                className={`max-w-[300px] aspect-1 w-full transition-opacity duration-150 ${
+                  isQrLoading ? 'opacity-0' : 'opacity-100'
+                }`}
+                src={qrSrc}
+                alt="qr-code"
+              />
+              {!isQrLoading && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="bg-white rounded-full p-2 shadow-sm">
+                    <img
+                      src="/img/logo_heart_qr.png"
+                      alt="qr-logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             hasQrError &&
             !isQrLoading && (
               <div className="text-center text-sm text-gray-600 px-4">
-                Не удалось загрузить QR-код. Проверьте доступность QR-сервиса и
-                переменную <code>NEXT_PUBLIC_QR_SERVICE_URL</code>.
+                Не удалось загрузить QR-код. {qrErrorText || ''}
               </div>
             )
           )}
