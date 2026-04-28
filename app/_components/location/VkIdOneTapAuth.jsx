@@ -3,6 +3,8 @@
 import PropTypes from 'prop-types'
 import { signIn } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
+import { normalizePhoneValue } from '@helpers/phoneUtils'
+import { isVkAuthClientTestModeEnabled } from '@helpers/vkAuthTestMode'
 
 const VK_SDK_URL = 'https://unpkg.com/@vkid/sdk@2.6.5/dist-sdk/umd/index.js'
 
@@ -100,6 +102,8 @@ export default function VkIdOneTapAuth({
   const onAccountNotFoundRef = useRef(onAccountNotFound)
   const authInFlightRef = useRef(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [testPhone, setTestPhone] = useState('')
+  const isVkAuthTestMode = isVkAuthClientTestModeEnabled()
 
   useEffect(() => {
     payloadRef.current = payload
@@ -121,6 +125,8 @@ export default function VkIdOneTapAuth({
     let isMounted = true
 
     const init = async () => {
+      if (isVkAuthTestMode) return
+
       const loaded = await loadVkSdk()
       if (!loaded) {
         if (isMounted) onErrorRef.current('VK ID недоступен')
@@ -302,7 +308,107 @@ export default function VkIdOneTapAuth({
       authInFlightRef.current = false
       if (containerRef.current) containerRef.current.innerHTML = ''
     }
-  }, [location, mode])
+  }, [isVkAuthTestMode, location, mode])
+
+  const handleTestSubmit = async (event) => {
+    event?.preventDefault()
+    if (authInFlightRef.current) return
+
+    const normalizedPhone = normalizePhoneValue(testPhone)
+    if (!normalizedPhone) {
+      onErrorRef.current('Введите тестовый номер телефона для VK ID')
+      return
+    }
+
+    authInFlightRef.current = true
+    setIsLoading(true)
+
+    const authPayload = {
+      location,
+      mode,
+      ...payloadRef.current,
+      vkAuthTest: true,
+      vkAuthTestPhone: normalizedPhone,
+    }
+
+    const result = await signIn('vk', {
+      redirect: false,
+      ...authPayload,
+    })
+
+    setIsLoading(false)
+    if (result?.error) {
+      authInFlightRef.current = false
+      if (
+        result.error === 'VK_ACCOUNT_NOT_FOUND' &&
+        typeof onAccountNotFoundRef.current === 'function'
+      ) {
+        const retryRegister = async (agreementsPayload = {}) => {
+          setIsLoading(true)
+          authInFlightRef.current = true
+
+          const retryResult = await signIn('vk', {
+            redirect: false,
+            ...authPayload,
+            ...agreementsPayload,
+            mode: 'register',
+          })
+
+          setIsLoading(false)
+          authInFlightRef.current = false
+
+          if (retryResult?.error) {
+            onErrorRef.current(mapVkSignInError(retryResult.error))
+            return false
+          }
+
+          onSuccessRef.current()
+          return true
+        }
+
+        onAccountNotFoundRef.current({
+          message: mapVkSignInError(result.error),
+          retryRegister,
+        })
+        return
+      }
+
+      onErrorRef.current(mapVkSignInError(result.error))
+      return
+    }
+
+    authInFlightRef.current = false
+    onSuccessRef.current()
+  }
+
+  if (isVkAuthTestMode) {
+    return (
+      <form
+        className="mt-2 rounded-2xl border border-dashed border-[#6b1f2a]/30 bg-[#fff8fa] p-3"
+        onSubmit={handleTestSubmit}
+      >
+        <div className="mb-2 text-center text-xs uppercase tracking-[0.12em] text-[#6b1f2a]/70">
+          {isLoading ? 'Проверяем тестовый VK ID...' : 'Тестовый VK ID'}
+        </div>
+        <div className="grid gap-2">
+          <input
+            type="tel"
+            value={testPhone}
+            onChange={(event) => setTestPhone(event.target.value)}
+            placeholder="+7 999 000-00-00"
+            className="w-full rounded-xl border border-[#6b1f2a]/20 bg-white px-3 py-2 text-sm text-[#2b1b21] outline-none transition focus:border-[#6b1f2a]"
+          />
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="rounded-xl bg-[#6b1f2a] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#8b2a38] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Эмулировать вход через VK
+          </button>
+        </div>
+      </form>
+    )
+  }
 
   return (
     <div className="mt-2">

@@ -24,6 +24,7 @@ import AuthInput, { AUTH_INPUT_CLASS } from '@components/AuthInput'
 import AuthButton from '@components/AuthButton'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import { isVkAuthClientTestModeEnabled } from '@helpers/vkAuthTestMode'
 import useCityAccess from '@hooks/useCityAccess'
 import useVkAuthAvailability from '@hooks/useVkAuthAvailability'
 
@@ -85,7 +86,9 @@ export default function LocationLoginClient({
     allowField: 'allowLogin',
     alternativesField: 'availableForLogin',
   })
-  const isVkAuthEnabled = useVkAuthAvailability(location) && !forceDisableVkAuth
+  const isVkAuthEnabled =
+    (useVkAuthAvailability(location) || isVkAuthClientTestModeEnabled()) &&
+    !forceDisableVkAuth
   const shouldShowTransferNotice =
     currentCityStatus !== 'active' && alternativeLoginCities.length > 0
 

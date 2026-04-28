@@ -12,6 +12,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
   }) => {
     const [check18, setCheck18] = useState(false)
     const [checkAgreement, setCheckAgreement] = useState(false)
+    const [checkConsentToMailing, setCheckConsentToMailing] = useState(false)
 
     const bothChecked = check18 && checkAgreement
 
@@ -23,6 +24,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
               const result = await onConfirm?.({
                 isAdultConfirmed: check18,
                 personalDataAgreementAccepted: checkAgreement,
+                consentToMailing: checkConsentToMailing,
               })
               if (result === false) return
               closeModal()
@@ -33,6 +35,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
       bothChecked,
       check18,
       checkAgreement,
+      checkConsentToMailing,
       closeModal,
       setDisableConfirm,
       setOnConfirmFunc,
@@ -47,7 +50,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
     }, [closeModal, setDisableDecline, setOnDeclineFunc])
 
     return (
-      <div className="grid gap-4 text-sm text-[#3a2c33]">
+      <div className="grid gap-5 text-base leading-relaxed text-[#3a2c33]">
         <p>
           Аккаунт с номером из VK ID еще не найден. Чтобы создать аккаунт,
           подтвердите обязательные согласия.
@@ -57,7 +60,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
             type="checkbox"
             checked={check18}
             onChange={() => setCheck18((prev) => !prev)}
-            className="mt-1 h-4 w-4 accent-[#6b1f2a]"
+            className="mt-1.5 h-5 w-5 shrink-0 accent-[#6b1f2a]"
           />
           <span>
             <span className="text-[#b4232d]">*</span> Мне исполнилось 18 лет
@@ -68,7 +71,7 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
             type="checkbox"
             checked={checkAgreement}
             onChange={() => setCheckAgreement((prev) => !prev)}
-            className="mt-1 h-4 w-4 accent-[#6b1f2a]"
+            className="mt-1.5 h-5 w-5 shrink-0 accent-[#6b1f2a]"
           />
           <span>
             <span className="text-[#b4232d]">*</span> Согласен на{' '}
@@ -90,6 +93,15 @@ const vkRegisterAgreementsFunc = ({ onConfirm } = {}) => {
               политикой конфиденциальности
             </Link>
           </span>
+        </label>
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={checkConsentToMailing}
+            onChange={() => setCheckConsentToMailing((prev) => !prev)}
+            className="mt-1.5 h-5 w-5 shrink-0 accent-[#6b1f2a]"
+          />
+          <span>Согласен получать рассылку о мероприятиях</span>
         </label>
       </div>
     )

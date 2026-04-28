@@ -27,6 +27,7 @@ import AuthInput, { AUTH_INPUT_CLASS } from '@components/AuthInput'
 import AuthButton from '@components/AuthButton'
 import useCityAccess from '@hooks/useCityAccess'
 import useVkAuthAvailability from '@hooks/useVkAuthAvailability'
+import { isVkAuthClientTestModeEnabled } from '@helpers/vkAuthTestMode'
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
@@ -101,7 +102,8 @@ const Register3Inner = ({ location }) => {
     allowField: 'allowRegistration',
     alternativesField: 'availableForRegistration',
   })
-  const isVkAuthEnabled = useVkAuthAvailability(location)
+  const isVkAuthEnabled =
+    useVkAuthAvailability(location) || isVkAuthClientTestModeEnabled()
   const pollTimerRef = useRef(null)
 
   const { phoneMask, phoneReplacement, maskedValue } = useMemo(

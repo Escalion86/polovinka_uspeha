@@ -284,6 +284,26 @@ const isVkDebugLogsEnabled = () =>
     .trim()
     .toLowerCase() === 'true'
 
+const isVkAuthTestModeEnabled = () =>
+  String(process.env.VK_AUTH_TEST_MODE || '')
+    .trim()
+    .toLowerCase() === 'true'
+
+const isVkAuthTestRequest = (value) =>
+  parseBooleanFromInput(value) && isVkAuthTestModeEnabled()
+
+const buildVkTestUser = ({ phone, location }) => {
+  const normalizedPhone = normalizePhoneValue(phone)
+  if (!normalizedPhone) return null
+
+  return {
+    user_id: `test-${location}-${normalizedPhone}`,
+    phone: normalizedPhone,
+    first_name: 'VK Test',
+    last_name: normalizedPhone.slice(-4),
+  }
+}
+
 const logVkDebug = (label, payload) => {
   if (!isVkDebugLogsEnabled()) return
   console.log(`[VK DEBUG] ${label}:`, payload)
@@ -416,6 +436,8 @@ export const authOptions = {
         referrerId: { label: 'ReferrerId', type: 'text' },
         consentToMailing: { label: 'consentToMailing', type: 'text' },
         attribution: { label: 'Attribution', type: 'text' },
+        vkAuthTest: { label: 'vkAuthTest', type: 'text' },
+        vkAuthTestPhone: { label: 'vkAuthTestPhone', type: 'text' },
         isAdultConfirmed: { label: 'isAdultConfirmed', type: 'text' },
         personalDataAgreementAccepted: {
           label: 'personalDataAgreementAccepted',
@@ -434,11 +456,15 @@ export const authOptions = {
           referrerId,
           consentToMailing: consentToMailingRaw,
           attribution: attributionRaw,
+          vkAuthTest,
+          vkAuthTestPhone,
           isAdultConfirmed: isAdultConfirmedRaw,
           personalDataAgreementAccepted: personalDataAgreementAcceptedRaw,
         } = credentials ?? {}
 
-        if ((!code || !deviceId) && !accessTokenFromClient) {
+        const isVkTestRequest = isVkAuthTestRequest(vkAuthTest)
+
+        if (!isVkTestRequest && (!code || !deviceId) && !accessTokenFromClient) {
           throwVkAuthError('VK_BAD_REQUEST')
         }
         if (!location) {
@@ -459,7 +485,7 @@ export const authOptions = {
           ? String(accessTokenFromClient)
           : null
 
-        if (!accessToken) {
+        if (!isVkTestRequest && !accessToken) {
           exchangeResult = await exchangeVkCode({
             code,
             deviceId,
@@ -473,18 +499,29 @@ export const authOptions = {
           }
         } else {
           logVkDebug('exchange skipped (accessToken from client)', {
-            hasAccessToken: true,
+            hasAccessToken: Boolean(accessToken),
+            isVkTestRequest,
           })
         }
 
         const resolvedAccessToken = accessToken || exchangeResult?.data?.access_token
-        if (!resolvedAccessToken) {
+        if (!isVkTestRequest && !resolvedAccessToken) {
           throwVkAuthError('VK_EXCHANGE_FAILED')
         }
 
-        const userInfoResult = await fetchVkUserInfo({
-          accessToken: resolvedAccessToken,
-        })
+        const userInfoResult = isVkTestRequest
+          ? {
+              success: true,
+              data: {
+                user: buildVkTestUser({
+                  phone: vkAuthTestPhone,
+                  location,
+                }),
+              },
+            }
+          : await fetchVkUserInfo({
+              accessToken: resolvedAccessToken,
+            })
         logVkDebug('fetchVkUserInfo response', userInfoResult)
         if (!userInfoResult.success) {
           console.log('VK userInfo error:', userInfoResult?.data)
