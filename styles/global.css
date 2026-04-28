@@ -612,6 +612,15 @@ li[data-list='bullet'] > span.ql-ui:before {
   color: var(--color-general);
 }
 
+.MuiPickersDay-root.Mui-selected,
+.MuiPickersDay-root.Mui-selected:hover,
+.MuiMonthCalendar-button.Mui-selected,
+.MuiMonthCalendar-button.Mui-selected:hover,
+.MuiYearCalendar-button.Mui-selected,
+.MuiYearCalendar-button.Mui-selected:hover {
+  color: #fff !important;
+}
+
 .btn-gradient-hover {
   position: relative;
   overflow: hidden;
