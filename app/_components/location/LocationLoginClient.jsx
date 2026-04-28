@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types'
 import Link from 'next/link'
 import { getSession, signIn } from 'next-auth/react'
+import { useAtomValue } from 'jotai'
 import { InputMask, format } from '@react-input/mask'
 import useRouter from '@utils/useRouter'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -21,6 +22,8 @@ import AuthSplitLayout from '@components/AuthSplitLayout'
 import AuthField from '@components/AuthField'
 import AuthInput, { AUTH_INPUT_CLASS } from '@components/AuthInput'
 import AuthButton from '@components/AuthButton'
+import ModalsPortal from '@layouts/modals/ModalsPortal'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import useCityAccess from '@hooks/useCityAccess'
 import useVkAuthAvailability from '@hooks/useVkAuthAvailability'
 
@@ -65,6 +68,7 @@ export default function LocationLoginClient({
   forceDisableVkAuth = false,
 }) {
   const router = useRouter()
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [phone, setPhone] = useState('')
   const [phoneFocused, setPhoneFocused] = useState(false)
   const [password, setPassword] = useState('')
@@ -182,6 +186,22 @@ export default function LocationLoginClient({
     setPhone(normalizePhoneMaskState(event.target.value))
   }, [])
 
+  const handleVkAccountNotFound = useCallback(
+    ({ message, retryRegister }) => {
+      setError('')
+      modalsFunc?.vkRegisterAgreements?.({
+        onConfirm: async (agreementsPayload) => {
+          return retryRegister(agreementsPayload)
+        },
+      })
+
+      if (!modalsFunc?.vkRegisterAgreements) {
+        setError(message || 'Аккаунт не найден. Зарегистрируйтесь через VK ID.')
+      }
+    },
+    [modalsFunc]
+  )
+
   if (accessLoading) {
     return (
       <AuthPageFrame>
@@ -207,7 +227,8 @@ export default function LocationLoginClient({
   }
 
   return (
-    <AuthSplitLayout
+    <>
+      <AuthSplitLayout
       leftPanel={
         <>
           <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
@@ -291,6 +312,7 @@ export default function LocationLoginClient({
                   onError={(message) => {
                     setError(message || 'Не удалось выполнить вход через VK ID')
                   }}
+                  onAccountNotFound={handleVkAccountNotFound}
                 />
                 <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
                   или войдите по номеру телефона
@@ -363,7 +385,9 @@ export default function LocationLoginClient({
           </div>
         </>
       }
-    />
+      />
+      <ModalsPortal />
+    </>
   )
 }
 

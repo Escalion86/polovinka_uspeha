@@ -91,11 +91,13 @@ export default function VkIdOneTapAuth({
   payload = {},
   onSuccess = () => {},
   onError = () => {},
+  onAccountNotFound = null,
 }) {
   const containerRef = useRef(null)
   const payloadRef = useRef(payload)
   const onSuccessRef = useRef(onSuccess)
   const onErrorRef = useRef(onError)
+  const onAccountNotFoundRef = useRef(onAccountNotFound)
   const authInFlightRef = useRef(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -110,6 +112,10 @@ export default function VkIdOneTapAuth({
   useEffect(() => {
     onErrorRef.current = onError
   }, [onError])
+
+  useEffect(() => {
+    onAccountNotFoundRef.current = onAccountNotFound
+  }, [onAccountNotFound])
 
   useEffect(() => {
     let isMounted = true
@@ -208,7 +214,10 @@ export default function VkIdOneTapAuth({
           let accessToken
           if (!codeVerifier && VKID?.Auth?.exchangeCode) {
             try {
-              const exchangeResult = await VKID.Auth.exchangeCode(code, deviceId)
+              const exchangeResult = await VKID.Auth.exchangeCode(
+                code,
+                deviceId
+              )
               accessToken = exchangeResult?.access_token
               if (isVkClientDebugEnabled()) {
                 console.log('[VK DEBUG CLIENT] client exchange result', {
@@ -225,8 +234,7 @@ export default function VkIdOneTapAuth({
             }
           }
 
-          const result = await signIn('vk', {
-            redirect: false,
+          const authPayload = {
             code,
             deviceId,
             codeVerifier,
@@ -235,11 +243,49 @@ export default function VkIdOneTapAuth({
             location,
             mode,
             ...payloadRef.current,
+          }
+
+          const result = await signIn('vk', {
+            redirect: false,
+            ...authPayload,
           })
 
           setIsLoading(false)
           if (result?.error) {
             authInFlightRef.current = false
+            if (
+              result.error === 'VK_ACCOUNT_NOT_FOUND' &&
+              typeof onAccountNotFoundRef.current === 'function'
+            ) {
+              const retryRegister = async (agreementsPayload = {}) => {
+                setIsLoading(true)
+                authInFlightRef.current = true
+
+                const retryResult = await signIn('vk', {
+                  redirect: false,
+                  ...authPayload,
+                  ...agreementsPayload,
+                  mode: 'register',
+                })
+
+                setIsLoading(false)
+                authInFlightRef.current = false
+
+                if (retryResult?.error) {
+                  onErrorRef.current(mapVkSignInError(retryResult.error))
+                  return false
+                }
+
+                onSuccessRef.current()
+                return true
+              }
+
+              onAccountNotFoundRef.current({
+                message: mapVkSignInError(result.error),
+                retryRegister,
+              })
+              return
+            }
             onErrorRef.current(mapVkSignInError(result.error))
             return
           }
@@ -274,4 +320,5 @@ VkIdOneTapAuth.propTypes = {
   payload: PropTypes.object,
   onSuccess: PropTypes.func,
   onError: PropTypes.func,
+  onAccountNotFound: PropTypes.func,
 }

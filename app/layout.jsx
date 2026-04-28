@@ -1,6 +1,7 @@
 import localFont from 'next/font/local'
 import Providers from './providers'
-import { getSiteUrl } from '@server/seo'
+import SiteAnalytics from './_components/seo/SiteAnalytics'
+import { getAnalyticsConfig, getSiteUrl } from '@server/seo'
 
 import '../styles/global.css'
 import '../styles/burger.css'
@@ -17,6 +18,8 @@ import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
 import '../styles/katex.min.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
+
+const analyticsConfig = getAnalyticsConfig()
 
 export const metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -176,6 +179,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`}
       >
+        <SiteAnalytics {...analyticsConfig} />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -151,6 +151,12 @@ const modalsFuncGenerator = (get, set) => {
       addModal(require('../layouts/modals/modalsFunc/errorFunc').default(data)),
     json: (data) =>
       addModal(require('../layouts/modals/modalsFunc/jsonFunc').default(data)),
+    vkRegisterAgreements: (data) =>
+      addModal(
+        require('../layouts/modals/modalsFunc/vkRegisterAgreementsFunc').default(
+          data
+        )
+      ),
     selectSvgFrame: (itemId, onChange) =>
       addModal(
         require('../layouts/modals/modalsFunc/selectSvgFrameFunc').default(

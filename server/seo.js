@@ -25,3 +25,27 @@ export const getLocationTitle = (location) =>
 
 export const getKnownLocations = () => LOCATIONS_KEYS
 
+const getEnvValue = (...keys) => {
+  for (const key of keys) {
+    const value = String(process.env[key] || '').trim()
+    if (value) return value
+  }
+
+  return ''
+}
+
+export const getAnalyticsConfig = () => ({
+  googleAnalyticsId: getEnvValue(
+    'GOOGLE_ANALYTICS_ID',
+    'NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'
+  ),
+  yandexMetrikaId: getEnvValue(
+    'YANDEX_METRIKA_ID',
+    'NEXT_PUBLIC_YANDEX_METRIKA_ID'
+  ),
+  yandexWebvisorEnabled:
+    getEnvValue(
+      'YANDEX_METRIKA_WEBVISOR',
+      'NEXT_PUBLIC_YANDEX_METRIKA_WEBVISOR'
+    ) === 'true',
+})
