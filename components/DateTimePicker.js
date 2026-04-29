@@ -87,9 +87,9 @@ const DateTimePicker = ({
               ? ['year', 'month', 'day', 'hours', 'minutes']
               : ['year', 'month', 'day']
           }
-          value={value === null ? null : value ? dayjs(value) : undefined}
+          value={value ? dayjs(value) : null}
           defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
-          onChange={(date) => onChange(date.toISOString())}
+          onChange={(date) => onChange(date ? date.toISOString() : null)}
           disabled={disabled}
           showDisabledIcon={false}
           slotProps={{
@@ -183,12 +183,12 @@ const DateTimePicker = ({
             inputFormat="HH:mm"
             openTo="hours"
             views={['hours', 'minutes']}
-            value={value === null ? null : value ? dayjs(value) : undefined}
+            value={value ? dayjs(value) : null}
             defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
             slots={{
               openPickerIcon: AccessTimeIcon,
             }}
-          onChange={(date) => onChange(date.toISOString())}
+          onChange={(date) => onChange(date ? date.toISOString() : null)}
           disabled={disabled}
           showDisabledIcon={false}
           />

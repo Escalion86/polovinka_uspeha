@@ -152,6 +152,22 @@ export const invalidateEventCardStateByEvent = (eventId) => {
   if (!eventId) return
 
   for (const contextCache of eventCardStateCache.values()) {
+    const entry = contextCache.get(eventId)
+    if (entry?.status === 'pending' && typeof entry.resolve === 'function') {
+      entry.resolve(null)
+    }
     contextCache.delete(eventId)
   }
+}
+
+export const invalidateEventCardState = () => {
+  for (const contextCache of eventCardStateCache.values()) {
+    for (const entry of contextCache.values()) {
+      if (entry?.status === 'pending' && typeof entry.resolve === 'function') {
+        entry.resolve(null)
+      }
+    }
+  }
+  eventCardStateCache.clear()
+  pendingBatches.clear()
 }

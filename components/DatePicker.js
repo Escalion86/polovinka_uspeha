@@ -115,7 +115,7 @@ const DatePicker = ({
           openTo="year"
           views={['year', 'month', 'day']}
           // value={dayjs(value)}
-          value={value ? dayjs(formatDate(value, true)) : undefined}
+          value={value ? dayjs(formatDate(value, true)) : null}
           defaultValue={
             defaultValue ? dayjs(formatDate(defaultValue, true)) : undefined
           }

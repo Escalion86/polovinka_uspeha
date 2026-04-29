@@ -53,7 +53,10 @@ import newsletterEditSelector from './selectors/newsletterEditSelector'
 import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
 import individualWeddingEditSelector from './selectors/individualWeddingEditSelector'
 import individualWeddingDeleteSelector from './selectors/individualWeddingDeleteSelector'
-import { invalidateEventCardStateByEvent } from '@utils/eventCardStateClient'
+import {
+  invalidateEventCardState,
+  invalidateEventCardStateByEvent,
+} from '@utils/eventCardStateClient'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -347,6 +350,22 @@ const itemsFuncGenerator = (get, set) => {
   } = props
 
   const obj = {}
+  const invalidateEventCardStateByItem = (itemName, item, itemId) => {
+    if (itemName === 'event') {
+      invalidateEventCardStateByEvent(item?._id || itemId)
+      return
+    }
+
+    if (itemName === 'eventsUser') {
+      invalidateEventCardStateByEvent(item?.eventId)
+      return
+    }
+
+    if (itemName === 'direction' || itemName === 'user') {
+      invalidateEventCardState()
+    }
+  }
+
   array?.length > 0 &&
     array.forEach((itemName) => {
       obj[itemName] = {
@@ -360,6 +379,7 @@ const itemsFuncGenerator = (get, set) => {
                 setNotLoadingCard(itemName + item._id)
                 if (!noSnackbar && messages[itemName]?.update?.success)
                   snackbar.success(messages[itemName].update.success)
+                invalidateEventCardStateByItem(itemName, data, item._id)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
@@ -387,6 +407,7 @@ const itemsFuncGenerator = (get, set) => {
               (data) => {
                 if (!noSnackbar && messages[itemName]?.add?.success)
                   snackbar.success(messages[itemName].add.success)
+                invalidateEventCardStateByItem(itemName, data)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
@@ -412,9 +433,10 @@ const itemsFuncGenerator = (get, set) => {
           setLoadingCard(itemName + itemId)
           return await deleteData(
             `/api/${location}/${itemName.toLowerCase()}s/${itemId}`,
-            () => {
+            (data) => {
               if (messages[itemName]?.delete?.success)
                 snackbar.success(messages[itemName].delete.success)
+              invalidateEventCardStateByItem(itemName, data, itemId)
               props['delete' + capitalizeFirstLetter(itemName)](itemId)
             },
             (error) => {
@@ -456,6 +478,7 @@ const itemsFuncGenerator = (get, set) => {
       (data) => {
         snackbar.success('Мероприятие отменено')
         setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         props.setEvent(data)
       },
       (error) => {
@@ -478,6 +501,7 @@ const itemsFuncGenerator = (get, set) => {
       (data) => {
         snackbar.success('Мероприятие закрыто')
         setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         props.setEvent(data)
       },
       (error) => {
@@ -572,6 +596,7 @@ const itemsFuncGenerator = (get, set) => {
       (data) => {
         snackbar.success('Мероприятие активировано')
         setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         props.setEvent(data)
       },
       (error) => {
@@ -735,6 +760,7 @@ const itemsFuncGenerator = (get, set) => {
         !dontShowSnackBar &&
           snackbar.success('Лайки участников мероприятия обновлены')
         if (!withoutLoadingCard) setNotLoadingCard('event' + eventId)
+        invalidateEventCardStateByEvent(eventId)
         props.updateEventsUsers(eventId, res)
       },
       (error) => {
