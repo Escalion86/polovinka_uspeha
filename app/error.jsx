@@ -16,6 +16,49 @@ const guessLocationFromPath = () => {
 const safeErrorMessage = (error) =>
   error instanceof Error ? error.message || 'Unknown error' : String(error || '')
 
+const CHUNK_RELOAD_MARKER = 'clientChunkReloadAttemptAt'
+const CHUNK_RELOAD_COOLDOWN_MS = 5 * 60 * 1000
+
+const isRecoverableChunkError = (error) => {
+  const message = safeErrorMessage(error).toLowerCase()
+  const stack = String(error?.stack || '').toLowerCase()
+  const combined = `${message}\n${stack}`
+
+  return (
+    combined.includes('chunkloaderror') ||
+    combined.includes('loading chunk') ||
+    combined.includes('failed to fetch dynamically imported module') ||
+    combined.includes('dynamically imported module') ||
+    combined.includes('importing a module script failed')
+  )
+}
+
+const tryRecoverChunkError = (error) => {
+  if (typeof window === 'undefined' || !isRecoverableChunkError(error)) {
+    return false
+  }
+
+  try {
+    const now = Date.now()
+    const lastAttemptAt = Number(
+      sessionStorage.getItem(CHUNK_RELOAD_MARKER) || 0
+    )
+
+    if (
+      Number.isFinite(lastAttemptAt) &&
+      now - lastAttemptAt < CHUNK_RELOAD_COOLDOWN_MS
+    ) {
+      return false
+    }
+
+    sessionStorage.setItem(CHUNK_RELOAD_MARKER, String(now))
+    setTimeout(() => window.location.reload(), 30)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export default function Error({ error, reset }) {
   useEffect(() => {
     const location = guessLocationFromPath()
@@ -42,6 +85,8 @@ export default function Error({ error, reset }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }).catch(() => {})
+
+    tryRecoverChunkError(error)
   }, [error])
 
   return (
@@ -74,4 +119,3 @@ export default function Error({ error, reset }) {
     </div>
   )
 }
-

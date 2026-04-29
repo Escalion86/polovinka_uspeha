@@ -10,7 +10,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 const asyncEventsUsersByUserIdAtom = atomFamily((userId) =>
   atomWithRefreshAndDefault(async (get) => {
-    if (!userId) return
+    if (!userId) return []
     const location = get(locationAtom)
     const res = await getData(
       `/api/${location}/eventsusers`,
@@ -20,7 +20,7 @@ const asyncEventsUsersByUserIdAtom = atomFamily((userId) =>
       false
     )
     store.set(isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId), true)
-    return res
+    return Array.isArray(res) ? res : []
   })
 )
 

@@ -52,6 +52,7 @@ const CardButtons = ({
   className,
   alwaysCompact,
   alwaysCompactOnPhone,
+  compactOnThreshold = false,
   triggerClassName = '',
   compactThreshold = 3,
 }) => {
@@ -61,6 +62,7 @@ const CardButtons = ({
 
   const isCompact =
     alwaysCompact ||
+    (compactOnThreshold && safeButtons.length > compactThreshold) ||
     ((safeButtons.length > compactThreshold || alwaysCompactOnPhone) &&
       ['phoneV', 'phoneH', 'tablet'].includes(device))
 

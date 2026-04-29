@@ -63,6 +63,10 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
   const eventsLoggedUser = useAtomValue(
     asyncEventsUsersByUserIdAtom(loggedUserActive?._id)
   )
+  const safeEventsLoggedUser = useMemo(
+    () => (Array.isArray(eventsLoggedUser) ? eventsLoggedUser : []),
+    [eventsLoggedUser]
+  )
 
   const statusDefault = useMemo(() => {
     if (calendarOnly)
@@ -170,13 +174,18 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
     (sourceEvents = []) =>
       visibleEventsForUser(
         sourceEvents,
-        eventsLoggedUser,
+        safeEventsLoggedUser,
         loggedUserActive,
         false,
         seeHidden,
         loggedUserActiveStatusName
       ),
-    [eventsLoggedUser, loggedUserActive, seeHidden, loggedUserActiveStatusName]
+    [
+      safeEventsLoggedUser,
+      loggedUserActive,
+      seeHidden,
+      loggedUserActiveStatusName,
+    ]
   )
 
   const applyFiltersAndSort = useCallback(
@@ -215,7 +224,7 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
             filterOptions.directions === event.directionId) &&
           ((filter.participant?.participant &&
             filter.participant?.notParticipant) ||
-          !!eventsLoggedUser.find(
+          !!safeEventsLoggedUser.find(
             (eventUser) => eventUser.eventId === event._id
           )
             ? filter.participant?.participant
@@ -226,12 +235,12 @@ const EventsContent = ({ mode = 'all', calendarOnly = false }) => {
       return [...visibleEvents].sort(sortFunc)
     },
     [
-      eventsLoggedUser,
       filter,
       filterOptions,
       getVisibleEventsForSource,
       isSearching,
       mode,
+      safeEventsLoggedUser,
       searchText,
       sortFunc,
       statusFilterFull,

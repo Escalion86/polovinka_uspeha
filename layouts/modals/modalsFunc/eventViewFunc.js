@@ -143,6 +143,8 @@ const CardButtonsComponent = ({ event, isEventClosed }) => (
     forForm
     showEditButton={!isEventClosed}
     showDeleteButton={false}
+    compactOnThreshold
+    compactThreshold={5}
   />
 )
 

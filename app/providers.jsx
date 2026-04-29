@@ -93,6 +93,12 @@ const ClientErrorReporter = () => {
     let isReporting = false
     const queue = []
     const signatures = new Set()
+    const IGNORED_RESOURCE_HOSTS = new Set([
+      'www.googletagmanager.com',
+      'googletagmanager.com',
+      'mc.yandex.ru',
+      'telegram.org',
+    ])
 
     const safeStringify = (value) => {
       try {
@@ -235,6 +241,15 @@ const ClientErrorReporter = () => {
       }
     }
 
+    const isIgnoredExternalResource = (source) => {
+      try {
+        const url = new URL(source, window.location.href)
+        return IGNORED_RESOURCE_HOSTS.has(url.hostname)
+      } catch (error) {
+        return false
+      }
+    }
+
     const handleError = (error, componentStack = '', meta = {}) => {
       const location = resolveLocation()
       if (!location) return
@@ -308,6 +323,8 @@ const ClientErrorReporter = () => {
 
       const tagName = String(target?.tagName || '').toUpperCase()
       const normalizedSource = String(source).toLowerCase()
+      if (isIgnoredExternalResource(source)) return
+
       const isChunkOrScript =
         tagName === 'SCRIPT' ||
         normalizedSource.includes('/_next/static/chunks/') ||

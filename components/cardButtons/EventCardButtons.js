@@ -32,6 +32,8 @@ const EventCardButtons = ({
   forForm,
   alwaysCompact,
   alwaysCompactOnPhone,
+  compactOnThreshold,
+  compactThreshold,
   showEditButton = true,
   showDeleteButton = true,
   showCloneButton = true,
@@ -223,6 +225,8 @@ const EventCardButtons = ({
       className={className}
       alwaysCompact={alwaysCompact}
       alwaysCompactOnPhone={alwaysCompactOnPhone}
+      compactOnThreshold={compactOnThreshold}
+      compactThreshold={compactThreshold}
       triggerClassName={triggerClassName}
     />
   )
