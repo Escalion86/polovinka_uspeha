@@ -1,0 +1,1583 @@
+{
+  "mode": "dry-run",
+  "startedAt": "2026-05-13T09:45:51.942Z",
+  "finishedAt": "2026-05-13T09:45:57.844Z",
+  "env": {
+    "dbSuffix": null,
+    "includesGlobalDb": true
+  },
+  "replacements": [
+    "api.escalioncloud.ru/api -> cloud.escalion.ru/api",
+    "api.escalioncloud.ru -> cloud.escalion.ru/api",
+    "escalioncloud.ru -> cloud.escalion.ru",
+    "same replacements for typo esclioncloud.ru"
+  ],
+  "summary": {
+    "dbsRead": 4,
+    "collectionsRead": 98,
+    "documentsRead": 312886,
+    "documentsWouldUpdate": 9111,
+    "documentsUpdated": 0
+  },
+  "perDb": {
+    "krsk": {
+      "dbName": "polovinka_uspeha_krsk_dev",
+      "totals": {
+        "collectionsRead": 31,
+        "documentsRead": 278697,
+        "documentsWouldUpdate": 8187,
+        "documentsUpdated": 0
+      },
+      "perCollection": {
+        "achievementsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "toolstemplates": {
+          "read": 19,
+          "wouldUpdate": 19,
+          "updated": 0
+        },
+        "scheduledchannels": {
+          "read": 1,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "questionnairesusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "payments": {
+          "read": 7656,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "notificationshistories": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "histories": {
+          "read": 48118,
+          "wouldUpdate": 6152,
+          "updated": 0
+        },
+        "achievements": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "services": {
+          "read": 2,
+          "wouldUpdate": 2,
+          "updated": 0
+        },
+        "users": {
+          "read": 1758,
+          "wouldUpdate": 812,
+          "updated": 0
+        },
+        "usersgooglecalendars": {
+          "read": 1,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "reviews": {
+          "read": 10,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "individualweddings": {
+          "read": 1,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "additionalblocks": {
+          "read": 2,
+          "wouldUpdate": 1,
+          "updated": 0
+        },
+        "servicesusers": {
+          "read": 116,
+          "wouldUpdate": 95,
+          "updated": 0
+        },
+        "reminddates": {
+          "read": 3,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "newsletters": {
+          "read": 328,
+          "wouldUpdate": 50,
+          "updated": 0
+        },
+        "scheduledmessages": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "aiprompts": {
+          "read": 8,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "productsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "loginhistories": {
+          "read": 203132,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "sitesettings": {
+          "read": 1,
+          "wouldUpdate": 1,
+          "updated": 0
+        },
+        "questionnaires": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "tests": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "clienterrorlogs": {
+          "read": 7274,
+          "wouldUpdate": 238,
+          "updated": 0
+        },
+        "eventsusers": {
+          "read": 8999,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "phoneconfirms": {
+          "read": 317,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "directions": {
+          "read": 10,
+          "wouldUpdate": 9,
+          "updated": 0
+        },
+        "roles": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "events": {
+          "read": 941,
+          "wouldUpdate": 808,
+          "updated": 0
+        },
+        "products": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        }
+      }
+    },
+    "nrsk": {
+      "dbName": "polovinka_uspeha_nrsk_dev",
+      "totals": {
+        "collectionsRead": 32,
+        "documentsRead": 27361,
+        "documentsWouldUpdate": 687,
+        "documentsUpdated": 0
+      },
+      "perCollection": {
+        "clienterrorlogs": {
+          "read": 1069,
+          "wouldUpdate": 16,
+          "updated": 0
+        },
+        "Users": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "questionnairesusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "roles": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "directions": {
+          "read": 8,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "reviews": {
+          "read": 14,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "toolstemplates": {
+          "read": 11,
+          "wouldUpdate": 11,
+          "updated": 0
+        },
+        "aiprompts": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "scheduledchannels": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "scheduledmessages": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "products": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "loginhistories": {
+          "read": 18682,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "servicesusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "phoneconfirms": {
+          "read": 165,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "tests": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "productsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "achievements": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "notificationshistories": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "questionnaires": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "histories": {
+          "read": 4969,
+          "wouldUpdate": 362,
+          "updated": 0
+        },
+        "newsletters": {
+          "read": 30,
+          "wouldUpdate": 18,
+          "updated": 0
+        },
+        "achievementsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "sitesettings": {
+          "read": 1,
+          "wouldUpdate": 1,
+          "updated": 0
+        },
+        "users": {
+          "read": 791,
+          "wouldUpdate": 189,
+          "updated": 0
+        },
+        "individualweddings": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "reminddates": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "payments": {
+          "read": 721,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "usersgooglecalendars": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "eventsusers": {
+          "read": 809,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "services": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "additionalblocks": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "events": {
+          "read": 91,
+          "wouldUpdate": 90,
+          "updated": 0
+        }
+      }
+    },
+    "ekb": {
+      "dbName": "polovinka_uspeha_ekb_dev",
+      "totals": {
+        "collectionsRead": 32,
+        "documentsRead": 6823,
+        "documentsWouldUpdate": 236,
+        "documentsUpdated": 0
+      },
+      "perCollection": {
+        "aiprompts": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "notificationshistories": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "tests": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "reminddates": {
+          "read": 2,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "usersgooglecalendars": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "users": {
+          "read": 149,
+          "wouldUpdate": 32,
+          "updated": 0
+        },
+        "clienterrorlogs": {
+          "read": 514,
+          "wouldUpdate": 14,
+          "updated": 0
+        },
+        "products": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "eventsusers": {
+          "read": 257,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "additionalblocks": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "payments": {
+          "read": 303,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "phoneconfirms": {
+          "read": 19,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "loginhistories": {
+          "read": 3740,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "achievements": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "sitesettings": {
+          "read": 1,
+          "wouldUpdate": 1,
+          "updated": 0
+        },
+        "Users": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "roles": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "productsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "scheduledmessages": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "services": {
+          "read": 5,
+          "wouldUpdate": 5,
+          "updated": 0
+        },
+        "events": {
+          "read": 45,
+          "wouldUpdate": 45,
+          "updated": 0
+        },
+        "scheduledchannels": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "toolstemplates": {
+          "read": 11,
+          "wouldUpdate": 11,
+          "updated": 0
+        },
+        "reviews": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "histories": {
+          "read": 1761,
+          "wouldUpdate": 128,
+          "updated": 0
+        },
+        "questionnaires": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "achievementsusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "servicesusers": {
+          "read": 4,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "newsletters": {
+          "read": 2,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "directions": {
+          "read": 10,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "individualweddings": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "questionnairesusers": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        }
+      }
+    },
+    "global": {
+      "dbName": "polovinka_uspeha_global_dev",
+      "totals": {
+        "collectionsRead": 3,
+        "documentsRead": 5,
+        "documentsWouldUpdate": 1,
+        "documentsUpdated": 0
+      },
+      "perCollection": {
+        "users": {
+          "read": 0,
+          "wouldUpdate": 0,
+          "updated": 0
+        },
+        "globalusers": {
+          "read": 3,
+          "wouldUpdate": 1,
+          "updated": 0
+        },
+        "globalcontents": {
+          "read": 2,
+          "wouldUpdate": 0,
+          "updated": 0
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "66386b889e656242623222df",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "66386ba39e656242623222e3",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "66386bf09e656242623222e9",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "663b6c9f8fd7905fe9f54155",
+      "changedPaths": [
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "663b73488fd7905fe9f5432d",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "66ea627588e989dd93f5ec50",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "66ead60188e989dd93f60ec0",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "673daefcd6ff69ec88ce1df8",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "675295534972c837241e91a3",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "67b360f064ee22dec7a11c5a",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "67bcadcf6c00b724b503f0a8",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "67bd773c6c00b724b504c6b3",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "67e0388040168e46391b0115",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "67e18b38a002ac268891aaf6",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "6808913c8b32e34e0c928796",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "682f02d2af2cddb2bf174ff1",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "68d105477a3095eff0eb522d",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "69c15cf08babcc677b04eb43",
+      "changedPaths": [
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "toolstemplates",
+      "id": "69c19d1eda8f27019a513e69",
+      "changedPaths": [
+        "template.backgroundProps.src",
+        "template.preview[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641520cce466c25765fb2cb3",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641596eee466c25765fb3285",
+      "changedPaths": [
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6415971ce466c25765fb3289",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6415ac7fe466c25765fb3434",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6415bb3fb7bf3989ecb9ff9c",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6415c2c8b7bf3989ecb9ffdc",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64168fd0b7bf3989ecba0580",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6416a675b7bf3989ecba0815",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64170edab7bf3989ecba0ee4",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417121eb7bf3989ecba0f6e",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641715f7b7bf3989ecba0fce",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64171656b7bf3989ecba0fee",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417238fb7bf3989ecba11b3",
+      "changedPaths": [
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641723dab7bf3989ecba11b7",
+      "changedPaths": [
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417285cb7bf3989ecba123a",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417a22fdb225d7089beac70",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417f0bcb5eb09b59e090408",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417fa5bb5eb09b59e090520",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417fe01b5eb09b59e090647",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6417fecbb5eb09b59e09065d",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6418027ab5eb09b59e090749",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64180286b5eb09b59e09074d",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64185a99a8d78321ea8c5f15",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64186bf5a8d78321ea8c6340",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64188762a8d78321ea8c683e",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64188867a8d78321ea8c6887",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64190184a8d78321ea8c6d81",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64191b6fa8d78321ea8c7269",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641922e4a8d78321ea8c7332",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641926e9a8d78321ea8c7397",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]",
+        "data[0].images[7]",
+        "data[0].images[8]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64192d07a8d78321ea8c7406",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]",
+        "data[0].images[7]",
+        "data[0].images[8]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641935a5a8d78321ea8c74a4",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641935efa8d78321ea8c74a8",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]",
+        "data[0].images[7]",
+        "data[0].images[8]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641935f2a8d78321ea8c74ac",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641939f0a8d78321ea8c7506",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64193a33a8d78321ea8c750e",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64193a56a8d78321ea8c7512",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419412ca8d78321ea8c759c",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]",
+        "data[0].images[7]",
+        "data[0].images[8]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641941c8a8d78321ea8c75b3",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]",
+        "data[0].images[6]",
+        "data[0].images[7]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "64194cb4a8d78321ea8c7809",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419631aa8d78321ea8c7b26",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641964c5a8d78321ea8c7c2f",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419670aa8d78321ea8c7ce7",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419676ea8d78321ea8c7ceb",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641979a6a8d78321ea8c8051",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419c717397916ec8cc55e64",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419cc20397916ec8cc55f75",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419cc9d397916ec8cc55f7f",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419ccc4397916ec8cc55f96",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419cf76397916ec8cc56039",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419d054397916ec8cc5608f",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419efeb397916ec8cc565f0",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f066397916ec8cc565f8",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f124397916ec8cc5661c",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f13a397916ec8cc56620",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f178397916ec8cc56624",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f187397916ec8cc56628",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f195397916ec8cc5662c",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f1ac397916ec8cc56630",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f1ca397916ec8cc56634",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "6419f1e5397916ec8cc5663a",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a5df2397916ec8cc56962",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a6552397916ec8cc569c4",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a6996397916ec8cc56a6a",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a6d09397916ec8cc56bf9",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a6f46397916ec8cc56c48",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a6f7c397916ec8cc56c4c",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a722c397916ec8cc56c63",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a7299397916ec8cc56c76",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a7393397916ec8cc56c92",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a73ab397916ec8cc56c96",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641a94b8397916ec8cc571be",
+      "changedPaths": [
+        "data[0].images[0]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641aa178397916ec8cc57336",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac383397916ec8cc576e9",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac47d397916ec8cc5770e",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac8ca397916ec8cc5779e",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac8fb397916ec8cc577a2",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac901397916ec8cc577a8",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641ac913397916ec8cc577ac",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641b0258397916ec8cc58210",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    },
+    {
+      "db": "krsk",
+      "collection": "histories",
+      "id": "641bafbc397916ec8cc58d14",
+      "changedPaths": [
+        "data[0].images[0]",
+        "data[0].images[1]",
+        "data[0].images[2]",
+        "data[0].images[3]",
+        "data[0].images[4]",
+        "data[0].images[5]"
+      ]
+    }
+  ]
+}

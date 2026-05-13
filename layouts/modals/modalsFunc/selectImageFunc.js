@@ -64,16 +64,16 @@ const selectImageFunc = (directory, aspect, onSelect, options = {}) => {
     // useEffect(() => {
     //   const loadImages = async () => {
     //     // console.log(
-    //     //   `https://api.escalioncloud.ru/api/files?directory=${imageFolder}/${directory}`
+    //     //   `https://cloud.escalion.ru/api/files?directory=${imageFolder}/${directory}`
     //     // )
     //     // const response = await getData(
-    //     //   'https://api.escalioncloud.ru/api/files',
+    //     //   'https://cloud.escalion.ru/api/files',
     //     //   { directory: `${imageFolder}/${directory}` },
     //     //   (response) => setImagesNames(response || [])
     //     // )
 
     //     const response = await getData(
-    //       'https://api.escalioncloud.ru/api/files',
+    //       'https://cloud.escalion.ru/api/files',
     //       { directory: `${imageFolder}/${directory}/preview` },
     //       (response) => setImagesNames(response || []),
     //       (error) => console.log('error :>> ', error),
@@ -125,7 +125,7 @@ const selectImageFunc = (directory, aspect, onSelect, options = {}) => {
         hiddenFolderNames={Array.isArray(options?.hiddenFolderNames) ? options.hiddenFolderNames : []}
         // images={imagesNames.map(
         //   (imageName) =>
-        //     `https://escalioncloud.ru/uploads/${imageFolder}/${directory}/preview/${imageName}`
+        //     `https://cloud.escalion.ru/uploads/${imageFolder}/${directory}/preview/${imageName}`
         // )}
       />
     )

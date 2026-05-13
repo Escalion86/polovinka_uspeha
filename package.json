@@ -1,6 +1,6 @@
 {
   "name": "polovinka_uspeha",
-  "version": "2.0.48",
+  "version": "2.0.49",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -35,6 +35,9 @@
     "consent:global-from-cities:dry-run": "node scripts/sync-global-consent-from-cities.cjs",
     "consent:global-from-cities:apply": "node scripts/sync-global-consent-from-cities.cjs --write",
     "consent:global-from-cities:dry-run:test": "cross-env SYNC_GLOBAL_CONSENT_DB_SUFFIX=_test node scripts/sync-global-consent-from-cities.cjs",
+    "escalioncloud-urls:dry-run": "node scripts/migrate-escalioncloud-urls.cjs",
+    "escalioncloud-urls:apply": "node scripts/migrate-escalioncloud-urls.cjs --write",
+    "escalioncloud-urls:dry-run:test": "cross-env MIGRATE_ESCALIONCLOUD_URLS_DB_SUFFIX=_test node scripts/migrate-escalioncloud-urls.cjs",
     "analyze": "cross-env ANALYZE=true npm run build",
     "knip": "knip",
     "postinstall": "flowbite-react build"

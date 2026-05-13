@@ -63,7 +63,7 @@ module.exports = withFlowbiteReact(
       ]
     },
     images: {
-      // domains: ['localhost', 'escalioncloud.ru', 't.me'],
+      // domains: ['localhost', 'cloud.escalion.ru', 't.me'],
       remotePatterns: [
         {
           protocol: 'http',
@@ -73,6 +73,11 @@ module.exports = withFlowbiteReact(
         {
           protocol: 'https',
           hostname: 'res.cloudinary.com',
+          port: '',
+        },
+        {
+          protocol: 'https',
+          hostname: 'cloud.escalion.ru',
           port: '',
         },
         {

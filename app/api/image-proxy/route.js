@@ -9,7 +9,9 @@ const buildError = (type, message) => ({
 })
 
 const isAllowedHost = (hostname) =>
-  hostname === 'escalioncloud.ru' || hostname.endsWith('.escalioncloud.ru')
+  hostname === 'cloud.escalion.ru' ||
+  hostname === 'escalioncloud.ru' ||
+  hostname.endsWith('.escalioncloud.ru')
 
 export async function GET(request) {
   try {
@@ -42,7 +44,7 @@ export async function GET(request) {
       return Response.json(
         buildError(
           'VALIDATION_ERROR',
-          'Only escalioncloud.ru resources are allowed'
+          'Only cloud.escalion.ru resources are allowed'
         ),
         { status: 400 }
       )
@@ -82,4 +84,3 @@ export async function GET(request) {
     )
   }
 }
-

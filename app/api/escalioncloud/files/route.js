@@ -1,4 +1,4 @@
-const ESCALIONCLOUD_FILES_API_URL = 'https://api.escalioncloud.ru/api/files'
+const ESCALIONCLOUD_FILES_API_URL = 'https://cloud.escalion.ru/api/files'
 
 const buildError = (type, message) => ({
   success: false,

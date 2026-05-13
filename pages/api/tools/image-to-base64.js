@@ -1,4 +1,5 @@
 const ALLOWED_HOSTS = new Set([
+  'cloud.escalion.ru',
   'escalioncloud.ru',
   'api.escalioncloud.ru',
   'res.cloudinary.com',

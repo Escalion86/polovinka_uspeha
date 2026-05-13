@@ -25,14 +25,14 @@ const sendQuastion = async (quastion) => {
       //   // console.log('response :>> ', response)
       //   setFiles((state) =>
       //     state.filter(
-      //       (file) => file !== `https://escalioncloud.ru/uploads/${filePath}`
+      //       (file) => file !== `https://cloud.escalion.ru/uploads/${filePath}`
       //     )
       //   )
       // } else console.log('error response :>> ', response)
       // // setFiles(
       // //   response.map(
       // //     (fileName) =>
-      // //       `https://escalioncloud.ru/uploads/${directory ? directory + '/' : ''}${fileName}`
+      // //       `https://cloud.escalion.ru/uploads/${directory ? directory + '/' : ''}${fileName}`
       // //   ) || []
       // // )
       // // setFilesCount(response.length)

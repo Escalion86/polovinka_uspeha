@@ -107,7 +107,7 @@ const SelectImage = ({
         .map((part) => encodeURIComponent(part))
         .join('/')
 
-      return normalizeUploadsUrl(`https://escalioncloud.ru/uploads/${safePath}`)
+      return normalizeUploadsUrl(`https://cloud.escalion.ru/uploads/${safePath}`)
     },
     [imageFolder]
   )

@@ -50,7 +50,7 @@ import isObject from './isObject'
 //     }
 
 //     const queryString = new URLSearchParams(query).toString()
-//     const urlWithQuery = `https://api.escalioncloud.ru/api/files?${project}/${queryString}`
+//     const urlWithQuery = `https://cloud.escalion.ru/api/files?${project}/${queryString}`
 
 //     return await fetch(
 //       // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
@@ -206,7 +206,7 @@ export const sendImage = async (
 
 //     return await fetch(
 //       // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
-//       'https://api.escalioncloud.ru/api',
+//       'https://cloud.escalion.ru/api',
 //       {
 //         method: 'POST',
 //         body: formData,
