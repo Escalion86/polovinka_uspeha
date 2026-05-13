@@ -1,14 +1,23 @@
 'use client'
 
 import { atom } from 'jotai'
+import { RESET } from 'jotai/utils'
 
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
+import asyncEventsUsersFullByEventIdAtom from './asyncEventsUsersFullByEventIdAtom'
 
 const signOutUserSelector = atom(null, async (get, set, delEventUser) => {
   const { eventId, userId } = delEventUser
+
+  const isLoadedEventUsersFull = get(
+    isLoadedAtom('asyncEventsUsersFullByEventIdAtom' + eventId)
+  )
+  if (isLoadedEventUsersFull) {
+    await set(asyncEventsUsersFullByEventIdAtom(eventId), RESET)
+  }
 
   const isLoadedEventId = get(
     isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)

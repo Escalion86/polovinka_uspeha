@@ -2,14 +2,23 @@
 
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
+import { RESET } from 'jotai/utils'
 
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersFullByEventIdAtom from './asyncEventsUsersFullByEventIdAtom'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 
 const setEventsUsersSelector = atomFamily((eventId) =>
   atom(null, async (get, set, newEventsUsers) => {
+    const isLoadedEventUsersFull = get(
+      isLoadedAtom('asyncEventsUsersFullByEventIdAtom' + eventId)
+    )
+    if (isLoadedEventUsersFull) {
+      await set(asyncEventsUsersFullByEventIdAtom(eventId), RESET)
+    }
+
     const isLoadedEventId = get(
       isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
     )

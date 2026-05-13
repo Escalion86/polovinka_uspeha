@@ -1,15 +1,24 @@
 'use client'
 
 import { atom } from 'jotai'
+import { RESET } from 'jotai/utils'
 
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
+import asyncEventsUsersFullByEventIdAtom from './asyncEventsUsersFullByEventIdAtom'
 // import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const setEventUserSelector = atom(null, async (get, set, updateEventUser) => {
   const { _id, eventId, userId } = updateEventUser
+
+  const isLoadedEventUsersFull = get(
+    isLoadedAtom('asyncEventsUsersFullByEventIdAtom' + eventId)
+  )
+  if (isLoadedEventUsersFull) {
+    await set(asyncEventsUsersFullByEventIdAtom(eventId), RESET)
+  }
 
   const isLoadedEventId = get(
     isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
