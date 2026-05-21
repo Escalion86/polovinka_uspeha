@@ -82,5 +82,5 @@
 
 ## 6. Примеры из текущего кода
 - Унифицированный CRUD-ответ: `server/CRUD.js`
-- Публичный список городов: `pages/api/global/cities/public.js`
-- Телефония register/recovery: `pages/api/telefonip.js`
+- Публичный список городов: `app/api/global/cities/public/route.js`
+- Телефония register/recovery: `app/api/telefonip/route.js`

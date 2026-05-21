@@ -1,11 +1,11 @@
 # Архитектура проекта
 
 ## 1. Контекст
-`Половинка успеха` — мульти-локационная платформа офлайн-мероприятий (`krsk`, `nrsk`, `ekb`) с гибридной архитектурой Next.js:
-- App Router: актуальные пользовательские страницы (`app/*`)
-- Pages Router: API и часть legacy-путей (`pages/*`)
+`Половинка успеха` — мульти-локационная платформа офлайн-мероприятий (`krsk`, `nrsk`, `ekb`) на App Router:
+- App Router: пользовательские страницы и HTTP API (`app/*`)
+- Серверные обработчики API: `server/api/*`, подключаются через `app/api/**/route.js`
 
-Текущая версия: `2.0.28` (см. `package.json`).
+Текущая версия: см. `package.json`.
 
 ## 2. Технологический стек
 - Next.js 16 + React 19
@@ -25,15 +25,17 @@
 - `app/[location]/events/page.jsx`
 - `app/[location]/cabinet/page.jsx`
 - `app/api/auth/[...nextauth]/route.js` — NextAuth в App Router
-- `pages/api/*` — основной API слой проекта
+- `app/api/*` — HTTP API проекта
 
 ## 4. Границы слоев
 - `app/`, `components/`, `layouts/`, `blocks/`:
   UI-слой (презентация + клиентские сценарии)
 - `state/*`:
   глобальное состояние, derived-логика, триггеры модалок
-- `pages/api/*`:
+- `app/api/*`:
   HTTP endpoints (глобальные и локационные)
+- `server/api/*`:
+  бизнес-обработчики HTTP API, вынесенные из legacy Pages Router
 - `server/*`:
   бизнес-правила, guard-ы, auth, интеграции
 - `schemas/*`:
@@ -61,10 +63,11 @@
 
 ## 7. API слой
 Структура:
-- `pages/api/[location]/*` — доменные CRUD/операции по городу
-- `pages/api/global/*` — глобальные конфиги/справочники
-- `pages/api/telefonip.js` — регистрация/recovery через телефонию
-- `pages/api/cron.js` — фоновые рассылки/процессы
+- `app/api/[location]/*` — доменные CRUD/операции по городу
+- `app/api/global/*` — глобальные конфиги/справочники
+- `app/api/telefonip/route.js` — регистрация/recovery через телефонию
+- `app/api/cron/route.js` — фоновые рассылки/процессы
+- `server/api/*` — общий слой обработчиков, подключаемый route handler’ами
 
 Общий CRUD-движок:
 - `server/CRUD.js` используется множеством локационных endpoint’ов
@@ -78,10 +81,10 @@
 
 ## 9. Критичные зоны
 - Auth и сессии: `server/authOptions.js`
-- Рассылки/уведомления: `pages/api/cron.js`, `server/sendNewsletterMessages.js`
-- Роли/права: `pages/api/[location]/roles.js`, role selectors/guards
+- Рассылки/уведомления: `app/api/cron/route.js`, `server/sendNewsletterMessages.js`
+- Роли/права: `app/api/[location]/roles/route.js`, role selectors/guards
 - Городские политики и guard-ы: `server/getCityPolicy.js`, `server/assertCityOperationAllowed.js`
-- Телефония: `pages/api/telefonip.js`, `docs/TELEFONIP_PORTING_GUIDE.md`
+- Телефония: `app/api/telefonip/route.js`, `docs/TELEFONIP_PORTING_GUIDE.md`
 
 ## 10. Документы, которые читать первыми
 1. `AGENTS.md`

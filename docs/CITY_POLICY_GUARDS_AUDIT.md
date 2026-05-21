@@ -23,16 +23,16 @@
 - `Products`
 - `Payments`
 
-Это автоматически покрывает большинство endpoint’ов `pages/api/[location]/*`, использующих `CRUD`.
+Это автоматически покрывает большинство endpoint’ов `app/api/[location]/*`, использующих `CRUD`.
 
 ### 2.2 Ручные write-endpoint’ы вне CRUD
 Проверены и закрыты обходы:
 
-1. `pages/api/[location]/payments/autofill.js`
+1. `app/api/[location]/payments/autofill/route.js`
 - ранее: прямая запись `Payments.insertMany(...)` без city-guard
 - сейчас: добавлен `event_management` guard перед выполнением
 
-2. `pages/api/[location]/users/duplicates/merge.js`
+2. `app/api/[location]/users/duplicates/merge/route.js`
 - ранее: прямые изменения `Users` (`findByIdAndUpdate`, `deleteMany`) без city-guard
 - сейчас: добавлен `event_management` guard перед выполнением
 
@@ -67,7 +67,7 @@
 - `app/_components/location/LocationRegisterClient.jsx`
 
 Источник данных:
-- `pages/api/global/cities/access.js`
+- `app/api/global/cities/access/route.js`
 
 ## 5. Что осознанно не блокируется этим правилом
 - read-only сценарии (просмотр данных, отчеты, история)

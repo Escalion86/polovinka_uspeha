@@ -15,7 +15,7 @@
 
 2. Register:
 - UI: `app/_components/location/LocationRegisterClient.jsx`
-- сервер: `pages/api/telefonip.js` + создание локального `Users`
+- сервер: `app/api/telefonip/route.js` + создание локального `Users`
 
 3. Telegram auth:
 - NextAuth credentials provider `id: 'telegram'` в `server/authOptions.js`

@@ -138,6 +138,10 @@
   - перевести получение списка файлов на `https://cloud.escalion.ru/api/files`;
   - генерировать новые upload-ссылки через `https://cloud.escalion.ru/uploads`;
   - добавить dry-run/write скрипт замены старых доменов в городских и глобальной БД.
+- [x] INFRA-T2 Переезд API с Pages Router на App Router:
+  - вынести legacy-обработчики из `pages/api` в `server/api`;
+  - подключить все HTTP endpoint’ы через `app/api/**/route.js`;
+  - удалить runtime-зависимость от папки `pages`.
 
 ### Трек оптимизации state и клиентской архитектуры
 
@@ -222,7 +226,7 @@
 
 - [x] C1-T1 Базовая модель состояния города в глобальной БД (`active|closing|archived`):
   - расширить `schemas/globalContentSchema.js` полем `cityPolicies`;
-  - добавить API `pages/api/global/content/city-policies.js` (GET/POST).
+  - добавить API `app/api/global/content/city-policies/route.js` (GET/POST).
 - [x] C1-T2 Единый server-guard операций города:
   - добавить `server/getCityPolicy.js` и `server/assertCityOperationAllowed.js`;
   - режимы проверок: `registration`, `login`, `event_signup`, `event_management`, `public_listing`.
@@ -232,9 +236,9 @@
   - `allowEventManagement=false`;
   - `allowLogin=true` (только действующие пользователи и история).
 - [x] C1-T4 Интеграция guard в критичные API:
-  - `pages/api/telefonip.js` (блок регистрации для `nrsk`);
+  - `app/api/telefonip/route.js` (блок регистрации для `nrsk`);
   - `server/authOptions.js` (без создания новых пользователей в `nrsk`);
-  - `pages/api/[location]/eventsusers/index.js` (блок новых записей/отмен);
+  - `app/api/[location]/eventsusers/route.js` (блок новых записей/отмен);
   - `server/CRUD.js` (блок POST/PUT/DELETE для `Events` при архивном городе).
 - [x] C1-T5 Обновление пользовательских сценариев и витрины:
   - скрыть `nrsk` из публичного выбора города;
@@ -262,7 +266,7 @@
   - `slug` (уникальный id города), `title`, `status`, `isVisibleInPublicSelector`;
   - базовые параметры города (`timeZone`, `contactPhone`, `contactTelegram`);
   - feature-flags уровня города (`allowRegistration`, `allowLogin`, `allowEventSignup`, `allowEventManagement`, `allowPublicListing`).
-- [x] CITY-T2 API управления городами (`pages/api/global/cities/*`):
+- [x] CITY-T2 API управления городами (`app/api/global/cities/*`):
   - GET список городов и параметров;
   - POST создание города;
   - PUT обновление параметров города;
@@ -386,3 +390,4 @@
 - 2026-04-23: начат `STATE-T5`; для карточек мероприятий добавлен batched endpoint `events/card-state` и клиентский batching-cache для видимых карточек, чтобы бейдж свободных мест и правый нижний статус использовали единый summary без N+1 запросов к `/users/:id`.
 - 2026-04-28: добавлен SEO-трек; выполнен `SEO-T1` — подготовлены env-настройки для счетчиков Яндекс.Метрики/Google Analytics, опционального Webvisor и pageview-трекинга App Router; подтверждение Яндекс.Вебмастера/Google Search Console планируется через DNS.
 - 2026-05-13: добавлен и закрыт `INFRA-T1` — проект переведен на `cloud.escalion.ru`, добавлен скрипт миграции ссылок `scripts/migrate-escalioncloud-urls.cjs`.
+- 2026-05-21: добавлен и закрыт `INFRA-T2` — API перенесен с `pages/api` на `app/api`, обработчики вынесены в `server/api`, папка `pages` удалена из runtime-структуры.

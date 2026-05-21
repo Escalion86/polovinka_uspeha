@@ -371,7 +371,7 @@ NEXT_PUBLIC_VK_DEBUG_LOGS=true
 - `server/authOptions.js` (provider `id: 'vk'`)
 - `app/api/vk-id/callback/route.js`
 - `hooks/useVkAuthAvailability.js`
-- `pages/api/global/auth/vk-status.js`
+- `app/api/global/auth/vk-status/route.js`
 
 В ArtistCRM после адаптации:
 

@@ -59,7 +59,7 @@
 
 ## Технологический контур
 - Next.js 16, React 19
-- Гибрид роутинга: `app/` + `pages/`
+- Роутинг: App Router (`app/`) для страниц и API
 - MongoDB + Mongoose
 - NextAuth (credentials + telegram)
 - Jotai (глобальное состояние)
@@ -67,9 +67,9 @@
 - Интеграции: TELEFONIP, Telegram, WhatsApp, DeepSeek
 
 ## Карта проекта (важно)
-- `app/` — актуальные страницы (App Router) и клиентские entry-компоненты по локациям
-- `pages/` — legacy/доп. страницы и API routes
-- `pages/api/` — серверные endpoint'ы
+- `app/` — страницы App Router, API route handlers и клиентские entry-компоненты по локациям
+- `app/api/` — HTTP endpoint'ы
+- `server/api/` — серверные обработчики API, подключаемые через `app/api/**/route.js`
 - `components/` — переиспользуемые UI-компоненты
 - `layouts/` — карточки, контент, модалки, обертки
 - `state/` — Jotai atoms/selectors/async-логика (включая систему модалок)
@@ -97,13 +97,13 @@
 
 ## Критичные зоны (повышенная осторожность)
 - Авторизация и сессии (`server/authOptions.js`, login/register flow)
-- Рассылки и уведомления (Telegram/WhatsApp/email, `pages/api/cron.js`, `server/sendNewsletterMessages.js`)
+- Рассылки и уведомления (Telegram/WhatsApp/email, `app/api/cron/route.js`, `server/sendNewsletterMessages.js`)
 - Роли и права доступа (role settings, проверки в UI/сервере)
 - Система модалок (Jotai + `state/modalsFuncAtom.js` + `layouts/modals/*`)
 
 ## Порядок действий при неопределенности
 1. Сначала искать информацию в `docs/*`.
-2. Затем проверять реальное использование в `server/*`, `pages/api/*`, `state/*`.
+2. Затем проверять реальное использование в `server/*`, `app/api/*`, `state/*`.
 3. Только после этого предлагать изменение или задавать уточняющий вопрос.
 
 ## Минимальный чек перед сдачей изменений
@@ -135,4 +135,4 @@
 - Прочее: `DOMAIN`, `MODE`, `TELEGRAM_NOTIFICATION_DEV_ONLY`, `DEEPSEEK_KEY`
 
 ## Примечание по архитектуре
-Проект содержит смесь нового и legacy-кода (`app/` и `pages/` одновременно). Перед правками проверяй, где реально используется функциональность, чтобы не поломать параллельный путь.
+Проект перешел на App Router для страниц и API. Перед правками проверяй, где реально используется функциональность, чтобы не поломать параллельный путь клиентских сценариев и серверных обработчиков.

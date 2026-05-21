@@ -5,7 +5,6 @@
       "@components/*": ["components/*"],
       "@helpers/*": ["helpers/*"],
       "@hooks/*": ["hooks/*"],
-      "@pages/*": ["pages/*"],
       "@models/*": ["models/*"],
       "@utils/*": ["utils/*"],
       "@server/*": ["server/*"],
