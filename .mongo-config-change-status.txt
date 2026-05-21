@@ -1,6 +1,0 @@
-﻿
-Name     Status StartType
-----     ------ ---------
-MongoDB Running Automatic
-
-

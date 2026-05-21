@@ -7,6 +7,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -131,7 +132,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     )
 
     const [likes, setLikes] = useState(eventUser?.likes ?? [])
-    const isModalButtonsConfiguredRef = useRef(false)
     const lastCloseButtonNameRef = useRef(null)
     const lastTitleRef = useRef(null)
     const initializedEventUserIdRef = useRef(null)
@@ -144,6 +144,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
     const setEventUserData = useAtomValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+    const snackbar = useAtomValue(snackbarAtom)
 
     useEffect(() => {
       likesRef.current = likes
@@ -196,16 +197,25 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     )
 
     const onCloseButtonClick = useCallback(async () => {
+      const isFirstEmptyChoice =
+        eventUserLikesRef.current === null ||
+        typeof eventUserLikesRef.current === 'undefined'
+
       if (
         isLikesProcessActiveRef.current &&
         (!likesRef.current || likesRef.current.length === 0) &&
-        eventUserLikesRef.current === null
+        isFirstEmptyChoice
       ) {
-        await saveLikes([])
+        const savedEventUsers = await saveLikes([])
+        if (savedEventUsers) {
+          likesRef.current = []
+          eventUserLikesRef.current = []
+          snackbar?.success?.('Ваш выбор никому не ставить лайки принят')
+        }
       }
 
       closeModal()
-    }, [closeModal, saveLikes])
+    }, [closeModal, saveLikes, snackbar])
 
     useEffect(() => {
       if (
@@ -243,9 +253,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     // }
 
     useEffect(() => {
-      if (isModalButtonsConfiguredRef.current) return
-      isModalButtonsConfiguredRef.current = true
-
       setOnConfirmFunc(undefined)
       setOnDeclineFunc(undefined)
       setOnCloseButtonFunc(onCloseButtonClick)
@@ -266,7 +273,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       const genderSuffix = user?.gender === 'male' ? '' : 'а'
       const nextCloseButtonName =
         event?.likesProcessActive && (!likes || likes.length === 0)
-          ? `Решил${genderSuffix} никому не ставить лайк`
+          ? `Решил${genderSuffix} никому не ставить лайки`
           : 'Закрыть'
 
       if (lastCloseButtonNameRef.current === nextCloseButtonName) return
