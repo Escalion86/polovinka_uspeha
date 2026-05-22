@@ -62,6 +62,12 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+const getApiErrorData = (error) => error?.data?.data || error?.data
+const getApiErrorMessage = (apiErrorData) =>
+  typeof apiErrorData?.error === 'string'
+    ? apiErrorData.error
+    : apiErrorData?.error?.message
+
 const messages = {
   event: {
     update: {
@@ -640,6 +646,19 @@ const itemsFuncGenerator = (get, set) => {
         }
       },
       (error) => {
+        const apiErrorData = getApiErrorData(error)
+        const apiErrorMessage = getApiErrorMessage(apiErrorData)
+        if (apiErrorMessage) {
+          snackbar.error(
+            `Не удалось записаться${
+              status === 'reserve' ? ' в резерв' : ''
+            } на мероприятие, так как ${apiErrorMessage}`
+          )
+          setNotLoadingCard('event' + eventId)
+          if (typeof onError === 'function') onError(apiErrorData)
+          return
+        }
+
         snackbar.error(
           `Не удалось записаться${
             status === 'reserve' ? ' в резерв' : ''

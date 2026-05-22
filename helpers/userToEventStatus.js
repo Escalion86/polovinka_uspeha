@@ -1,4 +1,3 @@
-import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
 import { DEFAULT_EVENT } from './constantsServer'
 import isEventCanceledFunc from './isEventCanceled'
@@ -6,7 +5,6 @@ import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
-import store from '@state/store'
 
 const userToEventStatus = ({
   event,
@@ -15,6 +13,7 @@ const userToEventStatus = ({
   subEventSum,
   rules,
   activeRoleName,
+  serverDate = new Date(),
   ignoreEventIsExpired = false,
 }) => {
   if (!event?._id)
@@ -38,8 +37,8 @@ const userToEventStatus = ({
   const isEventHidden = !event.showOnSite
   const isEventExpired = ignoreEventIsExpired
     ? undefined
-    : isEventExpiredFunc(event)
-  const isEventInProcess = isEventInProcessFunc(event)
+    : isEventExpiredFunc(event, serverDate)
+  const isEventInProcess = isEventInProcessFunc(event, serverDate)
 
   if (event.blank) {
     return {
@@ -110,7 +109,6 @@ const userToEventStatus = ({
 
   const canSignOut = alreadySignIn && !isEventExpired
 
-  const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
   const userAge = new Number(
     birthDateToAge(user.birthday, serverDate, false, false)
   )

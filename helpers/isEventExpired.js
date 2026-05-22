@@ -3,10 +3,15 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import store from '@state/store'
 // import getMinutesBetween from './getMinutesBetween'
 
-const isEventExpired = (event) => {
+const getServerDate = (serverDate) =>
+  serverDate ||
+  (typeof store?.get === 'function' && store.get(serverSettingsAtom)?.dateTime
+    ? new Date(store.get(serverSettingsAtom).dateTime)
+    : new Date())
+
+const isEventExpired = (event, serverDate) => {
   if (!event) return
-  const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
-  return getDiffBetweenDates(event?.dateEnd, serverDate) >= 0
+  return getDiffBetweenDates(event?.dateEnd, getServerDate(serverDate)) >= 0
 }
 // getMinutesBetween(event.date) >= (event.duration ?? 0)
 

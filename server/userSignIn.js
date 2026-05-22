@@ -10,6 +10,15 @@ import userToEventStatus from '@helpers/userToEventStatus'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { syncEventUsersGoogleCalendar } from './userGoogleCalendar'
 
+const sendSignupError = (res, message, status = 202, extraData = {}) => {
+  const result = {
+    success: false,
+    data: { error: message, ...extraData },
+  }
+  res?.status(status).json(result)
+  return result
+}
+
 const userSignIn = async ({
   req,
   res,
@@ -27,35 +36,18 @@ const userSignIn = async ({
     // Проверка что пользователь заполнил анкету и вообще существует
     const user = await db.model('Users').findById(userId).lean()
     if (!user) {
-      const result = {
-        success: false,
-        data: { error: `пользователя не существует` },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'пользователя не существует')
     }
 
     if (!isUserQuestionnaireFilled(user)) {
-      const result = {
-        success: false,
-        data: { error: `анкета пользователя не заполнена` },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'анкета пользователя не заполнена')
     }
 
     // Теперь проверяем есть ли место
     const event = await db.model('Events').findById(eventId).lean()
 
     if (!event) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие удалено`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'мероприятие удалено')
     }
     // Сначала проверяем есть ли такой пользователь в мероприятии
     const eventUser = await db
@@ -64,66 +56,29 @@ const userSignIn = async ({
       .lean()
 
     if (eventUser) {
-      const result = {
-        success: false,
-        data: { error: 'вы уже зарегистрированы на мероприятие' },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'вы уже зарегистрированы на мероприятие')
     }
 
     if (!event.showOnSite) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие закрыто для записи`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'мероприятие закрыто для записи')
     }
     // Скрыто ли мероприятие?
     if (event.blank) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие пустое, на него невозможно записаться`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(
+        res,
+        'мероприятие пустое, на него невозможно записаться'
+      )
     }
     // Закрыто ли мероприятие?
     if (isEventExpired(event)) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие завершено`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'мероприятие завершено')
     }
 
     if (isEventCanceled(event)) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие отменено`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'мероприятие отменено')
     }
     if (isEventClosed(event)) {
-      const result = {
-        success: false,
-        data: {
-          error: `мероприятие закрыто`,
-        },
-      }
-      res?.status(400).json(result)
-      return result
+      return sendSignupError(res, 'мероприятие закрыто')
     }
     const subEvent = subEventId
       ? event.subEvents.find(({ id }) => subEventId === id)
@@ -442,20 +397,38 @@ const userSignIn = async ({
       userId,
     })
 
-    // Оповещение в телеграм
-    eventUsersTelegramNotification({
-      req,
-      eventId,
-      addedEventUsers: [newEventUserJson],
-      itIsSelfRecord: true,
-      location,
-    })
+    try {
+      // Оповещение в телеграм
+      eventUsersTelegramNotification({
+        req,
+        eventId,
+        addedEventUsers: [newEventUserJson],
+        itIsSelfRecord: true,
+        location,
+      })
+    } catch (notificationError) {
+      console.log('[userSignIn] notification error:', {
+        location,
+        eventId,
+        userId,
+        message: notificationError?.message || String(notificationError),
+      })
+    }
 
-    await syncEventUsersGoogleCalendar({
-      db,
-      location,
-      eventUsers: [newEventUserJson],
-    })
+    try {
+      await syncEventUsersGoogleCalendar({
+        db,
+        location,
+        eventUsers: [newEventUserJson],
+      })
+    } catch (calendarError) {
+      console.log('[userSignIn] google calendar sync error:', {
+        location,
+        eventId,
+        userId,
+        message: calendarError?.message || String(calendarError),
+      })
+    }
 
     const result = { success: true, data: newEventUserJson }
     res?.status(201).json(result)
