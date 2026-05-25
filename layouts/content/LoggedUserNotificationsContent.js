@@ -373,10 +373,6 @@ const LoggedUserNotificationsContent = () => {
     const swCandidates = [
       `/${location}/push-sw.js`,
       '/push-sw.js',
-      `/${location}/sw.js`,
-      '/sw.js',
-      `/${location}/service-worker.js`,
-      '/service-worker.js',
     ]
     const swResult = await waitForServiceWorkerRegistration({
       scriptUrls: swCandidates,
@@ -420,10 +416,6 @@ const LoggedUserNotificationsContent = () => {
     const swCandidates = [
       `/${location}/push-sw.js`,
       '/push-sw.js',
-      `/${location}/sw.js`,
-      '/sw.js',
-      `/${location}/service-worker.js`,
-      '/service-worker.js',
     ]
     const swResult = await waitForServiceWorkerRegistration({
       scriptUrls: swCandidates,
@@ -586,10 +578,6 @@ const LoggedUserNotificationsContent = () => {
       const swCandidates = [
         `/${location}/push-sw.js`,
         '/push-sw.js',
-        `/${location}/sw.js`,
-        '/sw.js',
-        `/${location}/service-worker.js`,
-        '/service-worker.js',
       ]
       const swResult = await waitForServiceWorkerRegistration({
         scriptUrls: swCandidates,

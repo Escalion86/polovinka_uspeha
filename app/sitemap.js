@@ -1,9 +1,8 @@
-import getPublicCitiesCatalog from '@server/getPublicCitiesCatalog'
-import { getSiteUrl } from '@server/seo'
+import { getKnownLocations, getSiteUrl } from '@server/seo'
 
 export default async function sitemap() {
   const siteUrl = getSiteUrl()
-  const cities = await getPublicCitiesCatalog()
+  const cities = getKnownLocations().map((slug) => ({ slug }))
   const now = new Date()
 
   const base = [
@@ -49,4 +48,3 @@ export default async function sitemap() {
 
   return [...base, ...cityPages]
 }
-

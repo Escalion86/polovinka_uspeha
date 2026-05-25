@@ -10,7 +10,6 @@ module.exports = [
       'node_modules/**',
       '_old_files/**',
       '.flowbite-react/**',
-      'public/sw.js',
       'app2/**',
     ],
   },

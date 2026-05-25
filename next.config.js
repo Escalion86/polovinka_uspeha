@@ -1,4 +1,3 @@
-const path = require('path')
 const packageJson = require('./package.json')
 
 const buildId =
@@ -12,19 +11,10 @@ const buildId =
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
-const withFlowbiteReact = require('flowbite-react/plugin/nextjs')
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-  swSrc: 'service-worker.js',
-})
-
-module.exports = withFlowbiteReact(
+module.exports =
   //withBundleAnalyzer()
-  withPWA({
+  {
     // webpack: (config) => {
     //   config.resolve.alias = {
     //     ...config.resolve.alias,
@@ -43,7 +33,6 @@ module.exports = withFlowbiteReact(
     //   return config
     // },
     // swcMinify: false,
-    output: 'standalone',
     env: {
       NEXT_PUBLIC_APP_VERSION: packageJson.version,
       NEXT_PUBLIC_BUILD_ID: buildId,
@@ -51,6 +40,7 @@ module.exports = withFlowbiteReact(
     generateBuildId: async () => buildId,
     experimental: {
       largePageDataBytes: 512 * 100000,
+      optimizePackageImports: ['flowbite-react'],
     },
     reactStrictMode: true,
     async redirects() {
@@ -118,5 +108,4 @@ module.exports = withFlowbiteReact(
 
     //   return config
     // },
-  })
-)
+  }

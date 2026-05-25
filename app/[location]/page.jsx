@@ -6,7 +6,7 @@ import { getLocationTitle, getSiteUrl, getKnownLocations } from '@server/seo'
 import getGlobalAboutSpaceCards from '@server/getGlobalAboutSpaceCards'
 import getLocationLandingInitialData from '@server/getLocationLandingInitialData'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 export const dynamicParams = false
 
 export async function generateMetadata({ params }) {

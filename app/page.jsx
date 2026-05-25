@@ -1,9 +1,9 @@
 import RootPageClient from './_components/root/RootPageClient'
+import { getSiteUrl } from '@server/seo'
 import getPublicCitiesCatalog from '@server/getPublicCitiesCatalog'
 import getGlobalAboutSpaceCards from '@server/getGlobalAboutSpaceCards'
-import { getSiteUrl } from '@server/seo'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 const siteUrl = getSiteUrl()
 
@@ -44,4 +44,3 @@ export default async function RootPage() {
     />
   )
 }
-
