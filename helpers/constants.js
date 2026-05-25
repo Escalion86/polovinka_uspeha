@@ -2013,8 +2013,10 @@ export const CONTENTS = Object.freeze({
     Component: UserStatisticsContent,
     name: 'Моя статистика',
     roleAccess: (role, status) =>
-      (role?.dev || role.president) &&
-      (role?.seeMyStatistics || status === 'member'),
+      status === 'member' ||
+      role?.seeMyStatistics ||
+      role?.dev ||
+      role?.president,
   },
   referrals: {
     Component: ReferralsContent,

@@ -24,7 +24,7 @@ const analyticsConfig = getAnalyticsConfig()
 export const metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: 'Центр серьёзных знакомств - «Половинка успеха»',
+    default: 'Пространство живых встреч - «Половинка успеха»',
     template: '%s | Половинка успеха',
   },
   description:
@@ -36,15 +36,14 @@ export const metadata = {
     type: 'website',
     locale: 'ru_RU',
     siteName: 'Половинка успеха',
-    title: 'Центр серьёзных знакомств - «Половинка успеха»',
+    title: 'Пространство живых встреч - «Половинка успеха»',
     description:
       'Половинка успеха - проект живых встреч и знакомств через офлайн-мероприятия.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Половинка успеха',
-    description:
-      'Проект живых офлайн-встреч и знакомств в разных городах.',
+    description: 'Проект живых офлайн-встреч и знакомств в разных городах.',
   },
   applicationName: 'Приложение «Половинка успеха»',
   manifest: '/manifest.webmanifest',
@@ -185,4 +184,3 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
-

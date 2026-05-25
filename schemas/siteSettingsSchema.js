@@ -139,7 +139,7 @@ const siteSettingsSchema = {
   },
   title: {
     type: String,
-    default: 'Центр серёзных знакомств',
+    default: 'Пространство живых встреч - «Половинка успеха»',
   },
   subtitle: {
     type: String,
