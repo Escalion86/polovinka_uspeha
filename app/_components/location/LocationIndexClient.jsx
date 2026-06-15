@@ -870,7 +870,7 @@ export default function LocationIndexClient({
                 setMenuOpen(false)
                 navigateWithLoading(
                   `/${defaultLocation}/login`,
-                  'Откраваем страниццу авторизации'
+                  'Открываем страницу авторизации'
                 )
               }}
               disabled={Boolean(openingMessage)}
