@@ -635,16 +635,19 @@ const Register3Inner = ({ location }) => {
                 ) : null}
 
                 {backCallRes?.auth_phone ? (
-                  <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4">
+                  <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 text-center">
                     <div className="text-sm text-[#5d4a52]">
                       Позвоните по номеру (это бесплатно)
                     </div>
                     <a
                       href={`tel:+${backCallRes.auth_phone}`}
-                      className="mt-2 inline-flex text-lg font-semibold text-[#6b1f2a]"
+                      className="mt-2 inline-flex justify-center text-lg font-semibold text-[#6b1f2a]"
                     >
                       {`+${backCallRes.auth_phone}`}
                     </a>
+                    <div className="mt-1 text-xs text-[#5d4a52] md:hidden">
+                      (нажмите на номер, чтобы позвонить на него)
+                    </div>
                   </div>
                 ) : null}
 

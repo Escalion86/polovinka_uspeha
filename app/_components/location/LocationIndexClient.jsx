@@ -165,8 +165,7 @@ const AuthorizeButton = ({ onClick, disabled = false }) => (
     disabled={disabled}
   >
     <div className="flex flex-col items-center justify-center leading-5">
-      <div className="font-semibold uppercase">Присоединиться к нам</div>
-      <div>(зарегистрироваться)</div>
+      <div className="font-semibold uppercase">Зарегистрироваться</div>
     </div>
   </button>
 )

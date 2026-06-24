@@ -232,162 +232,163 @@ export default function LocationLoginClient({
   return (
     <>
       <AuthSplitLayout
-      leftPanel={
-        <>
-          <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
-            Войдите в пространство живых встреч
-          </h1>
-          <p className="max-w-[520px] text-[18px] leading-relaxed text-[#3a2c33]">
-            Личный кабинет помогает быстро записываться на мероприятия, следить
-            за статусом заявок и получать персональные рекомендации.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
-              <div className="text-[16px] font-semibold text-[#6b1f2a]">
-                Живые встречи
+        leftPanel={
+          <>
+            <h1 className="font-bold font-lora text-[clamp(28px,3vw,44px)] leading-tight text-[#2b1b21]">
+              Войдите в пространство живых встреч
+            </h1>
+            <p className="max-w-[520px] text-[18px] leading-relaxed text-[#3a2c33]">
+              Личный кабинет помогает быстро записываться на мероприятия,
+              следить за статусом заявок и получать персональные рекомендации.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
+                <div className="text-[16px] font-semibold text-[#6b1f2a]">
+                  Живые встречи
+                </div>
+                <div className="mt-2 text-[16px] text-[#3a2c33]">
+                  Настоящие эмоции без ожиданий и масок.
+                </div>
               </div>
-              <div className="mt-2 text-[16px] text-[#3a2c33]">
-                Настоящие эмоции без ожиданий и масок.
-              </div>
-            </div>
-            <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
-              <div className="text-[16px] font-semibold text-[#6b1f2a]">
-                Удобный доступ
-              </div>
-              <div className="mt-2 text-[16px] text-[#3a2c33]">
-                Всё в одном месте: события, заявки и новости.
-              </div>
-            </div>
-          </div>
-        </>
-      }
-      rightPanel={
-        <>
-          <div className="flex flex-col items-center gap-4">
-            <img
-              src="/img/logo.webp"
-              alt="Половинка успеха"
-              className="object-contain rounded-full w-30 h-30"
-            />
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[#2b1b21]">
-                Авторизация
-              </div>
-              <div className="text-sm text-[#5d4a52]">
-                Введите телефон и пароль
+              <div className="rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white/80 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
+                <div className="text-[16px] font-semibold text-[#6b1f2a]">
+                  Удобный доступ
+                </div>
+                <div className="mt-2 text-[16px] text-[#3a2c33]">
+                  Всё в одном месте: события, заявки и новости.
+                </div>
               </div>
             </div>
-          </div>
+          </>
+        }
+        rightPanel={
+          <>
+            <div className="flex flex-col items-center gap-4">
+              <img
+                src="/img/logo.webp"
+                alt="Половинка успеха"
+                className="object-contain rounded-full w-30 h-30"
+              />
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#2b1b21]">
+                  Авторизация
+                </div>
+                <div className="text-sm text-[#5d4a52]">
+                  Введите телефон и пароль
+                </div>
+              </div>
+            </div>
 
-          <div className="mt-6 grid gap-4">
-            {shouldShowTransferNotice ? (
-              <div className="rounded-2xl border border-[rgba(107,31,42,0.18)] bg-[#fff8fa] p-4 shadow-[0_10px_18px_rgba(107,31,42,0.08)]">
-                <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
-                  Город в режиме закрытия
+            <div className="mt-6 grid gap-4">
+              {shouldShowTransferNotice ? (
+                <div className="rounded-2xl border border-[rgba(107,31,42,0.18)] bg-[#fff8fa] p-4 shadow-[0_10px_18px_rgba(107,31,42,0.08)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
+                    Город в режиме закрытия
+                  </div>
+                  <div className="mt-2 text-sm leading-relaxed text-[#3a2c33]">
+                    В городе {currentCityTitle || location} личный кабинет
+                    доступен только в ограниченном режиме. Для новых действий
+                    перейдите в активный город:
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {alternativeLoginCities.map((city) => (
+                      <Link
+                        key={city.slug}
+                        href={`/${city.slug}/login`}
+                        className="rounded-full border border-[rgba(107,31,42,0.18)] bg-white px-4 py-1.5 text-xs font-semibold text-[#6b1f2a] transition hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(107,31,42,0.12)]"
+                      >
+                        {city.title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-2 text-sm leading-relaxed text-[#3a2c33]">
-                  В городе {currentCityTitle || location} личный кабинет доступен
-                  только в ограниченном режиме. Для новых действий перейдите в
-                  активный город:
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {alternativeLoginCities.map((city) => (
-                    <Link
-                      key={city.slug}
-                      href={`/${city.slug}/login`}
-                      className="rounded-full border border-[rgba(107,31,42,0.18)] bg-white px-4 py-1.5 text-xs font-semibold text-[#6b1f2a] transition hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(107,31,42,0.12)]"
-                    >
-                      {city.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : null}
+              ) : null}
 
-            {isVkAuthEnabled ? (
-              <>
-                <VkIdOneTapAuth
-                  location={location}
-                  mode="login"
-                  onSuccess={async () => {
-                    await routeAfterLogin(router, location)
-                  }}
-                  onError={(message) => {
-                    setError(message || 'Не удалось выполнить вход через VK ID')
-                  }}
-                  onAccountNotFound={handleVkAccountNotFound}
-                />
-                <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
-                  или войдите по номеру телефона
-                </div>
-                {/* <div className="-mt-2 text-center text-[11px] leading-relaxed text-[#5d4a52]">
+              {isVkAuthEnabled ? (
+                <>
+                  <VkIdOneTapAuth
+                    location={location}
+                    mode="login"
+                    onSuccess={async () => {
+                      await routeAfterLogin(router, location)
+                    }}
+                    onError={(message) => {
+                      setError(
+                        message || 'Не удалось выполнить вход через VK ID'
+                      )
+                    }}
+                    onAccountNotFound={handleVkAccountNotFound}
+                  />
+                  <div className="text-center text-xs uppercase tracking-[0.1em] text-[#6b1f2a]/55">
+                    или войдите по номеру телефона
+                  </div>
+                  {/* <div className="-mt-2 text-center text-[11px] leading-relaxed text-[#5d4a52]">
                     При входе через VK ID используются данные вашего VK-профиля.
                   </div> */}
-              </>
-            ) : null}
-          </div>
+                </>
+              ) : null}
+            </div>
 
-          <form className="grid gap-4 mt-4" onSubmit={handleSubmit}>
+            <form className="grid gap-4 mt-4" onSubmit={handleSubmit}>
+              <AuthField label="Телефон">
+                <InputMask
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  mask={PHONE_MASK}
+                  replacement={PHONE_REPLACEMENT}
+                  showMask={phoneFocused}
+                  value={phoneDisplayValue}
+                  onFocus={() => setPhoneFocused(true)}
+                  onBlur={() => setPhoneFocused(false)}
+                  onChange={handlePhoneChange}
+                  placeholder="+7 (___) ___-__-__"
+                  className={AUTH_INPUT_CLASS}
+                />
+              </AuthField>
+              <AuthField label="Пароль">
+                <AuthInput
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="Введите пароль"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+              </AuthField>
+              {error ? (
+                <div className="text-sm text-[#b4232d]">{error}</div>
+              ) : null}
+              <AuthButton type="submit" disabled={loading} aria-busy={loading}>
+                {loading ? 'Входим...' : 'Войти в пространство'}
+              </AuthButton>
+              <AuthButton
+                type="button"
+                variant="secondary"
+                onClick={handleRegistration}
+              >
+                Зарегиистрироваться
+              </AuthButton>
+            </form>
 
-            <AuthField label="Телефон">
-              <InputMask
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                mask={PHONE_MASK}
-                replacement={PHONE_REPLACEMENT}
-                showMask={phoneFocused}
-                value={phoneDisplayValue}
-                onFocus={() => setPhoneFocused(true)}
-                onBlur={() => setPhoneFocused(false)}
-                onChange={handlePhoneChange}
-                placeholder="+7 (___) ___-__-__"
-                className={AUTH_INPUT_CLASS}
-              />
-            </AuthField>
-            <AuthField label="Пароль">
-              <AuthInput
-                type="password"
-                autoComplete="current-password"
-                placeholder="Введите пароль"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </AuthField>
-            {error ? (
-              <div className="text-sm text-[#b4232d]">{error}</div>
-            ) : null}
-            <AuthButton type="submit" disabled={loading} aria-busy={loading}>
-              {loading ? 'Входим...' : 'Войти в пространство'}
-            </AuthButton>
-            <AuthButton
-              type="button"
-              variant="secondary"
-              onClick={handleRegistration}
-            >
-              Присоединиться к нам
-            </AuthButton>
-          </form>
-
-          <div className="mt-6 text-center text-sm text-[#5d4a52]">
-            Забыли пароль?{' '}
-            <Link
-              href={`/${location}/recovery`}
-              className="font-semibold text-[#6b1f2a]"
-            >
-              Восстановить
-            </Link>
-          </div>
-          <div className="mt-3 text-center text-sm text-[#5d4a52]">
-            <Link
-              href={`/${location}`}
-              className="font-semibold text-[#6b1f2a]"
-            >
-              Перейти на главную страницу
-            </Link>
-          </div>
-        </>
-      }
+            <div className="mt-6 text-center text-sm text-[#5d4a52]">
+              Забыли пароль?{' '}
+              <Link
+                href={`/${location}/recovery`}
+                className="font-semibold text-[#6b1f2a]"
+              >
+                Восстановить
+              </Link>
+            </div>
+            <div className="mt-3 text-center text-sm text-[#5d4a52]">
+              <Link
+                href={`/${location}`}
+                className="font-semibold text-[#6b1f2a]"
+              >
+                Перейти на главную страницу
+              </Link>
+            </div>
+          </>
+        }
       />
       <ModalsPortal />
     </>
