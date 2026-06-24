@@ -279,7 +279,7 @@ export default function LocationLoginClient({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4">
+            <div className="grid gap-4 mt-6">
               {shouldShowTransferNotice ? (
                 <div className="rounded-2xl border border-[rgba(107,31,42,0.18)] bg-[#fff8fa] p-4 shadow-[0_10px_18px_rgba(107,31,42,0.08)]">
                   <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b1f2a]">
@@ -290,7 +290,7 @@ export default function LocationLoginClient({
                     доступен только в ограниченном режиме. Для новых действий
                     перейдите в активный город:
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mt-3">
                     {alternativeLoginCities.map((city) => (
                       <Link
                         key={city.slug}
@@ -366,7 +366,7 @@ export default function LocationLoginClient({
                 variant="secondary"
                 onClick={handleRegistration}
               >
-                Зарегиистрироваться
+                Зарегистрироваться
               </AuthButton>
             </form>
 
