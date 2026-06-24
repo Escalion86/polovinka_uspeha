@@ -50,25 +50,29 @@ const buildMaskedPhone = (phone, focused) => {
   }
 }
 
-const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
-  fetch('/api/enquiry', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      gRecaptchaToken: gReCaptchaToken,
-    }),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res?.status === 'success') {
-        onSuccess()
-      } else {
-        onError()
-      }
+const submitEnquiryForm = async (gReCaptchaToken, onSuccess, onError) => {
+  try {
+    const response = await fetch('/api/enquiry', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        gRecaptchaToken: gReCaptchaToken,
+      }),
     })
+    const res = await response.json()
+
+    if (response.ok && res?.status === 'success') {
+      await onSuccess()
+      return
+    }
+
+    onError()
+  } catch {
+    onError()
+  }
 }
 
 const defaultErrors = {
@@ -221,8 +225,9 @@ const Register3Inner = ({ location }) => {
     }
 
     setWaiting(true)
-    executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken) => {
-      submitEnquiryForm(
+    try {
+      const gReCaptchaToken = await executeRecaptcha('enquiryFormSubmit')
+      await submitEnquiryForm(
         gReCaptchaToken,
         async () => {
           const res = await postData(
@@ -277,7 +282,13 @@ const Register3Inner = ({ location }) => {
           })
         }
       )
-    })
+    } catch {
+      setWaiting(false)
+      setErrors({
+        ...defaultErrors,
+        general: 'Система проверки недоступна. Попробуйте позже.',
+      })
+    }
   }, [
     isRegistrationAllowed,
     currentCityTitle,
