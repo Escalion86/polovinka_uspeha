@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import BlockContainer from '@components/BlockContainer'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import Image from 'next/image'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
 const CONTACT_IMAGE_DIMENSIONS = {
   '/img/contacts/phone.png': { width: 280, height: 280 },
@@ -36,6 +37,10 @@ const ContactImage = ({ src, href, alt }) => {
 
 const ContactsBlock = () => {
   const siteSettings = useAtomValue(siteSettingsAtom)
+  const telegramContact = getTelegramContactLink({
+    telegram: siteSettings?.telegram,
+    phone: siteSettings?.phone,
+  })
 
   return (
     <BlockContainer id="contacts" small title="Контакты">
@@ -54,10 +59,10 @@ const ContactsBlock = () => {
             alt="Перейти в Instagram"
           />
         )}
-        {siteSettings?.telegram && (
+        {siteSettings?.telegram && telegramContact && (
           <ContactImage
             src="/img/contacts/telegram.webp"
-            href={'tg://resolve?domain=@' + siteSettings.telegram}
+            href={telegramContact.href}
             alt="Написать в Telegram"
           />
         )}

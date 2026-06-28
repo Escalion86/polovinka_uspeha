@@ -44,6 +44,19 @@ test('telegram contact link uses domain for usernames with letters', () => {
   )
 })
 
+test('telegram contact link strips repeated leading at signs from usernames', () => {
+  const { getTelegramContactLink } = loadHelper()
+
+  assert.deepEqual(
+    plainObject(getTelegramContactLink({ telegram: '@@friend_name123' })),
+    {
+      href: 'tg://resolve?domain=@friend_name123',
+      title: '@friend_name123',
+      type: 'domain',
+    }
+  )
+})
+
 test('telegram contact link uses phone for numeric telegram values', () => {
   const { getTelegramContactLink } = loadHelper()
 

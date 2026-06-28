@@ -7,80 +7,89 @@ import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import TelegramIcon from '@svg/TelegramIcon'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
-const FabItem = ({ text, whatsapp, telegram, show }) => (
-  <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">
-    <div className="flex items-center justify-center gap-x-2">
-      {whatsapp && (
-        <a
-          className="z-10 duration-300 hover:brightness-125"
-          target="_blank"
-          href={'https://wa.me/' + whatsapp}
-        >
-          <m.div
-            initial={{ scale: 0, rotate: -180 }}
-            transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
-            animate={{
-              scale: show ? 1 : 0,
-              rotate: show ? 0 : -180,
-            }}
-            className={cn(
-              'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
-              'bg-green-700'
-            )}
+const FabItem = ({ text, whatsapp, telegram, show }) => {
+  const telegramContact = getTelegramContactLink({ telegram })
+
+  return (
+    <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">
+      <div className="flex items-center justify-center gap-x-2">
+        {whatsapp && (
+          <a
+            className="z-10 duration-300 hover:brightness-125"
+            target="_blank"
+            href={'https://wa.me/' + whatsapp}
           >
-            <FontAwesomeIcon
-              className="z-10 text-white w-7 h-7 max-w-7 max-h-7"
-              icon={faWhatsapp}
-            />
-          </m.div>
-        </a>
-      )}
-      {telegram && (
-        <a
-          className="z-10 duration-300 hover:brightness-125"
-          target="_blank"
-          href={'tg://resolve?domain=@' + telegram}
-        >
-          <m.div
-            initial={{ scale: 0, rotate: -180 }}
-            transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
-            animate={{
-              scale: show ? 1 : 0,
-              rotate: show ? 0 : -180,
-            }}
-            className={cn(
-              'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
-              'bg-blue-500'
-            )}
+            <m.div
+              initial={{ scale: 0, rotate: -180 }}
+              transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
+              animate={{
+                scale: show ? 1 : 0,
+                rotate: show ? 0 : -180,
+              }}
+              className={cn(
+                'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+                'bg-green-700'
+              )}
+            >
+              <FontAwesomeIcon
+                className="z-10 text-white w-7 h-7 max-w-7 max-h-7"
+                icon={faWhatsapp}
+              />
+            </m.div>
+          </a>
+        )}
+        {telegram && telegramContact && (
+          <a
+            className="z-10 duration-300 hover:brightness-125"
+            target="_blank"
+            href={telegramContact.href}
           >
-            <TelegramIcon width={28} height={28} className="-ml-0.5 mt-0.5" />
-          </m.div>
-        </a>
-      )}
-    </div>
-    <m.div
-      initial={{ width: 0 }}
-      transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
-      animate={{
-        width: show ? 'auto' : 0,
-      }}
-      className={cn('absolute right-6 overflow-hidden')}
-    >
-      <div className="flex w-full max-w-full bg-white border border-general flex-nowrap rounded-l-md">
-        <div className="pl-2 font-bold whitespace-nowrap text-general">
-          {text}
-        </div>
-        <div
-          className={cn(
-            'bg-white',
-            whatsapp && telegram ? 'min-w-22' : 'min-w-8'
-          )}
-        />
+            <m.div
+              initial={{ scale: 0, rotate: -180 }}
+              transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
+              animate={{
+                scale: show ? 1 : 0,
+                rotate: show ? 0 : -180,
+              }}
+              className={cn(
+                'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+                'bg-blue-500'
+              )}
+            >
+              <TelegramIcon
+                width={28}
+                height={28}
+                className="-ml-0.5 mt-0.5"
+              />
+            </m.div>
+          </a>
+        )}
       </div>
+      <m.div
+        initial={{ width: 0 }}
+        transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
+        animate={{
+          width: show ? 'auto' : 0,
+        }}
+        className={cn('absolute right-6 overflow-hidden')}
+      >
+        <div className="flex w-full max-w-full bg-white border border-general flex-nowrap rounded-l-md">
+          <div className="pl-2 font-bold whitespace-nowrap text-general">
+            {text}
+          </div>
+          <div
+            className={cn(
+              'bg-white',
+              whatsapp && telegram ? 'min-w-22' : 'min-w-8'
+            )}
+          />
+        </div>
+      </m.div>
     </m.div>
-  </div>
-)
+  )
+}
 
 const FabMenu = ({ show = true, ping = true }) => {
   const siteSettings = useAtomValue(siteSettingsAtom)

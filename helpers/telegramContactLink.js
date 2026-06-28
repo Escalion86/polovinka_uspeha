@@ -7,7 +7,7 @@ const normalizeTelegramValue = (value) =>
     .replace(/^https?:\/\/t\.me\//i, '')
     .replace(/^t\.me\//i, '')
     .replace(/[?#].*$/, '')
-    .replace(/^@/, '')
+    .replace(/^@+/, '')
     .trim()
 
 const normalizePhoneValue = (value) => {

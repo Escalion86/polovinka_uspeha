@@ -21,6 +21,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import useRouter from '@utils/useRouter'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -37,6 +38,12 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const isLoggedUserDev = useAtomValue(loggedUserAtom)?.role === 'dev'
   const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
+  const headerTelegramContact = getTelegramContactLink({
+    telegram: headerInfo?.telegram,
+  })
+  const memberChatTelegramContact = getTelegramContactLink({
+    telegram: headerInfo?.memberChatLink,
+  })
   const location = useAtomValue(locationAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
@@ -229,10 +236,10 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                         <span>WhatsApp</span>
                       </a>
                     )}
-                    {headerInfo?.telegram && (
+                    {headerInfo?.telegram && headerTelegramContact && (
                       <a
                         className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
-                        href={'tg://resolve?domain=@' + headerInfo?.telegram}
+                        href={headerTelegramContact.href}
                         target="_blank"
                       >
                         <FontAwesomeIcon
@@ -246,10 +253,11 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                 )}
               </div>
             ) : (
-              headerInfo?.memberChatLink && (
+              headerInfo?.memberChatLink &&
+              memberChatTelegramContact && (
                 <a
                   className="flex items-center justify-center px-3 py-2 my-1 text-white duration-300 border rounded-lg gap-x-2 bg-general hover:text-general hover:bg-white border-general"
-                  href={'tg://resolve?domain=@' + headerInfo?.memberChatLink}
+                  href={memberChatTelegramContact.href}
                   target="_blank"
                 >
                   <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />

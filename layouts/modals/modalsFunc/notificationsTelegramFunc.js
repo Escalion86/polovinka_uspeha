@@ -8,6 +8,7 @@ import FormWrapper from '@components/FormWrapper'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
@@ -31,6 +32,9 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     // const { success, error } = useSnackbar()
 
     const onClickConfirm = async () => {
+      const telegramBotLink = getTelegramContactLink({
+        telegram: telegramBotName,
+      })
       // if (!checkErrors({ notificationTelegramUserName: userName })) {
       // await putData(
       //   `/api/users/${loggedUser._id}`,
@@ -57,7 +61,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
       //   location === 'norilsk'
       //     ? 'https://t.me/polovinka_uspeha_nrsk_bot'
       //     : 'https://t.me/polovinka_uspeha_bot'
-      window.open('tg://resolve?domain=@' + telegramBotName)
+      if (telegramBotLink) window.open(telegramBotLink.href)
       closeModal()
       // setDirection(
       //   {
