@@ -57,7 +57,7 @@ const ContactsBlock = () => {
         {siteSettings?.telegram && (
           <ContactImage
             src="/img/contacts/telegram.webp"
-            href={'https://t.me/' + siteSettings.telegram}
+            href={'tg://resolve?domain=@' + siteSettings.telegram}
             alt="Написать в Telegram"
           />
         )}

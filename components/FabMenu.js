@@ -40,7 +40,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
         <a
           className="z-10 duration-300 hover:brightness-125"
           target="_blank"
-          href={'https://t.me/' + telegram}
+          href={'tg://resolve?domain=@' + telegram}
         >
           <m.div
             initial={{ scale: 0, rotate: -180 }}

@@ -29,6 +29,7 @@ import {
 import subEventsSummator from '@helpers/subEventsSummator'
 import DOMPurify from 'isomorphic-dompurify'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
 const heroImages = [
   '/img/general/1.jpg',
@@ -448,6 +449,7 @@ export default function LocationIndexClient({
       String(value ?? '')
         .replace(/^@/, '')
         .trim()
+    const telegramContact = getTelegramContactLink({ telegram, phone })
 
     const primary = [
       phone && {
@@ -474,10 +476,10 @@ export default function LocationIndexClient({
         badge: 'OK',
         tone: 'bg-[#f7931e] text-white',
       },
-      telegram && {
+      telegramContact && {
         label: 'Telegram',
-        value: `@${normalizeHandle(telegram)}`,
-        href: `https://t.me/${normalizeHandle(telegram)}`,
+        value: telegramContact.title,
+        href: telegramContact.href,
         badge: 'TG',
         tone: 'bg-[#2aabee] text-white',
       },

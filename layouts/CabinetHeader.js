@@ -50,9 +50,11 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
     loggedUserActiveRole?.notifications?.eventRegistration
-  const canOpenNotificationHistoryModal = ['dev', 'president', 'supervisor'].includes(
-    String(loggedUserActiveRole?._id || '')
-  )
+  const canOpenNotificationHistoryModal = [
+    'dev',
+    'president',
+    'supervisor',
+  ].includes(String(loggedUserActiveRole?._id || ''))
 
   const statusTrigger = (
     <button
@@ -230,7 +232,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                     {headerInfo?.telegram && (
                       <a
                         className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
-                        href={'https://t.me/' + headerInfo?.telegram}
+                        href={'tg://resolve?domain=@' + headerInfo?.telegram}
                         target="_blank"
                       >
                         <FontAwesomeIcon
@@ -247,7 +249,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
               headerInfo?.memberChatLink && (
                 <a
                   className="flex items-center justify-center px-3 py-2 my-1 text-white duration-300 border rounded-lg gap-x-2 bg-general hover:text-general hover:bg-white border-general"
-                  href={'https://t.me/' + headerInfo?.memberChatLink}
+                  href={'tg://resolve?domain=@' + headerInfo?.memberChatLink}
                   target="_blank"
                 >
                   <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />

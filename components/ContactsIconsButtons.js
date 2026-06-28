@@ -11,6 +11,7 @@ import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
 import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
 import { faSms } from '@fortawesome/free-solid-svg-icons/faSms'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import getTelegramContactLink from '@helpers/telegramContactLink'
 
 const ContactIconBtn = ({ url, icon, size = 'lg', className = null }) => (
   <FontAwesomeIcon
@@ -94,6 +95,10 @@ const ContactsIconsButtons = ({
     message !== undefined || message !== null
       ? encodeURIComponent(message)
       : undefined
+  const telegramContact = getTelegramContactLink({
+    telegram: user?.telegram,
+    phone: user?.phone,
+  })
 
   return (
     <div
@@ -148,25 +153,25 @@ const ContactsIconsButtons = ({
           )}
       {!message &&
         (user?.telegram
-          ? ((isMemberAndUserIsMember && user.security?.showTelegram) ||
+          ? telegramContact &&
+            ((isMemberAndUserIsMember && user.security?.showTelegram) ||
               canSeeAllContacts) && (
               <Btn
                 icon={faTelegramPlane}
                 className="text-blue-600"
-                url={`https://t.me/${user.telegram}`}
-                title={'@' + user.telegram}
+                url={telegramContact.href}
+                title={telegramContact.title}
               />
             )
           : forceTelegram &&
+            telegramContact &&
             ((isMemberAndUserIsMember && user.security?.showTelegram) ||
               canSeeAllContacts) && (
               <Btn
                 icon={faTelegramPlane}
                 className="text-red-400"
-                url={`https://t.me/+${user.phone}${
-                  message ? `?text=${encodedMessage}` : ''
-                }`}
-                title={'+' + user.phone}
+                url={telegramContact.href}
+                title={telegramContact.title}
               />
             ))}
       {!message &&

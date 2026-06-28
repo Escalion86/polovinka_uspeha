@@ -57,7 +57,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
       //   location === 'norilsk'
       //     ? 'https://t.me/polovinka_uspeha_nrsk_bot'
       //     : 'https://t.me/polovinka_uspeha_bot'
-      window.open('https://t.me/' + telegramBotName)
+      window.open('tg://resolve?domain=@' + telegramBotName)
       closeModal()
       // setDirection(
       //   {
