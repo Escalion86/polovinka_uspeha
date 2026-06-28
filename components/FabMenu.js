@@ -87,7 +87,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => {
           />
         </div>
       </m.div>
-    </m.div>
+    </div>
   )
 }
 
