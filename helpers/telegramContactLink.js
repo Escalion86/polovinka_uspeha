@@ -25,7 +25,7 @@ export const getTelegramContactLink = ({ telegram, phone } = {}) => {
 
   if (TELEGRAM_HANDLE_LETTERS_REGEXP.test(value)) {
     return {
-      href: `tg://resolve?domain=@${value}`,
+      href: `tg://resolve?domain=${value}`,
       title: `@${value}`,
       type: 'domain',
     }
