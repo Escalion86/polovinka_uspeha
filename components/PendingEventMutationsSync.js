@@ -54,10 +54,6 @@ const PendingEventMutationsSync = () => {
     window.addEventListener('storage', handleQueueChange)
     window.addEventListener('online', handleOnline)
 
-    if (navigator.onLine !== false) {
-      void retryPending({ silent: true })
-    }
-
     return () => {
       window.removeEventListener(
         PENDING_EVENT_MUTATIONS_CHANGED_EVENT,
