@@ -57,6 +57,12 @@ import {
   invalidateEventCardState,
   invalidateEventCardStateByEvent,
 } from '@utils/eventCardStateClient'
+import {
+  getPendingEventMutationsForLocation,
+  markPendingEventMutationFailed,
+  removePendingEventMutation,
+  upsertPendingEventMutation,
+} from '@utils/pendingEventMutations'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -377,11 +383,24 @@ const itemsFuncGenerator = (get, set) => {
       obj[itemName] = {
         set: async (item, clone, noSnackbar) => {
           if (item?._id && !clone) {
+            const pendingMutation =
+              itemName === 'event'
+                ? upsertPendingEventMutation({
+                    operation: 'update',
+                    location,
+                    eventId: item._id,
+                    payload: item,
+                  })
+                : null
+
             setLoadingCard(itemName + item._id)
             return await putData(
               `/api/${location}/${itemName.toLowerCase()}s/${item._id}`,
               item,
               (data) => {
+                if (pendingMutation) {
+                  removePendingEventMutation(pendingMutation.id)
+                }
                 setNotLoadingCard(itemName + item._id)
                 if (!noSnackbar && messages[itemName]?.update?.success)
                   snackbar.success(messages[itemName].update.success)
@@ -390,16 +409,26 @@ const itemsFuncGenerator = (get, set) => {
                 // setEvent(data)
               },
               (error) => {
-                if (!noSnackbar && messages[itemName]?.update?.error)
+                if (pendingMutation) {
+                  markPendingEventMutationFailed(pendingMutation.id, error)
+                  if (!noSnackbar) {
+                    snackbar.warning(
+                      'Изменения мероприятия сохранены локально. Повторим отправку, когда связь восстановится.'
+                    )
+                  }
+                } else if (!noSnackbar && messages[itemName]?.update?.error) {
                   snackbar.error(messages[itemName].update.error)
-                setErrorCard(itemName + item._id)
-                const data = {
-                  errorPlace: 'UPDATE ERROR',
-                  itemName,
-                  item,
-                  error,
                 }
-                addErrorModal(data)
+                setErrorCard(itemName + item._id)
+                if (!pendingMutation) {
+                  const data = {
+                    errorPlace: 'UPDATE ERROR',
+                    itemName,
+                    item,
+                    error,
+                  }
+                  addErrorModal(data)
+                }
               },
               false,
               loggedUser?._id
@@ -407,10 +436,22 @@ const itemsFuncGenerator = (get, set) => {
           } else {
             const clearedItem = { ...item }
             delete clearedItem._id
+            const pendingMutation =
+              itemName === 'event'
+                ? upsertPendingEventMutation({
+                    operation: 'create',
+                    location,
+                    payload: clearedItem,
+                  })
+                : null
+
             return await postData(
               `/api/${location}/${itemName.toLowerCase()}s`,
               clearedItem,
               (data) => {
+                if (pendingMutation) {
+                  removePendingEventMutation(pendingMutation.id)
+                }
                 if (!noSnackbar && messages[itemName]?.add?.success)
                   snackbar.success(messages[itemName].add.success)
                 invalidateEventCardStateByItem(itemName, data)
@@ -418,17 +459,27 @@ const itemsFuncGenerator = (get, set) => {
                 // setEvent(data)
               },
               (error) => {
-                if (!noSnackbar && messages[itemName]?.add?.error)
+                if (pendingMutation) {
+                  markPendingEventMutationFailed(pendingMutation.id, error)
+                  if (!noSnackbar) {
+                    snackbar.warning(
+                      'Новое мероприятие сохранено локально. Повторим отправку, когда связь восстановится.'
+                    )
+                  }
+                } else if (!noSnackbar && messages[itemName]?.add?.error) {
                   snackbar.error(messages[itemName].add.error)
-                setErrorCard(itemName + item._id)
-                const data = {
-                  errorPlace: 'CREATE ERROR',
-                  itemName,
-                  item,
-                  error,
                 }
-                addErrorModal(data)
-                console.log(data)
+                setErrorCard(itemName + item._id)
+                if (!pendingMutation) {
+                  const data = {
+                    errorPlace: 'CREATE ERROR',
+                    itemName,
+                    item,
+                    error,
+                  }
+                  addErrorModal(data)
+                  console.log(data)
+                }
               },
               false,
               loggedUser?._id
@@ -465,6 +516,82 @@ const itemsFuncGenerator = (get, set) => {
         },
       }
     })
+
+  obj.event.retryPending = async ({ force = false, silent = false } = {}) => {
+    const pendingItems = getPendingEventMutationsForLocation(location)
+    const result = {
+      total: pendingItems.length,
+      successCount: 0,
+      failedCount: 0,
+      skippedCount: 0,
+    }
+
+    for (const pendingItem of pendingItems) {
+      if (!force && Number(pendingItem.attempts || 0) >= 3) {
+        result.skippedCount += 1
+        continue
+      }
+
+      const isUpdate = pendingItem.operation === 'update'
+      const eventId = pendingItem.eventId
+      const payload = pendingItem.payload
+
+      if (!payload || (isUpdate && !eventId)) {
+        markPendingEventMutationFailed(
+          pendingItem.id,
+          new Error('Некорректные данные локального сохранения')
+        )
+        result.failedCount += 1
+        continue
+      }
+
+      const retryResult = isUpdate
+        ? await putData(
+            `/api/${location}/events/${eventId}`,
+            payload,
+            (data) => {
+              removePendingEventMutation(pendingItem.id)
+              invalidateEventCardStateByEvent(data?._id || eventId)
+              props.setEvent(data)
+            },
+            (error) => {
+              markPendingEventMutationFailed(pendingItem.id, error)
+            },
+            false,
+            loggedUser?._id
+          )
+        : await postData(
+            `/api/${location}/events`,
+            payload,
+            (data) => {
+              removePendingEventMutation(pendingItem.id)
+              invalidateEventCardStateByEvent(data?._id)
+              props.setEvent(data)
+            },
+            (error) => {
+              markPendingEventMutationFailed(pendingItem.id, error)
+            },
+            false,
+            loggedUser?._id
+          )
+
+      if (retryResult) {
+        result.successCount += 1
+      } else {
+        result.failedCount += 1
+      }
+    }
+
+    if (!silent && result.total > 0) {
+      if (result.failedCount > 0) {
+        snackbar.error('Не удалось отправить часть локальных изменений')
+      } else if (result.successCount > 0) {
+        snackbar.success('Локальные изменения мероприятий отправлены')
+      }
+    }
+
+    return result
+  }
 
   // obj['additionalBlock'].up = async (itemId) => {
   //   // Сначала получаем список элементов которые можно поднять

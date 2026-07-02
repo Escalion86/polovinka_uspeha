@@ -73,6 +73,7 @@ import snackbarAtom from '@state/atoms/snackbarAtom'
 import CheckBrowserUpdate from './CheckBrowserUpdate'
 import useRouter from '@utils/useRouter'
 import { setNavigationRuntime } from '@utils/navigationRuntime'
+import PendingEventMutationsSync from './PendingEventMutationsSync'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
 // import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
@@ -322,6 +323,7 @@ const StateLoader = (props) => {
         </div>
       )}
       <ModalsPortal />
+      <PendingEventMutationsSync />
       <CheckSiteUpdateNotification />
       <CheckBrowserUpdate />
     </div>
