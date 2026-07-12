@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import CopyPasteButtons from '@components/CopyPasteButtons'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
+import CheckBox from '@components/CheckBox'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -92,6 +93,9 @@ const userFunc = (userId, clone = false) => {
       user?.birthday ?? DEFAULT_USER.birthday
     )
     const [status, setStatus] = useState(user?.status ?? DEFAULT_USER.status)
+    const [archive, setArchive] = useState(
+      clone ? DEFAULT_USER.archive : (user?.archive ?? DEFAULT_USER.archive)
+    )
     const [role, setRole] = useState(user?.role ?? DEFAULT_USER.role)
     const [referrerId, setReferrerId] = useState(user?.referrerId ?? null)
 
@@ -156,6 +160,7 @@ const userFunc = (userId, clone = false) => {
             images,
             birthday,
             status,
+            archive,
             role,
             haveKids,
             referrerId,
@@ -241,6 +246,8 @@ const userFunc = (userId, clone = false) => {
         (user?.birthday ?? DEFAULT_USER.birthday) !== birthday ||
         (user?.haveKids ?? DEFAULT_USER.haveKids) !== haveKids ||
         (user?.status ?? DEFAULT_USER.status) !== status ||
+        (clone ? DEFAULT_USER.archive : (user?.archive ?? DEFAULT_USER.archive)) !==
+          archive ||
         (user?.role ?? DEFAULT_USER.role) !== role ||
         (user?.referrerId ?? null) !== referrerId
 
@@ -269,6 +276,7 @@ const userFunc = (userId, clone = false) => {
       images,
       birthday,
       status,
+      archive,
       role,
       haveKids,
       referrerId,
@@ -461,12 +469,19 @@ const userFunc = (userId, clone = false) => {
         /> */}
         <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         {canSetStatus && (
-          <UserStatusPicker
-            required
-            status={status}
-            onChange={setStatus}
-            error={errors.status}
-          />
+          <>
+            <UserStatusPicker
+              required
+              status={status}
+              onChange={setStatus}
+              error={errors.status}
+            />
+            <CheckBox
+              checked={archive}
+              onChange={() => setArchive((value) => !value)}
+              label="Пользователь в архиве"
+            />
+          </>
         )}
         {canSetRole && (
           <UserRolePicker

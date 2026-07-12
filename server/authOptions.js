@@ -323,6 +323,8 @@ const buildSessionPayload = (user, location) => ({
   phone: user?.phone,
 })
 
+const isUserAuthBlocked = (user) => user?.status === 'ban'
+
 export const authOptions = {
   secret: process.env.SECRET,
   providers: [
@@ -394,6 +396,7 @@ export const authOptions = {
 
           if (!fetchedUser?.password) return null
           if (!isAuthDevOnlyUserAllowed(fetchedUser, phone)) return null
+          if (isUserAuthBlocked(fetchedUser)) return null
 
           const passwordIsValid = await verifyPassword(
             password,
@@ -597,6 +600,9 @@ export const authOptions = {
 
         const globalLocalUser = globalReadResult?.data?.localUser || null
         if (globalLocalUser?._id) {
+          if (isUserAuthBlocked(globalLocalUser)) {
+            throwVkAuthError('VK_AUTH_BLOCKED')
+          }
           if (!isAuthDevOnlyUserAllowed(globalLocalUser, phoneValueToSet)) {
             throwVkAuthError('VK_DEV_ONLY_MODE')
           }
@@ -677,6 +683,9 @@ export const authOptions = {
               .sort({ createdAt: 1 })
               .lean()
             if (localExistingByPhone?._id) {
+              if (isUserAuthBlocked(localExistingByPhone)) {
+                throwVkAuthError('VK_AUTH_BLOCKED')
+              }
               const vkSetForExistingUser = buildVkSetForExistingUser({
                 existingUser: localExistingByPhone,
                 vkProfilePatch,
@@ -839,6 +848,7 @@ export const authOptions = {
             globalReadResult?.data?.globalUserFound &&
             globalLocalUser?._id
           ) {
+            if (isUserAuthBlocked(globalLocalUser)) return null
             if (
               !isAuthDevOnlyUserAllowed(
                 globalLocalUser,
@@ -900,6 +910,7 @@ export const authOptions = {
           .lean()
 
         if (fetchedUser?._id) {
+          if (isUserAuthBlocked(fetchedUser)) return null
           if (!isAuthDevOnlyUserAllowed(fetchedUser, phoneNumberNormalized)) {
             return null
           }
@@ -926,6 +937,7 @@ export const authOptions = {
             .lean()
 
           if (userByPhone?._id) {
+            if (isUserAuthBlocked(userByPhone)) return null
             if (!isAuthDevOnlyUserAllowed(userByPhone, phoneNumberNormalized)) {
               return null
             }
@@ -1077,6 +1089,7 @@ export const authOptions = {
       }
 
       if (!result) return null
+      if (isUserAuthBlocked(result)) return null
       token.userId = String(result._id)
       token.phone = result.phone
 

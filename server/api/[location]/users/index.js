@@ -10,7 +10,6 @@ const usersSelect = {
   town: 0,
   prevActivityAt: 0,
   lastActivityAt: 0,
-  archive: 0,
   // role: 0,
   registrationType: 0,
 }
