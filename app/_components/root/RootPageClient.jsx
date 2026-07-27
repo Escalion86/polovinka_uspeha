@@ -7,7 +7,7 @@ import { LOCATIONS, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
 import { fetchingGlobalAboutSpaceCards } from '@helpers/fetchers'
 import AboutSpaceCard from '@layouts/cards/AboutSpaceCard'
-import TitleHeroSection from '@components/TitleHeroSection'
+import HeroImageSlider from '@components/HeroImageSlider'
 import { useRouter } from 'next/navigation'
 
 const valueCards = [
@@ -29,25 +29,6 @@ const steps = [
   'Выберите город и изучите актуальные мероприятия.',
   'Пройдите быструю регистрацию и получите доступ в личный кабинет.',
   'Запишитесь на мероприятие и приходите в пространство живого общения.',
-]
-
-const heroImages = [
-  '/img/general/1.jpg',
-  '/img/general/2.jpg',
-  '/img/general/3.jpg',
-  '/img/general/4.jpg',
-  '/img/general/5.jpg',
-  '/img/general/6.png',
-  '/img/general/7.jpg',
-  '/img/general/8.png',
-  '/img/general/9.jpg',
-  '/img/general/10.png',
-  '/img/general/11.png',
-  '/img/general/12.png',
-  '/img/general/13.png',
-  '/img/general/14.png',
-  '/img/general/15.png',
-  '/img/general/16.png',
 ]
 
 const prepareCities = (cities) =>
@@ -192,35 +173,35 @@ export default function RootPageClient({
   }, [globalAboutSpaceCards])
 
   return (
-    <div className="min-h-screen bg-[#f8f5f3] text-[#2b1b21]">
+    <div className="min-h-screen bg-[#fbfaf8] text-[#211b1d]">
       <header
         ref={headerRef}
-        className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur"
+        className="sticky top-0 z-40 border-b border-[#eadfe1] bg-[#fbfaf8]/95 backdrop-blur"
       >
-        <div className="mx-auto flex w-full max-w-[1200px] items-center gap-4 px-4 py-3 md:px-6">
+        <div className="mx-auto flex h-[88px] w-full max-w-[1380px] items-center gap-4 px-4 md:px-8">
           <Link href="/" className="flex items-center gap-3">
             <img
-              src="/img/logo_horizontal.png"
+              src="/img/logo_new_horizontal_burgundy.png"
               alt="Половинка успеха"
-              className="h-[64px] w-[130px] object-contain"
+              className="h-[58px] w-auto object-contain md:h-[66px]"
             />
           </Link>
 
           <button
             type="button"
-            className="ml-auto flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(107,31,42,0.25)] lg:hidden"
+            className="ml-auto flex h-11 w-11 items-center justify-center rounded-full border border-[#c9a8af] bg-white lg:hidden"
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-label="Меню"
           >
-            <span className="text-xl leading-none">☰</span>
+            <span className="text-xl leading-none text-[#681724]">☰</span>
           </button>
 
           <nav
-            className={`${menuOpen ? 'flex' : 'hidden'} absolute left-4 right-4 top-[86px] z-50 flex-col gap-2 rounded-2xl border border-[rgba(107,31,42,0.15)] bg-white p-4 shadow-[0_20px_40px_rgba(0,0,0,0.12)] lg:static lg:ml-auto lg:flex lg:w-auto lg:flex-row lg:items-center lg:gap-3 lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none`}
+            className={`${menuOpen ? 'flex' : 'hidden'} absolute left-4 right-4 top-[78px] z-50 flex-col gap-1 rounded-2xl border border-[#eadfe1] bg-white p-4 shadow-[0_20px_40px_rgba(0,0,0,0.12)] lg:static lg:ml-auto lg:flex lg:w-auto lg:flex-row lg:items-center lg:gap-5 lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none`}
           >
             <a
               href="#about"
-              className="rounded-full px-3 py-2 text-sm font-semibold text-[#4b0f1c] hover:bg-[#f2e8ec]"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-[#5a1723] hover:bg-[#f7eef0]"
               onClick={(event) => {
                 event.preventDefault()
                 setMenuOpen(false)
@@ -231,7 +212,7 @@ export default function RootPageClient({
             </a>
             <a
               href="#cities"
-              className="rounded-full px-3 py-2 text-sm font-semibold text-[#4b0f1c] hover:bg-[#f2e8ec]"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-[#5a1723] hover:bg-[#f7eef0]"
               onClick={(event) => {
                 event.preventDefault()
                 setMenuOpen(false)
@@ -242,7 +223,7 @@ export default function RootPageClient({
             </a>
             <button
               type="button"
-              className="rounded-full bg-[linear-gradient(135deg,#6b1f2a,#8a3a45)] px-4 py-2 text-sm font-semibold text-white"
+              className="rounded-xl border border-[#8b4b59] bg-white px-5 py-3 text-sm font-semibold text-[#5a1723] transition hover:bg-[#6b1f2a] hover:text-white"
               onClick={() => {
                 setMenuOpen(false)
                 setShowLocationModal(true)
@@ -255,48 +236,35 @@ export default function RootPageClient({
       </header>
 
       <main>
-        <TitleHeroSection
-          sectionClassName="mx-auto w-full max-w-[1200px] px-4 pb-12 pt-10 md:px-6"
-          gridClassName="grid w-full gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]"
-          leftClassName="rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-7 text-white md:p-9"
-          rightClassName=""
-          images={heroImages}
-          imageClassName="object-cover opacity-85"
-          logoClassName="w-[min(210px,58%)] drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
-          leftContent={
-            <>
-              <p className="text-xs uppercase tracking-[0.22em] text-[#9ad9ff]">
-                Пространство живого общения
-              </p>
-              <h1 className="mt-3 font-lora text-[clamp(28px,4vw,44px)] leading-tight">
-                Легкие знакомства и офлайн-встречи для взрослых людей
+        <section className="mx-auto w-full max-w-[1380px] px-4 pb-14 pt-8 md:px-8 md:pb-20 md:pt-10">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(520px,1fr)] lg:gap-12">
+            <div className="order-1">
+              <h1 className="max-w-[690px] font-lora text-[clamp(38px,3.2vw,46px)] leading-[1.08] text-[#681724]">
+                <span className="block">Найдите встречу,</span>
+                <span className="block">на которую хочется прийти</span>
               </h1>
-              <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed text-white/90">
-                Платформа объединяет людей, которые ценят живое общение, новые
-                связи и качественный отдых без суеты.
+              <p className="mt-6 max-w-[610px] text-[clamp(17px,1.6vw,21px)] leading-relaxed text-[#332b2d]">
+                Живое общение без неловкости и давления — в компании взрослых
+                людей вашего города.
               </p>
-              <div className="flex flex-wrap gap-3 mt-6">
-                <button
-                  type="button"
-                  className="rounded-full bg-[#8dcff2] px-5 py-2.5 text-sm font-semibold text-[#2b1b21]"
-                  onClick={() => setShowLocationModal(true)}
-                >
-                  Присоединиться
-                </button>
-                <a
-                  href="#cities"
-                  className="rounded-full border border-white/35 px-5 py-2.5 text-sm font-semibold text-white"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    scrollToSection('cities')
-                  }}
-                >
-                  Смотреть города
-                </a>
+              <button
+                type="button"
+                className="mt-8 min-h-14 w-full max-w-[360px] rounded-[18px] bg-[#72c5f2] px-8 py-4 text-lg font-bold text-[#681724] shadow-[0_12px_24px_rgba(79,176,232,0.2)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#681724]"
+                onClick={() => setShowLocationModal(true)}
+              >
+                Выбрать город
+              </button>
+              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#5c484d]">
+                <span>Можно прийти одному</span>
+                <span aria-hidden>·</span>
+                <span>Бережная модерация</span>
               </div>
-            </>
-          }
-        />
+            </div>
+            <div className="order-2 overflow-hidden rounded-[28px] bg-[#eadfe1]">
+              <HeroImageSlider />
+            </div>
+          </div>
+        </section>
 
         <section
           id="about"

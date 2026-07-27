@@ -1,6 +1,10 @@
 import checkLocationValid from './checkLocationValid'
 import dbConnectGlobal from '@utils/dbConnectGlobal'
 import { normalizePhoneValue } from '@helpers/phoneUtils'
+import {
+  isRelationshipStatusValid,
+  normalizeRelationshipStatus,
+} from '@helpers/relationshipStatus'
 
 const normalizePhoneNumber = (rawPhone) => {
   const normalized = normalizePhoneValue(rawPhone)
@@ -26,8 +30,7 @@ const normalizeGlobalProfile = (profile = {}) => {
         : null
   const gender = profile?.gender || null
   const birthday = profile?.birthday ? new Date(profile.birthday) : null
-  const relationship =
-    typeof profile?.relationship === 'boolean' ? profile.relationship : null
+  const relationship = normalizeRelationshipStatus(profile?.relationship)
   const haveKids = typeof profile?.haveKids === 'boolean' ? profile.haveKids : null
   const security =
     profile?.security && typeof profile.security === 'object'
@@ -118,7 +121,7 @@ const toPatchFromGlobalProfile = (profile = {}) => {
   if (profile.vk) patch.vk = profile.vk
   if (profile.gender) patch.gender = profile.gender
   if (profile.birthday) patch.birthday = profile.birthday
-  if (typeof profile.relationship === 'boolean') {
+  if (isRelationshipStatusValid(profile.relationship)) {
     patch.relationship = profile.relationship
   }
   if (typeof profile.haveKids === 'boolean') patch.haveKids = profile.haveKids

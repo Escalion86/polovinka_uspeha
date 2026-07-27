@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@server/authOptions'
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
+import { hasPartnerRelationship } from '@helpers/relationshipStatus'
 
 const sendError = (res, status, type, message) =>
   res.status(status).json({
@@ -42,6 +43,10 @@ export default async function handler(req, res) {
       'unauthorized',
       'Не удалось определить пользователя'
     )
+  }
+
+  if (hasPartnerRelationship(session.user.relationship)) {
+    return res.status(200).json({ success: true, data: { count: 0 } })
   }
 
   const db = await dbConnect(location)
@@ -99,4 +104,3 @@ export default async function handler(req, res) {
     )
   }
 }
-

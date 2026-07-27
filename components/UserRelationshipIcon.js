@@ -3,6 +3,29 @@ import Tooltip from './Tooltip'
 import { Suspense } from 'react'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import { useAtomValue } from 'jotai'
+import PropTypes from 'prop-types'
+import {
+  hasPartnerRelationship,
+  isMarriedRelationship,
+} from '@helpers/relationshipStatus'
+
+const WeddingRingsIcon = ({ size }) => (
+  <svg
+    aria-hidden="true"
+    width={size}
+    height={size}
+    viewBox="0 0 32 26"
+    fill="none"
+  >
+    <circle cx="12" cy="15" r="8" stroke="#d49a16" strokeWidth="3" />
+    <circle cx="20" cy="11" r="8" stroke="#f4c542" strokeWidth="3" />
+    <path d="M17 4.5 20 1l3 3.5-3 2.8-3-2.8Z" fill="#bde8ff" />
+  </svg>
+)
+
+WeddingRingsIcon.propTypes = {
+  size: PropTypes.number.isRequired,
+}
 
 const UserRelationshipIconByEventIdComponent = ({ eventId, ...props }) => {
   const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
@@ -30,7 +53,8 @@ const UserRelationshipIcon = ({
   showHavePartnerOnly,
   nameForEvent = false,
 }) => {
-  const havePartner = relationship === true || relationship === 'havePartner'
+  const havePartner = hasPartnerRelationship(relationship)
+  const isMarried = isMarriedRelationship(relationship)
   if (showHavePartnerOnly && !havePartner) return null
 
   var numSize
@@ -55,9 +79,11 @@ const UserRelationshipIcon = ({
     ? havePartner
       ? 'Только для пар'
       : 'Только для тех у кого нет второй половинки'
-    : havePartner
-      ? 'Есть пара'
-      : 'Нет пары'
+    : isMarried
+      ? 'В браке'
+      : havePartner
+        ? 'Есть пара'
+        : 'Нет пары'
 
   const Icon = () => (
     <Tooltip title={name}>
@@ -66,16 +92,20 @@ const UserRelationshipIcon = ({
           numSize + 1
         } h-${numSize + 1}`}
       >
-        <Image
-          alt={havePartner ? 'havePartnerIcon' : 'noPartnerIcon'}
-          src={
-            '/img/relationships/' +
-            (havePartner ? 'havePartner' : 'noPartner') +
-            '.png'
-          }
-          width={numSize * 5}
-          height={numSize * 5}
-        />
+        {isMarried ? (
+          <WeddingRingsIcon size={numSize * 5} />
+        ) : (
+          <Image
+            alt={havePartner ? 'Есть пара' : 'Нет пары'}
+            src={
+              '/img/relationships/' +
+              (havePartner ? 'havePartner' : 'noPartner') +
+              '.png'
+            }
+            width={numSize * 5}
+            height={numSize * 5}
+          />
+        )}
       </div>
     </Tooltip>
   )
@@ -89,6 +119,14 @@ const UserRelationshipIcon = ({
     )
 
   return <Icon />
+}
+
+UserRelationshipIcon.propTypes = {
+  relationship: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  size: PropTypes.oneOf(['xs', 's', 'm', 'l']),
+  showName: PropTypes.bool,
+  showHavePartnerOnly: PropTypes.bool,
+  nameForEvent: PropTypes.bool,
 }
 
 export default UserRelationshipIcon

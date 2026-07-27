@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot'
 import {
   ADDITIONAL_BLOCK_TILE_COLORS,
   LOCATIONS,
@@ -14,7 +17,7 @@ import { DirectionCardView } from '@layouts/cards/DirectionCard'
 import SpaceStatsCard from '@layouts/cards/SpaceStatsCard'
 import NoOrphanText from '@components/NoOrphanText'
 import ImagesMarquee from '@components/ImagesMarquee'
-import TitleHeroSection from '@components/TitleHeroSection'
+import HeroImageSlider from '@components/HeroImageSlider'
 import SvgKavichki from '@svg/SvgKavichki'
 import { getNounYears } from '@helpers/getNoun'
 import {
@@ -30,25 +33,6 @@ import subEventsSummator from '@helpers/subEventsSummator'
 import DOMPurify from 'isomorphic-dompurify'
 import { captureAttributionFromBrowser } from '@helpers/attribution'
 import getTelegramContactLink from '@helpers/telegramContactLink'
-
-const heroImages = [
-  '/img/general/1.jpg',
-  '/img/general/2.jpg',
-  '/img/general/3.jpg',
-  '/img/general/4.jpg',
-  '/img/general/5.jpg',
-  '/img/general/6.png',
-  '/img/general/7.jpg',
-  '/img/general/8.png',
-  '/img/general/9.jpg',
-  '/img/general/10.png',
-  '/img/general/11.png',
-  '/img/general/12.png',
-  '/img/general/13.png',
-  '/img/general/14.png',
-  '/img/general/15.png',
-  '/img/general/16.png',
-]
 
 const services = [
   {
@@ -145,6 +129,11 @@ const MONTHS_FULL_UPPER = [
 ]
 
 const WEEKDAY_LABELS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+const CITY_NAMES_PREPOSITIONAL = {
+  krsk: 'Красноярске',
+  nrsk: 'Норильске',
+  ekb: 'Екатеринбурге',
+}
 
 const navItems = [
   { id: 'about', label: 'О нас' },
@@ -204,6 +193,9 @@ export default function LocationIndexClient({
   const [eventsUsersLoading, setEventsUsersLoading] = useState(true)
   const [reviewsPerView, setReviewsPerView] = useState(3)
   const defaultLocation = location || (LOCATIONS_KEYS_VISIBLE?.[0] ?? 'krsk')
+  const cityName = LOCATIONS?.[defaultLocation]?.towns?.[0] || 'вашем городе'
+  const cityNamePrepositional =
+    CITY_NAMES_PREPOSITIONAL[defaultLocation] || cityName
   const reviewsContainerRef = useRef(null)
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
@@ -520,6 +512,61 @@ export default function LocationIndexClient({
     [eventsUsers]
   )
 
+  const featuredEvents = useMemo(() => {
+    const now = new Date()
+    const locationTown = String(
+      LOCATIONS?.[defaultLocation]?.townRu || ''
+    ).toLowerCase()
+
+    return (events || [])
+      .map((event) => {
+        const dateStart = event?.dateStart ? new Date(event.dateStart) : null
+        if (!dateStart || Number.isNaN(dateStart.getTime())) return null
+        if (dateStart < now || event?.showOnSite === false) return null
+        if (event?.status === 'canceled') return null
+
+        const address = event.address || {}
+        const addressTown = String(address.town || '').trim()
+        const addressParts = [
+          addressTown.toLowerCase() === locationTown ? null : addressTown,
+          address.street,
+          address.house,
+        ].filter(Boolean)
+        const prices = Array.isArray(event.subEvents)
+          ? event.subEvents
+              .map((item) => item?.price)
+              .filter((price) => typeof price === 'number' && price >= 0)
+          : []
+        const summary = Array.isArray(event.subEvents)
+          ? subEventsSummator(event.subEvents)
+          : null
+        const maxParticipants =
+          typeof summary?.maxParticipants === 'number'
+            ? summary.maxParticipants
+            : typeof event.maxParticipants === 'number'
+              ? event.maxParticipants
+              : null
+
+        return {
+          id: event._id,
+          title: event.title,
+          description: String(event.description || '')
+            .replace(/<[^>]*>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim(),
+          dateStart,
+          dateEnd: event?.dateEnd ? new Date(event.dateEnd) : null,
+          place:
+            address.comment || addressParts.join(', ') || 'Место уточняется',
+          price: prices.length > 0 ? Math.min(...prices) : null,
+          maxParticipants,
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.dateStart - b.dateStart)
+      .slice(0, 3)
+  }, [defaultLocation, events])
+
   useEffect(() => {
     const calcPerView = () => {
       const width = window.innerWidth
@@ -801,27 +848,32 @@ export default function LocationIndexClient({
   const eventsForDay = activeDay ? eventsByDay[activeDay] || [] : []
 
   return (
-    <div className="bg-[#f6f3f1] text-[#1d1b1f]">
+    <div className="min-h-screen bg-[#fbfaf8] text-[#211b1d]">
       <header
         ref={headerRef}
-        className="sticky top-0 z-40 border-b border-[rgba(107,31,42,0.15)] bg-white/90 backdrop-blur"
+        className="sticky top-0 z-40 border-b border-[#eadfe1] bg-[#fbfaf8]/95 backdrop-blur"
       >
-        <div className="relative flex items-center gap-6 px-[4vw] py-2 h-[100px]">
-          <div className="flex items-center justify-center gap-3 min-w-[120px] flex-1">
-            {/* absolute lg:relative lg:left-0 lg:translate-y-0 lg:top-0 lg:translate-x-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  */}
+        <div className="relative mx-auto flex h-[88px] w-full max-w-[1380px] items-center gap-3 px-4 md:px-8">
+          <Link href="/" className="shrink-0" aria-label="На главную">
             <img
               src="/img/logo_new_horizontal_burgundy.png"
               alt="Логотип Половинка успеха"
-              className="h-[68px] object-contain"
+              className="h-[58px] w-auto object-contain md:h-[66px]"
             />
-            {/* <span className="font-adlery text-[18px] tracking-[0.06em] text-[#6b1f2a]">
-              ПОЛОВИНКА УСПЕХА
-            </span> */}
-          </div>
+          </Link>
+
+          <Link
+            href="/"
+            className="ml-1 hidden items-center gap-2 rounded-xl border border-[#9d6370] px-4 py-2.5 text-sm font-semibold text-[#6b1f2a] transition hover:bg-[#f7eef0] sm:flex"
+            aria-label="Выбрать другой город"
+          >
+            <FontAwesomeIcon icon={faLocationDot} className="h-4 w-4" />
+            <span>{cityName}</span>
+          </Link>
 
           <button
             type="button"
-            className="cursor-pointer transition duration-500 hover:bg-[rgba(107,31,42,0.3)] ml-auto flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-[rgba(107,31,42,0.3)] bg-white lg:hidden"
+            className="ml-auto flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-1 rounded-full border border-[#c9a8af] bg-white transition hover:bg-[#f7eef0] lg:hidden"
             aria-label="Открыть меню"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -834,13 +886,13 @@ export default function LocationIndexClient({
           <nav
             className={`ml-auto ${
               menuOpen ? 'flex' : 'hidden'
-            } flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-2xl transition duration-200 absolute top-[100px] left-[5vw] right-[5vw] z-50 lg:static lg:flex lg:flex-row lg:items-center lg:gap-2 lg:bg-transparent lg:p-0 lg:shadow-none lg:rounded-none`}
+            } absolute left-4 right-4 top-[78px] z-50 flex-col items-stretch gap-1 rounded-2xl border border-[#eadfe1] bg-white p-4 shadow-2xl transition duration-200 lg:static lg:flex lg:flex-row lg:items-center lg:gap-5 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}
           >
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500 lg:text-[12px] lg:font-normal"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-semibold text-[#5a1723] transition hover:bg-[#f7eef0]"
                 onClick={(event) => {
                   event.preventDefault()
                   setMenuOpen(false)
@@ -854,7 +906,7 @@ export default function LocationIndexClient({
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="whitespace-nowrap text-center rounded-full px-2.5 py-1.5 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#4b0f1c] transition hover:bg-[#6b1f2a] hover:text-white duration-500 lg:text-[12px] lg:font-normal"
+                className="whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-semibold text-[#5a1723] transition hover:bg-[#f7eef0]"
                 onClick={(event) => {
                   event.preventDefault()
                   setMenuOpen(false)
@@ -866,7 +918,7 @@ export default function LocationIndexClient({
             ))}
             <button
               type="button"
-              className="text-center rounded-full btn-gradient-hover px-3.5 py-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-white"
+              className="rounded-xl border border-[#8b4b59] bg-white px-6 py-3 text-center text-sm font-semibold text-[#5a1723] transition hover:bg-[#6b1f2a] hover:text-white"
               onClick={() => {
                 setMenuOpen(false)
                 navigateWithLoading(
@@ -876,7 +928,7 @@ export default function LocationIndexClient({
               }}
               disabled={Boolean(openingMessage)}
             >
-              Войти в пространство
+              Войти
             </button>
           </nav>
         </div>
@@ -891,49 +943,171 @@ export default function LocationIndexClient({
       />
 
       <main>
-        <TitleHeroSection
-          sectionClassName="bg-[linear-gradient(135deg,rgba(107,31,42,0.05),transparent_60%)] px-[6vw] pb-16 pt-6"
-          gridClassName="grid min-h-[60vh] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
-          leftClassName="relative order-last flex flex-col justify-center overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,#4b101b,#6b1f2a)] p-10 text-white lg:order-none"
-          rightClassName="order-first lg:order-none"
-          images={heroImages}
-          imageClassName="object-cover opacity-85"
-          logoClassName="p-5 w-[min(220px,60%)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
-          leftContent={
-            <>
-              <div className="absolute -left-20 -top-20 h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(79,176,232,0.5),transparent_70%)]" />
-              <div className="mb-4 text-[12px] uppercase tracking-[0.2em] text-[#9ad9ff]">
-                ПРОСТРАНСТВО ЖИВЫХ ВСТРЕЧ
-              </div>
-              <h1 className="font-lora text-[clamp(28px,3vw,44px)] leading-tight">
-                ПРОСТРАНСТВО ЛЁГКОСТИ И ЖИВОГО ОБЩЕНИЯ
+        <section className="mx-auto w-full max-w-[1380px] px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-10">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(520px,1fr)] lg:gap-12">
+            <div className="order-1">
+              <h1 className="max-w-[690px] font-lora text-[clamp(38px,3.2vw,46px)] leading-[1.08] text-[#681724]">
+                <span className="block">Найдите встречу,</span>
+                <span className="block">на которую хочется прийти</span>
               </h1>
-              <p className="mt-4 text-[16px] leading-relaxed text-white/85">
-                Здесь можно быть собой, <strong>отдыхать</strong> от суеты и
-                дел, <strong>наслаждаться</strong> общением и{' '}
-                <strong>открывать</strong> новых людей.
+              <p className="mt-6 max-w-[610px] text-[clamp(17px,1.6vw,21px)] leading-relaxed text-[#332b2d]">
+                Живое общение без неловкости и давления — в компании взрослых
+                людей вашего города.
               </p>
-              <p className="mt-3 text-[16px] leading-relaxed text-white/85">
-                <strong>Мы открыты для всех</strong>: для свободных сердцем и
-                для тех, кто уже нашел свою половинку и хочет наслаждаться
-                общением вместе.
-              </p>
-            </>
-          }
-          afterGridContent={
-            <div className="flex justify-center mt-8">
-              <AuthorizeButton
-                onClick={() =>
-                  navigateWithLoading(
-                    `/${defaultLocation}/register`,
-                    'Открываем остраницу регистрации'
-                  )
-                }
-                disabled={Boolean(openingMessage)}
-              />
+              <button
+                type="button"
+                className="mt-8 min-h-14 w-full max-w-[360px] rounded-[18px] bg-[#72c5f2] px-8 py-4 text-lg font-bold text-[#681724] shadow-[0_12px_24px_rgba(79,176,232,0.2)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#681724]"
+                onClick={() => scrollToSection('announcements')}
+              >
+                Выбрать мероприятие
+              </button>
+              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#5c484d]">
+                <span>Можно прийти одному</span>
+                <span aria-hidden>·</span>
+                <span>Бережная модерация</span>
+              </div>
             </div>
-          }
-        />
+            <div className="order-2 overflow-hidden rounded-[28px] bg-[#eadfe1]">
+              <HeroImageSlider />
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="announcements"
+          className="mx-auto w-full max-w-[1380px] scroll-mt-24 px-4 pb-14 md:px-8 md:pb-20"
+        >
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-lora text-[clamp(32px,4vw,48px)] leading-tight text-[#681724]">
+              Ближайшие встречи в {cityNamePrepositional}
+            </h2>
+            <Link
+              href={`/${defaultLocation}/events`}
+              className="text-sm font-semibold text-[#681724] underline decoration-[#681724]/30 underline-offset-4 transition hover:decoration-[#681724]"
+            >
+              Смотреть все события
+            </Link>
+          </div>
+
+          {featuredEvents.length > 0 ? (
+            <div className="border-y border-[#dfd0d4]">
+              {featuredEvents.map((event) => {
+                const participants = participantsByEventId.get(event.id) ?? 0
+                const placesLeft = event.maxParticipants
+                  ? Math.max(0, event.maxParticipants - participants)
+                  : null
+                const endTime =
+                  event.dateEnd instanceof Date &&
+                  !Number.isNaN(event.dateEnd.getTime())
+                    ? event.dateEnd.toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : null
+
+                return (
+                  <article
+                    key={event.id}
+                    className="grid gap-4 border-b border-[#dfd0d4] py-6 last:border-b-0 lg:grid-cols-[90px_150px_minmax(220px,1.25fr)_minmax(190px,0.9fr)_110px_120px_130px] lg:items-center"
+                  >
+                    <div className="flex items-baseline gap-2 lg:block">
+                      <div className="text-4xl font-bold leading-none text-[#681724]">
+                        {event.dateStart.getDate()}
+                      </div>
+                      <div className="mt-1 text-sm font-semibold text-[#681724]">
+                        {MONTHS_FULL[event.dateStart.getMonth()]}
+                      </div>
+                      <div className="text-xs text-[#76666a] lg:mt-1">
+                        {event.dateStart.toLocaleDateString('ru-RU', {
+                          weekday: 'long',
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-lg font-semibold text-[#342c2e]">
+                        {event.dateStart.toLocaleTimeString('ru-RU', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                        {endTime ? ` – ${endTime}` : ''}
+                      </div>
+                      <div className="mt-1 text-xs text-[#76666a]">
+                        Приходите за 15 минут
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-bold text-[#681724]">
+                        {event.title}
+                      </h3>
+                      {event.description ? (
+                        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-[#76666a]">
+                          {event.description}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="flex gap-2 text-sm text-[#342c2e]">
+                      <FontAwesomeIcon
+                        icon={faLocationDot}
+                        className="mt-0.5 h-4 w-4 shrink-0 text-[#8b2435]"
+                      />
+                      <span>{event.place}</span>
+                    </div>
+
+                    <div>
+                      <div className="text-lg font-semibold text-[#342c2e]">
+                        {event.price === null
+                          ? 'Уточняется'
+                          : event.price === 0
+                            ? 'Бесплатно'
+                            : `от ${event.price.toLocaleString('ru-RU')} ₽`}
+                      </div>
+                      <div className="text-xs text-[#76666a]">за участие</div>
+                    </div>
+
+                    <div>
+                      <div className="text-base font-semibold text-[#342c2e]">
+                        {eventsUsersLoading
+                          ? 'Считаем места'
+                          : placesLeft === null
+                            ? `${participants} записано`
+                            : `${placesLeft} из ${event.maxParticipants}`}
+                      </div>
+                      <div className="text-xs text-[#76666a]">
+                        {placesLeft === null ? 'участников' : 'мест осталось'}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="min-h-12 rounded-xl bg-[#861728] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#681724] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#681724]"
+                      onClick={() =>
+                        navigateWithLoading(
+                          `/${defaultLocation}/event/${event.id}`,
+                          'Открываем мероприятие'
+                        )
+                      }
+                      disabled={Boolean(openingMessage)}
+                    >
+                      Подробнее
+                    </button>
+                  </article>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-[#dfd0d4] bg-white px-6 py-8 text-[#5c484d]">
+              Новые встречи уже готовятся. Оставьте заявку, и команда сообщит о
+              ближайшем событии.
+            </div>
+          )}
+
+          <p className="mt-7 text-center text-sm text-[#765e64]">
+            Все встречи проходят офлайн, в безопасной и уважительной атмосфере.
+          </p>
+        </section>
 
         <Section id="about" title="О нашем пространстве">
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1162,7 +1336,7 @@ export default function LocationIndexClient({
           </Section>
         ) : null}
 
-        <Section id="announcements" title="Анонс наших мероприятий">
+        <Section id="calendar" title="Календарь мероприятий">
           <div className="grid gap-6 lg:grid-cols-2">
             <div
               className="rounded-2xl bg-white p-6 shadow-[0_16px_30px_rgba(0,0,0,0.08)]"

@@ -5,10 +5,11 @@ import { atom } from 'jotai'
 import { getData } from '@helpers/CRUD'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
+import { hasPartnerRelationship } from '@helpers/relationshipStatus'
 
 const badgeLoggedUserLikesToSeeSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
-  if (!loggedUser || loggedUser.relationship) return 0
+  if (!loggedUser || hasPartnerRelationship(loggedUser.relationship)) return 0
   const location = get(locationAtom)
   if (!location || location === 'null' || location === 'undefined') return 0
 

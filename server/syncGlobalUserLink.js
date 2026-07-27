@@ -3,6 +3,7 @@ import checkLocationValid from './checkLocationValid'
 import dbConnectGlobal from '@utils/dbConnectGlobal'
 import dbConnect from '@utils/dbConnect'
 import { LOCATIONS_KEYS } from './serverConstants'
+import { normalizeRelationshipStatus } from '@helpers/relationshipStatus'
 
 const toSafeDate = (value) => {
   if (!value) return null
@@ -27,8 +28,7 @@ const normalizeProfile = (user = {}) => {
         : null
   const gender = user?.gender || null
   const birthday = toSafeDate(user?.birthday)
-  const relationship =
-    typeof user?.relationship === 'boolean' ? user.relationship : null
+  const relationship = normalizeRelationshipStatus(user?.relationship)
   const haveKids = typeof user?.haveKids === 'boolean' ? user.haveKids : null
   const security =
     user?.security && typeof user.security === 'object'

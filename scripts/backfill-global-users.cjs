@@ -17,6 +17,7 @@ const isWriteMode = argv.includes('--write')
 const allowCityDuplicates = argv.includes('--allow-city-duplicates')
 const overwriteProfile = argv.includes('--overwrite-profile')
 const DB_SUFFIX = process.env.GLOBAL_USERS_BACKFILL_DB_SUFFIX || ''
+const RELATIONSHIP_STATUS_MARRIED = 'married'
 
 const nowIso = () => new Date().toISOString()
 
@@ -84,7 +85,10 @@ const normalizeProfile = (user = {}) => {
     gender: user.gender || null,
     birthday: toSafeDate(user.birthday),
     relationship:
-      typeof user.relationship === 'boolean' ? user.relationship : null,
+      typeof user.relationship === 'boolean' ||
+      user.relationship === RELATIONSHIP_STATUS_MARRIED
+        ? user.relationship
+        : null,
     haveKids: typeof user.haveKids === 'boolean' ? user.haveKids : null,
     security,
     images: Array.isArray(user.images) ? user.images.filter(Boolean).slice(0, 12) : [],

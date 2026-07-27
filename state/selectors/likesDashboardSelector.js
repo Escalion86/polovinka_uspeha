@@ -5,6 +5,7 @@ import { atom } from 'jotai'
 import { getData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import { hasPartnerRelationship } from '@helpers/relationshipStatus'
 
 const EMPTY_DASHBOARD = Object.freeze({
   eventsWithWaitingLikes: [],
@@ -14,7 +15,9 @@ const EMPTY_DASHBOARD = Object.freeze({
 
 const likesDashboardSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
-  if (!loggedUser || loggedUser.relationship) return EMPTY_DASHBOARD
+  if (!loggedUser || hasPartnerRelationship(loggedUser.relationship)) {
+    return EMPTY_DASHBOARD
+  }
 
   const location = get(locationAtom)
   if (!location || location === 'null' || location === 'undefined') {
@@ -33,4 +36,3 @@ const likesDashboardSelector = atom(async (get) => {
 })
 
 export default likesDashboardSelector
-

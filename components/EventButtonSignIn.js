@@ -15,6 +15,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import eventLoggedUserByEventIdSelector from '@state/selectors/eventLoggedUserByEventIdSelector'
+import { hasPartnerRelationship } from '@helpers/relationshipStatus'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -149,7 +150,7 @@ const Status = ({
   ) : event.likes &&
     eventUser &&
     userEventStatus === 'participant' &&
-    !loggedUserActive.relationship &&
+    !hasPartnerRelationship(loggedUserActive.relationship) &&
     (isEventInProcess || isEventExpired) &&
     // event.status !== 'closed' &&
     alreadySignIn ? (

@@ -3,6 +3,7 @@ import birthDateToAge from './birthDateToAge'
 import validateEmail from './validateEmail'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import store from '@state/store'
+import { RELATIONSHIP_STATUS_MARRIED } from './relationshipStatus'
 
 const useErrors = () => {
   const [errors, setErrors] = useState({})
@@ -46,7 +47,7 @@ const useErrors = () => {
       description: (data) =>
         !data ? setError({ description: 'Введите описание' }) : null,
       relationship: (data) =>
-        typeof data !== 'boolean'
+        typeof data !== 'boolean' && data !== RELATIONSHIP_STATUS_MARRIED
           ? setError({ relationship: 'Введите статус отношений' })
           : null,
       usersRelationshipAccess: (data) =>

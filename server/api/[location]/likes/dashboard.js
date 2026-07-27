@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@server/authOptions'
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
+import { hasPartnerRelationship } from '@helpers/relationshipStatus'
 
 const EMPTY_DASHBOARD = Object.freeze({
   eventsWithWaitingLikes: [],
@@ -103,7 +104,7 @@ export default async function handler(req, res) {
     )
   }
 
-  if (session?.user?.relationship) {
+  if (hasPartnerRelationship(session?.user?.relationship)) {
     return res.status(200).json({ success: true, data: EMPTY_DASHBOARD })
   }
 
@@ -226,4 +227,3 @@ export default async function handler(req, res) {
     )
   }
 }
-

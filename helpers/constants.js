@@ -229,6 +229,7 @@ import ReferralsAdminContent from '@layouts/content/ReferralsAdminContent'
 import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import badgeUnviewedAchievementsSelector from '@state/selectors/badgeUnviewedAchievementsSelector'
+import { hasPartnerRelationship } from './relationshipStatus'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 
 export const TAILWIND_COLORS = [
@@ -2042,7 +2043,7 @@ export const CONTENTS = Object.freeze({
     Component: LikesContent,
     name: 'Лайки',
     roleAccess: (role, status, siteSettings, loggedUser) =>
-      !loggedUser?.relationship,
+      !hasPartnerRelationship(loggedUser?.relationship),
   },
   remindDates: {
     Component: RemindDatesContent,

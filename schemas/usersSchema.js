@@ -3,6 +3,7 @@ import {
   DEFAULT_USERS_SECURITY,
 } from '@helpers/constantsServer'
 import { Schema } from 'mongoose'
+import { isRelationshipStatusValid } from '@helpers/relationshipStatus'
 
 const usersSchema = {
   firstName: {
@@ -63,8 +64,12 @@ const usersSchema = {
     default: null,
   },
   relationship: {
-    type: Boolean,
+    type: Schema.Types.Mixed,
     default: null,
+    validate: {
+      validator: (value) => value === null || isRelationshipStatusValid(value),
+      message: 'Некорректный статус отношений',
+    },
   },
   personalStatus: {
     type: String,

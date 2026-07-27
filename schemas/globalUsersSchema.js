@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose'
+import { isRelationshipStatusValid } from '@helpers/relationshipStatus'
 
 const cityProfileSchema = new Schema(
   {
@@ -42,7 +43,15 @@ const globalUsersSchema = {
       vk: { type: String, default: '' },
       gender: { type: String, default: null },
       birthday: { type: Date, default: null },
-      relationship: { type: Boolean, default: null },
+      relationship: {
+        type: Schema.Types.Mixed,
+        default: null,
+        validate: {
+          validator: (value) =>
+            value === null || isRelationshipStatusValid(value),
+          message: 'Некорректный статус отношений',
+        },
+      },
       haveKids: { type: Boolean, default: null },
       security: { type: Schema.Types.Mixed, default: null },
       images: { type: Array, default: [] },
