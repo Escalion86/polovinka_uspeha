@@ -237,30 +237,35 @@ export default function RootPageClient({
 
       <main>
         <section className="mx-auto w-full max-w-[1380px] px-4 pb-14 pt-8 md:px-8 md:pb-20 md:pt-10">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(520px,1fr)] lg:gap-12">
-            <div className="order-1">
-              <h1 className="max-w-[690px] font-lora text-[clamp(38px,3.2vw,46px)] leading-[1.08] text-[#681724]">
-                <span className="block">Найдите встречу,</span>
-                <span className="block">на которую хочется прийти</span>
+          <div className="grid overflow-hidden rounded-[28px] bg-[#681724] shadow-[0_18px_50px_rgba(73,17,28,0.14)] lg:grid-cols-[minmax(430px,0.86fr)_minmax(0,1.14fr)]">
+            <div className="min-w-0 flex flex-col justify-center px-6 py-9 text-white sm:px-10 sm:py-12 lg:min-h-[430px] lg:px-12 lg:py-14 xl:px-14">
+              <h1 className="max-w-[560px] font-lora text-[clamp(38px,4vw,58px)] leading-[1.08] text-white">
+                <span className="block">Живые встречи</span>
+                <span className="block">и новые связи</span>
+                <span className="block">в вашем городе</span>
               </h1>
-              <p className="mt-6 max-w-[610px] text-[clamp(17px,1.6vw,21px)] leading-relaxed text-[#332b2d]">
-                Живое общение без неловкости и давления — в компании взрослых
-                людей вашего города.
+              <p className="mt-6 max-w-[470px] text-[15px] leading-relaxed text-white/80 sm:text-base">
+                Тёплые офлайн-события для взрослых людей, которым важно
+                настоящее общение.
               </p>
-              <button
-                type="button"
-                className="mt-8 min-h-14 w-full max-w-[360px] rounded-[18px] bg-[#72c5f2] px-8 py-4 text-lg font-bold text-[#681724] shadow-[0_12px_24px_rgba(79,176,232,0.2)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#681724]"
-                onClick={() => setShowLocationModal(true)}
-              >
-                Выбрать город
-              </button>
-              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#5c484d]">
-                <span>Можно прийти одному</span>
-                <span aria-hidden>·</span>
-                <span>Бережная модерация</span>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className="min-h-12 rounded-2xl bg-[#72c5f2] px-6 py-3 text-sm font-bold text-[#681724] shadow-[0_10px_24px_rgba(79,176,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  onClick={() => setShowLocationModal(true)}
+                >
+                  Выбрать город
+                </button>
+                <button
+                  type="button"
+                  className="min-h-12 rounded-2xl border border-white/50 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  onClick={() => scrollToSection('about')}
+                >
+                  Как всё проходит
+                </button>
               </div>
             </div>
-            <div className="order-2 overflow-hidden rounded-[28px] bg-[#eadfe1]">
+            <div className="min-w-0 bg-[#eadfe1]">
               <HeroImageSlider />
             </div>
           </div>

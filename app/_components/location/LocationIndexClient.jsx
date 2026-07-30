@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons/faCalendarDays'
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot'
 import {
   ADDITIONAL_BLOCK_TILE_COLORS,
@@ -184,6 +185,7 @@ export default function LocationIndexClient({
   })
   const [menuOpen, setMenuOpen] = useState(false)
   const [events, setEvents] = useState([])
+  const [eventsLoaded, setEventsLoaded] = useState(false)
   const [additionalBlocks, setAdditionalBlocks] = useState([])
   const [reviewsData, setReviewsData] = useState([])
   const [directionsData, setDirectionsData] = useState(
@@ -200,6 +202,7 @@ export default function LocationIndexClient({
   const [reviewsIndex, setReviewsIndex] = useState(0)
   const reviewsGapPx = 16
   const headerRef = useRef(null)
+  const calendarInitialMonthAppliedRef = useRef(false)
   const [siteSettings, setSiteSettings] = useState(initialSiteSettings || {})
   const [globalAboutSpaceCards, setGlobalAboutSpaceCards] = useState(
     Array.isArray(initialGlobalAboutSpaceCards)
@@ -327,6 +330,11 @@ export default function LocationIndexClient({
 
   useEffect(() => {
     let isMounted = true
+    const now = new Date()
+
+    calendarInitialMonthAppliedRef.current = false
+    setEventsLoaded(false)
+    setCalendarCursorDate(new Date(now.getFullYear(), now.getMonth(), 1))
 
     const loadSecondaryData = async () => {
       const [eventsData, additionalBlocksData, reviewsResponse] =
@@ -339,6 +347,7 @@ export default function LocationIndexClient({
       if (!isMounted) return
 
       setEvents(Array.isArray(eventsData) ? eventsData : [])
+      setEventsLoaded(true)
       setAdditionalBlocks(
         Array.isArray(additionalBlocksData) ? additionalBlocksData : []
       )
@@ -351,6 +360,30 @@ export default function LocationIndexClient({
       isMounted = false
     }
   }, [defaultLocation])
+
+  useEffect(() => {
+    if (!eventsLoaded || calendarInitialMonthAppliedRef.current) return
+
+    calendarInitialMonthAppliedRef.current = true
+    const now = new Date()
+    const hasUpcomingEventsThisMonth = events.some((event) => {
+      const dateStart = event?.dateStart ? new Date(event.dateStart) : null
+      if (!dateStart || Number.isNaN(dateStart.getTime())) return false
+      if (event?.showOnSite === false || event?.status === 'canceled') return false
+      if (dateStart < now) return false
+
+      return (
+        dateStart.getFullYear() === now.getFullYear() &&
+        dateStart.getMonth() === now.getMonth()
+      )
+    })
+
+    if (!hasUpcomingEventsThisMonth) {
+      setCalendarCursorDate(
+        new Date(now.getFullYear(), now.getMonth() + 1, 1)
+      )
+    }
+  }, [events, eventsLoaded])
 
   useEffect(() => {
     let isMounted = true
@@ -558,7 +591,7 @@ export default function LocationIndexClient({
           dateEnd: event?.dateEnd ? new Date(event.dateEnd) : null,
           place:
             address.comment || addressParts.join(', ') || 'Место уточняется',
-          price: prices.length > 0 ? Math.min(...prices) : null,
+          priceInKopecks: prices.length > 0 ? Math.min(...prices) : null,
           maxParticipants,
         }
       })
@@ -944,30 +977,35 @@ export default function LocationIndexClient({
 
       <main>
         <section className="mx-auto w-full max-w-[1380px] px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-10">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(520px,1fr)] lg:gap-12">
-            <div className="order-1">
-              <h1 className="max-w-[690px] font-lora text-[clamp(38px,3.2vw,46px)] leading-[1.08] text-[#681724]">
-                <span className="block">Найдите встречу,</span>
-                <span className="block">на которую хочется прийти</span>
+          <div className="grid overflow-hidden rounded-[28px] bg-[#681724] shadow-[0_18px_50px_rgba(73,17,28,0.14)] lg:grid-cols-[minmax(430px,0.86fr)_minmax(0,1.14fr)]">
+            <div className="min-w-0 flex flex-col justify-center px-6 py-9 text-white sm:px-10 sm:py-12 lg:min-h-[430px] lg:px-12 lg:py-14 xl:px-14">
+              <h1 className="max-w-[560px] font-lora text-[clamp(38px,4vw,58px)] leading-[1.08] text-white">
+                <span className="block">Живые встречи</span>
+                <span className="block">и новые связи</span>
+                <span className="block">в {cityNamePrepositional}</span>
               </h1>
-              <p className="mt-6 max-w-[610px] text-[clamp(17px,1.6vw,21px)] leading-relaxed text-[#332b2d]">
-                Живое общение без неловкости и давления — в компании взрослых
-                людей вашего города.
+              <p className="mt-6 max-w-[470px] text-[15px] leading-relaxed text-white/80 sm:text-base">
+                Тёплые офлайн-события для взрослых людей, которым важно
+                настоящее общение.
               </p>
-              <button
-                type="button"
-                className="mt-8 min-h-14 w-full max-w-[360px] rounded-[18px] bg-[#72c5f2] px-8 py-4 text-lg font-bold text-[#681724] shadow-[0_12px_24px_rgba(79,176,232,0.2)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#681724]"
-                onClick={() => scrollToSection('announcements')}
-              >
-                Выбрать мероприятие
-              </button>
-              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#5c484d]">
-                <span>Можно прийти одному</span>
-                <span aria-hidden>·</span>
-                <span>Бережная модерация</span>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className="min-h-12 rounded-2xl bg-[#72c5f2] px-6 py-3 text-sm font-bold text-[#681724] shadow-[0_10px_24px_rgba(79,176,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#63bdec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  onClick={() => scrollToSection('announcements')}
+                >
+                  Ближайшие мероприятия
+                </button>
+                <button
+                  type="button"
+                  className="min-h-12 rounded-2xl border border-white/50 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  onClick={() => scrollToSection('about')}
+                >
+                  Как всё проходит
+                </button>
               </div>
             </div>
-            <div className="order-2 overflow-hidden rounded-[28px] bg-[#eadfe1]">
+            <div className="min-w-0 bg-[#eadfe1]">
               <HeroImageSlider />
             </div>
           </div>
@@ -1058,11 +1096,13 @@ export default function LocationIndexClient({
 
                     <div>
                       <div className="text-lg font-semibold text-[#342c2e]">
-                        {event.price === null
+                        {event.priceInKopecks === null
                           ? 'Уточняется'
-                          : event.price === 0
+                          : event.priceInKopecks === 0
                             ? 'Бесплатно'
-                            : `от ${event.price.toLocaleString('ru-RU')} ₽`}
+                            : `от ${(event.priceInKopecks / 100).toLocaleString(
+                                'ru-RU'
+                              )} ₽`}
                       </div>
                       <div className="text-xs text-[#76666a]">за участие</div>
                     </div>
@@ -1104,9 +1144,24 @@ export default function LocationIndexClient({
             </div>
           )}
 
-          <p className="mt-7 text-center text-sm text-[#765e64]">
-            Все встречи проходят офлайн, в безопасной и уважительной атмосфере.
-          </p>
+          <div className="mt-7 flex flex-col items-center gap-3 text-center">
+            <button
+              type="button"
+              data-testid="calendar-scroll-button"
+              className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl bg-[#861728] px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(107,31,42,0.2)] transition hover:-translate-y-0.5 hover:bg-[#681724] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#681724]"
+              onClick={() => scrollToSection('calendar')}
+            >
+              <FontAwesomeIcon
+                icon={faCalendarDays}
+                className="shrink-0 text-xl"
+              />
+              Смотреть календарь мероприятий
+            </button>
+            <p className="text-sm text-[#765e64]">
+              Все встречи проходят офлайн, в безопасной и уважительной
+              атмосфере.
+            </p>
+          </div>
         </section>
 
         <Section id="about" title="О нашем пространстве">
@@ -1234,6 +1289,17 @@ export default function LocationIndexClient({
               />
             ))}
           </div>
+          <div className="mt-12 flex justify-center">
+            <AuthorizeButton
+              onClick={() =>
+                navigateWithLoading(
+                  `/${defaultLocation}/register`,
+                  'Открываем страницу регистрации'
+                )
+              }
+              disabled={Boolean(openingMessage)}
+            />
+          </div>
         </Section>
 
         {activeSpace ? (
@@ -1291,18 +1357,6 @@ export default function LocationIndexClient({
             ))}
           </div>         
         </Section> */}
-
-        <div className="flex justify-center px-[6vw]">
-          <AuthorizeButton
-            onClick={() =>
-              navigateWithLoading(
-                `/${defaultLocation}/register`,
-                'Открываем остраницу регистрации'
-              )
-            }
-            disabled={Boolean(openingMessage)}
-          />
-        </div>
 
         {index2AdditionalBlocks.map((block) => (
           <AdditionalBlockSection key={block._id} block={block} />

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 export const DEFAULT_HERO_IMAGES = [
-  '/img/general/11.png',
   '/img/general/1.jpg',
   '/img/general/2.jpg',
   '/img/general/3.jpg',
@@ -15,11 +14,11 @@ export const DEFAULT_HERO_IMAGES = [
   '/img/general/8.png',
   '/img/general/9.jpg',
   '/img/general/10.png',
+  '/img/general/11.png',
   '/img/general/12.png',
   '/img/general/13.png',
   '/img/general/14.png',
   '/img/general/15.png',
-  '/img/general/16.png',
 ]
 
 const HeroImageSlider = ({
