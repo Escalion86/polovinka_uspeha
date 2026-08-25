@@ -15,8 +15,6 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 import cn from 'classnames'
 import { Suspense } from 'react'
 import eventCutedSelector from '@state/selectors/eventCutedSelector'
-import Venzel1 from '@svg/venzels/1'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
 import { PriceDiscountByEventId } from '@components/PriceDiscount'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -24,6 +22,7 @@ import TextLinesLimiter from '@components/TextLinesLimiter'
 import EventCard2Skeleton from './Skeletons/EventCard2Skeleton'
 import Skeleton from 'react-loading-skeleton'
 import { memo } from 'react'
+import BlankEventCard from './BlankEventCard'
 
 const badgeClassName =
   'inline-flex items-center rounded-full bg-[#4fb0e8]/15 px-3 py-1 text-sm font-semibold text-[#1f6e9c]'
@@ -39,27 +38,12 @@ const EventCard2 = ({ eventId, noButtons, hidden = false, style }) => {
   const loading = useAtomValue(loadingAtom('event' + eventId))
   const error = useAtomValue(errorAtom('event' + eventId))
   const itemFunc = useAtomValue(itemsFuncAtom)
-  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const canEdit = loggedUserActiveRole?.events?.edit
 
   if (!event) return null
 
   if (event.blank)
     return (
-      <div
-        style={style}
-        className={cn(
-          'flex flex-col items-center w-full justify-evenly',
-          canEdit ? 'cursor-pointer' : ''
-        )}
-        onClick={canEdit ? () => modalsFunc.event.edit(event._id) : undefined}
-      >
-        <Venzel1 className="h-10" />
-        <div className="flex items-center justify-center py-5 mx-4 text-xl font-bold leading-5 text-center text-black whitespace-pre-line">
-          {event.title}
-        </div>
-        <Venzel1 className="h-10 rotate-180" />
-      </div>
+      <BlankEventCard event={event} noButtons={noButtons} style={style} />
     )
 
   const statusBadge =

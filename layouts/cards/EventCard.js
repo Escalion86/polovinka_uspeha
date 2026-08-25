@@ -17,12 +17,11 @@ import cn from 'classnames'
 import { Suspense, useMemo } from 'react'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventCutedSelector from '@state/selectors/eventCutedSelector'
-import Venzel1 from '@svg/venzels/1'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
 import { PriceDiscountByEventId } from '@components/PriceDiscount'
 import loadingAtom from '@state/atoms/loadingAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import BlankEventCard from './BlankEventCard'
 
 const EventCard = ({
   eventId,
@@ -45,8 +44,6 @@ const EventCard = ({
   const itemFunc = useAtomValue(itemsFuncAtom)
   const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
   // const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
-  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const canEdit = loggedUserActiveRole?.events?.edit
 
   const participantsCount = useMemo(
     () =>
@@ -80,21 +77,7 @@ const EventCard = ({
 
   if (event.blank)
     return (
-      <div
-        style={style}
-        className={cn(
-          'flex flex-col items-center w-full justify-evenly',
-          canEdit ? 'cursor-pointer' : ''
-        )}
-        onClick={canEdit ? () => modalsFunc.event.edit(event._id) : undefined}
-      >
-        <Venzel1 className="h-10" />
-        <div className="flex items-center justify-center py-5 mx-4 text-xl font-bold leading-5 text-center text-black whitespace-pre-line">
-          {/* // border-t-4 border-b-4 border-general"> */}
-          {event.title}
-        </div>
-        <Venzel1 className="h-10 rotate-180" />
-      </div>
+      <BlankEventCard event={event} noButtons={noButtons} style={style} />
     )
 
   // const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))

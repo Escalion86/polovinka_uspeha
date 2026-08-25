@@ -39,6 +39,7 @@ const EventCardButtons = ({
   showCloneButton = true,
   customButtons = [],
   customOnly = false,
+  onlyButtonKeys,
   triggerClassName = '',
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -219,9 +220,13 @@ const EventCardButtons = ({
 
   buttons.push(...customButtonsArray)
 
+  const visibleButtons = Array.isArray(onlyButtonKeys)
+    ? buttons.filter(({ key }) => onlyButtonKeys.includes(key))
+    : buttons
+
   return (
     <CardButtons
-      buttons={buttons}
+      buttons={visibleButtons}
       className={className}
       alwaysCompact={alwaysCompact}
       alwaysCompactOnPhone={alwaysCompactOnPhone}
