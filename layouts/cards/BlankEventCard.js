@@ -36,12 +36,13 @@ const BlankEventCard = ({ event, noButtons, style }) => {
       onClick={canEdit ? () => modalsFunc.event.edit(event._id) : undefined}
     >
       {!noButtons && canShowMenu ? (
-        <EventCardButtons
-          item={event}
-          alwaysCompact
-          onlyButtonKeys={BLANK_EVENT_BUTTON_KEYS}
-          className="absolute right-3 top-3 z-20"
-        />
+        <div className="absolute top-3 right-3 z-20">
+          <EventCardButtons
+            item={event}
+            alwaysCompact
+            onlyButtonKeys={BLANK_EVENT_BUTTON_KEYS}
+          />
+        </div>
       ) : null}
       <Venzel1 className="h-10" />
       <div className="mx-4 flex items-center justify-center py-5 text-center text-xl font-bold leading-5 whitespace-pre-line text-black">
