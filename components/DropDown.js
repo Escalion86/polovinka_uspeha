@@ -96,7 +96,7 @@ const DropDown = ({
             <div
               ref={refs.setFloating}
               style={floatingStyles}
-              className="z-[9999]"
+              className="z-[9999] focus:outline-none focus-visible:outline-none"
               {...getFloatingProps()}
             >
               <div
