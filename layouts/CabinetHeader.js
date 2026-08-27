@@ -56,6 +56,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       loggedUserActiveRole?.notifications?.newEventsByTags) ||
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
+    loggedUserActiveRole?.notifications?.userRelationshipDataChanged ||
     loggedUserActiveRole?.notifications?.eventRegistration
   const canOpenNotificationHistoryModal = [
     'dev',

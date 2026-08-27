@@ -23,6 +23,12 @@ const TYPE_ACCESS_CHECKS = {
     role: (role) => Boolean(role?.notifications?.newUserRegistred),
     settings: (settings) => Boolean(settings?.newUserRegistred),
   },
+  userRelationshipDataChanged: {
+    role: (role) =>
+      Boolean(role?.notifications?.userRelationshipDataChanged),
+    settings: (settings) =>
+      Boolean(settings?.userRelationshipDataChanged),
+  },
   eventRegistration: {
     role: (role) => Boolean(role?.notifications?.eventRegistration),
     settings: (settings) => Boolean(settings?.eventRegistration),

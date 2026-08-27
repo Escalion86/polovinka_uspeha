@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 const NOTIFICATION_TYPE_TITLES = {
   newEvents: 'Новые мероприятия',
   newUserRegistred: 'Регистрация нового пользователя',
+  userRelationshipDataChanged: 'Изменение данных об отношениях',
   eventRegistration: 'Запись/отписка на мероприятие',
   serviceRegistration: 'Заявка на услугу',
   birthdays: 'Дни рождения',

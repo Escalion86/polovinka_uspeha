@@ -488,6 +488,11 @@ const SettingsRolesContent = (props) => {
               subItem="newUserRegistred"
             />
             <RoleItem
+              label='Изменение статуса отношений или поля "Есть дети"'
+              item="notifications"
+              subItem="userRelationshipDataChanged"
+            />
+            <RoleItem
               label="Регистрации на мероприятия"
               item="notifications"
               subItem="eventRegistration"

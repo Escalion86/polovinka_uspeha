@@ -142,6 +142,7 @@ const UserMenu = () => {
       loggedUserActiveRole?.notifications?.newEventsByTags) ||
     loggedUserActiveRole?.notifications?.birthdays ||
     loggedUserActiveRole?.notifications?.newUserRegistred ||
+    loggedUserActiveRole?.notifications?.userRelationshipDataChanged ||
     loggedUserActiveRole?.notifications?.eventRegistration
 
   const allLocations = Object.keys(LOCATIONS || {})

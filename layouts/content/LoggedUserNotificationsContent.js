@@ -239,6 +239,8 @@ const LoggedUserNotificationsContent = () => {
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates
   const newUserRegistred = loggedUserActiveRole?.notifications?.newUserRegistred
+  const userRelationshipDataChanged =
+    loggedUserActiveRole?.notifications?.userRelationshipDataChanged
   const eventRegistration =
     loggedUserActiveRole?.notifications?.eventRegistration
   const serviceRegistration =
@@ -918,6 +920,19 @@ const LoggedUserNotificationsContent = () => {
                       toggleNotificationsSettings('newUserRegistred')
                     }}
                     label="Регистрации нового пользователя (модер/админ)"
+                  />
+                )}
+                {userRelationshipDataChanged && (
+                  <CheckBox
+                    checked={
+                      notifications.settings?.userRelationshipDataChanged
+                    }
+                    onClick={() =>
+                      toggleNotificationsSettings(
+                        'userRelationshipDataChanged'
+                      )
+                    }
+                    label='Изменение пользователем статуса отношений или поля "Есть дети" (модер/админ)'
                   />
                 )}
                 {eventRegistration && (

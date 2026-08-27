@@ -33,6 +33,11 @@ import {
   supportsPushForUser,
 } from './pushNotifications'
 import { notifyUsersAboutEventCancelStateForParticipants } from './userEventNotifications'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './authOptions'
+import userRelationshipDataChangedPushNotification, {
+  hasUserRelationshipDataChanges,
+} from './userRelationshipDataChangedPushNotification'
 
 function isJson(str) {
   try {
@@ -1111,8 +1116,34 @@ export default async function handler(Schema, req, res, props = {}) {
             })
           }
 
-          // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
+          // Синхронизируем профиль и отправляем связанные с ним уведомления.
           if (Schema === 'Users') {
+            if (hasUserRelationshipDataChanges(oldData, data)) {
+              try {
+                const session = await getServerSession(req, res, authOptions)
+                const isSelfUpdate =
+                  String(session?.user?._id || '') === String(data?._id || '')
+
+                if (isSelfUpdate) {
+                  await userRelationshipDataChangedPushNotification({
+                    db,
+                    location,
+                    oldUser: oldData,
+                    newUser: data,
+                  })
+                }
+              } catch (pushNotifyError) {
+                console.log(
+                  '[CRUD] Relationship data push on user update failed:',
+                  {
+                    userId: id,
+                    message:
+                      pushNotifyError?.message || String(pushNotifyError),
+                  }
+                )
+              }
+            }
+
             try {
               const syncResult = await syncGlobalUserLink({
                 location,

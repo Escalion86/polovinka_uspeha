@@ -29,6 +29,7 @@ const rolesSchema = {
     default: {
       birthdays: false,
       newUserRegistred: false,
+      userRelationshipDataChanged: false,
       eventRegistration: false,
       newEvents: false,
       // eventUserMoves: false,

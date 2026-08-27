@@ -813,6 +813,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: false,
       newUserRegistred: false,
+      userRelationshipDataChanged: false,
       eventRegistration: false,
       serviceRegistration: false,
       newEvents: true,
@@ -955,6 +956,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: false,
       newUserRegistred: false,
+      userRelationshipDataChanged: false,
       eventRegistration: false,
       serviceRegistration: false,
       newEvents: true,
@@ -1097,6 +1099,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: true,
       newUserRegistred: true,
+      userRelationshipDataChanged: true,
       eventRegistration: true,
       serviceRegistration: true,
       newEvents: true,
@@ -1239,6 +1242,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: true,
       newUserRegistred: true,
+      userRelationshipDataChanged: true,
       eventRegistration: true,
       serviceRegistration: true,
       newEvents: true,
@@ -1381,6 +1385,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: true,
       newUserRegistred: true,
+      userRelationshipDataChanged: true,
       eventRegistration: true,
       serviceRegistration: true,
       newEvents: true,
@@ -1523,6 +1528,7 @@ export const DEFAULT_ROLES = [
       // option: true,
       birthdays: true,
       newUserRegistred: true,
+      userRelationshipDataChanged: true,
       eventRegistration: true,
       serviceRegistration: true,
       newEvents: true,
@@ -1854,6 +1860,7 @@ export const CONTENTS = Object.freeze({
         role?.notifications?.newEventsByTags) ||
       role?.notifications?.birthdays ||
       role?.notifications?.newUserRegistred ||
+      role?.notifications?.userRelationshipDataChanged ||
       role?.notifications?.eventRegistration,
   },
   googleCalendarIntegration: {
