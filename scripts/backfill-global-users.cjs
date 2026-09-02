@@ -16,6 +16,7 @@ const argv = process.argv.slice(2)
 const isWriteMode = argv.includes('--write')
 const allowCityDuplicates = argv.includes('--allow-city-duplicates')
 const overwriteProfile = argv.includes('--overwrite-profile')
+const summaryOnly = argv.includes('--summary-only')
 const DB_SUFFIX = process.env.GLOBAL_USERS_BACKFILL_DB_SUFFIX || ''
 const RELATIONSHIP_STATUS_MARRIED = 'married'
 
@@ -443,7 +444,9 @@ async function main() {
 
     const finishedAt = nowIso()
     const report = {
-      mode: isWriteMode ? 'write' : 'dry-run',
+      mode: `${isWriteMode ? 'write' : 'dry-run'}${
+        summaryOnly ? '-summary' : ''
+      }`,
       startedAt,
       finishedAt,
       env: {
@@ -463,10 +466,14 @@ async function main() {
         updatedCount,
         skippedByDuplicate,
       },
-      invalidPhones,
-      duplicatePhonesWithinCity,
-      skippedPhones,
-      candidates,
+      ...(summaryOnly
+        ? {}
+        : {
+            invalidPhones,
+            duplicatePhonesWithinCity,
+            skippedPhones,
+            candidates,
+          }),
     }
 
     const reportsDir = path.join(process.cwd(), 'docs', 'reports')

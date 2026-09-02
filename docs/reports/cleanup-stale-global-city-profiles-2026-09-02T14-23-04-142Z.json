@@ -1,0 +1,11 @@
+{
+  "mode": "dry-run-summary",
+  "startedAt": "2026-09-02T14:23:04.037Z",
+  "finishedAt": "2026-09-02T14:23:04.141Z",
+  "summary": {
+    "globalUsersScanned": 2851,
+    "staleProfilesFound": 0,
+    "removedCount": 0,
+    "byReasonAndLocation": {}
+  }
+}

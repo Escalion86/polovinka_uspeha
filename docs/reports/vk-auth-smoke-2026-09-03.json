@@ -1,0 +1,32 @@
+{
+  "track": "VK-T6",
+  "date": "2026-09-03",
+  "mode": "runtime-test-mode",
+  "summary": {
+    "status": "partial",
+    "testModeChecksPassed": 8,
+    "routeLoadsPassed": 6,
+    "checksFailed": 0
+  },
+  "checks": [
+    "login page rendered with VK test control",
+    "unknown VK phone returned VK_ACCOUNT_NOT_FOUND",
+    "account-not-found opened registration agreements modal",
+    "phone fallback remained visible",
+    "register page rendered with VK test control",
+    "required agreements were visible on mobile viewport",
+    "VK callback returned expected 401 domain error without server error",
+    "browser console contained no relevant application errors"
+  ],
+  "locationsCoveredByDataAudit": ["krsk", "nrsk", "ekb"],
+  "runtimeLocation": "krsk",
+  "routeLoadLocations": ["krsk", "nrsk", "ekb"],
+  "routesChecked": ["login", "recovery"],
+  "viewports": ["1280x800", "390x844"],
+  "notes": [
+    "Smoke used VK_AUTH_TEST_MODE and did not create a user.",
+    "Register VK control was hidden until two required agreements were checked.",
+    "All six login/recovery routes returned HTTP 200 with expected page titles.",
+    "This is not a completed VK-T6 acceptance: real VK success, full auth/notification scenarios and production rollout remain unverified."
+  ]
+}

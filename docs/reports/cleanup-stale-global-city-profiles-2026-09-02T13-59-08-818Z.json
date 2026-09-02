@@ -1,0 +1,18 @@
+{
+  "mode": "write-summary",
+  "startedAt": "2026-09-02T13:59:08.718Z",
+  "finishedAt": "2026-09-02T13:59:08.818Z",
+  "summary": {
+    "globalUsersScanned": 2851,
+    "staleProfilesFound": 6,
+    "removedCount": 6,
+    "byReasonAndLocation": {
+      "GLOBAL_USER_ID_MISMATCH": {
+        "krsk": 5
+      },
+      "LOCAL_USER_MISSING": {
+        "krsk": 1
+      }
+    }
+  }
+}

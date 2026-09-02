@@ -8,6 +8,7 @@ import sendTelegramMessage from '@server/sendTelegramMessage'
 import { pushTextFromHtml } from '@server/pushNotifications'
 import dbConnect from '@utils/dbConnect'
 import dbConnectGlobal from '@utils/dbConnectGlobal'
+import { isGlobalUsersReadEnabled } from './globalUsersRuntimeConfig.mjs'
 import webpush from 'web-push'
 
 const PUSH_PUBLIC_KEY = process.env.WEB_PUSH_VAPID_PUBLIC_KEY
@@ -357,7 +358,7 @@ const sendNewsletterMessages = async ({
         }
       }
 
-      if (globalUserIds.length > 0) {
+      if (globalUserIds.length > 0 && isGlobalUsersReadEnabled(location)) {
         try {
           const globalDb = await dbConnectGlobal()
           if (globalDb) {

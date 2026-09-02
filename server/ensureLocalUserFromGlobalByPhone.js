@@ -5,6 +5,10 @@ import {
   isRelationshipStatusValid,
   normalizeRelationshipStatus,
 } from '@helpers/relationshipStatus'
+import {
+  isGlobalUsersReadEnabled,
+  isGlobalUsersWriteEnabled,
+} from './globalUsersRuntimeConfig.mjs'
 
 const normalizePhoneNumber = (rawPhone) => {
   const normalized = normalizePhoneValue(rawPhone)
@@ -196,6 +200,20 @@ const ensureLocalUserFromGlobalByPhone = async ({
     }
   }
 
+  if (!isGlobalUsersReadEnabled(location)) {
+    const localUser = await db.model('Users').findOne({ phone: phoneNumber }).lean()
+
+    return {
+      success: true,
+      data: {
+        globalUserFound: false,
+        localUser,
+        localUserCreated: false,
+        globalUsersSkipped: true,
+      },
+    }
+  }
+
   const globalDb = await dbConnectGlobal()
   if (!globalDb) {
     const localExistingNoGlobal = await db
@@ -246,6 +264,16 @@ const ensureLocalUserFromGlobalByPhone = async ({
       ? await db.model('Users').findById(locationUserId).lean()
       : null
 
+  // Устаревшая cityProfiles-ссылка не должна позволять перезаписать чужую анкету.
+  const isCompatible = (user) =>
+    user?._id &&
+    normalizePhoneNumber(user.phone) === phoneNumber &&
+    (!user.globalUserId || String(user.globalUserId) === globalUserId)
+
+  if (localExisting?._id && !isCompatible(localExisting)) {
+    localExisting = null
+  }
+
   if (!localExisting?._id) {
     localExisting = await db
       .model('Users')
@@ -262,9 +290,33 @@ const ensureLocalUserFromGlobalByPhone = async ({
       .lean()
   }
 
+  if (localExisting?._id && !isCompatible(localExisting)) {
+    return {
+      success: false,
+      data: {
+        error: {
+          type: 'GLOBAL_USER_LINK_CONFLICT',
+          message: 'Связь анкеты требует проверки администратором.',
+        },
+      },
+    }
+  }
+
+  // Read-only rollout не создает локальную проекцию, которую нельзя связать.
+  if (!isGlobalUsersWriteEnabled(location)) {
+    return {
+      success: true,
+      data: {
+        globalUserFound: true,
+        localUser: localExisting || null,
+        localUserCreated: false,
+      },
+    }
+  }
+
   if (localExisting?._id) {
-    const resolvedRole = locationRole || localExisting?.role || 'client'
-    const resolvedStatus = locationStatus || localExisting?.status || 'novice'
+    const resolvedRole = localExisting?.role || locationRole || 'client'
+    const resolvedStatus = localExisting?.status || locationStatus || 'novice'
     const patch = {
       ...toPatchFromGlobalProfile(preparedProfile),
       ...toPatchFromGlobalCore(preparedCore),

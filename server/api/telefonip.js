@@ -174,12 +174,15 @@ export default async function handler(req, res) {
         return res?.status(400).json({ success: false, error: 'db error' })
       await ensureConsentToMailingField(db, location)
 
-      await ensureLocalUserFromGlobalByPhone({
+      const globalReadResult = await ensureLocalUserFromGlobalByPhone({
         db,
         location,
         phone: normalizedPhone,
         source: isForgotPassword ? 'recovery-read' : 'register-read',
       })
+      if (!globalReadResult?.success) {
+        return res?.status(409).json(globalReadResult)
+      }
 
       if (checkBackCallId) {
         const response = await fetch(

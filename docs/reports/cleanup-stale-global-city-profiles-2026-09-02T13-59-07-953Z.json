@@ -1,0 +1,18 @@
+{
+  "mode": "dry-run-summary",
+  "startedAt": "2026-09-02T13:59:07.870Z",
+  "finishedAt": "2026-09-02T13:59:07.953Z",
+  "summary": {
+    "globalUsersScanned": 2851,
+    "staleProfilesFound": 6,
+    "removedCount": 0,
+    "byReasonAndLocation": {
+      "GLOBAL_USER_ID_MISMATCH": {
+        "krsk": 5
+      },
+      "LOCAL_USER_MISSING": {
+        "krsk": 1
+      }
+    }
+  }
+}

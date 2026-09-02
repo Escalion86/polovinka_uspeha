@@ -2,6 +2,7 @@ import dbConnect from '@utils/dbConnect'
 import dbConnectGlobal from '@utils/dbConnectGlobal'
 import checkLocationValid from './checkLocationValid'
 import { normalizePhoneValue } from '@helpers/phoneUtils'
+import { isGlobalUsersReadEnabled } from './globalUsersRuntimeConfig.mjs'
 
 const normalizePhoneNumber = (rawPhone) => {
   const normalized = normalizePhoneValue(rawPhone)
@@ -20,6 +21,7 @@ const toPlainObject = (value) => {
 const resolvePasswordFromGlobalByPhone = async ({ phone, location }) => {
   const phoneNumber = normalizePhoneNumber(phone)
   if (!phoneNumber || !checkLocationValid(location)) return null
+  if (!isGlobalUsersReadEnabled(location)) return null
 
   const globalDb = await dbConnectGlobal()
   if (!globalDb) return null
@@ -42,10 +44,14 @@ const resolvePasswordFromGlobalByPhone = async ({ phone, location }) => {
       const user = await cityDb
         .model('Users')
         .findById(profile.userId)
-        .select({ password: 1 })
+        .select({ password: 1, phone: 1, globalUserId: 1 })
         .lean()
 
-      if (user?.password && typeof user.password === 'string') {
+      if (
+        normalizePhoneNumber(user?.phone) === phoneNumber &&
+        (!user?.globalUserId || String(user.globalUserId) === String(globalUser._id)) &&
+        user?.password && typeof user.password === 'string'
+      ) {
         return user.password
       }
     } catch (error) {

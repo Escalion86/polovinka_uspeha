@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import CRUD from '@server/CRUD'
 import dbConnectGlobal from '@utils/dbConnectGlobal'
+import { isGlobalUsersReadEnabled } from '@server/globalUsersRuntimeConfig.mjs'
 
 const usersSelect = {
   images: { $slice: [0, 1] },
@@ -34,7 +35,8 @@ const normalizePhone = (rawValue) => {
   return `7${digits}`
 }
 
-const resolveGlobalConsentMap = async (users) => {
+const resolveGlobalConsentMap = async (users, location) => {
+  if (!isGlobalUsersReadEnabled(location)) return new Map()
   if (!Array.isArray(users) || users.length === 0) return new Map()
 
   const globalDb = await dbConnectGlobal()
@@ -95,8 +97,8 @@ const resolveGlobalConsentMap = async (users) => {
   return globalConsentMap
 }
 
-const applyGlobalConsent = async (users) => {
-  const globalConsentMap = await resolveGlobalConsentMap(users)
+const applyGlobalConsent = async (users, location) => {
+  const globalConsentMap = await resolveGlobalConsentMap(users, location)
   if (globalConsentMap.size === 0) {
     return users.map((user) =>
       user && typeof user?.toObject === 'function' ? user.toObject() : user
@@ -165,6 +167,6 @@ export default async function handler(req, res) {
     return res.status(responseStatus).json(responseJson)
   }
 
-  const data = await applyGlobalConsent(responseJson.data)
+  const data = await applyGlobalConsent(responseJson.data, req.query?.location)
   return res.status(responseStatus).json({ ...responseJson, data })
 }

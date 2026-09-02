@@ -133,10 +133,18 @@
 ## 6. Фичефлаги rollout
 
 Рекомендуемые флаги:
+- `GLOBAL_USERS_ENABLED=true`
+- `GLOBAL_USERS_ROLLOUT_LOCATIONS=krsk,nrsk,ekb`
 - `GLOBAL_PROFILE_READ_FROM_GLOBAL=true`
 - `GLOBAL_PROFILE_WRITE_TO_GLOBAL=true`
 - `GLOBAL_PROFILE_LOCAL_FALLBACK=true|false`
 - `GLOBAL_USERS_DEDUP_GUARD=true`
+
+На 03.09.2026 реализованы `GLOBAL_USERS_ENABLED`, `GLOBAL_USERS_ROLLOUT_LOCATIONS`
+и read/write-флаги. Отключение local fallback/dedup не реализовано: это небезопасно
+без завершения миграции и защиты от конкурентного создания дублей. Полный
+write-through и cleanup из этого RFC остаются отдельным будущим этапом.
+Эксплуатационные инструкции: `docs/GLOBAL_USERS_ROLLOUT_RUNBOOK.md`.
 
 Rollout:
 1. Включить read-from-global.
@@ -169,8 +177,7 @@ Rollout:
 
 ## 9. Ближайший practical backlog
 
-1. Ввести явные фичефлаги в `server/authOptions.js` и `server/CRUD.js`.
+1. Выполнено: ввести общий и read/write-флаги в auth и общем sync-слое CRUD.
 2. Сделать API/скрипт безопасной дедупликации локальных `Users` по `globalUserId + location`.
 3. Перевести обновление анкеты на write-to-global.
 4. Добавить технический отчет: `globalUserId -> [local users by city]`.
-

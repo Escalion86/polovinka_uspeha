@@ -100,11 +100,11 @@
   - upsert в `GlobalUsers`;
   - записать `cityProfiles[location].userId`.
 
-### Этап C (feature flag)
-- Флаг `GLOBAL_USERS_ENABLED=true`:
-  - включаем новый поток связывания в runtime.
-- Флаг `GLOBAL_USERS_REQUIRE_LINK=true`:
-  - включается только после стабилизации.
+### Этап C (feature flags)
+- Runtime-флаги реализованы в `server/globalUsersRuntimeConfig.mjs`.
+- Общий выключатель: `GLOBAL_USERS_ENABLED`.
+- Отдельные переключатели read/write и rollout по городам описаны
+  в `docs/GLOBAL_USERS_ROLLOUT_RUNBOOK.md`.
 
 ### Этап D (поэтапный rollout)
 - Rollout по городам: `krsk -> nrsk -> ekb`.
@@ -135,6 +135,8 @@
 - Выключить `GLOBAL_USERS_ENABLED`.
 - Возврат к текущему потоку по локальным БД.
 - Данные `GlobalUsers` остаются, но не используются в runtime.
+- Для частичного отката отключить только global read или убрать одну локацию из
+  `GLOBAL_USERS_ROLLOUT_LOCATIONS`.
 
 ## Риски
 - Ошибки нормализации телефонов.
@@ -149,7 +151,8 @@
 - Время обработки миграции и количество повторных запусков.
 
 ## Следующий шаг реализации
-- Реализовать `dbConnectGlobal` и схему `globalUsersSchema`.
-- Добавить минимальный read-path в login/register (без mandatory режима).
-- Использовать runbook `docs/GLOBAL_USERS_MIGRATION_RUNBOOK.md`.
+- `dbConnectGlobal`, схема и read-path уже реализованы.
+- Завершить runtime-приемку U1-T7 и согласованный production rollout U1-T9.
+- Использовать `docs/GLOBAL_USERS_ROLLOUT_RUNBOOK.md` для флагов/отката
+  и `docs/GLOBAL_USERS_MIGRATION_RUNBOOK.md` для миграции данных.
 - Перед любыми write-изменениями запускать `npm run global-users:dry-run` и согласовывать отчет из `docs/reports/*`.

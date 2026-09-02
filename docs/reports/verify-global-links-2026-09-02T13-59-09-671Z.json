@@ -1,0 +1,49 @@
+{
+  "mode": "verify-global-links-summary",
+  "startedAt": "2026-09-02T13:59:09.578Z",
+  "finishedAt": "2026-09-02T13:59:09.670Z",
+  "env": {
+    "dbSuffix": null,
+    "globalDbName": "polovinka_uspeha_global_dev",
+    "locations": [
+      "krsk",
+      "nrsk",
+      "ekb"
+    ]
+  },
+  "summary": {
+    "localUsersTotal": 2872,
+    "globalUsersTotal": 2851,
+    "localMissingGlobalUserId": 0,
+    "localInvalidGlobalUserId": 0,
+    "localGlobalUserNotFound": 0,
+    "localPhoneMismatchWithGlobal": 0,
+    "localCityProfileMissing": 0,
+    "localCityProfileUserIdMismatch": 0,
+    "reverseLocalUserNotFound": 0,
+    "reverseLocalGlobalUserIdMismatch": 0,
+    "reverseLocalPhoneMismatch": 0,
+    "issuesByLocation": {
+      "localMissingGlobalUserId": {},
+      "localInvalidGlobalUserId": {},
+      "localGlobalUserNotFound": {},
+      "localPhoneMismatchWithGlobal": {},
+      "localCityProfileMissing": {},
+      "localCityProfileUserIdMismatch": {},
+      "reverseLocalUserNotFound": {},
+      "reverseLocalGlobalUserIdMismatch": {},
+      "reverseLocalPhoneMismatch": {}
+    }
+  },
+  "issues": {
+    "localMissingGlobalUserId": 0,
+    "localInvalidGlobalUserId": 0,
+    "localGlobalUserNotFound": 0,
+    "localPhoneMismatchWithGlobal": 0,
+    "localCityProfileMissing": 0,
+    "localCityProfileUserIdMismatch": 0,
+    "reverseLocalUserNotFound": 0,
+    "reverseLocalGlobalUserIdMismatch": 0,
+    "reverseLocalPhoneMismatch": 0
+  }
+}

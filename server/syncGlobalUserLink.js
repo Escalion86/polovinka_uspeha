@@ -4,6 +4,7 @@ import dbConnectGlobal from '@utils/dbConnectGlobal'
 import dbConnect from '@utils/dbConnect'
 import { LOCATIONS_KEYS } from './serverConstants'
 import { normalizeRelationshipStatus } from '@helpers/relationshipStatus'
+import { isGlobalUsersWriteEnabled } from './globalUsersRuntimeConfig.mjs'
 
 const toSafeDate = (value) => {
   if (!value) return null
@@ -210,6 +211,17 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
           type: 'VALIDATION_ERROR',
           message: 'Location or user is invalid for global sync',
         },
+      },
+    }
+  }
+
+  if (!isGlobalUsersWriteEnabled(location)) {
+    return {
+      success: true,
+      data: {
+        location,
+        globalUsersSkipped: true,
+        reason: 'GLOBAL_USERS_WRITE_DISABLED',
       },
     }
   }

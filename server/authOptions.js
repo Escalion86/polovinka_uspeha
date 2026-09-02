@@ -21,6 +21,7 @@ import { exchangeVkCode, fetchVkUserInfo } from './vkIdAuth'
 import syncGlobalUserLink from './syncGlobalUserLink'
 import ensureLocalUserFromGlobalByPhone from './ensureLocalUserFromGlobalByPhone'
 import resolvePasswordFromGlobalByPhone from './resolvePasswordFromGlobalByPhone'
+import { isGlobalUsersReadEnabled } from './globalUsersRuntimeConfig.mjs'
 import checkLocationValid from './checkLocationValid'
 
 const AUTH_JWT_SECRET = process.env.SECRET || 'test'
@@ -362,35 +363,15 @@ export const authOptions = {
           if (!db) return null
           await ensureConsentToMailingField(db, location)
 
-          await ensureLocalUserFromGlobalByPhone({
+          const globalReadResult = await ensureLocalUserFromGlobalByPhone({
             db,
             location,
             phone,
             source: 'login-read',
           })
 
-          const globalUserByPhone = await readGlobalUserByPhone(phone)
-          const globalCityProfile =
-            globalUserByPhone?.cityProfiles &&
-            typeof globalUserByPhone.cityProfiles === 'object'
-              ? globalUserByPhone.cityProfiles[location]
-              : null
-          const linkedLocalUserId =
-            globalCityProfile?.userId && String(globalCityProfile.userId).trim()
-              ? String(globalCityProfile.userId).trim()
-              : null
-
-          const phoneCandidates = getPhoneCandidates(phone)
-          let fetchedUser = await db
-            .model('Users')
-            .findOne(
-              linkedLocalUserId
-                ? { _id: linkedLocalUserId }
-                : phoneCandidates.length > 0
-                  ? { phone: { $in: phoneCandidates } }
-                  : { phone }
-            )
-            .lean()
+          if (!globalReadResult?.success) return null
+          let fetchedUser = globalReadResult.data?.localUser
 
           if (fetchedUser?._id && !fetchedUser?.password) {
             const globalPasswordHash = await resolvePasswordFromGlobalByPhone({
@@ -602,6 +583,9 @@ export const authOptions = {
           source: 'vk-global-phone-read',
           createIfMissing: isVkRegisterMode,
         })
+        if (!globalReadResult?.success) {
+          throwVkAuthError('VK_SERVER_UNAVAILABLE')
+        }
         logVkDebug('vk global resolve result', {
           isVkRegisterMode,
           success: Boolean(globalReadResult?.success),
@@ -845,9 +829,9 @@ export const authOptions = {
 
         const usersModel = db.model('Users')
 
-        const globalUserByTelegramId = await readGlobalUserByTelegramId(
-          telegramIdNum
-        )
+        const globalUserByTelegramId = isGlobalUsersReadEnabled(location)
+          ? await readGlobalUserByTelegramId(telegramIdNum)
+          : null
         if (globalUserByTelegramId?.phone) {
           const globalReadResult = await ensureLocalUserFromGlobalByPhone({
             db,
@@ -1087,18 +1071,16 @@ export const authOptions = {
           : null
 
       if (!result && phone) {
-        await ensureLocalUserFromGlobalByPhone({
+        const globalReadResult = await ensureLocalUserFromGlobalByPhone({
           db,
           location,
           phone,
           source: 'session-location-switch',
         })
-
-        const phoneCandidates = getPhoneCandidates(phone)
-        if (phoneCandidates.length > 0) {
-          result = await db.model('Users').findOne({
-            phone: { $in: phoneCandidates },
-          })
+        if (!globalReadResult?.success) return null
+        const resolvedUserId = globalReadResult.data?.localUser?._id
+        if (resolvedUserId) {
+          result = await db.model('Users').findById(resolvedUserId)
         }
       }
 
@@ -1108,11 +1090,14 @@ export const authOptions = {
       token.phone = result.phone
 
       session.user.authDevOnlyMode = isAuthDevOnlyModeEnabled()
-      const globalUser =
-        (result?.phone ? await readGlobalUserByPhone(result.phone) : null) ||
-        (result?.globalUserId ? await readGlobalUserById(result.globalUserId) : null)
-      const globalProfile = toPlainObject(globalUser?.profile)
-      const globalSecurity = toPlainObject(globalProfile?.security)
+      const globalUser = isGlobalUsersReadEnabled(location)
+        ? (result?.phone ? await readGlobalUserByPhone(result.phone) : null) ||
+          (result?.globalUserId
+            ? await readGlobalUserById(result.globalUserId)
+            : null)
+        : null
+      const globalProfile = toPlainObject(globalUser?.profile) || {}
+      const globalSecurity = toPlainObject(globalProfile?.security) || {}
       const globalNotifications = toPlainObject(globalUser?.notifications)
 
       if (result) {

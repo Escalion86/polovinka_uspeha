@@ -12,8 +12,18 @@ const DB_ENV_MAP = {
   ekb: 'MONGODB_EKB_DBNAME',
 }
 const DB_SUFFIX = process.env.VERIFY_GLOBAL_LINKS_DB_SUFFIX || ''
+const SUMMARY_ONLY = process.argv.includes('--summary-only')
 
 const nowIso = () => new Date().toISOString()
+
+const countIssuesByLocation = (issues = []) =>
+  issues.reduce((counts, issue) => {
+    const location = LOCATIONS.includes(issue?.location)
+      ? issue.location
+      : 'unknown'
+    counts[location] = (counts[location] || 0) + 1
+    return counts
+  }, {})
 
 const normalizePhone = (rawValue) => {
   if (rawValue === null || rawValue === undefined) return ''
@@ -55,7 +65,7 @@ async function main() {
   const client = new MongoClient(mongoUri)
 
   const report = {
-    mode: 'verify-global-links',
+    mode: SUMMARY_ONLY ? 'verify-global-links-summary' : 'verify-global-links',
     startedAt,
     finishedAt: null,
     env: {
@@ -276,6 +286,18 @@ async function main() {
       reverseLocalGlobalUserIdMismatch:
         report.issues.reverseLocalGlobalUserIdMismatch.length,
       reverseLocalPhoneMismatch: report.issues.reverseLocalPhoneMismatch.length,
+      issuesByLocation: Object.fromEntries(
+        Object.entries(report.issues).map(([key, issues]) => [
+          key,
+          countIssuesByLocation(issues),
+        ])
+      ),
+    }
+
+    if (SUMMARY_ONLY) {
+      report.issues = Object.fromEntries(
+        Object.entries(report.issues).map(([key, issues]) => [key, issues.length])
+      )
     }
 
     const reportsDir = path.join(process.cwd(), 'docs', 'reports')

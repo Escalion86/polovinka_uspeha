@@ -1,0 +1,30 @@
+{
+  "mode": "dry-run-summary",
+  "startedAt": "2026-09-02T13:56:58.852Z",
+  "finishedAt": "2026-09-02T13:56:58.995Z",
+  "env": {
+    "dbSuffix": null,
+    "globalDbName": "polovinka_uspeha_global_dev",
+    "locations": [
+      "krsk",
+      "nrsk",
+      "ekb"
+    ],
+    "allowCityDuplicates": false,
+    "overwriteProfile": false
+  },
+  "summary": {
+    "totalUsersRead": 2872,
+    "perCityTotals": {
+      "krsk": 1920,
+      "nrsk": 792,
+      "ekb": 160
+    },
+    "invalidPhones": 0,
+    "duplicatePhonesWithinCity": 0,
+    "candidates": 2845,
+    "createdCount": 0,
+    "updatedCount": 0,
+    "skippedByDuplicate": 0
+  }
+}
