@@ -69,7 +69,16 @@ const resolveReferrerId = async (db, referrerId) => {
 
 const normalizeVkId = (value) => {
   const normalized = String(value ?? '').trim()
-  return normalized || null
+  if (!normalized) return null
+
+  return `id${normalized.replace(/^id/i, '')}`
+}
+
+const getVkIdCandidates = (vkId) => {
+  if (!vkId) return []
+
+  const legacyVkId = vkId.replace(/^id/i, '')
+  return legacyVkId === vkId ? [vkId] : [vkId, legacyVkId]
 }
 
 const buildVkProfilePatch = ({ vkUser = {}, vkId, consentToMailing }) => {
@@ -93,7 +102,12 @@ const buildVkProfilePatch = ({ vkUser = {}, vkId, consentToMailing }) => {
 const buildVkSetForExistingUser = ({ existingUser = {}, vkProfilePatch = {} }) => {
   const nextSet = {}
 
-  if (vkProfilePatch.vk && !existingUser.vk) nextSet.vk = vkProfilePatch.vk
+  if (
+    vkProfilePatch.vk &&
+    (!existingUser.vk || normalizeVkId(existingUser.vk) === vkProfilePatch.vk)
+  ) {
+    nextSet.vk = vkProfilePatch.vk
+  }
   if (vkProfilePatch.firstName && !existingUser.firstName) {
     nextSet.firstName = vkProfilePatch.firstName
   }
@@ -630,13 +644,13 @@ export const authOptions = {
           )
 
           const userByVkId = await usersModel
-            .findOne({ vk: vkId })
+            .findOne({
+              _id: { $ne: globalLocalUser._id },
+              vk: { $in: getVkIdCandidates(vkId) },
+            })
             .select({ _id: 1 })
             .lean()
-          if (
-            userByVkId?._id &&
-            String(userByVkId._id) !== String(globalLocalUser._id)
-          ) {
+          if (userByVkId?._id) {
             await usersModel.findByIdAndUpdate(userByVkId._id, {
               $unset: { vk: '' },
             })

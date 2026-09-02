@@ -299,6 +299,13 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
       !hasMeaningfulProfile(existingGlobalUser?.profile) ||
       !String(source || '').startsWith('vk-auth')
   )
+  const existingVk = String(existingGlobalUser?.profile?.vk || '').trim()
+  const incomingVkWithoutPrefix = incomingProfile.vk.replace(/^id/i, '')
+  const shouldSetVkContact = Boolean(
+    !shouldSetProfile &&
+      incomingProfile.vk &&
+      (!existingVk || existingVk.replace(/^id/i, '') === incomingVkWithoutPrefix)
+  )
 
   const setPayload = {
     [`cityProfiles.${location}`]: cityProfile,
@@ -315,6 +322,8 @@ const syncGlobalUserLink = async ({ location, user, source = 'vk-auth' }) => {
   }
   if (shouldSetProfile) {
     setPayload.profile = preferredProfile
+  } else if (shouldSetVkContact) {
+    setPayload['profile.vk'] = incomingProfile.vk
   }
   if (Number.isFinite(Number(preferredAuthProviders?.telegram?.id))) {
     setPayload['authProviders.telegram.id'] = Number(
