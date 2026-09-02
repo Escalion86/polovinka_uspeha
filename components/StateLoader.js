@@ -185,6 +185,8 @@ const StateLoader = (props) => {
 
   useEffect(() => {
     setNavigationRuntime(router)
+    // Город нужен до RESET: загрузчик пользователей читает locationAtom сразу.
+    setLocationState(props.location ?? null)
     setSnackbar(snackbar)
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
@@ -233,7 +235,6 @@ const StateLoader = (props) => {
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setTelegramBotName(props.telegramBotName)
-    setLocationState(props.location ?? null)
     setIsSiteLoading(false)
 
     //jotai
