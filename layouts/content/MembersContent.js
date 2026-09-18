@@ -15,6 +15,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import membersSelector from '@state/selectors/membersSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import { matchesRelationshipFilter } from '@helpers/relationshipStatus'
 
 const MembersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -38,6 +39,7 @@ const MembersContent = () => {
     relationship: {
       havePartner: true,
       noPartner: true,
+      married: true,
     },
   })
   const [searchText, setSearchText] = useState('')
@@ -49,9 +51,7 @@ const MembersContent = () => {
     const filteredMembers = members.filter(
       (user) =>
         filter.gender[String(user.gender)] &&
-        (user.relationship
-          ? filter.relationship.havePartner
-          : filter.relationship.noPartner)
+        matchesRelationshipFilter(user.relationship, filter.relationship)
     )
 
     if (seeFullNames) return filteredMembers

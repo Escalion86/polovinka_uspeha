@@ -85,11 +85,30 @@ export default async function handler(req, res) {
     }
 
     const relationshipFilter = filters?.relationship || {}
-    if (relationshipFilter.havePartner && !relationshipFilter.noPartner) {
-      match['user.relationship'] = { $nin: [null, false, ''] }
-    }
-    if (!relationshipFilter.havePartner && relationshipFilter.noPartner) {
-      match['user.relationship'] = { $in: [null, false, ''] }
+    const hasRelationshipFilter = [
+      'noPartner',
+      'havePartner',
+      'married',
+    ].some((key) => typeof relationshipFilter[key] === 'boolean')
+    if (hasRelationshipFilter) {
+      const allowedRelationships = []
+      if (relationshipFilter.noPartner) {
+        allowedRelationships.push(null, false, '')
+      }
+      if (relationshipFilter.havePartner) {
+        allowedRelationships.push(true, 'havePartner')
+      }
+      if (
+        relationshipFilter.married ||
+        (typeof relationshipFilter.married !== 'boolean' &&
+          relationshipFilter.havePartner)
+      ) {
+        allowedRelationships.push('married')
+      }
+      if (allowedRelationships.length === 0) {
+        return res?.status(200).json({ success: true, data: [] })
+      }
+      match['user.relationship'] = { $in: allowedRelationships }
     }
 
     const result = await db.model('EventsUsers').aggregate([

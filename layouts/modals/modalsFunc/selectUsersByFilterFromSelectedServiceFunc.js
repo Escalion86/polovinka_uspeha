@@ -9,6 +9,10 @@ import servicesUsersFullByServiceIdSelector from '@state/selectors/servicesUsers
 import { useAtomValue } from 'jotai'
 import { useMemo, useState } from 'react'
 import { useEffect } from 'react'
+import {
+  getRelationshipFilterKey,
+  matchesRelationshipFilter,
+} from '@helpers/relationshipStatus'
 
 const selectUsersByFilterFromSelectedServiceFunc = (serviceId, onSelect) => {
   const SelectUsersByFilterFromSelectedServiceModal = ({
@@ -37,6 +41,7 @@ const selectUsersByFilterFromSelectedServiceFunc = (serviceId, onSelect) => {
       relationship: {
         havePartner: true,
         noPartner: true,
+        married: true,
       },
     })
 
@@ -64,12 +69,16 @@ const selectUsersByFilterFromSelectedServiceFunc = (serviceId, onSelect) => {
     )
 
     const usersRelationshipCount = useMemo(
-      () => ({
-        havePartner: servicesUsers.filter(({ user }) => user.relationship)
-          .length,
-        noPartner: servicesUsers.filter(({ user }) => !user.relationship)
-          .length,
-      }),
+      () =>
+        servicesUsers.reduce(
+          (counts, { user }) => {
+            if (!user) return counts
+            const key = getRelationshipFilterKey(user?.relationship)
+            counts[key] += 1
+            return counts
+          },
+          { noPartner: 0, havePartner: 0, married: 0 }
+        ),
       [servicesUsers]
     )
 
@@ -81,9 +90,10 @@ const selectUsersByFilterFromSelectedServiceFunc = (serviceId, onSelect) => {
               user &&
               filter.gender[String(user.gender)] &&
               filter.status[user?.status ?? 'novice'] &&
-              (user.relationship
-                ? filter.relationship.havePartner
-                : filter.relationship.noPartner)
+              matchesRelationshipFilter(
+                user.relationship,
+                filter.relationship
+              )
           )
           .map(({ user }) => user)
         // if (checkAddEventDescription)

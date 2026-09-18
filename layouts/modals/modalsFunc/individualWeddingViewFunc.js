@@ -179,6 +179,9 @@ const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
             {individualWedding?.usersFilter?.relationship?.havePartner && (
               <UserRelationshipIcon relationship />
             )}
+            {individualWedding?.usersFilter?.relationship?.married && (
+              <UserRelationshipIcon relationship="married" />
+            )}
           </div>
           <div>
             Всего кандидатов по фильтру:{' '}

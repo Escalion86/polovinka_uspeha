@@ -19,6 +19,7 @@ import { useAtomValue } from 'jotai'
 import servicesUsersFullByServiceIdSelector from '@state/selectors/servicesUsersFullByServiceIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import UsersFilter from '@components/Filter/UsersFilter'
+import { matchesRelationshipFilter } from '@helpers/relationshipStatus'
 import ContentHeader from '@components/ContentHeader'
 import Note from '@components/Note'
 import { getNounUsers } from '@helpers/getNoun'
@@ -78,6 +79,7 @@ const individualWeddingFunc = ({
       relationship: {
         havePartner: false,
         noPartner: true,
+        married: false,
       },
     })
 
@@ -109,9 +111,7 @@ const individualWeddingFunc = ({
             user.gender !== 'male' &&
             user.gender !== 'famale')) &&
         filter.status[user?.status ?? 'novice'] &&
-        (user.relationship
-          ? filter.relationship.havePartner
-          : filter.relationship.noPartner)
+        matchesRelationshipFilter(user.relationship, filter.relationship)
     )
 
     const QUESTION_KEYS = {

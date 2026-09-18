@@ -114,6 +114,7 @@ const StatisticsUsersContent = () => {
     relationship: {
       havePartner: true,
       noPartner: true,
+      married: true,
     },
   })
 

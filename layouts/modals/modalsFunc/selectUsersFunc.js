@@ -21,6 +21,7 @@ import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons/faFileCircle
 import compareObjects from '@helpers/compareObjects'
 import birthDateToAge from '@helpers/birthDateToAge'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import { matchesRelationshipFilter } from '@helpers/relationshipStatus'
 
 const DEFAULT_MIN_AGE = 18
 const DEFAULT_MAX_AGE = 70
@@ -133,6 +134,7 @@ const selectUsersFunc = (
       relationship: {
         havePartner: true,
         noPartner: true,
+        married: true,
       },
       checked: {
         checked: true,
@@ -212,9 +214,10 @@ const selectUsersFunc = (
                   user.gender !== 'male' &&
                   user.gender !== 'famale')) &&
               filter.status[user?.status ?? 'novice'] &&
-              (user.relationship
-                ? filter.relationship.havePartner
-                : filter.relationship.noPartner) &&
+              matchesRelationshipFilter(
+                user.relationship,
+                filter.relationship
+              ) &&
               (((filter.checked.checked ||
                 !selectedUsersIds.includes(user._id)) &&
                 filter.checked.unchecked) ||

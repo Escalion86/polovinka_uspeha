@@ -12,6 +12,10 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import { useAtomValue } from 'jotai'
 import { useMemo, useState } from 'react'
 import { useEffect } from 'react'
+import {
+  getRelationshipFilterKey,
+  matchesRelationshipFilter,
+} from '@helpers/relationshipStatus'
 
 const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
   const SelectUsersByFilterFromSelectedEventModal = ({
@@ -47,6 +51,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
       relationship: {
         havePartner: true,
         noPartner: true,
+        married: true,
       },
     })
     const [subEventsFilter, setSubEventsFilter] = useState({})
@@ -166,14 +171,16 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     )
 
     const usersRelationshipCount = useMemo(
-      () => ({
-        havePartner: filteredBySubEventUsers.filter(
-          ({ user }) => user.relationship
-        ).length,
-        noPartner: filteredBySubEventUsers.filter(
-          ({ user }) => !user.relationship
-        ).length,
-      }),
+      () =>
+        filteredBySubEventUsers.reduce(
+          (counts, { user }) => {
+            if (!user) return counts
+            const key = getRelationshipFilterKey(user?.relationship)
+            counts[key] += 1
+            return counts
+          },
+          { noPartner: 0, havePartner: 0, married: 0 }
+        ),
       [filteredBySubEventUsers]
     )
 
@@ -241,9 +248,10 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
               user &&
               filter.gender[String(user.gender)] &&
               filter.status[user?.status ?? 'novice'] &&
-              (user.relationship
-                ? filter.relationship.havePartner
-                : filter.relationship.noPartner)
+              matchesRelationshipFilter(
+                user.relationship,
+                filter.relationship
+              )
           )
           .map(({ user }) => user)
         // if (checkAddEventDescription)

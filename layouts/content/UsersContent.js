@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import birthDateToAge from '@helpers/birthDateToAge'
 import useCityManagementAccess from '@hooks/useCityManagementAccess'
+import { matchesRelationshipFilter } from '@helpers/relationshipStatus'
 
 const UsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -101,6 +102,7 @@ const UsersContent = () => {
     relationship: {
       havePartner: true,
       noPartner: true,
+      married: true,
     },
     ...(seeBirthday ? { ages: normalizedInitialAges } : {}),
   })
@@ -148,9 +150,7 @@ const UsersContent = () => {
               user.gender !== 'male' &&
               user.gender !== 'famale')) &&
           filter.status[user?.status ?? 'novice'] &&
-          (user.relationship
-            ? filter.relationship.havePartner
-            : filter.relationship.noPartner) &&
+          matchesRelationshipFilter(user.relationship, filter.relationship) &&
           (!filter.ages ||
             user.age === undefined ||
             (user.age >= (filter.ages.min || 18) &&
